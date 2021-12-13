@@ -13,28 +13,8 @@
           value="Все"
         ></v-select>
       </v-col>
-      <v-col
-        cols="12"
-        sm="10"
-      >
-        <v-tabs right class="icon-tabs"
-                height="40">
-          <v-tab>
-            <img src="img/ico_list.svg" alt="list">
-          </v-tab>
-          <v-tab>
-            <v-icon
-              size="24"
-              color="gray"
-            >
-              mdi-map-outline
-            </v-icon>
-          </v-tab>
-        </v-tabs>
-      </v-col>
     </v-row>
-
-
+    <v-divider></v-divider>
 
     <div class="table-list-style">
       <v-data-table
@@ -45,7 +25,7 @@
         class="elevation-0"
         item-key="id"
         :page.sync="page"
-        :items-per-page="itemsPerPage"
+        :items-per-page="itemsPerPageTable"
         @page-count="pageCount = $event"
         hide-default-footer
       >
@@ -59,7 +39,7 @@
         </template>
 
         <template v-slot:item.manager="{ item }">
-         <UserAvatar :first_name="item.manager_name" :last_name="item.manager_lastname" :color="avatarColor" />
+          <UserAvatar :first_name="item.manager_name" :last_name="item.manager_lastname" :color="avatarColor"/>
         </template>
 
         <template v-slot:item.term="{ item }">
@@ -90,11 +70,16 @@
             <v-subheader>Строк на странице:</v-subheader>
           </v-col>
           <v-col cols="4" class="pa-0">
-            <v-text-field
-              :value="itemsPerPage"
-              type="number"
-              @input="itemsPerPage = parseInt($event, 10)"
-            ></v-text-field>
+            <div class="pagination-page-num">
+              <v-text-field
+                :value="itemsPerPage"
+                type="text"
+                @input="itemsPerPage = $event"
+                single-line
+                outlined
+                hide-details="true"
+              ></v-text-field>
+            </div>
           </v-col>
         </v-row>
       </v-col>
@@ -112,118 +97,128 @@
 </template>
 
 <script>
-  import UserAvatar from "@/components/UserAvatar";
-  export default {
-    components: {UserAvatar},
-    data() {
-      return {
-        title: 'Заяки',
-        title_size: 'big',
-        title_create: true,
-        title_page_create: 'create',
-        itemSort: ['Все', 'Леруа Мерлен', 'SBS'],
-        page: 1,
-        pageCount: 0,
-        itemsPerPage: 3,
-        selected: [],
-        avatarColor: '#EFCD4F',
-        headers: [
-          {text: 'Название', align: 'start', sortable: false, value: 'name',},
-          {text: 'Оплата', value: 'pay'},
-          {text: 'Объект', value: 'object'},
-          {text: 'Менеджер', value: 'manager'},
-          {text: 'Срок', value: 'term'},
-          {text: 'Заполнение', value: 'occupation'},
-          {text: '', value: 'actions', sortable: false},
-        ],
-        desserts: [
-          {
-            name: 'Нужны кладовщики в Леруа',
-            pay: '1000 р. / смена',
-            object: 'Леруа Мерлен',
-            manager_name: 'Алексей',
-            manager_lastname: 'Петров',
-            term: '12ч 0м',
-            occupation: 20,
-            id: 1
-          },
-          {
-            name: 'Нужны кладовщики в Леруа',
-            pay: '1000 р. / смена',
-            object: 'SBS',
-            manager_name: 'Алексей',
-            manager_lastname: 'Петров',
-            term: '3ч 30м',
-            occupation: 34,
-            id: 2
-          },
-          {
-            name: 'Нужны кладовщики в Леруа',
-            pay: '1000 р. / смена',
-            object: 'Леруа Мерлен',
-            manager_name: 'Сергей',
-            manager_lastname: 'Семенов',
-            term: '12ч 0м',
-            occupation: 70,
-            id: 3
-          },
-          {
-            name: 'Нужны кладовщики в Леруа',
-            pay: '1000 р. / смена',
-            object: 'Леруа Мерлен 2',
-            manager_name: 'Олег',
-            manager_lastname: 'Маршал',
-            term: '8ч 0м',
-            occupation: 20,
-            id: 4
-          },
-          {
-            name: 'Нужны кладовщики в Леруа',
-            pay: '1000 р. / смена',
-            object: 'Леруа Мерлен',
-            manager_name: 'Алексей',
-            manager_lastname: 'Петров',
-            term: '12ч 0м',
-            occupation: 20,
-            id: 5
-          },
-        ],
+import UserAvatar from "@/components/UserAvatar";
+
+export default {
+  components: {UserAvatar},
+  data() {
+    return {
+      title: 'Заяки',
+      title_size: 'big',
+      title_create: true,
+      title_page_create: 'create',
+      itemSort: ['Все', 'Леруа Мерлен', 'SBS'],
+      page: 1,
+      pageCount: 0,
+      itemsPerPage: 3,
+      selected: [],
+      avatarColor: '#EFCD4F',
+      headers: [
+        {text: 'Название', align: 'start', sortable: false, value: 'name',},
+        {text: 'Оплата', value: 'pay'},
+        {text: 'Объект', value: 'object'},
+        {text: 'Менеджер', value: 'manager'},
+        {text: 'Срок', value: 'term'},
+        {text: 'Заполнение', value: 'occupation'},
+        {text: '', value: 'actions', sortable: false},
+      ],
+      desserts: [
+        {
+          name: 'Нужны кладовщики в Леруа',
+          pay: '1000 р. / смена',
+          object: 'Леруа Мерлен',
+          manager_name: 'Алексей',
+          manager_lastname: 'Петров',
+          term: '12ч 0м',
+          occupation: 20,
+          id: 1
+        },
+        {
+          name: 'Нужны кладовщики в Леруа',
+          pay: '1000 р. / смена',
+          object: 'SBS',
+          manager_name: 'Алексей',
+          manager_lastname: 'Петров',
+          term: '3ч 30м',
+          occupation: 34,
+          id: 2
+        },
+        {
+          name: 'Нужны кладовщики в Леруа',
+          pay: '1000 р. / смена',
+          object: 'Леруа Мерлен',
+          manager_name: 'Сергей',
+          manager_lastname: 'Семенов',
+          term: '12ч 0м',
+          occupation: 70,
+          id: 3
+        },
+        {
+          name: 'Нужны кладовщики в Леруа',
+          pay: '1000 р. / смена',
+          object: 'Леруа Мерлен 2',
+          manager_name: 'Олег',
+          manager_lastname: 'Маршал',
+          term: '8ч 0м',
+          occupation: 20,
+          id: 4
+        },
+        {
+          name: 'Нужны кладовщики в Леруа',
+          pay: '1000 р. / смена',
+          object: 'Леруа Мерлен',
+          manager_name: 'Алексей',
+          manager_lastname: 'Петров',
+          term: '12ч 0м',
+          occupation: 20,
+          id: 5
+        },
+      ],
+    }
+  },
+  methods: {},
+  computed: {
+    itemsPerPageTable() {
+      if (this.itemsPerPage) {
+        return parseInt(this.itemsPerPage, 10)
+      } else {
+        return 1;
       }
-    },
-    methods: {},
-  }
+    }
+  },
+}
 </script>
 
 <style lang="scss" scoped>
 
-  @import '../../assets/scss/colors';
+@import '../../assets/scss/colors';
 
-  .request-i{
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    background: $green;
-    margin-right: 8px;
-    border-radius: 10px;
+.request-i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: $green;
+  margin-right: 8px;
+  border-radius: 10px;
+}
+
+.request-pay {
+  background: $light_blue;
+  color: $blue;
+  padding: 7px 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.request-time {
+  display: flex;
+  align-items: center;
+  line-height: 1;
+
+  img {
+    margin-right: 12px;
   }
-
-  .request-pay{
-    background: $light_blue;
-    color: $blue;
-    padding: 7px 8px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 700;
-  }
-
-  .request-time{
-    display: flex;
-    align-items: center;
-    line-height: 1;
-
-    img{
-      margin-right: 12px;
-    }
-  }
+}
 
 </style>

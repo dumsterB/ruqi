@@ -11,11 +11,32 @@
           :items="itemSort"
           outlined
           value="Все"
+          hide-details="true"
         ></v-select>
       </v-col>
       <v-col
         cols="12"
-        sm="10"
+        sm="2"
+      >
+        <v-select
+          :items="itemSort"
+          outlined
+          value="Все"
+          hide-details="true"
+        ></v-select>
+      </v-col>
+
+      <v-col
+        cols="12"
+        sm="7"
+        class="d-flex justify-end"
+      >
+        <Search :searchText="searchText" @updateSearchText = "updateSearchText"/>
+      </v-col>
+
+      <v-col
+        cols="12"
+        sm="1"
       >
         <v-tabs right class="icon-tabs"
                 height="40">
@@ -33,8 +54,23 @@
         </v-tabs>
       </v-col>
     </v-row>
-
-
+    <v-row no-gutters class="table-filter-row">
+      <v-col
+        cols="12"
+        sm="6"
+        class="d-flex"
+      >
+        <v-checkbox
+          v-model="property1"
+          label="Свойство 1"
+        ></v-checkbox>
+        <v-checkbox
+          v-model="property2"
+          label="Свойство 2"
+        ></v-checkbox>
+      </v-col>
+    </v-row>
+    <v-divider></v-divider>
 
     <div class="table-list-style">
       <v-data-table
@@ -45,9 +81,10 @@
         class="elevation-0"
         item-key="id"
         :page.sync="page"
-        :items-per-page="itemsPerPage"
+        :items-per-page="itemsPerPageTable"
         @page-count="pageCount = $event"
         hide-default-footer
+        :search="searchText"
       >
         <template v-slot:item.name="{ item }">
           <span class="request-i"></span>
@@ -58,16 +95,27 @@
           <span class="request-pay">{{ item.pay }}</span>
         </template>
 
-        <template v-slot:item.term="{ item }">
-          <div class="request-time">
-            <img src="/img/ico_timer.svg" alt="timer">
-            {{ item.term }}
-          </div>
+        <template v-slot:item.rating="{ item }">
+          <v-rating
+            color="#FFCB45"
+            empty-icon="mdi-star"
+            full-icon="mdi-star"
+            half-icon="mdi-star-half-full"
+            hover
+            half-increments
+            length="5"
+            size="14"
+            v-model="item.rating"
+          ></v-rating>
+          <span class="grey--text text--lighten-2 text-caption mr-2">
+              {{ item.rating }}
+            </span>
         </template>
 
-        <template v-slot:item.occupation="{ item }">
-          <Occupationbar v-bind:occupation="(item.occupation)"/>
+        <template v-slot:item.manager="{ item }">
+          <UserAvatar :first_name="item.manager_name" :last_name="item.manager_lastname" :color="avatarColor"/>
         </template>
+
         <template v-slot:item.actions="{ item }">
           <v-btn icon>
             <v-icon>mdi-dots-vertical</v-icon>
@@ -79,14 +127,25 @@
     <v-row no-gutters>
       <v-col
         cols="12"
-        sm="1"
+        sm="2"
       >
-        <v-text-field
-          :value="itemsPerPage"
-          label="Строк на странице:"
-          type="number"
-          @input="itemsPerPage = parseInt($event, 10)"
-        ></v-text-field>
+        <v-row class="align-center">
+          <v-col cols="8" class="pa-0">
+            <v-subheader>Строк на странице:</v-subheader>
+          </v-col>
+          <v-col cols="4" class="pa-0">
+            <div class="pagination-page-num">
+              <v-text-field
+                :value="itemsPerPage"
+                type="text"
+                @input="itemsPerPage = $event"
+                single-line
+                outlined
+                hide-details="true"
+              ></v-text-field>
+            </div>
+          </v-col>
+        </v-row>
       </v-col>
       <v-col
         cols="12"
@@ -102,10 +161,13 @@
 </template>
 
 <script>
+import UserAvatar from "@/components/UserAvatar";
+
 export default {
+  components: {UserAvatar},
   data() {
     return {
-      title: 'Обьекты',
+      title: 'Объекты',
       title_size: 'big',
       title_create: false,
       title_page_create: 'create',
@@ -114,65 +176,81 @@ export default {
       pageCount: 0,
       itemsPerPage: 3,
       selected: [],
+      avatarColor: '#EFCD4F',
+      property1: true,
+      property2: true,
+      searchText: '',
       headers: [
-        {text: 'Название', align: 'start', sortable: false, value: 'name',},
-        {text: 'Оплата', value: 'pay'},
-        {text: 'Объект', value: 'object'},
-        {text: 'Mенеджер', value: 'manager'},
-        {text: 'Срок', value: 'term'},
-        {text: 'Заполнение', value: 'occupation'},
+        {text: 'Название', align: 'start', value: 'name',},
+        {text: 'Рейтинг', value: 'rating'},
+        {text: 'Заявки', value: 'request'},
+        {text: 'Менеджер', value: 'manager'},
+        {text: 'Расположен', value: 'address'},
         {text: '', value: 'actions', sortable: false},
       ],
       desserts: [
         {
-          name: 'Нужны кладовщики в Леруа',
-          pay: '1000 р. / смена',
-          object: 'Леруа Мерлен',
-          manager: 'Алексей Петров',
-          term: '12ч 0м',
-          occupation: 20,
+          name: 'Леруа мерлен',
+          rating: 4.5,
+          request: 999,
+          manager_name: 'Алексей',
+          manager_lastname: 'Петров',
+          address: 'Промышленный проезд, 9, село Беседы, Ленинский городской округ',
           id: 1
         },
         {
-          name: 'Нужны кладовщики в Леруа',
-          pay: '1000 р. / смена',
-          object: 'SBS',
-          manager: 'Алексей Петров',
-          term: '3ч 30м',
-          occupation: 34,
+          name: 'Леруа мерлен',
+          rating: 4.5,
+          request: 25,
+          manager_name: 'Алексей',
+          manager_lastname: 'Петров',
+          address: 'Промышленный проезд, 9, село Беседы, Ленинский городской округ',
           id: 2
         },
         {
-          name: 'Нужны кладовщики в Леруа',
-          pay: '1000 р. / смена',
-          object: 'Леруа Мерлен',
-          manager: 'Алексей Петров',
-          term: '12ч 0м',
-          occupation: 70,
+          name: 'Леруа мерлен',
+          rating: 4.5,
+          request: 105,
+          manager_name: 'Алексей',
+          manager_lastname: 'Петров',
+          address: 'Промышленный проезд, 9, село Беседы, Ленинский городской округ',
           id: 3
         },
         {
-          name: 'Нужны кладовщики в Леруа',
-          pay: '1000 р. / смена',
-          object: 'Леруа Мерлен 2',
-          manager: 'Алексей Петров',
-          term: '8ч 0м',
-          occupation: 20,
+          name: 'Леруа мерлен',
+          rating: 4.5,
+          request: 999,
+          manager_name: 'Алексей',
+          manager_lastname: 'Петров',
+          address: 'Промышленный проезд, 9, село Беседы, Ленинский городской округ',
           id: 4
         },
         {
-          name: 'Нужны кладовщики в Леруа',
-          pay: '1000 р. / смена',
-          object: 'Леруа Мерлен',
-          manager: 'Алексей Петров',
-          term: '12ч 0м',
-          occupation: 20,
+          name: 'Леруа мерлен',
+          rating: 4.5,
+          request: 999,
+          manager_name: 'Алексей',
+          manager_lastname: 'Петров',
+          address: 'Промышленный проезд, 9, село Беседы, Ленинский городской округ',
           id: 5
         },
       ],
     }
   },
-  methods: {},
+  methods: {
+    updateSearchText(value){
+      this.searchText = value;
+    }
+  },
+  computed: {
+    itemsPerPageTable() {
+      if (this.itemsPerPage) {
+        return parseInt(this.itemsPerPage, 10)
+      } else {
+        return 1;
+      }
+    }
+  },
 }
 </script>
 
@@ -180,7 +258,7 @@ export default {
 
 @import '../../assets/scss/colors';
 
-.request-i{
+.request-i {
   display: inline-block;
   width: 10px;
   height: 10px;
@@ -189,7 +267,7 @@ export default {
   border-radius: 10px;
 }
 
-.request-pay{
+.request-pay {
   background: $light_blue;
   color: $blue;
   padding: 7px 8px;
@@ -198,14 +276,15 @@ export default {
   font-weight: 700;
 }
 
-.request-time{
+.request-time {
   display: flex;
   align-items: center;
   line-height: 1;
 
-  img{
+  img {
     margin-right: 12px;
   }
 }
 
 </style>
+

@@ -1,5 +1,5 @@
 <template>
-  <div class="user-plate">
+  <div class="user-plate" :class="radius">
     <v-avatar
       :color="color"
       size="32"
@@ -7,14 +7,17 @@
       <span class="white--text">{{ initials }}</span>
     </v-avatar>
     <span class="user-name">
-      {{ first_name + ' ' + last_name}}
+      {{ first_name + ' ' + last_name }}
+    </span>
+    <span v-if="date" class="user-date">
+      {{ date }}
     </span>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['first_name', 'last_name', 'color'],
+  props: ['first_name', 'last_name', 'color', 'radius', 'date'],
   data() {
     return {}
   },
@@ -27,9 +30,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .v-avatar{
-    border-radius: 8px;
-    margin-right: 10px;
-    font-size: 13px;
+
+.v-avatar {
+  border-radius: 8px;
+  margin-right: 10px;
+  font-size: 13px;
+}
+
+.user-plate.rounded {
+  .v-avatar {
+    border-radius: 50px;
   }
+}
 </style>

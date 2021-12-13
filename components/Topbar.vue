@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar app elevation="0" height="98" color="#fff" class="justify-end align-end d-flex">
+    <v-app-bar app elevation="0" height="98" color="transparent" class="justify-end align-end d-flex">
       <v-row>
         <v-menu
           bottom

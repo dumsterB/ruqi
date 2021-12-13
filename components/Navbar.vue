@@ -3,11 +3,6 @@
     <Logo/>
     <div class="main-nav">
       <ul>
-        <li class="nav-item">
-          <nuxt-link exact active-class="active" class="nav-link" to="/">
-            Home
-          </nuxt-link>
-        </li>
         <li v-for="(item, index) in items"
             :key="index">
           <nuxt-link active-class="active" class="nav-link" :to="item.link">
@@ -43,6 +38,8 @@
   @import '/assets/scss/colors.scss';
 
   .main-nav {
+
+    margin-top: 64px;
 
     ul {
       display: flex;

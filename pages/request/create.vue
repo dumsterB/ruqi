@@ -1,7 +1,7 @@
 <template>
   <div>
-    <Breadcrumbs />
-    <Header :content="title" :size="title_size" :isnew="false" :isback="true" />
+    <Breadcrumbs/>
+    <Header :content="title" :size="title_size" :isnew="false" :isback="true"/>
     <v-tabs
       v-model="tab"
       class="form-tabs"
@@ -23,7 +23,7 @@
               <div class="form-part-title">
                 Объект
               </div>
-              <FormBuilder :meta="meta_object_name" />
+              <FormBuilder :meta="meta_object_name"/>
             </div>
 
             <div class="form-part">
@@ -31,9 +31,10 @@
                 Информация о заявке
               </div>
               <div class="form-part-description">
-                Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное расположение.
+                Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное
+                расположение.
               </div>
-              <FormBuilder :meta="meta_object_info" />
+              <FormBuilder :meta="meta_object_info"/>
             </div>
             <div class="form-part">
 
@@ -43,7 +44,7 @@
               <div class="form-part-description">
                 Краткое описание что сюда писать
               </div>
-              <FormBuilder :meta="meta_object_location" />
+              <FormBuilder :meta="meta_object_location"/>
             </div>
           </v-tab-item>
           <v-tab-item>
@@ -52,7 +53,8 @@
                 Виды работ и оплата
               </div>
               <div class="form-part-description">
-                Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное расположение.
+                Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное
+                расположение.
               </div>
               <v-row class="ma-0">
                 <v-col
@@ -79,44 +81,30 @@
                   <div class="form-part-label">Нужно человек</div>
 
                 </v-col>
-                <FormBuilder :meta="meta_object_pay" @removeItem = "removeItem"/>
-                <a href="#" @click.prevent="add_type_work" class="add_link">Добавить вид работ</a>
+                <FormBuilder :meta="meta_object_pay" @removeItem="removeItem"/>
+                <a href="#" @click.prevent="addTypeWork" class="add_link">Добавить вид работ</a>
               </v-row>
 
             </div>
           </v-tab-item>
           <v-tab-item>
             <div class="form-part">
-              <FormBuilder :meta="meta_object_contact" />
+              <FormBuilder :meta="meta_object_contact"/>
             </div>
+            <AddFormPart :text="addContactPersText"/>
           </v-tab-item>
           <v-tab-item>
             <div class="form-part">
               <div class="form-part-label">Ответственные менеджеры</div>
               <FormBuilder :meta="meta_object_responsible"
-              @removeItem = "removeItem"/>
-              <a href="#" @click.prevent="add_responsible" class="add_link">Добавить ответственного</a>
+                           @removeItem="removeItem"/>
+              <a href="#" @click.prevent="addResponsible" class="add_link">Добавить ответственного</a>
             </div>
           </v-tab-item>
-          <v-row class="mt-2">
-            <v-col>
-              <v-btn
-              text
-              height="48"
-              outlined
-              class="mr-2"
-              @click="tab-=1">
-                Назад
-              </v-btn>
-              <v-btn
-                text
-                height="48"
-                outlined
-              @click="tab+=1">
-                Далее
-              </v-btn>
-            </v-col>
-          </v-row>
+
+          <FNavigation :indexTab="tab" :nextButtonsText="nextButtonsText" @nextFromButton="nextFromButton"
+                       @prevFromButton="prevFromButton"/>
+
         </v-window>
       </v-form>
     </div>
@@ -125,8 +113,11 @@
 
 <script>
 import Breadcrumbs from "@/components/Breadcrambs";
+import AddFormPart from "@/components/AddFormPart";
+import FNavigation from "@/components/FNavigation";
+
 export default {
-  components: {Breadcrumbs},
+  components: {FNavigation, AddFormPart, Breadcrumbs},
   data() {
     return {
       title: 'Создание новой заявки',
@@ -137,6 +128,12 @@ export default {
         'Общее', 'Оплата и ставки', 'Контакты', 'Ответственные'
       ],
       tab: null,
+      nextButtonsText: [
+        'Указать стоимость работ',
+        'указать контактных лиц',
+        'Добавить ответственных',
+        'опубликовать заявку'
+      ],
       meta_object_name: [
         {
           type: 'FTypeSelect',
@@ -328,43 +325,44 @@ export default {
       dateFormatted: this.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
       menu1: false,
       menu2: false,
+      addContactPersText: 'Добавить контактное лицо',
 
     }
   },
   computed: {
-    computedDateFormatted () {
+    computedDateFormatted() {
       return this.formatDate(this.date)
     },
   },
 
   watch: {
-    date (val) {
+    date(val) {
       this.dateFormatted = this.formatDate(this.date)
     },
   },
   methods: {
-    validate () {
+    validate() {
       this.$refs.form.validate()
     },
-    reset () {
+    reset() {
       this.$refs.form.reset()
     },
-    resetValidation () {
+    resetValidation() {
       this.$refs.form.resetValidation()
     },
-    formatDate (date) {
+    formatDate(date) {
       if (!date) return null
 
       const [year, month, day] = date.split('-')
       return `${month}/${day}/${year}`
     },
-    parseDate (date) {
+    parseDate(date) {
       if (!date) return null
 
       const [month, day, year] = date.split('/')
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
     },
-    add_responsible(){
+    addResponsible() {
       this.meta_object_responsible.push({
         type: 'FTypeText',
         label: '',
@@ -378,7 +376,7 @@ export default {
     removeItem(index) {
       this.meta_object_responsible.splice(index, 1);
     },
-    add_type_work(){
+    addTypeWork() {
       this.meta_object_pay.push({
         type: 'FTypePayGroup',
         label: '',
@@ -389,6 +387,14 @@ export default {
         remove: true,
       });
     },
+    nextFromButton() {
+      if (this.tab < this.tabs_list.length - 1) {
+        this.tab += 1;
+      }
+    },
+    prevFromButton() {
+      this.tab -= 1;
+    },
   },
 }
 </script>
@@ -396,7 +402,6 @@ export default {
 <style lang="scss" scoped>
 
 @import '../../assets/scss/colors';
-
 
 
 </style>

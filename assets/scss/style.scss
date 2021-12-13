@@ -5,7 +5,7 @@ body {
 }
 
 .ruqi {
-  padding: 0 24px 0 44px;
+  padding: 0 24px 48px 44px;
 }
 
 
@@ -13,10 +13,12 @@ body {
 
 .w-100 {
   width: 100%;
-  >div{
+
+  > div {
     width: 100%;
   }
 }
+
 
 
 /* Headers */
@@ -66,12 +68,21 @@ h1.large {
     .v-text-field--outlined.v-input--has-state fieldse {
       border: 1px solid $table-border-color;
     }
-
   }
 
+  .v-text-field fieldset{
+    border-radius: 10px;
+  }
   .v-text-field fieldset,
-  .v-text-field .v-input__control {
+  .v-text-field .v-input__control,
+  .theme--light.v-text-field--outlined:not(.v-input--is-focused):not(.v-input--has-state) > .v-input__control > .v-input__slot fieldset,
+  .theme--light.v-text-field--outlined:not(.v-input--is-focused):not(.v-input--has-state):not(.v-input--is-disabled) > .v-input__control > .v-input__slot:hover fieldset {
     color: $table-border-color;
+  }
+
+  .theme--light.v-text-field--outlined.v-select:not(.v-input--is-focused):not(.v-input--has-state):not(.v-input--is-disabled) > .v-input__control > .v-input__slot:hover fieldset {
+    border: none;
+    box-shadow: 0 4px 25px #EDEEF1;
   }
 
   .v-input--selection-controls__input .v-icon {
@@ -81,9 +92,18 @@ h1.large {
   .v-input--selection-controls__input .v-icon.mdi-checkbox-marked {
     color: $blue;
   }
+
+  .v-sheet.v-list {
+    border-radius: 10px;
+  }
+
+  .theme--light.v-select .v-select__selections {
+    color: $blue;
+  }
 }
 
 /* Tabs */
+
 .ruqi {
   .v-tab {
     padding: 0 10px;
@@ -146,6 +166,17 @@ h1.large {
     color: $dark-grey;
   }
 
+
+}
+
+/* Table filter*/
+.ruqi{
+
+  .table-filter-row{
+    .v-input{
+      margin-right: 18px;
+    }
+  }
 }
 
 
@@ -161,6 +192,7 @@ h1.large {
 
     thead th {
       border: none !important;
+      padding: 10px 20px !important;
 
       span {
         text-transform: uppercase;
@@ -210,10 +242,13 @@ h1.large {
       }
     }
   }
+
+  a {
+    text-decoration: none;
+  }
 }
 
 .table-filter-row {
-  border-bottom: 1px solid $table-border-color;
   padding-bottom: 2px;
   margin-bottom: 24px;
 }
@@ -242,6 +277,27 @@ h1.large {
 
   .v-pagination__navigation {
     margin: 0 4px;
+  }
+
+
+  .pagination-page-num{
+    .v-text-field--outlined > .v-input__control > .v-input__slot{
+      width: 32px;
+      height: 32px;
+      padding: 2px !Important;
+      margin: 0;
+      min-height: 32px;
+    }
+
+    fieldset{
+      border-radius: 4px;
+      padding: 0;
+    }
+
+    .v-input input{
+      text-align: center;
+    }
+
   }
 }
 
@@ -303,8 +359,12 @@ h1.large {
     font-weight: 600;
     text-decoration: none;
   }
-  .add_link:hover{
+
+  .add_link:hover {
     text-decoration: underline;
   }
 
 }
+
+
+
