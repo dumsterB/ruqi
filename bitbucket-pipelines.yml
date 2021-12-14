@@ -13,7 +13,7 @@ pipelines:
           artifacts:
             - dist/**
       - step:
-          name: Deploy to MAIN
+          name: Deploy to MASTER
           deployment: production
           script:
             - pipe: atlassian/scp-deploy:0.3.3
