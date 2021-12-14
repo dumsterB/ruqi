@@ -9,6 +9,7 @@ pipelines:
             - node
           script:
             - npm install
+            - npm run generate
             - npm run build
           artifacts:
             - dist/**
@@ -30,6 +31,7 @@ pipelines:
             - node
           script:
             - npm install
+            - npm run generate
             - npm run build
           artifacts:
             - dist/**
