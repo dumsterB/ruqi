@@ -1,4 +1,4 @@
-<template :text="text">
+<template>
   <div class="button-add-form-part" @click="addFormPart">
     {{ text }}
   </div>
@@ -6,13 +6,13 @@
 
 <script>
 export default {
-  props: ['text'],
+  props: ['text',],
   data() {
     return {}
   },
   methods: {
     addFormPart(){
-
+      this.$emit('addFormPart');
     },
   }
 }

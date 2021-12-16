@@ -1,18 +1,18 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="12" :lg="item.col"
-             v-for="(item, index) in meta" :key="index">
-        <div class="form-part-label" v-if="item.label">{{ item.label }}</div>
+      <v-col cols="12" :lg="filed.col"
+             v-for="(filed, index) in meta" :key="index">
+        <div class="form-part-label" v-if="filed.label">{{ filed.label }}</div>
         <div class="d-flex w-100">
           <component
-            :is="item.type"
-            :name="item.name"
-            :icon="item.icon"
-            :params="item.params"
-            @input="updateFiled(item.name, $event)"
+            :is="filed.type"
+            :name="filed.name"
+            :icon="filed.icon"
+            :params="filed.params"
+            @input="updateFiled(filed.name, $event)"
           />
-          <a href="#" v-if="item.remove" @click.prevent="removeItem(index)" class="remove-item">
+          <a href="#" v-if="filed.remove" @click.prevent="removeItem(index, filed.parent_array)" class="remove-item">
             <img src="/img/ico_close.svg" alt="Удалить">
           </a>
         </div>
@@ -22,7 +22,10 @@
 </template>
 
 <script>
+import Vue from 'vue';
+
 export default {
+
   props: ['meta',],
   data() {
     return {
@@ -30,18 +33,18 @@ export default {
     }
   },
   methods: {
-    updateFiled() {
-
+    updateFiled(field, value) {
+      this.$emit('updateFiled', field, value);
     },
-    removeItem(index) {
-      this.$emit('removeItem', index);
+    removeItem(index, parent_array) {
+      this.$emit('removeItem', index, parent_array);
     }
   },
   computed: {},
   created() {
-    this.meta.map(f => {
-      // Vue.set(this.formValues, f.name, null)
-    })
+    /*this.meta.map(f => {
+       Vue.set(this.formValues, f.name, null);
+    })*/
   }
 }
 </script>

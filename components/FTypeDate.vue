@@ -2,7 +2,7 @@
   <div>
       <v-menu
         ref="menu1"
-        v-model="menu1"
+        v-model="menu"
         :close-on-content-click="false"
         transition="scale-transition"
         offset-y
@@ -12,6 +12,7 @@
         <template v-slot:activator="{ on, attrs }">
           <v-text-field
             v-model="dateFormatted"
+            :name = "name"
             prepend-icon="mdi-calendar"
             v-bind="attrs"
             @blur="date = parseDate(dateFormatted)"
@@ -25,7 +26,7 @@
         <v-date-picker
           v-model="date"
           no-title
-          @input="menu1 = false"
+          @input="updateDate"
         ></v-date-picker>
       </v-menu>
   </div>
@@ -38,8 +39,7 @@ export default {
     return {
       date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
       dateFormatted: this.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
-      menu1: false,
-      menu2: false,
+      menu: false,
     }
   },
   methods: {
@@ -55,10 +55,16 @@ export default {
       const [month, day, year] = date.split('/')
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
     },
+    updateDate(){
+      this.$emit('input', this.dateFormatted);
+      this.menu = false;
+    }
   },
-  created() {
-
-  }
+  watch: {
+    date(val) {
+      this.dateFormatted = this.formatDate(this.date)
+    },
+  },
 }
 </script>
 

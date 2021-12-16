@@ -80,13 +80,12 @@ export default {
     },
   },
   methods: {
-    updateFiled() {
-
+    updateFiled(field, value) {
+      this.$emit('updateFiled', field, value);
     },
     removeItem(index) {
       this.$emit('removeItem', index);
     }
-
   },
   created() {
   }

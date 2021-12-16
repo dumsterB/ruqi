@@ -8,9 +8,11 @@
         sm="2"
       >
         <v-select
-          :items="itemSort"
+          :items="objects"
+          item-text="name"
+          item-value="uuid"
           outlined
-          value="Все"
+          value="0000"
         ></v-select>
       </v-col>
     </v-row>
@@ -21,37 +23,45 @@
         v-model="selected"
         show-select
         :headers="headers"
-        :items="desserts"
+        :items="requests"
         class="elevation-0"
-        item-key="id"
+        item-key="uuid"
         :page.sync="page"
         :items-per-page="itemsPerPageTable"
         @page-count="pageCount = $event"
         hide-default-footer
       >
         <template v-slot:item.name="{ item }">
-          <span class="request-i"></span>
-          {{ item.name }}
+          <div @click="openRequest(item.uuid)">
+            <span class="request-i"></span>
+            {{ item.name }}
+          </div>
+
         </template>
 
         <template v-slot:item.pay="{ item }">
-          <span class="request-pay">{{ item.pay }}</span>
+          <span class="request-pay">{{ item.payment.value }} {{ item.payment.current }} / {{ item.period }}</span>
+        </template>
+
+        <template v-slot:item.object="{ item }">
+          {{ item.object.name }}
         </template>
 
         <template v-slot:item.manager="{ item }">
-          <UserAvatar :first_name="item.manager_name" :last_name="item.manager_lastname" :color="avatarColor"/>
+          <UserAvatar :first_name="item.manager.firstname" :last_name="item.manager.lastname" :color="avatarColor"/>
         </template>
 
         <template v-slot:item.term="{ item }">
           <div class="request-time">
             <img src="/img/ico_timer.svg" alt="timer">
-            {{ item.term }}
+            {{item.hours_left}} ч {{ item.minutes_left}} м
           </div>
         </template>
 
         <template v-slot:item.occupation="{ item }">
-          <Occupationbar v-bind:occupation="(item.occupation)"/>
+          <Occupationbar :completed="(item.completion.completed)" :total="(item.completion.total)"/>
         </template>
+
         <template v-slot:item.actions="{ item }">
           <v-btn icon>
             <v-icon>mdi-dots-vertical</v-icon>
@@ -97,24 +107,31 @@
 </template>
 
 <script>
-import UserAvatar from "@/components/UserAvatar";
 
 export default {
-  components: {UserAvatar},
+  async fetch({store}) {
+    if (store.getters['requests/requests'].length === 0) {
+      await store.dispatch('requests/fetch')
+    }
+    if (store.getters['objects/objects'].length === 0) {
+      await store.dispatch('objects/fetch')
+    }
+  },
+
   data() {
     return {
       title: 'Заяки',
       title_size: 'big',
       title_create: true,
       title_page_create: 'create',
-      itemSort: ['Все', 'Леруа Мерлен', 'SBS'],
+      itemSort: ['Все', 'Активные',],
       page: 1,
       pageCount: 0,
       itemsPerPage: 3,
       selected: [],
       avatarColor: '#EFCD4F',
       headers: [
-        {text: 'Название', align: 'start', sortable: false, value: 'name',},
+        {text: 'Название', align: 'start', value: 'name',},
         {text: 'Оплата', value: 'pay'},
         {text: 'Объект', value: 'object'},
         {text: 'Менеджер', value: 'manager'},
@@ -122,62 +139,20 @@ export default {
         {text: 'Заполнение', value: 'occupation'},
         {text: '', value: 'actions', sortable: false},
       ],
-      desserts: [
-        {
-          name: 'Нужны кладовщики в Леруа',
-          pay: '1000 р. / смена',
-          object: 'Леруа Мерлен',
-          manager_name: 'Алексей',
-          manager_lastname: 'Петров',
-          term: '12ч 0м',
-          occupation: 20,
-          id: 1
-        },
-        {
-          name: 'Нужны кладовщики в Леруа',
-          pay: '1000 р. / смена',
-          object: 'SBS',
-          manager_name: 'Алексей',
-          manager_lastname: 'Петров',
-          term: '3ч 30м',
-          occupation: 34,
-          id: 2
-        },
-        {
-          name: 'Нужны кладовщики в Леруа',
-          pay: '1000 р. / смена',
-          object: 'Леруа Мерлен',
-          manager_name: 'Сергей',
-          manager_lastname: 'Семенов',
-          term: '12ч 0м',
-          occupation: 70,
-          id: 3
-        },
-        {
-          name: 'Нужны кладовщики в Леруа',
-          pay: '1000 р. / смена',
-          object: 'Леруа Мерлен 2',
-          manager_name: 'Олег',
-          manager_lastname: 'Маршал',
-          term: '8ч 0м',
-          occupation: 20,
-          id: 4
-        },
-        {
-          name: 'Нужны кладовщики в Леруа',
-          pay: '1000 р. / смена',
-          object: 'Леруа Мерлен',
-          manager_name: 'Алексей',
-          manager_lastname: 'Петров',
-          term: '12ч 0м',
-          occupation: 20,
-          id: 5
-        },
-      ],
     }
   },
-  methods: {},
+  methods: {
+    openRequest(id){
+      this.$router.push('/request/'+ id);
+    },
+  },
   computed: {
+    requests() {
+      return this.$store.getters['requests/requests']
+    },
+    objects() {
+      return this.$store.getters['objects/objects']
+    },
     itemsPerPageTable() {
       if (this.itemsPerPage) {
         return parseInt(this.itemsPerPage, 10)

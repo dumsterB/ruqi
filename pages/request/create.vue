@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Breadcrumbs/>
     <Header :content="title" :size="title_size" :isnew="false" :isback="true"/>
     <v-tabs
       v-model="tab"
@@ -23,7 +22,8 @@
               <div class="form-part-title">
                 Объект
               </div>
-              <FormBuilder :meta="meta_object_name"/>
+              <FormBuilder :meta="meta.meta_object_name" @updateFiled="updateFiled"/>
+              <div>{{ formValues }}</div>
             </div>
 
             <div class="form-part">
@@ -34,7 +34,7 @@
                 Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное
                 расположение.
               </div>
-              <FormBuilder :meta="meta_object_info"/>
+              <FormBuilder :meta="meta.meta_object_info" @updateFiled="updateFiled"/>
             </div>
             <div class="form-part">
 
@@ -44,7 +44,7 @@
               <div class="form-part-description">
                 Краткое описание что сюда писать
               </div>
-              <FormBuilder :meta="meta_object_location"/>
+              <FormBuilder :meta="meta.meta_object_location" @updateFiled="updateFiled"/>
             </div>
           </v-tab-item>
           <v-tab-item>
@@ -81,24 +81,25 @@
                   <div class="form-part-label">Нужно человек</div>
 
                 </v-col>
-                <FormBuilder :meta="meta_object_pay" @removeItem="removeItem"/>
+                <FormBuilder :meta="meta.meta_object_pay" @removeItem="removeItem" @updateFiled="updateFiled"/>
                 <a href="#" @click.prevent="addTypeWork" class="add_link">Добавить вид работ</a>
               </v-row>
 
             </div>
           </v-tab-item>
           <v-tab-item>
-            <div class="form-part">
-              <FormBuilder :meta="meta_object_contact"/>
+            <div class="form-part"
+                 v-for="(item, index) in meta.meta_object_contact"
+                 :key="index">
+              <FormBuilder :meta="item" @updateFiled="updateFiled"/>
             </div>
-            <AddFormPart :text="addContactPersText"/>
+            <AddFormPart :text="addContactPersText" @addFormPart="addFormPart"/>
           </v-tab-item>
           <v-tab-item>
             <div class="form-part">
-              <div class="form-part-label">Ответственные менеджеры</div>
-              <FormBuilder :meta="meta_object_responsible"
-                           @removeItem="removeItem"/>
-              <a href="#" @click.prevent="addResponsible" class="add_link">Добавить ответственного</a>
+              <div class="form-part-label">Диспетчеры</div>
+              <FormBuilder :meta="meta.meta_object_responsible" @removeItem="removeItem" @updateFiled="updateFiled"/>
+              <a href="#" @click.prevent="addResponsible" class="add_link">Добавить диспетчера</a>
             </div>
           </v-tab-item>
 
@@ -112,14 +113,24 @@
 </template>
 
 <script>
-import Breadcrumbs from "@/components/Breadcrambs";
-import AddFormPart from "@/components/AddFormPart";
-import FNavigation from "@/components/FNavigation";
+
+import Vue from "vue";
 
 export default {
-  components: {FNavigation, AddFormPart, Breadcrumbs},
+  async fetch({store}) {
+    if (store.getters['objects/objects'].length === 0) {
+      await store.dispatch('objects/fetch')
+    }
+    if (store.getters['specializations/specializations'].length === 0) {
+      await store.dispatch('specializations/fetch')
+    }
+    if (store.getters['dispatchers/dispatchers'].length === 0) {
+      await store.dispatch('dispatchers/fetch')
+    }
+  },
   data() {
     return {
+      formValues: {},
       title: 'Создание новой заявки',
       title_size: 'large',
       title_create: false,
@@ -134,175 +145,173 @@ export default {
         'Добавить ответственных',
         'опубликовать заявку'
       ],
-      meta_object_name: [
-        {
-          type: 'FTypeSelect',
-          label: 'Наименование объекта',
-          col: 12,
-          id: 'object_name',
-          name: 'object_name',
-          params: {
-            options: [
-              'Item 1',
-              'Item 2',
-              'Item 3',
-              'Item 4',
-            ],
-          }
-        },
-      ],
-      meta_object_info: [
-        {
-          type: 'FTypeText',
-          label: 'Название заявки',
-          col: 12,
-          id: 'object_id',
-          name: 'object_id',
-        },
-        {
-          type: 'FTypeSelect',
-          label: 'Категория',
-          col: 12,
-          id: 'object_cat',
-          name: 'object_cat',
-          params: {
-            options: [
-              'Складская логистика',
-              'Item 2',
-              'Item 3',
-              'Item 4',
-            ],
-          }
-        },
-        {
-          type: 'FTypeDate',
-          label: 'Начало работ',
-          col: 4,
-          id: 'object_start_date',
-          name: 'object_start_date',
-        },
-        {
-          type: 'FTypeDate',
-          label: 'Окончание работ',
-          col: 4,
-          id: 'object_end_date',
-          name: 'object_end_date',
-        },
-        {
-          type: 'FTypeSelect',
-          label: 'Тип смены',
-          col: 12,
-          id: 'object_work_shift',
-          name: 'object_work_shift',
-          params: {
-            options: [
-              'Дневная',
-              'Ночная',
-            ],
-          }
-        },
-        {
-          type: 'FTypeTextarea',
-          label: 'Описание',
-          col: 12,
-          id: 'object_desc',
-          name: 'object_desc',
-        },
+      meta: {
+        meta_object_name: [
+          {
+            type: 'FTypeSelectUIID',
+            label: 'Наименование объекта',
+            col: 12,
+            id: 'object_name',
+            name: 'object_name',
+            params: {
+              options: [],
+              item_text: 'name',
+            },
+            validation: 'required'
+          },
+        ],
+        meta_object_info: [
+          {
+            type: 'FTypeText',
+            label: 'Название заявки',
+            col: 12,
+            id: 'object_id',
+            name: 'object_id',
+            validation: 'required',
+          },
+          {
+            type: 'FTypeSelectUIID',
+            label: 'Категория',
+            col: 12,
+            id: 'object_cat',
+            name: 'object_cat',
+            params: {
+              options: [],
+              item_text: 'name',
+            },
+            validation: 'required',
+          },
+          {
+            type: 'FTypeDate',
+            label: 'Начало работ',
+            col: 4,
+            id: 'object_start_date',
+            name: 'object_start_date',
+            validation: 'required',
+          },
+          {
+            type: 'FTypeDate',
+            label: 'Окончание работ',
+            col: 4,
+            id: 'object_end_date',
+            name: 'object_end_date',
+            validation: 'required',
+          },
+          {
+            type: 'FTypeSelect',
+            label: 'Тип смены',
+            col: 12,
+            id: 'object_work_shift',
+            name: 'object_work_shift',
+            params: {
+              options: [
+                'Дневная',
+                'Ночная',
+              ],
+            },
+            validation: 'required',
+          },
+          {
+            type: 'FTypeTextarea',
+            label: 'Описание',
+            col: 12,
+            id: 'object_desc',
+            name: 'object_desc',
+          },
 
-      ],
-      meta_object_location: [
-        {
-          type: 'FTypeText',
-          label: 'Область, край',
-          col: 12,
-          id: 'object_region',
-          name: 'object_region',
-        },
-        {
-          type: 'FTypeText',
-          label: 'Город',
-          col: 12,
-          id: 'object_city',
-          name: 'object_city',
-        },
-        {
-          type: 'FTypeTextarea',
-          label: 'Предлагаемая схема проезда',
-          col: 12,
-          id: 'object_driving_directions',
-          name: 'object_driving_directions',
-        },
-      ],
-      meta_object_contact: [
-        {
-          type: 'FTypeText',
-          label: 'ФИО',
-          col: 12,
-          id: 'object_contact_fio',
-          name: 'object_contact_fio',
-        },
-        {
-          type: 'FTypeText',
-          label: 'Должность',
-          col: 12,
-          id: 'object_contact_post',
-          name: 'object_contact_post',
-        },
-        {
-          type: 'FTypeText',
-          label: 'Телефон',
-          col: 12,
-          id: 'object_contact_phone',
-          name: 'object_contact_phone',
-        },
-        {
-          type: 'FTypeText',
-          label: 'Email',
-          col: 12,
-          id: 'object_contact_email',
-          name: 'object_contact_email',
-        },
-      ],
-      meta_object_responsible: [
-        {
-          type: 'FTypeText',
-          label: '',
-          icon: 'mdi-account',
-          col: 12,
-          id: 'object_resp',
-          name: 'object_resp',
-          remove: true,
-        },
-      ],
-      meta_object_pay: [
-        {
-          type: 'FTypePayGroup',
-          label: '',
-          icon: '',
-          col: 12,
-          id: 'object_pay_group',
-          name: 'object_pay_group',
-          remove: true,
-        },
-        {
-          type: 'FTypePayGroup',
-          label: '',
-          icon: '',
-          col: 12,
-          id: 'object_pay_group2',
-          name: 'object_pay_group2',
-          remove: true,
-        },
-        {
-          type: 'FTypePayGroup',
-          label: '',
-          icon: '',
-          col: 12,
-          id: 'object_pay_group',
-          name: 'object_pay_group',
-          remove: true,
-        },
-      ],
+        ],
+        meta_object_location: [
+          {
+            type: 'FTypeText',
+            label: 'Область, край',
+            col: 12,
+            id: 'object_region',
+            name: 'object_region',
+            validation: 'required',
+          },
+          {
+            type: 'FTypeText',
+            label: 'Город',
+            col: 12,
+            id: 'object_city',
+            name: 'object_city',
+            validation: 'required',
+          },
+          {
+            type: 'FTypeTextarea',
+            label: 'Предлагаемая схема проезда',
+            col: 12,
+            id: 'object_driving_directions',
+            name: 'object_driving_directions',
+          },
+        ],
+        meta_object_contact: [
+          [
+            {
+              type: 'FTypeText',
+              label: 'ФИО',
+              col: 12,
+              id: 'object_contact_fio',
+              name: 'object_contact_fio_0',
+              validation: 'required',
+            },
+            {
+              type: 'FTypeText',
+              label: 'Должность',
+              col: 12,
+              id: 'object_contact_post',
+              name: 'object_contact_post_0',
+              validation: 'required',
+            },
+            {
+              type: 'FTypeText',
+              label: 'Телефон',
+              col: 12,
+              id: 'object_contact_phone',
+              name: 'object_contact_phone_0',
+              validation: 'required|phone',
+            },
+            {
+              type: 'FTypeText',
+              label: 'Email',
+              col: 12,
+              id: 'object_contact_email',
+              name: 'object_contact_email_0',
+              validation: 'required|email',
+            },
+          ],
+        ],
+        meta_object_responsible: [
+          {
+            type: 'FTypeSelectUIID',
+            icon: 'mdi-account',
+            label: '',
+            col: 12,
+            id: 'object_resp',
+            name: 'object_resp_0',
+            remove: true,
+            params: {
+              options: [],
+              item_text: 'fullname',
+            },
+            parent_array: 'meta_object_responsible',
+            validation: 'required',
+          },
+        ],
+        meta_object_pay: [
+          {
+            type: 'FTypePayGroup',
+            label: '',
+            icon: '',
+            col: 12,
+            id: 'object_pay_group',
+            name: 'object_pay_group',
+            remove: true,
+            parent_array: 'meta_object_pay',
+            validation: 'required',
+          },
+        ],
+      },
       valid: true,
       name: '',
       nameRules: [
@@ -326,18 +335,20 @@ export default {
       menu1: false,
       menu2: false,
       addContactPersText: 'Добавить контактное лицо',
-
     }
   },
   computed: {
     computedDateFormatted() {
       return this.formatDate(this.date)
     },
-  },
-
-  watch: {
-    date(val) {
-      this.dateFormatted = this.formatDate(this.date)
+    objects() {
+      return this.$store.getters['objects/objects']
+    },
+    specializations() {
+      return this.$store.getters['specializations/specializations']
+    },
+    dispatchers() {
+      return this.$store.getters['dispatchers/dispatchers']
     },
   },
   methods: {
@@ -363,21 +374,69 @@ export default {
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
     },
     addResponsible() {
-      this.meta_object_responsible.push({
-        type: 'FTypeText',
-        label: '',
-        icon: 'mdi-account',
-        col: 12,
-        id: '',
-        name: '',
-        remove: true
-      });
+      let dispatchers = this.dispatchers;
+      this.meta.meta_object_responsible.push({
+          type: 'FTypeSelectUIID',
+          icon: 'mdi-account',
+          label: '',
+          col: 12,
+          id: 'object_resp',
+          name: 'object_resp_' + this.meta.meta_object_responsible.length,
+          remove: true,
+          params: {
+            options: dispatchers,
+            item_text: 'fullname',
+          },
+          parent_array: 'meta_object_responsible',
+          validation: 'required',
+        },
+      );
     },
-    removeItem(index) {
-      this.meta_object_responsible.splice(index, 1);
+    addFormPart() {
+      this.meta.meta_object_contact.push(
+        [
+          {
+            type: 'FTypeText',
+            label: 'ФИО',
+            col: 12,
+            id: 'object_contact_fio',
+            name: 'object_contact_fio_' + this.meta.meta_object_contact.length,
+            validation: 'required',
+          },
+          {
+            type: 'FTypeText',
+            label: 'Должность',
+            col: 12,
+            id: 'object_contact_post',
+            name: 'object_contact_post_' + this.meta.meta_object_contact.length,
+            validation: 'required',
+          },
+          {
+            type: 'FTypeText',
+            label: 'Телефон',
+            col: 12,
+            id: 'object_contact_phone',
+            name: 'object_contact_phone_' + this.meta.meta_object_contact.length,
+            validation: 'required|phone',
+          },
+          {
+            type: 'FTypeText',
+            label: 'Email',
+            col: 12,
+            id: 'object_contact_email',
+            name: 'object_contact_email_' + this.meta.meta_object_contact.length,
+            validation: 'required|email',
+          },
+        ],
+      );
+    },
+    removeItem(index, array) {
+      if (index != 0) {
+        this.meta[array].splice(index, 1);
+      }
     },
     addTypeWork() {
-      this.meta_object_pay.push({
+      this.meta.meta_object_pay.push({
         type: 'FTypePayGroup',
         label: '',
         icon: '',
@@ -385,6 +444,7 @@ export default {
         id: 'object_pay_group',
         name: 'object_pay_group',
         remove: true,
+        parent_array: 'meta_object_pay'
       });
     },
     nextFromButton() {
@@ -395,7 +455,35 @@ export default {
     prevFromButton() {
       this.tab -= 1;
     },
+    updateFiled(field, value) {
+      this.formValues[field] = value;
+    },
   },
+  created() {
+
+    this.meta.meta_object_name[0].params.options = this.objects;
+    this.meta.meta_object_info[1].params.options = this.specializations;
+    this.meta.meta_object_responsible[0].params.options = this.dispatchers;
+
+    this.meta.meta_object_name.map(f => {
+      Vue.set(this.formValues, f.name, null);
+    })
+    this.meta.meta_object_info.map(f => {
+      Vue.set(this.formValues, f.name, null);
+    })
+    this.meta.meta_object_location.map(f => {
+      Vue.set(this.formValues, f.name, null);
+    })
+    this.meta.meta_object_contact.map(subarray => subarray.map(f => {
+      Vue.set(this.formValues, f.name, null);
+    }));
+    this.meta.meta_object_responsible.map(f => {
+      Vue.set(this.formValues, f.name, null);
+    })
+    this.meta.meta_object_pay.map(f => {
+      Vue.set(this.formValues, f.name, null);
+    })
+  }
 }
 </script>
 

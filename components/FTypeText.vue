@@ -1,7 +1,7 @@
 <template>
   <div class="w-100">
     <v-text-field
-      :id="id"
+      :name="name"
       single-line
       outlined
       filled
@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  props: ['id', 'name', 'icon'],
+  props: ['name', 'icon'],
   data() {
     return {
       value: '',
@@ -48,8 +48,6 @@ export default {
   .v-text-field--enclosed .v-input__prepend-inner {
     margin-top: 10px;
   }
-
-
 }
 
 </style>
