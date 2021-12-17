@@ -127,7 +127,7 @@ export default {
       itemSort: ['Все', 'Активные',],
       page: 1,
       pageCount: 0,
-      itemsPerPage: 3,
+      itemsPerPage: 5,
       selected: [],
       avatarColor: '#EFCD4F',
       headers: [

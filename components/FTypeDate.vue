@@ -56,7 +56,7 @@ export default {
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
     },
     updateDate(){
-      this.$emit('input', this.dateFormatted);
+      this.$emit('input', this.date);
       this.menu = false;
     }
   },
