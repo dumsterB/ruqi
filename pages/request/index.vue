@@ -9,6 +9,8 @@
       >
         <v-select
           :items="objects"
+          v-model="selectObject"
+          label="Обьект"
           item-text="name"
           item-value="uuid"
           outlined
@@ -40,7 +42,7 @@
         </template>
 
         <template v-slot:item.pay="{ item }">
-          <span class="request-pay">{{ item.payment.value }} {{ item.payment.current }} / {{ item.period }}</span>
+          <span class="request-pay">{{ item.payment.value }} {{ item.payment.current }} / {{ item.payment.period }}</span>
         </template>
 
         <template v-slot:item.object="{ item }">
@@ -125,6 +127,7 @@ export default {
       title_create: true,
       title_page_create: 'create',
       itemSort: ['Все', 'Активные',],
+      selectObject: null,
       page: 1,
       pageCount: 0,
       itemsPerPage: 5,
@@ -133,13 +136,22 @@ export default {
       headers: [
         {text: 'Название', align: 'start', value: 'name',},
         {text: 'Оплата', value: 'pay'},
-        {text: 'Объект', value: 'object'},
+        {text: 'Объект', value: 'object',
+          filter: item => {
+            if (!this.selectObject) return true;
+            return item.uuid == this.selectObject;
+          },
+        },
         {text: 'Менеджер', value: 'manager'},
         {text: 'Срок', value: 'term'},
         {text: 'Заполнение', value: 'occupation'},
         {text: '', value: 'actions', sortable: false},
       ],
     }
+  },
+  created() {
+    this.selectObject = this.objects[0].uuid;
+    console.log(this.selectObject);
   },
   methods: {
     openRequest(id){

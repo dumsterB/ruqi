@@ -30,7 +30,7 @@ export default {
   },
   methods: {},
   created() {
-
+    this.select = this.params.options[0];
   }
 }
 </script>

@@ -23,6 +23,7 @@
                 Объект
               </div>
               <FormBuilder :meta="meta.meta_object_name" @updateFiled="updateFiled"/>
+              <div>{{ formValues.object_id}}</div>
             </div>
 
             <div class="form-part">
@@ -108,7 +109,18 @@
         </v-window>
       </v-form>
     </div>
+    <div class="wrapp-alert">
+      <v-alert
+        :value="alert"
+        type="success"
+        dismissible
+        transition="fade-transition">
+        Ваша заявка успешно создана.
+      </v-alert>
+    </div>
+
   </div>
+
 </template>
 
 <script>
@@ -334,6 +346,7 @@ export default {
       menu1: false,
       menu2: false,
       addContactPersText: 'Добавить контактное лицо',
+      alert: false
     }
   },
   computed: {
@@ -350,7 +363,7 @@ export default {
       return this.$store.getters['dispatchers/dispatchers']
     },
     postBody() {
-      let postBody = {
+      /*let postBody = {
         "name": "Требуются грузчики в Магнит",
         "description": "Подробное описание задачи.",
         "start_date": "2021-11-03",
@@ -393,18 +406,19 @@ export default {
             "requires_people": 40
           }
         ]
-      };
-      /*let postBody = {
+      };*/
+
+      let postBody = {
         "name": this.formValues.object_id,
         "description": this.formValues.object_desc,
-        "start_date": "2021-12-17",
-        "end_date": "2021-12-18",
-        "until_date": "2021-12-18",
-        "object": "89900f92-eff8-4989-9c06-968776fe1f34",
-        "specialization": "9209129f-52cb-42d2-aff7-b18525345c10",
-        "region": "Московская область",
-        "city": "Москва",
-        "schema": "test",
+        "start_date": this.formValues.object_start_date,
+        "end_date": this.formValues.object_end_date,
+        "until_date": this.formValues.object_end_date,
+        "object": this.formValues.object_name,
+        "specialization": this.formValues.object_cat,
+        "region": this.formValues.object_region,
+        "city": this.formValues.object_city,
+        "schema": this.formValues.object_driving_directions,
         "contacts": [
           {
             "fullname": "Иванов Иван Иванович",
@@ -420,6 +434,7 @@ export default {
           }
         ],
         "dispatchers": [
+          this.formValues.object_resp_0,
           "e19e332e-2db2-4830-8e62-252f3fca541e",
           "ce23e853-6405-46a7-bfc2-2f460efc7a79"
         ],
@@ -437,7 +452,7 @@ export default {
             "requires_people": 40
           }
         ]
-      }; */
+      };
       return postBody;
     },
   },
@@ -555,6 +570,7 @@ export default {
         })
           .then((response) => {
             console.log(response);
+            this.alert = true;
           })
           .catch((error) => {
             console.log(error);
@@ -601,5 +617,10 @@ export default {
 
 @import '../../assets/scss/colors';
 
+.wrapp-alert{
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
 
 </style>
