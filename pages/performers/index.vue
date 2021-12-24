@@ -55,20 +55,7 @@
           </template>
 
           <template v-slot:item.rating="{ item }">
-            <v-rating
-              color="#FFCB45"
-              empty-icon="mdi-star"
-              full-icon="mdi-star"
-              half-icon="mdi-star-half-full"
-              hover
-              half-increments
-              length="5"
-              size="14"
-              v-model="rating"
-            ></v-rating>
-            <span class="grey--text text--lighten-2 text-caption mr-2">
-              {{ rating }}
-            </span>
+            <Rating :rating="item.rating"/>
           </template>
 
           <template v-slot:item.address="{ item }">
@@ -92,7 +79,6 @@
           </template>
         </v-data-table>
       </div>
-
       <v-row no-gutters>
         <v-col
           cols="12"
@@ -132,55 +118,55 @@
 </template>
 
 <script>
-  import UserAvatar from "@/components/UserAvatar";
-  import Search from "@/components/Search";
-  export default {
-    components: {Search, UserAvatar},
-    async fetch({store}) {
-      if (store.getters['performers/performers'].length === 0) {
-        await store.dispatch('performers/fetch')
-      }
+import UserAvatar from "@/components/UserAvatar";
+import Search from "@/components/Search";
+export default {
+  components: {Search, UserAvatar},
+  async fetch({store}) {
+    if (store.getters['performers/performers'].length === 0) {
+      await store.dispatch('performers/fetch')
+    }
+  },
+  data: () => ({
+    title: 'Исполнители',
+    title_size: 'big',
+    tabs_list: [
+      'Активные', 'Архив',
+    ],
+    tab: null,
+    itemSort: ['По рейтингу', 'По дате',],
+    page: 1,
+    pageCount: 0,
+    itemsPerPage: 5,
+    selected: [],
+    avatarColor: '#36B368',
+    headers: [
+      {text: 'ФИО', align: 'start',  value: 'name',},
+      {text: 'Рейтинг', value: 'rating'},
+      {text: 'Адрес', value: 'address'},
+      {text: 'Средняя ставка', value: 'salary'},
+      {text: 'Зарегистрирован', value: 'reg'},
+      {text: '', value: 'actions', sortable: false},
+    ],
+    rating: 4.5,
+    temp_date: '26.06.1984',
+    avatarBorderRadius: 'rounded',
+    searchText: '',
+  }),
+  computed: {
+    performers() {
+      return this.$store.getters['performers/performers']
     },
-    data: () => ({
-      title: 'Исполнители',
-      title_size: 'big',
-      tabs_list: [
-        'Активные', 'Архив',
-      ],
-      tab: null,
-      itemSort: ['По рейтингу', 'По дате',],
-      page: 1,
-      pageCount: 0,
-      itemsPerPage: 5,
-      selected: [],
-      avatarColor: '#36B368',
-      headers: [
-        {text: 'ФИО', align: 'start',  value: 'name',},
-        {text: 'Рейтинг', value: 'rating'},
-        {text: 'Адрес', value: 'address'},
-        {text: 'Средняя ставка', value: 'salary'},
-        {text: 'Зарегистрирован', value: 'reg'},
-        {text: '', value: 'actions', sortable: false},
-      ],
-      rating: 4.5,
-      temp_date: '26.06.1984',
-      avatarBorderRadius: 'rounded',
-      searchText: '',
-    }),
-    computed: {
-      performers() {
-        return this.$store.getters['performers/performers']
-      },
+  },
+  methods: {
+    openPerformer(id){
+      this.$router.push('/performers/'+ id);
     },
-    methods: {
-      openPerformer(id){
-        this.$router.push('/performers/'+ id);
-      },
-      updateSearchText(value){
-        this.searchText = value;
-      }
+    updateSearchText(value){
+      this.searchText = value;
     }
   }
+}
 </script>
 
 <style lang="scss">

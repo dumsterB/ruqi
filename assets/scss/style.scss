@@ -21,7 +21,6 @@ body {
 }
 
 
-
 /* Headers */
 
 h1 {
@@ -36,6 +35,10 @@ h1.big {
 
 h1.large {
   font-size: 28px;
+}
+
+.wrap-composite-header h1.large {
+  margin: 0;
 }
 
 /* Fields style */
@@ -71,9 +74,10 @@ h1.large {
     }
   }
 
-  .v-text-field fieldset{
+  .v-text-field fieldset {
     border-radius: 10px;
   }
+
   .v-text-field fieldset,
   .v-text-field .v-input__control,
   .theme--light.v-text-field--outlined:not(.v-input--is-focused):not(.v-input--has-state) > .v-input__control > .v-input__slot fieldset,
@@ -100,6 +104,30 @@ h1.large {
 
   .theme--light.v-select .v-select__selections {
     color: $blue;
+  }
+
+  .theme--light.v-btn:hover::before,
+  .theme--light.v-btn.v-btn--icon:hover {
+    color: $blue;
+  }
+
+  .v-btn.v-btn--text {
+    border-radius: 8px;
+  }
+
+  .v-text-field--outlined .v-label {
+    top: 13px;
+  }
+
+  .v-text-field--outlined .v-label.v-label--active {
+    top: 18px;
+  }
+
+  .v-menu__content a{
+    text-decoration: none;
+    text-transform: uppercase;
+    color: $grey;
+    padding: 0 16px;
   }
 }
 
@@ -172,11 +200,20 @@ h1.large {
 }
 
 /* Table filter*/
-.ruqi{
+.ruqi {
 
-  .table-filter-row{
-    .v-input{
+  .table-filter-row {
+
+    align-items: center;
+    height: 56px;
+
+    .v-input {
       margin-right: 18px;
+    }
+
+    .v-input--selection-controls{
+      margin-top: 0;
+      padding-top: 0;
     }
   }
 }
@@ -282,8 +319,8 @@ h1.large {
   }
 
 
-  .pagination-page-num{
-    .v-text-field--outlined > .v-input__control > .v-input__slot{
+  .pagination-page-num {
+    .v-text-field--outlined > .v-input__control > .v-input__slot {
       width: 32px;
       height: 32px;
       padding: 2px !Important;
@@ -291,12 +328,12 @@ h1.large {
       min-height: 32px;
     }
 
-    fieldset{
+    fieldset {
       border-radius: 4px;
       padding: 0;
     }
 
-    .v-input input{
+    .v-input input {
       text-align: center;
     }
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header :content="title" :size="title_size" :isnew="false" :isback="true"/>
+    <Header :content="request_id.name" :size="title_size" :isnew="false" :isback="true"/>
     <v-tabs
       v-model="tab"
       class="form-tabs"
@@ -24,6 +24,7 @@
                   Объект
                 </div>
                 <FormBuilder :meta="meta.meta_object_name" @updateFiled="updateFiled"/>
+                <div>{{ formValues.object_id}}</div>
               </div>
               <div class="form-part">
                 <div class="form-part-title">
@@ -50,43 +51,43 @@
           <v-tab-item>
             <v-form ref="form_part_1" v-model="valid" lazy-validation>
               <div class="form-part min-padding">
-              <div class="form-part-title">
-                Виды работ и оплата
+                <div class="form-part-title">
+                  Виды работ и оплата
+                </div>
+                <div class="form-part-description">
+                  Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное
+                  расположение.
+                </div>
+                <v-row class="ma-0">
+                  <v-col
+                    cols="12"
+                    lg="5"
+                    class="pl-0 pb-0"
+                  >
+                    <div class="form-part-label">Наименование работ</div>
+
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    lg="5"
+                    class="pl-0 pb-0"
+                  >
+                    <div class="form-part-label">Стоимость</div>
+
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    lg="2"
+                    class="pl-0 pb-0"
+                  >
+                    <div class="form-part-label">Нужно человек</div>
+
+                  </v-col>
+                  <FormBuilder :meta="meta.meta_object_pay" @removeItem="removeItem" @updateFiled="updateFiled"/>
+                  <a href="#" @click.prevent="addTypeWork" class="add_link">Добавить вид работ</a>
+                </v-row>
+
               </div>
-              <div class="form-part-description">
-                Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное
-                расположение.
-              </div>
-              <v-row class="ma-0">
-                <v-col
-                  cols="12"
-                  lg="5"
-                  class="pl-0 pb-0"
-                >
-                  <div class="form-part-label">Наименование работ</div>
-
-                </v-col>
-                <v-col
-                  cols="12"
-                  lg="5"
-                  class="pl-0 pb-0"
-                >
-                  <div class="form-part-label">Стоимость</div>
-
-                </v-col>
-                <v-col
-                  cols="12"
-                  lg="2"
-                  class="pl-0 pb-0"
-                >
-                  <div class="form-part-label">Нужно человек</div>
-
-                </v-col>
-                <FormBuilder :meta="meta.meta_object_pay" @removeItem="removeItem" @updateFiled="updateFiled"/>
-                <a href="#" @click.prevent="addTypeWork" class="add_link">Добавить вид работ</a>
-              </v-row>
-
-            </div>
             </v-form>
           </v-tab-item>
           <v-tab-item>
@@ -146,10 +147,13 @@ export default {
       await store.dispatch('dispatchers/fetch')
     }
   },
+  /*async asyncData({ store, params }) {
+    await store.dispatch("request_id/fetchRequestId", 'ab4309a6-4f29-4ee5-aaf7-6e2becb7f527');
+  },*/
+
   data() {
     return {
       formValues: {},
-      title: 'Создание новой заявки',
       title_size: 'large',
       title_create: false,
       title_page_create: '',
@@ -161,9 +165,9 @@ export default {
         'Указать стоимость работ',
         'указать контактных лиц',
         'Добавить ответственных',
-        'опубликовать заявку'
+        'Сохранить'
       ],
-      meta: {
+      /* meta: {
         meta_object_name: [
           {
             type: 'FTypeSelectUIID',
@@ -186,6 +190,9 @@ export default {
             id: 'object_id',
             name: 'object_id',
             validation: ['required'],
+            params: {
+              value: ''
+            },
           },
           {
             type: 'FTypeSelectUIID',
@@ -196,6 +203,7 @@ export default {
             params: {
               options: [],
               item_text: 'name',
+              value: ''
             },
             validation: 'required',
           },
@@ -206,6 +214,9 @@ export default {
             id: 'object_start_date',
             name: 'object_start_date',
             validation: 'required',
+            params: {
+              value: ''
+            },
           },
           {
             type: 'FTypeDate',
@@ -214,6 +225,9 @@ export default {
             id: 'object_end_date',
             name: 'object_end_date',
             validation: 'required',
+            params: {
+              value: ''
+            },
           },
           {
             type: 'FTypeSelect',
@@ -226,6 +240,7 @@ export default {
                 'Дневная',
                 'Ночная',
               ],
+              value: ''
             },
           },
           {
@@ -234,6 +249,9 @@ export default {
             col: 12,
             id: 'object_desc',
             name: 'object_desc',
+            params: {
+              value: ''
+            },
           },
 
         ],
@@ -328,7 +346,7 @@ export default {
             validation: [],
           },
         ],
-      },
+      },*/
       valid: true,
       select: null,
       addContactPersText: 'Добавить контактное лицо',
@@ -337,6 +355,9 @@ export default {
     }
   },
   computed: {
+    request_id() {
+      return this.$store.getters['request_id/request_id']
+    },
     objects() {
       return this.$store.getters['objects/objects']
     },
@@ -407,7 +428,7 @@ export default {
       let dispatchers = [];
       for (let i = 0; i < this.meta.meta_object_responsible.length; i++) {
         dispatchers.push(
-           this.formValues['object_resp_0'+i]
+          this.formValues['object_resp_0'+i]
         )
       }
       dispatchers.push(
@@ -445,12 +466,206 @@ export default {
       };
       return postBody;
     },
+    meta(){
+       let meta = {
+        meta_object_name: [
+          {
+            type: 'FTypeSelectUIID',
+            label: 'Наименование объекта',
+            col: 12,
+            id: 'object_name',
+            name: 'object_name',
+            params: {
+              options: [],
+              item_text: 'name',
+            },
+            validation: 'required'
+          },
+        ],
+          meta_object_info: [
+          {
+            type: 'FTypeText',
+            label: 'Название заявки',
+            col: 12,
+            id: 'object_id',
+            name: 'object_id',
+            validation: ['required'],
+            params: {
+              value: this.request_id.name
+            },
+          },
+          {
+            type: 'FTypeSelectUIID',
+            label: 'Категория',
+            col: 12,
+            id: 'object_cat',
+            name: 'object_cat',
+            params: {
+              options: [],
+              item_text: 'name',
+              value: ''
+            },
+            validation: 'required',
+          },
+          {
+            type: 'FTypeDate',
+            label: 'Начало работ',
+            col: 4,
+            id: 'object_start_date',
+            name: 'object_start_date',
+            validation: 'required',
+            params: {
+              value: ''
+            },
+          },
+          {
+            type: 'FTypeDate',
+            label: 'Окончание работ',
+            col: 4,
+            id: 'object_end_date',
+            name: 'object_end_date',
+            validation: 'required',
+            params: {
+              value: ''
+            },
+          },
+          {
+            type: 'FTypeSelect',
+            label: 'Тип смены',
+            col: 12,
+            id: 'object_work_shift',
+            name: 'object_work_shift',
+            params: {
+              options: [
+                'Дневная',
+                'Ночная',
+              ],
+              value: ''
+            },
+          },
+          {
+            type: 'FTypeTextarea',
+            label: 'Описание',
+            col: 12,
+            id: 'object_desc',
+            name: 'object_desc',
+            params: {
+              value: ''
+            },
+          },
+
+        ],
+          meta_object_location: [
+          {
+            type: 'FTypeText',
+            label: 'Область, край',
+            col: 12,
+            id: 'object_region',
+            name: 'object_region',
+            validation: ['required'],
+            params: {
+              value: this.request_id.region
+            },
+
+          },
+          {
+            type: 'FTypeText',
+            label: 'Город',
+            col: 12,
+            id: 'object_city',
+            name: 'object_city',
+            validation: ['required'],
+            params: {
+              value: this.request_id.city
+            },
+          },
+          {
+            type: 'FTypeTextarea',
+            label: 'Предлагаемая схема проезда',
+            col: 12,
+            id: 'object_driving_directions',
+            name: 'object_driving_directions',
+            params: {
+              value: this.request_id.region
+            },
+          },
+        ],
+          meta_object_contact: [
+          [
+            {
+              type: 'FTypeText',
+              label: 'ФИО',
+              col: 12,
+              id: 'object_contact_fio',
+              name: 'object_contact_fio_0',
+              validation: ['required'],
+            },
+            {
+              type: 'FTypeText',
+              label: 'Должность',
+              col: 12,
+              id: 'object_contact_post',
+              name: 'object_contact_post_0',
+              validation: ['required'],
+            },
+            {
+              type: 'FTypeText',
+              label: 'Телефон',
+              col: 12,
+              id: 'object_contact_phone',
+              name: 'object_contact_phone_0',
+              validation: ['required' ,'phone'],
+            },
+            {
+              type: 'FTypeText',
+              label: 'Email',
+              col: 12,
+              id: 'object_contact_email',
+              name: 'object_contact_email_0',
+              validation: ['required' ,'email'],
+            },
+          ],
+        ],
+          meta_object_responsible: [
+          {
+            type: 'FTypeSelectUIID',
+            icon: 'mdi-account',
+            label: '',
+            col: 12,
+            id: 'object_resp',
+            name: 'object_resp_0',
+            remove: true,
+            params: {
+              options: [],
+              item_text: 'fullname',
+            },
+            parent_array: 'meta_object_responsible',
+            validation: 'required',
+          },
+        ],
+          meta_object_pay: [
+          {
+            type: 'FTypePayGroup',
+            label: '',
+            icon: '',
+            col: 12,
+            id: 'object_pay_group',
+            name: 'object_pay_group',
+            remove: true,
+            parent_array: 'meta_object_pay',
+            validation: [],
+          },
+        ],
+      };
+       return meta;
+    }
   },
   methods: {
     ...mapActions('objects', ['fetchObjects',]),
     ...mapActions('specializations', ['fetchSpecializations',]),
     ...mapActions('dispatchers', ['fetchDispatchers',]),
     ...mapActions('requests', ['createRequest',]),
+    ...mapActions('request_id', ['fetchRequestId',]),
 
     addResponsible() {
       let dispatchers = this.dispatchers;
@@ -533,7 +748,7 @@ export default {
 
         this.$nextTick(() => {
           if (this.valid){
-           this.tab += 1;
+            this.tab += 1;
           }
           else{
             let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
@@ -554,13 +769,20 @@ export default {
       this.formValues[field] = value;
     },
   },
-  created() {
+  async created() {
+    await this.fetchRequestId(this.$route.params.id);
 
     this.meta.meta_object_name[0].params.options = this.objects;
     this.meta.meta_object_info[1].params.options = this.specializations;
     this.meta.meta_object_responsible[0].params.options = this.dispatchers;
+    this.meta.meta_object_info[0].params.value = this.request_id.name;
 
-    this.meta.meta_object_name.map(f => {
+
+  },
+  async mounted() {
+
+
+    /*this.meta.meta_object_name.map(f => {
       Vue.set(this.formValues, f.name, null);
     })
     this.meta.meta_object_info.map(f => {
@@ -577,14 +799,14 @@ export default {
     })
     this.meta.meta_object_pay.map(f => {
       Vue.set(this.formValues, f.name, null);
-    })
+    })*/
   }
 }
 </script>
 
 <style lang="scss" scoped>
 
-@import '../../assets/scss/colors';
+@import '../../../assets/scss/colors';
 
 .wrapp-alert{
   position: fixed;

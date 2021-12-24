@@ -8,17 +8,30 @@
       :prepend-inner-icon="icon_code"
       v-model="value"
       @input="$emit('input', value)"
-      hide-details="true"
+      hide-details="auto"
+      :rules="validation_array"
+      value="fhsdkfhbbhskj"
     ></v-text-field>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['name', 'icon'],
+  props: ['name', 'icon', 'validation', 'params'],
   data() {
     return {
       value: '',
+      rules: {
+        required: value => !!value || 'Заполните поле',
+        email: value => {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          return pattern.test(value) || 'Введите корректный email'
+        },
+        phone: value => {
+          const pattern = /^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$/;
+          return pattern.test(value) || 'Введите корректный телефон'
+        },
+      },
     }
   },
   computed: {
@@ -30,12 +43,26 @@ export default {
         return null;
       }
     },
+    validation_array(){
+      let validation_array = [];
+      if( this.validation ){
+        for( let i = 0; i < this.validation.length; i++){
+          validation_array.push(this.rules[this.validation[i]]);
+        }
+      }
+      return validation_array;
+    },
   },
   methods: {
 
-
   },
   created() {
+    if (this.params && this.params.value){
+      this.value = this.params.value;
+    }
+  },
+  mounted() {
+
   }
 }
 </script>

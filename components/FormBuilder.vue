@@ -10,6 +10,7 @@
             :name="filed.name"
             :icon="filed.icon"
             :params="filed.params"
+            :validation="filed.validation"
             @input="updateFiled(filed.name, $event)"
           />
           <a href="#" v-if="filed.remove" @click.prevent="removeItem(index, filed.parent_array)" class="remove-item">

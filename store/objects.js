@@ -8,9 +8,9 @@ export const getters = {
 
 
 export const actions = {
-  async fetch({commit}) {
+  async fetchObjects({commit}) {
 
-    const objects = await this.$axios.get('https://cdn.ruqi.maxber.ru/api/v1/dictionary/objects', {
+    const objects = await this.$axios.get('https://cdn.ruqi.maxber.ru/api/v1/manager/objects', {
       headers: {
         "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
       }

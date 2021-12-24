@@ -65,9 +65,30 @@
         </template>
 
         <template v-slot:item.actions="{ item }">
-          <v-btn icon>
-            <v-icon>mdi-dots-vertical</v-icon>
-          </v-btn>
+          <v-menu
+            bottom
+            rounded="10"
+            offset-y
+            nudge-bottom="10"
+          >
+            <template v-slot:activator="{ on }">
+                <v-btn icon
+                       v-on="on">
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
+            </template>
+            <v-card>
+              <v-list-item-content class="justify-start">
+                <div class="mx-auto text-left">
+                  <nuxt-link :to="'/request/'+ item.uuid +'/edit/'">
+                    <span>Редактировать</span>
+                  </nuxt-link>
+                  <v-divider class="my-3"></v-divider>
+                  <a href="#" @click.prevent="removeRequest(item.uuid)">Удалить</a>
+                </div>
+              </v-list-item-content>
+            </v-card>
+          </v-menu>
         </template>
       </v-data-table>
     </div>
@@ -110,16 +131,9 @@
 
 <script>
 
-export default {
-  async fetch({store}) {
-    if (store.getters['requests/requests'].length === 0) {
-      await store.dispatch('requests/fetch')
-    }
-    if (store.getters['objects/objects'].length === 0) {
-      await store.dispatch('objects/fetch')
-    }
-  },
+import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 
+export default {
   data() {
     return {
       title: 'Заяки',
@@ -150,10 +164,14 @@ export default {
     }
   },
   created() {
-    this.selectObject = this.objects[0].uuid;
-    console.log(this.selectObject);
+    /*this.selectObject = this.objects[0].uuid;
+    console.log(this.selectObject);*/
   },
   methods: {
+    ...mapActions('requests', ['fetch',]),
+    ...mapActions('requests', ['removeRequest',]),
+    ...mapActions('objects', ['fetchObjects',]),
+
     openRequest(id){
       this.$router.push('/request/'+ id);
     },
@@ -173,6 +191,15 @@ export default {
       }
     }
   },
+  async mounted() {
+    //this.$store.dispatch('requests/fetch');
+
+    this.fetch();
+    this.fetchObjects();
+
+   // this.selectObject = this.objects[0].uuid;
+   // console.log(this.selectObject);
+  }
 }
 </script>
 
