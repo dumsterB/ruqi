@@ -11,7 +11,7 @@
       </a>
       {{content}}
         <a href="#" @click.prevent="openCreatePage()"  v-if="isnew" class="header-create">
-          <img src="img/bt_plus.svg" alt="Создать">
+          <img src="/img/bt_plus.svg" alt="Создать">
         </a>
     </h1>
   </div>

@@ -5,8 +5,8 @@
       single-line
       outlined
       filled
-      v-model="value"
-      @input="$emit('input', value)"
+      v-model="new_value"
+      @input="$emit('input', new_value)"
       hide-details="true"
     ></v-textarea>
 
@@ -15,14 +15,16 @@
 
 <script>
 export default {
-  props: ['id', 'name',],
+  props: ['id', 'name', 'params', 'value'],
   data() {
     return {
-      value: '',
+      new_value: '',
     }
   },
-  methods: {
-
+  watch: {
+    value: function () {
+      this.new_value = this.value;
+    },
   }
 }
 </script>

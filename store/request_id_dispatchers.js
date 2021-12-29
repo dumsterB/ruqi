@@ -1,10 +1,14 @@
 export const state = () => ({
-  request_id_dispatchers: []
+  request_id_dispatchers: [],
+  request_id_history: [],
 })
 
 export const getters = {
   request_id_dispatchers(state) {
     return state.request_id_dispatchers;
+  },
+  request_id_history(state) {
+    return state.request_id_history;
   },
 }
 
@@ -42,10 +46,21 @@ export const actions = {
     });
     commit('setRequestIdDispatchers', request_id_dispatchers);
   },
+  async fetchRequestIdHistory({commit}, requestId) {
+    const request_id_history= await this.$axios.get('https://cdn.ruqi.maxber.ru/api/v1/manager/tasks/'+requestId+'/history', {
+      headers: {
+        "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
+      }
+    });
+    commit('setRequestIdHistory', request_id_history);
+  },
 }
 
 export const mutations = {
   setRequestIdDispatchers(state, request_id_dispatchers) {
     state.request_id_dispatchers = request_id_dispatchers.data.data;
+  },
+  setRequestIdHistory(state, request_id_history) {
+    state.request_id_history = request_id_history.data.data;
   },
 }

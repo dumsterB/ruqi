@@ -1,12 +1,20 @@
 import Vue from "vue";
 
 export const state = () => ({
-  requests: []
+  requests: [],
+  response: {
+    status: false,
+    text: '',
+    type: 'error'
+  },
 })
 
 export const getters = {
   requests(state) {
     return state.requests;
+  },
+  requestSuccess(state) {
+    return state.response;
   },
 }
 
@@ -33,10 +41,17 @@ export const actions = {
       .then((response) => {
         console.log(response);
         dispatch('fetch');
-       // Vue.set(this.alert, true);
+        commit('setSuccess', {type: 'success', text: 'Ваша заявка успешно создана'});
+        setTimeout(function() {
+          commit('removeSuccess');
+        }, 3000);
 
       })
       .catch((error) => {
+        commit('setSuccess', {type: 'error', text: 'Заполните поля заявки'});
+        setTimeout(function() {
+          commit('removeSuccess');
+        }, 3000);
         console.log(error);
       });
 
@@ -58,6 +73,30 @@ export const actions = {
       });
 
   },
+  async putRequest({commit, dispatch}, {uuid, body}) {
+    await this.$axios.put('https://cdn.ruqi.maxber.ru/api/v1/manager/tasks/'+uuid,
+      body,
+      {
+        headers: {
+          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
+          'Content-Type': 'application/json',
+        },
+
+      })
+      .then((response) => {
+        console.log(response);
+        dispatch('fetch');
+        commit('setSuccess', {type: 'success', text: 'Ваша заявка успешно обновлена'});
+        setTimeout(function() {
+          commit('removeSuccess');
+        }, 3000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+
+  },
 }
 
 export const mutations = {
@@ -67,6 +106,15 @@ export const mutations = {
   createRequest(state, newRequest) {
     state.requests.data.data.unshift(newRequest);
   },
+  setSuccess(state, { type, text }){
+    console.log(type, text);
+    state.response.status = true;
+    state.response.type = type;
+    state.response.text = text;
+  },
+  removeSuccess(state){
+    state.success = false;
+  }
 }
 
 

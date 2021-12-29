@@ -7,6 +7,7 @@ body {
 .ruqi {
   padding: 0 24px 48px 44px;
   letter-spacing: normal;
+  font-size: 16px;
 }
 
 
@@ -129,6 +130,11 @@ h1.large {
     color: $grey;
     padding: 0 16px;
   }
+
+  .v-subheader{
+    font-size: 16px;
+  }
+
 }
 
 /* Tabs */
@@ -250,6 +256,7 @@ h1.large {
         border-top: 1px solid $table-border-color;
         border-bottom: 1px solid $table-border-color;
         transition: box-shadow 0.2s ease-in;
+        font-size: 16px;
       }
 
       td:first-child {
@@ -401,6 +408,11 @@ h1.large {
 
   .add_link:hover {
     text-decoration: underline;
+  }
+
+  .remove-item {
+    margin-left: 16px;
+    margin-top: 14px;
   }
 
 }

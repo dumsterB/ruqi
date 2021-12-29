@@ -21,7 +21,7 @@
 
 <script>
 export default {
-  props: ['id', 'name', 'icon', 'params', 'item_text'],
+  props: ['id', 'name', 'icon', 'params', 'item_text', 'value'],
   computed: {
     options() {
       return this.params.options
@@ -43,9 +43,10 @@ export default {
       select: '',
     }
   },
-  methods: {},
-  created() {
-    this.select = this.params.uuid;
+  watch: {
+    value: function () {
+      this.select = this.value;
+    },
   }
 }
 </script>

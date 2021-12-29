@@ -82,7 +82,20 @@
                   <div class="form-part-label">Нужно человек</div>
 
                 </v-col>
-                <FormBuilder :meta="meta.meta_object_pay" @removeItem="removeItem" @updateFiled="updateFiled"/>
+
+                <v-row class="d-flex w-100">
+                  <v-col cols="12" :lg="item.col"
+                         v-for="(item, index) in meta.meta_object_pay" :key="index">
+                    <div class="form-part-label" v-if="item.label">{{ item.label }}</div>
+                    <div class="d-flex w-100">
+                      <FormBuilder :meta="meta.meta_object_pay[index]" @removeItem="removeItem" @updateFiled="updateFiled"/>
+                      <a href="#" @click.prevent="removeItem(index, 'meta_object_pay')" class="remove-item">
+                        <img src="/img/ico_close.svg" alt="Удалить">
+                      </a>
+                    </div>
+                  </v-col>
+                </v-row>
+
                 <a href="#" @click.prevent="addTypeWork" class="add_link">Добавить вид работ</a>
               </v-row>
 
@@ -117,11 +130,11 @@
     </div>
     <div class="wrapp-alert">
       <v-alert
-        :value="alert"
-        type="success"
+        :value="requestSuccess.status"
+        :type="requestSuccess.type"
         dismissible
         transition="fade-transition">
-        Ваша заявка успешно создана.
+        {{requestSuccess.text}}
       </v-alert>
     </div>
 
@@ -175,7 +188,8 @@ export default {
               options: [],
               item_text: 'name',
             },
-            validation: 'required'
+            validation: 'required',
+            value: ''
           },
         ],
         meta_object_info: [
@@ -186,6 +200,7 @@ export default {
             id: 'object_id',
             name: 'object_id',
             validation: ['required'],
+            value: ''
           },
           {
             type: 'FTypeSelectUIID',
@@ -198,6 +213,7 @@ export default {
               item_text: 'name',
             },
             validation: 'required',
+            value: ''
           },
           {
             type: 'FTypeDate',
@@ -206,6 +222,7 @@ export default {
             id: 'object_start_date',
             name: 'object_start_date',
             validation: 'required',
+            value: ''
           },
           {
             type: 'FTypeDate',
@@ -214,6 +231,7 @@ export default {
             id: 'object_end_date',
             name: 'object_end_date',
             validation: 'required',
+            value: ''
           },
           {
             type: 'FTypeSelect',
@@ -227,6 +245,7 @@ export default {
                 'Ночная',
               ],
             },
+            value: ''
           },
           {
             type: 'FTypeTextarea',
@@ -234,6 +253,7 @@ export default {
             col: 12,
             id: 'object_desc',
             name: 'object_desc',
+            value: ''
           },
 
         ],
@@ -245,6 +265,7 @@ export default {
             id: 'object_region',
             name: 'object_region',
             validation: ['required'],
+            value: ''
           },
           {
             type: 'FTypeText',
@@ -253,6 +274,7 @@ export default {
             id: 'object_city',
             name: 'object_city',
             validation: ['required'],
+            value: ''
           },
           {
             type: 'FTypeTextarea',
@@ -260,6 +282,7 @@ export default {
             col: 12,
             id: 'object_driving_directions',
             name: 'object_driving_directions',
+            value: ''
           },
         ],
         meta_object_contact: [
@@ -271,6 +294,7 @@ export default {
               id: 'object_contact_fio',
               name: 'object_contact_fio_0',
               validation: ['required'],
+              value: ''
             },
             {
               type: 'FTypeText',
@@ -279,6 +303,7 @@ export default {
               id: 'object_contact_post',
               name: 'object_contact_post_0',
               validation: ['required'],
+              value: ''
             },
             {
               type: 'FTypeText',
@@ -287,6 +312,7 @@ export default {
               id: 'object_contact_phone',
               name: 'object_contact_phone_0',
               validation: ['required' ,'phone'],
+              value: ''
             },
             {
               type: 'FTypeText',
@@ -295,6 +321,7 @@ export default {
               id: 'object_contact_email',
               name: 'object_contact_email_0',
               validation: ['required' ,'email'],
+              value: ''
             },
           ],
         ],
@@ -313,26 +340,61 @@ export default {
             },
             parent_array: 'meta_object_responsible',
             validation: 'required',
+            value: '',
           },
         ],
         meta_object_pay: [
-          {
-            type: 'FTypePayGroup',
-            label: '',
-            icon: '',
-            col: 12,
-            id: 'object_pay_group',
-            name: 'object_pay_group',
-            remove: true,
-            parent_array: 'meta_object_pay',
-            validation: [],
-          },
+          [
+            {
+              type: 'FTypeText',
+              label: '',
+              icon: '',
+              col: 5,
+              id: 'object_pay_title_0',
+              name: 'object_pay_title_0',
+              remove: false,
+              value: '',
+            },
+            {
+              type: 'FTypeText',
+              label: '',
+              icon: '',
+              col: 2,
+              id: 'object_pay_salary_0',
+              name: 'object_pay_salary_0',
+              remove: false,
+              value: '',
+            },
+            {
+              type: 'FTypeSelect',
+              label: '',
+              col: 3,
+              id: 'object_pay_time_0',
+              name: 'object_pay_time_0',
+              params: {
+                options: [
+                  'за смену',
+                  'за час',
+                ],
+              },
+              value: '',
+            },
+            {
+              type: 'FTypeText',
+              label: '',
+              icon: '',
+              col: 2,
+              id: 'object_pay_cw_0',
+              name: 'object_pay_cw_0',
+              remove: false,
+              value: '',
+            },
+          ],
         ],
       },
       valid: true,
       select: null,
       addContactPersText: 'Добавить контактное лицо',
-      alert: false,
       formHasErrors: false,
     }
   },
@@ -407,13 +469,25 @@ export default {
       let dispatchers = [];
       for (let i = 0; i < this.meta.meta_object_responsible.length; i++) {
         dispatchers.push(
-           this.formValues['object_resp_0'+i]
+           this.formValues['object_resp_'+i]
         )
       }
       dispatchers.push(
         "e19e332e-2db2-4830-8e62-252f3fca541e",
         "ce23e853-6405-46a7-bfc2-2f460efc7a79"
       )
+
+      let works = [];
+      for (let i = 0; i < this.meta.meta_object_pay.length; i++) {
+        works.push(
+          {
+            "name": this.formValues['object_pay_title_'+i],
+            "payment": this.formValues['object_pay_salary_'+i],
+            "period": this.formValues['object_pay_time_'+i],
+            "requires_people": this.formValues['object_pay_cw_'+i],
+          }
+        )
+      }
 
       let postBody = {
         "name": this.formValues.object_id,
@@ -428,22 +502,13 @@ export default {
         "schema": this.formValues.object_driving_directions,
         "contacts": contacts,
         "dispatchers": dispatchers,
-        "works": [
-          {
-            "name": "Кладовщик",
-            "payment": 400,
-            "currency": "RUB",
-            "requires_people": 20
-          },
-          {
-            "name": "Грузчик",
-            "payment": 300,
-            "currency": "RUB",
-            "requires_people": 40
-          }
-        ]
+        "works": works
       };
+      console.log(postBody);
       return postBody;
+    },
+    requestSuccess() {
+      return this.$store.getters['requests/requestSuccess']
     },
   },
   methods: {
@@ -515,16 +580,50 @@ export default {
       }
     },
     addTypeWork() {
-      this.meta.meta_object_pay.push({
-        type: 'FTypePayGroup',
-        label: '',
-        icon: '',
-        col: 12,
-        id: 'object_pay_group',
-        name: 'object_pay_group',
-        remove: true,
-        parent_array: 'meta_object_pay'
-      });
+      this.meta.meta_object_pay.push(
+        [
+          {
+            type: 'FTypeText',
+            label: '',
+            icon: '',
+            col: 5,
+            id: 'object_pay_title_' + this.meta.meta_object_pay.length,
+            name: 'object_pay_title_' + this.meta.meta_object_pay.length,
+            remove: false,
+          },
+          {
+            type: 'FTypeText',
+            label: '',
+            icon: '',
+            col: 2,
+            id: 'object_pay_time',
+            name: 'object_pay_salary_' + this.meta.meta_object_pay.length,
+            remove: false,
+          },
+          {
+            type: 'FTypeSelect',
+            label: '',
+            col: 3,
+            id: 'object_pay_time',
+            name: 'object_pay_time_' + this.meta.meta_object_pay.length,
+            params: {
+              options: [
+                'за смену',
+                'за час',
+              ],
+            }
+          },
+          {
+            type: 'FTypeText',
+            label: '',
+            icon: '',
+            col: 2,
+            id: 'object_pay_cw',
+            name: 'object_pay_cw_' + this.meta.meta_object_pay.length,
+            remove: false,
+          },
+        ],
+      );
     },
     nextFromButton() {
       if (this.tab < this.tabs_list.length - 1) {
@@ -552,6 +651,7 @@ export default {
     },
     updateFiled(field, value) {
       this.formValues[field] = value;
+      console.log(field, value);
     },
   },
   created() {
@@ -560,7 +660,7 @@ export default {
     this.meta.meta_object_info[1].params.options = this.specializations;
     this.meta.meta_object_responsible[0].params.options = this.dispatchers;
 
-    this.meta.meta_object_name.map(f => {
+    /*this.meta.meta_object_name.map(f => {
       Vue.set(this.formValues, f.name, null);
     })
     this.meta.meta_object_info.map(f => {
@@ -577,7 +677,7 @@ export default {
     })
     this.meta.meta_object_pay.map(f => {
       Vue.set(this.formValues, f.name, null);
-    })
+    })*/
   }
 }
 </script>
@@ -590,6 +690,11 @@ export default {
   position: fixed;
   width: 100%;
   bottom: 0;
+  left: 0;
+
+  .v-alert{
+    margin: 0;
+  }
 }
 
 </style>

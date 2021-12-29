@@ -23,7 +23,6 @@
     <div class="table-list-style">
       <v-data-table
         v-model="selected"
-        show-select
         :headers="headers"
         :items="requests"
         class="elevation-0"
@@ -93,16 +92,16 @@
       </v-data-table>
     </div>
 
-    <v-row no-gutters>
+    <v-row no-gutters v-if="pageCount > 1">
       <v-col
         cols="12"
         sm="2"
       >
         <v-row class="align-center">
-          <v-col cols="8" class="pa-0">
+          <v-col cols="9" class="pa-0">
             <v-subheader>Строк на странице:</v-subheader>
           </v-col>
-          <v-col cols="4" class="pa-0">
+          <v-col cols="3" class="pa-0">
             <div class="pagination-page-num">
               <v-text-field
                 :value="itemsPerPage"
@@ -136,7 +135,7 @@ import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 export default {
   data() {
     return {
-      title: 'Заяки',
+      title: 'Заявки',
       title_size: 'big',
       title_create: true,
       title_page_create: 'create',
@@ -183,6 +182,9 @@ export default {
     objects() {
       return this.$store.getters['objects/objects']
     },
+    requestSuccess() {
+      return this.$store.getters['requests/requestSuccess']
+    },
     itemsPerPageTable() {
       if (this.itemsPerPage) {
         return parseInt(this.itemsPerPage, 10)
@@ -192,13 +194,8 @@ export default {
     }
   },
   async mounted() {
-    //this.$store.dispatch('requests/fetch');
-
     this.fetch();
     this.fetchObjects();
-
-   // this.selectObject = this.objects[0].uuid;
-   // console.log(this.selectObject);
   }
 }
 </script>

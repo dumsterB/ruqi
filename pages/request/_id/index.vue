@@ -3,7 +3,7 @@
 
     <div class="wrap-composite-header">
       <Header :content="request_id.name" :size="title_size" :isnew="false" :isback="true"/>
-      <div class="composite-header-progress">
+      <div class="composite-header-progress" v-if="request_id.completion">
         {{ request_id.completion.completed }} / {{ request_id.completion.total }}
       </div>
       <v-btn icon>
@@ -13,7 +13,7 @@
 
     <div class="wrap-composite-details">
       <div class="num">№ 23536223</div>
-      <div class="date">17.08.2021</div>
+      <div class="date" v-if="request_id.start_date">{{ request_id.start_date.substring(0, 10) }}</div>
       <div class="views">
         <v-icon color="#7A91A9">mdi-eye-outline</v-icon>
         159 (+10)
@@ -33,8 +33,6 @@
               :items="selectStatusOptions"
               item-text="title"
               item-value="uuid"
-              :rules="[v => !!v || 'Item is required']"
-              required
               solo
               hide-details="true"
               return-object
@@ -62,11 +60,17 @@
               </v-icon>
               табель рабочего времени
             </v-btn>
-            <component
-              is="FTypeSelectUIID"
-              name="select_request_action"
-              :params="selectAction.params"
-            />
+            <v-select
+              v-model="activeAction"
+              label="Действия"
+              :items="selectAction"
+              item-text="title"
+              item-value="uuid"
+              hide-details="true"
+              single-line
+              outlined
+              filled
+            ></v-select>
           </v-col>
         </v-row>
       </v-container>
@@ -84,13 +88,13 @@
     </v-tabs>
     <v-window v-model="tabContent">
       <v-tab-item>
-        <v-row no-gutters class="table-filter-row">
+        <v-row v-show="tab == 0" no-gutters class="table-filter-row">
           <v-col
             cols="12"
             sm="2"
           >
             <v-select
-              :items="itemSort"
+              :items="itemSortStatus"
               label="Статус"
               outlined
               value="Все"
@@ -118,8 +122,89 @@
           </v-col>
         </v-row>
 
+        <v-row v-show="tab == 1" no-gutters class="table-filter-row">
+          <v-col
+            cols="12"
+            sm="10"
+            class="d-flex"
+          >
+            <div class="bt-table-action">
+              <v-btn
+                height="40"
+                fab
+                @click=""
+                color="#F6FBFF"
+              >
+                <v-icon color="#0082DE">
+                  mdi-check-circle-outline
+                </v-icon>
+              </v-btn>
+              <div class="text">
+                выбрать все
+              </div>
+            </div>
+
+            <div class="bt-table-action">
+              <v-btn
+                height="40"
+                fab
+                @click=""
+                color="#F6FBFF"
+              >
+                <v-icon color="#0082DE">
+                  mdi-content-save-outline
+                </v-icon>
+              </v-btn>
+              <div class="text">
+                сохранить список
+              </div>
+            </div>
+          </v-col>
+
+          <v-col
+            cols="12"
+            sm="2"
+            class="d-flex justify-end"
+          >
+            <v-select
+              :items="itemSort"
+              label="Сортировка"
+              outlined
+              value="Все"
+              hide-details="true"
+            ></v-select>
+          </v-col>
+        </v-row>
+
         <AddFormPart v-show="tab == 1" text="Добавить исполнителей" @addFormPart="addArtist"/>
 
+        <v-row no-gutters class="dispatchers-header">
+          <v-col
+            cols="12"
+            sm="10"
+          >
+            <div class="header">
+              {{ request_id_dispatchers.length }} {{ request_id_dispatchers_header }}
+            </div>
+          </v-col>
+
+          <v-col
+            cols="12"
+            sm="2"
+            class="d-flex justify-end"
+
+          >
+            <div v-show="tab == 2 || tab == 3">
+              <v-select
+                :items="itemSort"
+                label="Сортировка"
+                outlined
+                value="Все"
+                hide-details="true"
+              ></v-select>
+            </div>
+          </v-col>
+        </v-row>
 
         <div class="table-list-style">
           <v-data-table
@@ -174,16 +259,16 @@
           </v-data-table>
         </div>
 
-        <v-row no-gutters>
+        <v-row no-gutters v-if="pageCount > 1">
           <v-col
             cols="12"
             sm="2"
           >
             <v-row class="align-center">
-              <v-col cols="8" class="pa-0">
+              <v-col cols="9" class="pa-0">
                 <v-subheader>Строк на странице:</v-subheader>
               </v-col>
-              <v-col cols="4" class="pa-0">
+              <v-col cols="3" class="pa-0">
                 <div class="pagination-page-num">
                   <v-text-field
                     :value="itemsPerPage"
@@ -208,6 +293,7 @@
           </v-col>
         </v-row>
       </v-tab-item>
+
       <v-tab-item>
         <div>
           {{ request_id.description }}
@@ -215,7 +301,44 @@
       </v-tab-item>
       <v-tab-item>
         <div>
-          Таблица
+          <div class="table-list-style">
+            <v-data-table
+              :headers="headers_history"
+              :items="request_id_history"
+              class="elevation-0 table-history"
+              item-key="table_2"
+              :page.sync="page"
+              :items-per-page="itemsPerPageTable"
+              @page-count="pageCount = $event"
+              hide-default-footer
+            >
+              <template v-slot:item.date="{ item }">
+                <div class="table-history-date">
+                  <div>{{ item.created_at.substring(0, 10) }}</div>
+                  <div>{{ item.created_at.substring(11, 19) }}</div>
+                </div>
+              </template>
+
+              <template v-slot:item.author="{ item }">
+                <div class="table-history-author">
+                  {{ item.author.name }}
+                </div>
+              </template>
+
+              <template v-slot:item.element="{ item }">
+                <div class="table-history-element">
+                  {{ item.status }}
+                </div>
+              </template>
+
+              <template v-slot:item.change="{ item }">
+                <div class="table-history-change">
+                  {{ item.description }}
+                </div>
+              </template>
+
+            </v-data-table>
+          </div>
         </div>
       </v-tab-item>
     </v-window>
@@ -247,7 +370,7 @@ export default {
         'История изменений'
       ],
       tab: null,
-      selectStatus: null,
+      selectStatus: "0001",
       selectStatusOptions: [
         {
           "uuid": "0001",
@@ -263,22 +386,19 @@ export default {
       avatarColor: '#36B368',
       avatarColorManager: '#D6D0FE',
       avatarRounded: 'rounded',
-      selectAction: {
-        params: {
-          options: [
-            {
-              "uuid": "0001",
-              "name": 'Действия'
-            },
-            {
-              "uuid": "0002",
-              "name": 'Закрыть'
-            }
-          ],
-          item_text: 'name'
+      selectAction: [
+        {
+          "uuid": "0001",
+          "title": 'Редактировать',
         },
-      },
-      itemSort: ['Все', 'Работает', 'Готов к работе', 'Неактивен'],
+        {
+          "uuid": "0002",
+          "title": 'Удалить'
+        }
+      ],
+      activeAction: null,
+      itemSortStatus: ['Все', 'Работает', 'Готов к работе', 'Неактивен'],
+      itemSort: ['По рейтингу', 'По дате'],
       page: 1,
       pageCount: 0,
       itemsPerPage: 3,
@@ -294,6 +414,12 @@ export default {
         {text: 'На объекте', value: 'onobject'},
         {text: 'Приглашен', value: 'invited'},
         {text: '', value: 'actions', sortable: false},
+      ],
+      headers_history: [
+        {text: 'Дата', value: 'date',},
+        {text: 'Автор', value: 'author'},
+        {text: 'Элемент', value: 'element'},
+        {text: 'Изменение', value: 'change'},
       ],
       desserts: [
         {
@@ -341,6 +467,9 @@ export default {
     request_id_dispatchers() {
       return this.$store.getters['request_id_dispatchers/request_id_dispatchers']
     },
+    request_id_history() {
+      return this.$store.getters['request_id_dispatchers/request_id_history']
+    },
     tabContent() {
       if (this.tab < 4) {
         return 0;
@@ -349,7 +478,42 @@ export default {
       } else if (this.tab == 5) {
         return 2;
       }
-    }
+    },
+    request_id_dispatchers_header() {
+      let length = this.request_id_dispatchers.length,
+        last_simbol = length.toString().slice(-1),
+        text = '';
+      if (this.tab == 0) {
+        if (length == 1 || last_simbol == 1) {
+          text = 'кандидат';
+        } else if (length == 2 || length == 4 || last_simbol == 2 || last_simbol == 4) {
+          text = 'кандидата';
+        } else {
+          text = 'кандидатов';
+        }
+      } else if (this.tab == 1) {
+        if (length == 1 || last_simbol == 1) {
+          text = 'исполнитель';
+        } else if (length == 2 || length == 4 || last_simbol == 2 || last_simbol == 4) {
+          text = 'исполнителя';
+        } else {
+          text = 'исполнителей';
+        }
+      } else if (this.tab == 2) {
+        if (length == 1 || last_simbol == 1) {
+          text = 'приглашен';
+        } else {
+          text = 'приглашено';
+        }
+      } else if (this.tab == 3) {
+        if (length == 1 || last_simbol == 1) {
+          text = 'назначен';
+        } else {
+          text = 'назначен';
+        }
+      }
+      return text;
+    },
   },
   methods: {
     ...mapActions('request_id', ['fetchRequestId',]),
@@ -357,6 +521,7 @@ export default {
     ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchersSelection',]),
     ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchersInvitations',]),
     ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchersaAssigned',]),
+    ...mapActions('request_id_dispatchers', ['fetchRequestIdHistory',]),
 
     updateSearchText(value) {
       this.searchText = value;
@@ -376,13 +541,18 @@ export default {
 
     }
   },
+  watch: {
+    activeAction: function (val) {
+      if (val == '0001'){
+        this.$router.push('/request/'+ this.$route.params.id+'/edit/');
+      }
+    },
+  },
   async created() {
     await this.fetchRequestId(this.$route.params.id);
     await this.fetchRequestIdDispatchers(this.$route.params.id);
+    await this.fetchRequestIdHistory(this.$route.params.id);
 
-    this.selectStatus = this.selectStatusOptions[0];
-
-    console.log(this.request_id)
 
   },
   async mounted() {
@@ -461,6 +631,14 @@ export default {
     margin-right: 10px;
     border: none;
   }
+
+  .v-select__slot {
+    height: 48px;
+  }
+
+  .v-text-field--filled > .v-input__control > .v-input__slot {
+    background: #fff;
+  }
 }
 
 .table-on-object {
@@ -470,5 +648,53 @@ export default {
     margin-right: 5px;
   }
 }
+
+.row.dispatchers-header {
+  margin: 20px 0 32px 0;
+  padding: 4px 0;
+
+  .header {
+    font-size: 20px;
+    color: $black;
+    font-weight: 700;
+  }
+}
+
+.table-history {
+
+  .table-history-author {
+    color: $blue;
+  }
+
+  .table-history-element {
+    color: $black;
+  }
+
+  .table-history-change,
+  .table-history-date {
+    font-weight: 400;
+  }
+}
+
+.bt-table-action {
+  display: flex;
+  align-items: center;
+  margin-right: 24px;
+
+  .v-btn {
+    box-shadow: none;
+    width: 40px;
+    height: 40px;
+    margin-right: 6px;
+  }
+
+  .text {
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: $grey;
+  }
+}
+
 </style>
 

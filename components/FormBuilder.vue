@@ -11,6 +11,7 @@
             :icon="filed.icon"
             :params="filed.params"
             :validation="filed.validation"
+            :value = "filed.value"
             @input="updateFiled(filed.name, $event)"
           />
           <a href="#" v-if="filed.remove" @click.prevent="removeItem(index, filed.parent_array)" class="remove-item">
@@ -51,9 +52,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.remove-item {
-  margin-left: 16px;
-  margin-top: 14px;
-}
 
 </style>

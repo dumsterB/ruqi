@@ -11,7 +11,9 @@
           </v-navigation-drawer>
           <div>
             <Topbar/>
-            <Nuxt/>
+            <div class="content">
+              <Nuxt/>
+            </div>
           </div>
         </v-container>
       </v-main>
@@ -40,6 +42,11 @@ export default {
 
     .wrapper-main-menu {
       height: 100%;
+    }
+
+    .content{
+      position: relative;
+      z-index: 100;
     }
   }
 </style>

@@ -6,21 +6,20 @@
       outlined
       filled
       :prepend-inner-icon="icon_code"
-      v-model="value"
-      @input="$emit('input', value)"
+      v-model="new_value"
+      @input="$emit('input', new_value)"
       hide-details="auto"
       :rules="validation_array"
-      value="fhsdkfhbbhskj"
     ></v-text-field>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['name', 'icon', 'validation', 'params'],
+  props: ['name', 'icon', 'validation', 'params', 'value'],
   data() {
     return {
-      value: '',
+      new_value: '',
       rules: {
         required: value => !!value || 'Заполните поле',
         email: value => {
@@ -57,13 +56,12 @@ export default {
 
   },
   created() {
-    if (this.params && this.params.value){
-      this.value = this.params.value;
-    }
   },
-  mounted() {
-
-  }
+  watch: {
+    value: function () {
+      this.new_value = this.value;
+    },
+  },
 }
 </script>
 

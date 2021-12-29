@@ -1,5 +1,5 @@
 export const state = () => ({
-  request_id: []
+  request_id: [],
 })
 
 export const getters = {
