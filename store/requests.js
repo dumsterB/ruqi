@@ -29,6 +29,7 @@ export const actions = {
     commit('setRequest', requests)
   },
   async createRequest({commit, dispatch}, newRequest) {
+    let self= this;
     const requests = await this.$axios.post('https://cdn.ruqi.maxber.ru/api/v1/manager/tasks',
       newRequest,
       {
@@ -44,6 +45,9 @@ export const actions = {
         commit('setSuccess', {type: 'success', text: 'Ваша заявка успешно создана'});
         setTimeout(function() {
           commit('removeSuccess');
+        }, 2000);
+        setTimeout(function() {
+          self.$router.push('/request/');
         }, 3000);
 
       })
@@ -74,6 +78,7 @@ export const actions = {
 
   },
   async putRequest({commit, dispatch}, {uuid, body}) {
+    let self= this;
     await this.$axios.put('https://cdn.ruqi.maxber.ru/api/v1/manager/tasks/'+uuid,
       body,
       {
@@ -89,6 +94,9 @@ export const actions = {
         commit('setSuccess', {type: 'success', text: 'Ваша заявка успешно обновлена'});
         setTimeout(function() {
           commit('removeSuccess');
+        }, 2000);
+        setTimeout(function() {
+          self.$router.push('/request/');
         }, 3000);
       })
       .catch((error) => {

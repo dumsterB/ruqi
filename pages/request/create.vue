@@ -104,9 +104,12 @@
           </v-tab-item>
           <v-tab-item>
             <v-form ref="form_part_2" v-model="valid" lazy-validation>
-              <div class="form-part"
+              <div class="form-part form-part-contact"
                    v-for="(item, index) in meta.meta_object_contact"
                    :key="index">
+                <a v-show="index != 0" href="#" @click.prevent="removeItem(index, 'meta_object_contact')" class="remove-item">
+                  <img src="/img/ico_close.svg" alt="Удалить">
+                </a>
                 <FormBuilder :meta="item" @updateFiled="updateFiled"/>
               </div>
               <AddFormPart :text="addContactPersText" @addFormPart="addFormPart"/>
@@ -377,7 +380,7 @@ export default {
                   'за час',
                 ],
               },
-              value: '',
+              value: 'за смену',
             },
             {
               type: 'FTypeText',
@@ -660,24 +663,24 @@ export default {
     this.meta.meta_object_info[1].params.options = this.specializations;
     this.meta.meta_object_responsible[0].params.options = this.dispatchers;
 
-    /*this.meta.meta_object_name.map(f => {
-      Vue.set(this.formValues, f.name, null);
+    this.meta.meta_object_name.map(f => {
+      Vue.set(this.formValues, f.name, f.value);
     })
     this.meta.meta_object_info.map(f => {
-      Vue.set(this.formValues, f.name, null);
+      Vue.set(this.formValues, f.name, f.value);
     })
     this.meta.meta_object_location.map(f => {
-      Vue.set(this.formValues, f.name, null);
+      Vue.set(this.formValues, f.name, f.value);
     })
     this.meta.meta_object_contact.map(subarray => subarray.map(f => {
-      Vue.set(this.formValues, f.name, null);
+      Vue.set(this.formValues, f.name, f.value);
     }));
     this.meta.meta_object_responsible.map(f => {
-      Vue.set(this.formValues, f.name, null);
+      Vue.set(this.formValues, f.name, f.value);
     })
-    this.meta.meta_object_pay.map(f => {
-      Vue.set(this.formValues, f.name, null);
-    })*/
+    this.meta.meta_object_pay.map(subarray => subarray.map(f => {
+      Vue.set(this.formValues, f.name, f.value);
+    }));
   }
 }
 </script>

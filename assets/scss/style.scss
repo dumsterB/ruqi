@@ -124,14 +124,14 @@ h1.large {
     top: 18px;
   }
 
-  .v-menu__content a{
+  .v-menu__content a {
     text-decoration: none;
     text-transform: uppercase;
     color: $grey;
     padding: 0 16px;
   }
 
-  .v-subheader{
+  .v-subheader {
     font-size: 16px;
   }
 
@@ -217,7 +217,7 @@ h1.large {
       margin-right: 18px;
     }
 
-    .v-input--selection-controls{
+    .v-input--selection-controls {
       margin-top: 0;
       padding-top: 0;
     }
@@ -413,6 +413,17 @@ h1.large {
   .remove-item {
     margin-left: 16px;
     margin-top: 14px;
+  }
+
+  .form-part-contact {
+    position: relative;
+
+    .remove-item {
+      position: absolute;
+      right: 32px;
+      top: 32px;
+      margin: 0;
+    }
   }
 
 }

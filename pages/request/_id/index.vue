@@ -19,7 +19,7 @@
         159 (+10)
       </div>
       <div>Объект:
-        <span class="object">Леруа Мерлен</span>
+        <span class="object" v-if="request_id.object">{{request_id.object.name}}</span>
       </div>
     </div>
 
@@ -41,7 +41,7 @@
           </v-col>
           <v-col cols="4" class="d-flex">
             <v-subheader>Ответственный:</v-subheader>
-            <UserAvatar :first_name="mfirstname" :last_name="mlastname" :color="avatarColorManager"
+            <UserAvatar v-if="request_id.manager" :first_name="request_id.manager.firstname" :last_name="request_id.manager.lastname" :color="avatarColorManager"
                         :radius="avatarRounded"/>
           </v-col>
           <v-col cols="5" class="d-flex">
@@ -465,7 +465,12 @@ export default {
       return this.$store.getters['request_id/request_id']
     },
     request_id_dispatchers() {
-      return this.$store.getters['request_id_dispatchers/request_id_dispatchers']
+      if (this.$store.getters['request_id_dispatchers/request_id_dispatchers'] == '[]'){
+        return [];
+      }
+      else{
+        return this.$store.getters['request_id_dispatchers/request_id_dispatchers'];
+      }
     },
     request_id_history() {
       return this.$store.getters['request_id_dispatchers/request_id_history']
