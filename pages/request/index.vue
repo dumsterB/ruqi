@@ -94,14 +94,11 @@
 
     <v-row no-gutters v-if="pageCount > 1">
       <v-col
-        cols="12"
-        sm="2"
+        cols="4"
       >
         <v-row class="align-center">
-          <v-col cols="9" class="pa-0">
+          <v-col cols="9" class="d-flex align-center pa-0">
             <v-subheader>Строк на странице:</v-subheader>
-          </v-col>
-          <v-col cols="3" class="pa-0">
             <div class="pagination-page-num">
               <v-text-field
                 :value="itemsPerPage"
@@ -116,8 +113,7 @@
         </v-row>
       </v-col>
       <v-col
-        cols="12"
-        sm="10"
+        cols="4"
       >
         <v-pagination
           v-model="page"
@@ -158,7 +154,7 @@ export default {
         {text: 'Менеджер', value: 'manager'},
         {text: 'Срок', value: 'term'},
         {text: 'Заполнение', value: 'occupation'},
-        {text: '', value: 'actions', sortable: false},
+        {text: '', value: 'actions', sortable: false,  align: 'right'},
       ],
     }
   },

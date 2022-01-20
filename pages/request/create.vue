@@ -412,51 +412,6 @@ export default {
       return this.$store.getters['dispatchers/dispatchers']
     },
     postBody() {
-      /*let postBody = {
-        "name": "Требуются грузчики в Магнит",
-        "description": "Подробное описание задачи.",
-        "start_date": "2021-11-03",
-        "end_date": "2021-11-04",
-        "until_date": "2021-11-01",
-        "object": "89900f92-eff8-4989-9c06-968776fe1f34",
-        "specialization": "9209129f-52cb-42d2-aff7-b18525345c10",
-        "region": "Московская область",
-        "city": "Москва",
-        "schema": "test",
-        "contacts": [
-          {
-            "fullname": "Иванов Иван Иванович",
-            "position": "Координатор",
-            "phone": "8 800 555 66 77",
-            "email": "ivaov@mail.ru"
-          },
-          {
-            "fullname": "Иванов Иван Иванович",
-            "position": "Координатор",
-            "phone": "8 800 555 66 77",
-            "email": "ivaov@mail.ru"
-          }
-        ],
-        "dispatchers": [
-          "e19e332e-2db2-4830-8e62-252f3fca541e",
-          "ce23e853-6405-46a7-bfc2-2f460efc7a79"
-        ],
-        "works": [
-          {
-            "name": "Кладовщик",
-            "payment": 400,
-            "currency": "RUB",
-            "requires_people": 20
-          },
-          {
-            "name": "Грузчик",
-            "payment": 300,
-            "currency": "RUB",
-            "requires_people": 40
-          }
-        ]
-      };*/
-
       let contacts = [];
       for (let i = 0; i < this.meta.meta_object_contact.length; i++) {
         contacts.push(

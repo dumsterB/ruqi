@@ -15,7 +15,7 @@ export const getters = {
 
 export const actions = {
   async fetchRequestIdDispatchers({commit}, requestId) {
-    const request_id_dispatchers = await this.$axios.get('https://cdn.ruqi.maxber.ru/api/v1/manager/tasks/'+requestId+'/responses', {
+    const request_id_dispatchers = await this.$axios.get('/manager/tasks/'+requestId+'/responses', {
       headers: {
         "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
       }
@@ -23,7 +23,7 @@ export const actions = {
     commit('setRequestIdDispatchers', request_id_dispatchers);
   },
   async fetchRequestIdDispatchersSelection({commit}, requestId) {
-    const request_id_dispatchers = await this.$axios.get('https://cdn.ruqi.maxber.ru/api/v1/manager/tasks/'+requestId+'/selection', {
+    const request_id_dispatchers = await this.$axios.get('/manager/tasks/'+requestId+'/selection', {
       headers: {
         "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
       }
@@ -31,7 +31,7 @@ export const actions = {
     commit('setRequestIdDispatchers', request_id_dispatchers);
   },
   async fetchRequestIdDispatchersInvitations({commit}, requestId) {
-    const request_id_dispatchers = await this.$axios.get('https://cdn.ruqi.maxber.ru/api/v1/manager/tasks/'+requestId+'/invitations', {
+    const request_id_dispatchers = await this.$axios.get('/manager/tasks/'+requestId+'/invitations', {
       headers: {
         "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
       }
@@ -39,7 +39,7 @@ export const actions = {
     commit('setRequestIdDispatchers', request_id_dispatchers);
   },
   async fetchRequestIdDispatchersaAssigned({commit}, requestId) {
-    const request_id_dispatchers = await this.$axios.get('https://cdn.ruqi.maxber.ru/api/v1/manager/tasks/'+requestId+'/assigned', {
+    const request_id_dispatchers = await this.$axios.get('/manager/tasks/'+requestId+'/assigned', {
       headers: {
         "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
       }
@@ -47,7 +47,7 @@ export const actions = {
     commit('setRequestIdDispatchers', request_id_dispatchers);
   },
   async fetchRequestIdHistory({commit}, requestId) {
-    const request_id_history= await this.$axios.get('https://cdn.ruqi.maxber.ru/api/v1/manager/tasks/'+requestId+'/history', {
+    const request_id_history= await this.$axios.get('/manager/tasks/'+requestId+'/history', {
       headers: {
         "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
       }

@@ -31,7 +31,7 @@ export default {
 .ruqi {
   .wrap-search {
     .v-input {
-      max-width: 208px;
+      max-width: 264px;
 
       fieldset {
         border-radius: 50px;

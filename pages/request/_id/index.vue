@@ -50,7 +50,7 @@
               height="48"
               outlined
               class="bt-time-sheet"
-              @click=""
+              @click="openTimesheet"
             >
               <v-icon
                 left
@@ -261,14 +261,11 @@
 
         <v-row no-gutters v-if="pageCount > 1">
           <v-col
-            cols="12"
-            sm="2"
+            cols="4"
           >
             <v-row class="align-center">
-              <v-col cols="9" class="pa-0">
+              <v-col cols="9" class="d-flex align-center pa-0">
                 <v-subheader>Строк на странице:</v-subheader>
-              </v-col>
-              <v-col cols="3" class="pa-0">
                 <div class="pagination-page-num">
                   <v-text-field
                     :value="itemsPerPage"
@@ -283,8 +280,7 @@
             </v-row>
           </v-col>
           <v-col
-            cols="12"
-            sm="10"
+            cols="4"
           >
             <v-pagination
               v-model="page"
@@ -421,36 +417,6 @@ export default {
         {text: 'Элемент', value: 'element'},
         {text: 'Изменение', value: 'change'},
       ],
-      desserts: [
-        {
-          name: 'Васильев Петр Иванович',
-          date: '26.06.1984',
-          rating: 4.5,
-          address: 'Москва,  район длинное название',
-          onobject: 15,
-          invited: '',
-          id: 1
-        },
-        {
-          name: 'Васильев Петр Иванович',
-          date: '26.06.1984',
-          rating: 4.5,
-          address: 'Москва,  район длинное название',
-          onobject: 15,
-          invited: '',
-          id: 1
-        },
-        {
-          name: 'Васильев Петр Иванович',
-          date: '26.06.1984',
-          rating: 4.5,
-          address: 'Москва,  район длинное название',
-          onobject: 15,
-          invited: '',
-          id: 1
-        },
-
-      ],
     }
   },
   computed: {
@@ -465,12 +431,7 @@ export default {
       return this.$store.getters['request_id/request_id']
     },
     request_id_dispatchers() {
-      if (this.$store.getters['request_id_dispatchers/request_id_dispatchers'] == '[]'){
-        return [];
-      }
-      else{
-        return this.$store.getters['request_id_dispatchers/request_id_dispatchers'];
-      }
+      return this.$store.getters['request_id_dispatchers/request_id_dispatchers'];
     },
     request_id_history() {
       return this.$store.getters['request_id_dispatchers/request_id_history']
@@ -544,6 +505,9 @@ export default {
     },
     addArtist() {
 
+    },
+    openTimesheet(){
+      this.$router.push('/request/'+ this.$route.params.id+'/timesheet/');
     }
   },
   watch: {
@@ -594,7 +558,7 @@ export default {
   display: flex;
   align-items: center;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 600;
   color: $grey;
   padding-left: 66px;
   margin-bottom: 32px;

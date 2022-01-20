@@ -8,7 +8,7 @@
       half-increments
       length="5"
       size="14"
-      :value="rating"
+      :value="+rating"
       readonly
     ></v-rating>
     <span class="grey--text text--lighten-2 text-caption mr-2">

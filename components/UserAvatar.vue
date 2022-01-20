@@ -12,7 +12,7 @@
       </span>
     </div>
     <div class="user-date">
-      <span class="user-name">
+      <span class="user-name no-wrap">
       {{ first_name + ' ' + last_name }}
     </span>
       <span v-if="date" class="user-date">

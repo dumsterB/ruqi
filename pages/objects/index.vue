@@ -4,44 +4,46 @@
 
     <v-row no-gutters class="table-filter-row">
       <v-col
-        cols="12"
-        sm="2"
+        cols="2"
       >
         <v-select
           :items="itemSort"
           outlined
-          value="Все"
           hide-details="true"
+          label="Расположение"
         ></v-select>
       </v-col>
       <v-col
-        cols="12"
-        sm="2"
+        cols="2"
       >
         <v-select
           :items="itemSort"
           outlined
-          value="Все"
           hide-details="true"
+          label="Категория"
+        ></v-select>
+      </v-col>
+      <v-col
+        cols="2"
+      >
+        <v-select
+          :items="itemSort"
+          outlined
+          hide-details="true"
+          label="Активность"
         ></v-select>
       </v-col>
 
       <v-col
-        cols="12"
-        sm="7"
+        cols="6"
         class="d-flex justify-end"
       >
-        <Search :searchText="searchText" @updateSearchText = "updateSearchText"/>
-      </v-col>
 
-      <v-col
-        cols="12"
-        sm="1"
-      >
+        <Search :searchText="searchText" @updateSearchText="updateSearchText"/>
         <v-tabs right class="icon-tabs"
                 height="40">
           <v-tab>
-            <img src="img/ico_list.svg" alt="list">
+            <img src="/img/ico_list.svg" alt="list">
           </v-tab>
           <v-tab>
             <v-icon
@@ -54,86 +56,100 @@
         </v-tabs>
       </v-col>
     </v-row>
-    <v-row no-gutters class="table-filter-row">
-      <v-col
-        cols="12"
-        sm="6"
-        class="d-flex"
-      >
-        <v-checkbox
-          v-model="property1"
-          label="Свойство 1"
-        ></v-checkbox>
-        <v-checkbox
-          v-model="property2"
-          label="Свойство 2"
-        ></v-checkbox>
+
+    <v-divider></v-divider>
+
+    <v-row>
+      <v-col>
+        <v-btn
+          text
+          height="48"
+          outlined
+          class="btn-blue"
+          :href="$route.name + '/create'"
+        >
+          Создать новый объект
+        </v-btn>
       </v-col>
     </v-row>
-    <v-divider></v-divider>
 
     <div class="table-list-style">
       <v-data-table
         v-model="selected"
-        show-select
         :headers="headers"
-        :items="desserts"
+        :items="objects"
         class="elevation-0"
-        item-key="id"
+        item-key="uuid"
         :page.sync="page"
         :items-per-page="itemsPerPageTable"
         @page-count="pageCount = $event"
         hide-default-footer
-        :search="searchText"
       >
         <template v-slot:item.name="{ item }">
-          <span class="request-i"></span>
-          {{ item.name }}
-        </template>
+          <div class="color-black" @click="openRequest(item.uuid)">
+            <span class="request-i"></span>
+            {{ item.name }}
+          </div>
 
-        <template v-slot:item.pay="{ item }">
-          <span class="request-pay">{{ item.pay }}</span>
         </template>
 
         <template v-slot:item.rating="{ item }">
-          <v-rating
-            color="#FFCB45"
-            empty-icon="mdi-star"
-            full-icon="mdi-star"
-            half-icon="mdi-star-half-full"
-            hover
-            half-increments
-            length="5"
-            size="14"
-            v-model="item.rating"
-          ></v-rating>
-          <span class="grey--text text--lighten-2 text-caption mr-2">
-              {{ item.rating }}
-            </span>
+          <Rating :rating="item.raiting"/>
         </template>
 
-        <template v-slot:item.manager="{ item }">
-          <UserAvatar :first_name="item.manager_name" :last_name="item.manager_lastname" :color="avatarColor"/>
+        <template v-slot:item.request="{ item }">
+          <div class="color-black">
+            {{item.count_tasks}}
+          </div>
         </template>
+
+        <template v-slot:item.dispatcher="{ item }">
+          <UserAvatar :first_name="item.dispatchers.firstname" :last_name="item.dispatchers.lastname" :color="avatarColor" v-if="item.dispatchers.length > 0"/>
+        </template>
+
+        <template v-slot:item.address="{ item }">
+          <div  v-if="item.address">
+            {{ item.region }}, {{ item.city }}
+          </div>
+        </template>
+
 
         <template v-slot:item.actions="{ item }">
-          <v-btn icon>
-            <v-icon>mdi-dots-vertical</v-icon>
-          </v-btn>
+          <v-menu
+            bottom
+            rounded="10"
+            offset-y
+            nudge-bottom="10"
+          >
+            <template v-slot:activator="{ on }">
+              <v-btn icon
+                     v-on="on">
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+            </template>
+            <v-card>
+              <v-list-item-content class="justify-start">
+                <div class="mx-auto text-left">
+                  <nuxt-link :to="'/objects/'+ item.uuid +'/edit/'">
+                    <span>Редактировать</span>
+                  </nuxt-link>
+                  <v-divider class="my-3"></v-divider>
+                  <a href="#" @click.prevent="removeRequest(item.uuid)">Удалить</a>
+                </div>
+              </v-list-item-content>
+            </v-card>
+          </v-menu>
         </template>
       </v-data-table>
     </div>
 
-    <v-row no-gutters>
+    <v-row no-gutters v-if="pageCount > 1">
       <v-col
-        cols="12"
-        sm="2"
+        cols="4"
       >
         <v-row class="align-center">
-          <v-col cols="8" class="pa-0">
+          <v-col cols="9" class="d-flex align-center pa-0">
             <v-subheader>Строк на странице:</v-subheader>
-          </v-col>
-          <v-col cols="4" class="pa-0">
             <div class="pagination-page-num">
               <v-text-field
                 :value="itemsPerPage"
@@ -148,8 +164,7 @@
         </v-row>
       </v-col>
       <v-col
-        cols="12"
-        sm="10"
+        cols="4"
       >
         <v-pagination
           v-model="page"
@@ -161,88 +176,55 @@
 </template>
 
 <script>
-import UserAvatar from "@/components/UserAvatar";
+
+import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 
 export default {
-  components: {UserAvatar},
   data() {
     return {
       title: 'Объекты',
       title_size: 'big',
       title_create: false,
       title_page_create: 'create',
-      itemSort: ['Все', 'Леруа Мерлен', 'SBS'],
+      itemSort: ['Все', 'Активные',],
+      searchText: '',
+      selectObject: null,
       page: 1,
       pageCount: 0,
-      itemsPerPage: 3,
+      itemsPerPage: 5,
       selected: [],
       avatarColor: '#EFCD4F',
-      property1: true,
-      property2: true,
-      searchText: '',
       headers: [
         {text: 'Название', align: 'start', value: 'name',},
         {text: 'Рейтинг', value: 'rating'},
         {text: 'Заявки', value: 'request'},
-        {text: 'Менеджер', value: 'manager'},
+        {text: 'Диспетчер', value: 'dispatcher'},
         {text: 'Расположен', value: 'address'},
-        {text: '', value: 'actions', sortable: false},
-      ],
-      desserts: [
-        {
-          name: 'Леруа мерлен',
-          rating: 4.5,
-          request: 999,
-          manager_name: 'Алексей',
-          manager_lastname: 'Петров',
-          address: 'Промышленный проезд, 9, село Беседы, Ленинский городской округ',
-          id: 1
-        },
-        {
-          name: 'Леруа мерлен',
-          rating: 4.5,
-          request: 25,
-          manager_name: 'Алексей',
-          manager_lastname: 'Петров',
-          address: 'Промышленный проезд, 9, село Беседы, Ленинский городской округ',
-          id: 2
-        },
-        {
-          name: 'Леруа мерлен',
-          rating: 4.5,
-          request: 105,
-          manager_name: 'Алексей',
-          manager_lastname: 'Петров',
-          address: 'Промышленный проезд, 9, село Беседы, Ленинский городской округ',
-          id: 3
-        },
-        {
-          name: 'Леруа мерлен',
-          rating: 4.5,
-          request: 999,
-          manager_name: 'Алексей',
-          manager_lastname: 'Петров',
-          address: 'Промышленный проезд, 9, село Беседы, Ленинский городской округ',
-          id: 4
-        },
-        {
-          name: 'Леруа мерлен',
-          rating: 4.5,
-          request: 999,
-          manager_name: 'Алексей',
-          manager_lastname: 'Петров',
-          address: 'Промышленный проезд, 9, село Беседы, Ленинский городской округ',
-          id: 5
-        },
+        {text: '', value: 'actions', sortable: false, align: 'right'},
       ],
     }
   },
+  created() {
+
+  },
   methods: {
-    updateSearchText(value){
+    ...mapActions('objects', ['fetchObjects',]),
+    ...mapActions('objects', ['removeRequest',]),
+
+    openRequest(id) {
+      this.$router.push('/objects/' + id);
+    },
+    updateSearchText(value) {
       this.searchText = value;
     }
   },
   computed: {
+    objects() {
+      return this.$store.getters['objects/objects']
+    },
+    requestSuccess() {
+
+    },
     itemsPerPageTable() {
       if (this.itemsPerPage) {
         return parseInt(this.itemsPerPage, 10)
@@ -251,6 +233,9 @@ export default {
       }
     }
   },
+  async mounted() {
+    this.fetchObjects();
+  }
 }
 </script>
 
@@ -258,33 +243,10 @@ export default {
 
 @import '../../assets/scss/colors';
 
-.request-i {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  background: $green;
-  margin-right: 8px;
-  border-radius: 10px;
+
+.v-divider {
+  margin: 24px 0;
 }
 
-.request-pay {
-  background: $light_blue;
-  color: $blue;
-  padding: 7px 8px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.request-time {
-  display: flex;
-  align-items: center;
-  line-height: 1;
-
-  img {
-    margin-right: 12px;
-  }
-}
 
 </style>
-

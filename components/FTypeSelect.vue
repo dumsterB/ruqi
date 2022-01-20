@@ -4,7 +4,7 @@
       v-model="select"
       :id="id"
       :items="options"
-      :rules="[v => !!v || 'Item is required']"
+      :rules="[v => !!v || 'Выберите вариант']"
       required
       single-line
       outlined
@@ -17,7 +17,7 @@
 
 <script>
 export default {
-  props: ['id', 'name', 'params'],
+  props: ['id', 'name', 'params', 'value'],
   computed: {
     options() {
       return this.params.options
@@ -30,7 +30,11 @@ export default {
   },
   methods: {},
   created() {
-    this.select = this.params.options[0];
+    if (this.value) {
+      this.select = this.value;
+    } else {
+      this.select = this.params.options[0];
+    }
   }
 }
 </script>

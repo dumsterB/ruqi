@@ -1,5 +1,5 @@
 <template>
-  <div class="w-100">
+  <div class="">
     <v-text-field
       :name="name"
       single-line
@@ -56,6 +56,7 @@ export default {
 
   },
   created() {
+    this.new_value = this.value;
   },
   watch: {
     value: function () {
