@@ -4,6 +4,7 @@ export const state = () => ({
   objectType: [],
   dispatchers: [],
   managers: [],
+  regions: [],
 })
 
 export const getters = {
@@ -21,6 +22,9 @@ export const getters = {
   },
   managers(state) {
     return state.managers;
+  },
+  regions(state) {
+    return state.regions;
   },
 }
 
@@ -69,7 +73,16 @@ export const actions = {
       }
     });
     commit('setManagers', managers)
-  }
+  },
+  async fetchRegions({commit}) {
+
+    const regions = await this.$axios.get('/dictionary/regions', {
+      headers: {
+        "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
+      }
+    });
+    commit('setRegions', regions)
+  },
 }
 
 export const mutations = {
@@ -87,6 +100,9 @@ export const mutations = {
   },
   setManagers(state, managers) {
     state.managers = managers.data.data;
+  },
+  setRegions(state, regions) {
+    state.regions = regions.data.data;
   },
 }
 

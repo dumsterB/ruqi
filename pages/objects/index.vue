@@ -7,35 +7,31 @@
         cols="2"
       >
         <v-select
-          :items="itemSort"
+          :items="sortRegions"
+          v-model="region"
           outlined
           hide-details="true"
           label="Расположение"
+          item-text="name"
+          @change="filter('region', region)"
         ></v-select>
       </v-col>
       <v-col
         cols="2"
       >
         <v-select
-          :items="itemSort"
+          :items="sortSpecializations"
+          v-model="specialization"
           outlined
           hide-details="true"
           label="Категория"
-        ></v-select>
-      </v-col>
-      <v-col
-        cols="2"
-      >
-        <v-select
-          :items="itemSort"
-          outlined
-          hide-details="true"
-          label="Активность"
+          item-text="name"
+          @change="filter('specialization', specialization)"
         ></v-select>
       </v-col>
 
       <v-col
-        cols="6"
+        cols="8"
         class="d-flex justify-end"
       >
 
@@ -84,6 +80,7 @@
         :items-per-page="itemsPerPageTable"
         @page-count="pageCount = $event"
         hide-default-footer
+        :search="searchText"
       >
         <template v-slot:item.name="{ item }">
           <div class="color-black" @click="openRequest(item.uuid)">
@@ -99,20 +96,20 @@
 
         <template v-slot:item.request="{ item }">
           <div class="color-black">
-            {{item.count_tasks}}
+            {{ item.count_tasks }}
           </div>
         </template>
 
         <template v-slot:item.dispatcher="{ item }">
-          <UserAvatar :first_name="item.dispatchers.firstname" :last_name="item.dispatchers.lastname" :color="avatarColor" v-if="item.dispatchers.length > 0"/>
+          <UserAvatar :first_name="item.dispatchers.firstname" :last_name="item.dispatchers.lastname"
+                      :color="avatarColor" v-if="item.dispatchers.firstname"/>
         </template>
 
         <template v-slot:item.address="{ item }">
-          <div  v-if="item.address">
+          <div>
             {{ item.region }}, {{ item.city }}
           </div>
         </template>
-
 
         <template v-slot:item.actions="{ item }">
           <v-menu
@@ -180,13 +177,24 @@
 import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 
 export default {
+  async fetch({store}) {
+    if (store.getters['specializations/specializations'].length === 0) {
+      await store.dispatch('specializations/fetch')
+    }
+    if (store.getters['dictionary/regions'].length === 0) {
+      await store.dispatch('dictionary/fetchRegions')
+    }
+  },
   data() {
     return {
       title: 'Объекты',
       title_size: 'big',
       title_create: false,
       title_page_create: 'create',
-      itemSort: ['Все', 'Активные',],
+      sortSpecializations: [],
+      sortRegions: [],
+      specialization: '',
+      region: '',
       searchText: '',
       selectObject: null,
       page: 1,
@@ -205,25 +213,37 @@ export default {
     }
   },
   created() {
-
+    this.sortSpecializations = this.specializations;
+    this.sortRegions = this.regions;
   },
   methods: {
     ...mapActions('objects', ['fetchObjects',]),
     ...mapActions('objects', ['removeRequest',]),
+    ...mapActions('specializations', ['fetch',]),
+    ...mapActions('dictionary', ['fetchRegions',]),
 
     openRequest(id) {
       this.$router.push('/objects/' + id);
     },
     updateSearchText(value) {
       this.searchText = value;
+    },
+    filter(){
+      const newRequet = JSON.stringify(this.postBody);
     }
   },
   computed: {
     objects() {
       return this.$store.getters['objects/objects']
     },
+    specializations() {
+      return this.$store.getters['specializations/specializations'];
+    },
+    regions() {
+      return this.$store.getters['dictionary/regions'];
+    },
     requestSuccess() {
-
+      return this.$store.getters['objects/requestSuccess']
     },
     itemsPerPageTable() {
       if (this.itemsPerPage) {
@@ -231,6 +251,15 @@ export default {
       } else {
         return 1;
       }
+    },
+    postBody() {
+      let postBody = {
+        "specialization": this.specialization,
+        "region": this.region,
+        "sort": "city",
+        "order": "asc"
+      }
+      return postBody;
     }
   },
   async mounted() {
