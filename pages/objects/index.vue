@@ -193,6 +193,7 @@ export default {
       title_page_create: 'create',
       sortSpecializations: [],
       sortRegions: [],
+      defSort: [{name: 'Все', uuid: '0000'}],
       specialization: '',
       region: '',
       searchText: '',
@@ -213,8 +214,9 @@ export default {
     }
   },
   created() {
-    this.sortSpecializations = this.specializations;
-    this.sortRegions = this.regions;
+
+    this.sortSpecializations = this.defSort.concat(this.specializations);
+    this.sortRegions = this.defSort.concat(this.regions);
   },
   methods: {
     ...mapActions('objects', ['fetchObjects',]),
@@ -255,9 +257,17 @@ export default {
       }
     },
     postBody() {
+      let specialization = this.specialization,
+          region = this.region;
+      if (specialization == 'Все'){
+        specialization = '';
+      }
+      if (region == 'Все'){
+        region = '';
+      }
       let postBody = {
-        "specialization": this.specialization,
-        "region": this.region,
+        "specialization": specialization,
+        "region": region,
         "sort": "city",
         "order": "asc"
       }

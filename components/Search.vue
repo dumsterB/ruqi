@@ -44,6 +44,12 @@ export default {
         height: 100%;
       }
     }
+    .v-text-field--full-width .v-input__prepend-outer,
+    .v-text-field--full-width .v-input__prepend-inner,
+    .v-text-field--enclosed .v-input__prepend-outer,
+    .v-text-field--enclosed .v-input__prepend-inner {
+      margin-top: 10px;
+    }
   }
 }
 
