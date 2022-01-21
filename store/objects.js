@@ -30,6 +30,7 @@ export const actions = {
 
   },
   async createRequest({commit, dispatch}, newRequest) {
+    let self= this;
     const requests = await this.$axios.post('/manager/objects',
       newRequest,
       {
@@ -61,6 +62,7 @@ export const actions = {
 
   },
   async putRequest({commit, dispatch}, {uuid, body}) {
+    let self= this;
     await this.$axios.put('/manager/objects/'+uuid,
       body,
       {

@@ -31,6 +31,7 @@ export const actions = {
     commit('setRequestIdDispatchers', request_id_dispatchers);
   },
   async fetchRequestIdDispatchersSelection({commit}, requestId) {
+    console.log("обновил");
     const request_id_dispatchers = await this.$axios.get('/manager/tasks/'+requestId+'/selection', {
       headers: {
         "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
@@ -63,7 +64,6 @@ export const actions = {
     commit('setRequestIdHistory', request_id_history);
   },
   async acceptRequest({commit, dispatch}, {task_uuid, user_uuid}) {
-    console.log(task_uuid, user_uuid );
     await this.$axios.put('/dispatcher/tasks/'+task_uuid+'/contractors/'+user_uuid+'/accept',
       {},
       {
@@ -76,6 +76,27 @@ export const actions = {
         console.log(response);
         dispatch('fetchRequestIdDispatchers', task_uuid);
         commit('setSuccess', {type: 'success', text: 'Заявка принята'});
+        setTimeout(function() {
+          commit('removeSuccess');
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+  async rejectRequest({commit, dispatch}, {task_uuid, user_uuid, dispatchMetod}) {
+    await this.$axios.put('/dispatcher/tasks/'+task_uuid+'/contractors/'+user_uuid+'/cancel',
+      {},
+      {
+        headers: {
+          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
+        },
+
+      })
+      .then((response) => {
+        console.log(response);
+        dispatch(dispatchMetod, task_uuid);
+        commit('setSuccess', {type: 'success', text: 'Заявка отклонена'});
         setTimeout(function() {
           commit('removeSuccess');
         }, 2000);

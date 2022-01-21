@@ -77,7 +77,7 @@
                 height="48"
                 outlined
                 class="btn-blue"
-                :href="'/request/create'"
+                href="/request/create"
               >
                 Создать новую заявку
               </v-btn>

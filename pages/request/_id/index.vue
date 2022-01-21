@@ -267,9 +267,9 @@
                 <v-card class="table-action-menu">
                   <v-list-item-content class="justify-start">
                     <div class="mx-auto text-left">
-                      <a href="#" @click.prevent="acceptRequest({task_uuid:request_id.uuid, user_uuid: item.uuid})">Принять</a>
-                      <v-divider class="my-3"></v-divider>
-                      <a href="#" @click.prevent="">Отклонить</a>
+                      <a v-if="tab==0" href="#" @click.prevent="acceptRequest({task_uuid:request_id.uuid, user_uuid: item.uuid})">Принять</a>
+                      <v-divider class="my-3" v-if="tab==0"></v-divider>
+                      <a href="#" @click.prevent="rejectRequest({task_uuid:request_id.uuid, user_uuid: item.uuid, dispatchMetod: dispatchMetod})">Отклонить</a>
                     </div>
                   </v-list-item-content>
                 </v-card>
@@ -444,6 +444,7 @@ export default {
         {text: 'Элемент', value: 'element'},
         {text: 'Изменение', value: 'change'},
       ],
+      dispatchMetod: 'fetchRequestIdDispatchers',
     }
   },
   computed: {
@@ -508,7 +509,7 @@ export default {
       return text;
     },
     requestSuccess() {
-      return this.$store.getters['requests/requestSuccess']
+      return this.$store.getters['request_id_dispatchers/requestSuccess']
     },
   },
   methods: {
@@ -519,6 +520,7 @@ export default {
     ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchersaAssigned',]),
     ...mapActions('request_id_dispatchers', ['fetchRequestIdHistory',]),
     ...mapActions('request_id_dispatchers', ['acceptRequest',]),
+    ...mapActions('request_id_dispatchers', ['rejectRequest',]),
 
     updateSearchText(value) {
       this.searchText = value;
@@ -526,12 +528,16 @@ export default {
     async selectData(index) {
       if (index == 0) {
         await this.fetchRequestIdDispatchers(this.$route.params.id);
+        this.dispatchMetod = 'fetchRequestIdDispatchers';
       } else if (index == 1) {
         await this.fetchRequestIdDispatchersSelection(this.$route.params.id);
+        this.dispatchMetod = 'fetchRequestIdDispatchersSelection';
       } else if (index == 2) {
         await this.fetchRequestIdDispatchersInvitations(this.$route.params.id);
+        this.dispatchMetod = 'fetchRequestIdDispatchersInvitations';
       } else if (index == 3) {
         await this.fetchRequestIdDispatchersaAssigned(this.$route.params.id);
+        this.dispatchMetod = 'fetchRequestIdDispatchersaAssigned';
       }
     },
     addArtist() {

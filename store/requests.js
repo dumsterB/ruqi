@@ -113,13 +113,12 @@ export const mutations = {
     state.requests.data.data.unshift(newRequest);
   },
   setSuccess(state, { type, text }){
-    console.log(type, text);
     state.response.status = true;
     state.response.type = type;
     state.response.text = text;
   },
   removeSuccess(state){
-    state.success = false;
+    state.response.status  = false;
   }
 }
 

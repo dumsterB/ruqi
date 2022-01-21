@@ -401,7 +401,7 @@ export default {
       return postBody;
     },
     requestSuccess() {
-      return this.$store.getters['requests/requestSuccess']
+      return this.$store.getters['objects/requestSuccess']
     },
   },
   methods: {
@@ -528,13 +528,13 @@ export default {
 
 @import '../../assets/scss/colors';
 
-.wrapp-alert {
+.wrapp-alert{
   position: fixed;
   width: 100%;
   bottom: 0;
   left: 0;
 
-  .v-alert {
+  .v-alert{
     margin: 0;
   }
 }
