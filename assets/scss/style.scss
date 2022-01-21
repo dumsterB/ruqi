@@ -68,6 +68,18 @@
 
 }
 
+.wrapp-alert {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+
+  .v-alert {
+    margin: 0;
+  }
+}
+
+
 /* Buttons  */
 
 .ruqi {

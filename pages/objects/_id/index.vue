@@ -7,8 +7,8 @@
         </div>
         <div class="wrap-composite-details">
           <Status title="Состояние" status="active" status_text="Работа"/>
-          <div class="num">№ 23536223</div>
-          <div class="date" v-if="">17.08.2021</div>
+          <div class="num">№ {{ object_id.number }}</div>
+          <div class="date" v-if="object_id.created_at">{{ object_id.created_at.substr(0, 10) }}</div>
           <div class="views">
             <v-icon color="#7A91A9">mdi-eye-outline</v-icon>
             159 (+10)
@@ -23,7 +23,7 @@
         <div class="wrap-composite-state">
           <v-container>
             <v-row>
-              <v-col cols="3" class="d-flex">
+              <v-col cols="10" class="d-flex">
                 <v-subheader>Статус:</v-subheader>
                 <v-select
                   v-model="selectStatus"
@@ -35,8 +35,6 @@
                   return-object
                   color="E5F3FC"
                 ></v-select>
-              </v-col>
-              <v-col cols="7" class="d-flex">
                 <v-subheader>Ответственный:</v-subheader>
                 <UserAvatar v-if="" first_name="Василий" last_name="Петров" :color="avatarColorManager"
                             :radius="avatarRounded"/>
@@ -204,8 +202,6 @@
                             <nuxt-link :to="'/request/'+ item.uuid +'/edit/'">
                               <span>Редактировать</span>
                             </nuxt-link>
-                            <v-divider class="my-3"></v-divider>
-                            <a href="#" @click.prevent="removeRequest(item.uuid)">Удалить</a>
                           </div>
                         </v-list-item-content>
                       </v-card>
@@ -362,10 +358,12 @@
         <div class="bar-element">
           <div class="inner-indent">
             <div class="d-flex bar-element-row">
-              <div class="title-row">Рейтинг: </div>
+              <div class="title-row">Рейтинг:</div>
               <Rating rating="4"/>
             </div>
-            <div class="bar-element-row color-black">На сервисе с 12 сентября 2021</div>
+            <div class="bar-element-row color-black" v-if="object_id.created_at">На сервисе с
+              {{ object_id.created_at.substr(0, 10) }}
+            </div>
             <div class="bar-element-row color-main">{{ object_id_requests.length }} заявки активно</div>
             <div class="bar-element-row bar-element-row-top-margin">Основные вакансии:</div>
             <div class="bar-element-row">
@@ -492,6 +490,9 @@ export default {
           return {}
       }
     },
+    requestSuccess() {
+      return this.$store.getters['requests/requestSuccess']
+    },
 
   },
   methods: {
@@ -605,6 +606,10 @@ export default {
     color: white;
     margin-right: 10px;
     border: none;
+  }
+
+  .v-select {
+    max-width: 200px;
   }
 
   .v-select__slot {

@@ -719,15 +719,5 @@ export default {
 
 @import '../../../assets/scss/colors';
 
-.wrapp-alert {
-  position: fixed;
-  width: 100%;
-  bottom: 0;
-  left: 0;
-
-  .v-alert {
-    margin: 0;
-  }
-}
 
 </style>

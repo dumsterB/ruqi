@@ -69,6 +69,7 @@
             rounded="10"
             offset-y
             nudge-bottom="10"
+            left
           >
             <template v-slot:activator="{ on }">
                 <v-btn icon

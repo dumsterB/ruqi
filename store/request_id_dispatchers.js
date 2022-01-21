@@ -1,6 +1,11 @@
 export const state = () => ({
   request_id_dispatchers: [],
   request_id_history: [],
+  response: {
+    status: false,
+    text: '',
+    type: 'error'
+  },
 })
 
 export const getters = {
@@ -9,6 +14,9 @@ export const getters = {
   },
   request_id_history(state) {
     return state.request_id_history;
+  },
+  requestSuccess(state) {
+    return state.response;
   },
 }
 
@@ -54,6 +62,28 @@ export const actions = {
     });
     commit('setRequestIdHistory', request_id_history);
   },
+  async acceptRequest({commit, dispatch}, {task_uuid, user_uuid}) {
+    console.log(task_uuid, user_uuid );
+    await this.$axios.put('/dispatcher/tasks/'+task_uuid+'/contractors/'+user_uuid+'/accept',
+      {},
+      {
+        headers: {
+          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
+        },
+
+      })
+      .then((response) => {
+        console.log(response);
+        dispatch('fetchRequestIdDispatchers', task_uuid);
+        commit('setSuccess', {type: 'success', text: 'Заявка принята'});
+        setTimeout(function() {
+          commit('removeSuccess');
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
 }
 
 export const mutations = {
@@ -63,4 +93,13 @@ export const mutations = {
   setRequestIdHistory(state, request_id_history) {
     state.request_id_history = request_id_history.data.data;
   },
+  setSuccess(state, { type, text }){
+    state.response.status = true;
+    state.response.type = type;
+    state.response.text = text;
+    console.log(state.response);
+  },
+  removeSuccess(state){
+    state.response.status = false;
+  }
 }

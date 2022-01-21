@@ -18,12 +18,13 @@ export const getters = {
 
 
 export const actions = {
-  async fetchObjects({commit}) {
+  async fetchObjects({commit}, params) {
 
     const objects = await this.$axios.get('/manager/objects', {
       headers: {
         "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
       },
+      params: params
     });
     commit('setObjects', objects)
 
@@ -60,7 +61,6 @@ export const actions = {
 
   },
   async putRequest({commit, dispatch}, {uuid, body}) {
-    let self= this;
     await this.$axios.put('/manager/objects/'+uuid,
       body,
       {
@@ -116,7 +116,7 @@ export const mutations = {
     state.response.text = text;
   },
   removeSuccess(state){
-    state.success = false;
+    state.response.status = false;
   }
 }
 

@@ -80,7 +80,6 @@
         :items-per-page="itemsPerPageTable"
         @page-count="pageCount = $event"
         hide-default-footer
-        :search="searchText"
       >
         <template v-slot:item.name="{ item }">
           <div class="color-black" @click="openRequest(item.uuid)">
@@ -117,6 +116,7 @@
             rounded="10"
             offset-y
             nudge-bottom="10"
+            left
           >
             <template v-slot:activator="{ on }">
               <v-btn icon
@@ -227,10 +227,12 @@ export default {
     },
     updateSearchText(value) {
       this.searchText = value;
+      this.fetchObjects({"name": value});
     },
     filter(){
-      const newRequet = JSON.stringify(this.postBody);
-    }
+      const newRequet = this.postBody;
+      this.fetchObjects(newRequet);
+    },
   },
   computed: {
     objects() {

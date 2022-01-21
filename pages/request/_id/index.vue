@@ -26,7 +26,7 @@
     <div class="wrap-composite-state">
       <v-container>
         <v-row>
-          <v-col cols="3" class="d-flex">
+          <v-col cols="7" class="d-flex">
             <v-subheader>Статус:</v-subheader>
             <v-select
               v-model="selectStatus"
@@ -38,13 +38,11 @@
               return-object
               color="E5F3FC"
             ></v-select>
-          </v-col>
-          <v-col cols="4" class="d-flex">
             <v-subheader>Ответственный:</v-subheader>
             <UserAvatar v-if="request_id.manager" :first_name="request_id.manager.firstname" :last_name="request_id.manager.lastname" :color="avatarColorManager"
                         :radius="avatarRounded"/>
           </v-col>
-          <v-col cols="5" class="d-flex">
+          <v-col cols="5" class="d-flex justify-end ">
             <v-btn
               text
               height="48"
@@ -70,6 +68,7 @@
               single-line
               outlined
               filled
+              max-width="200px"
             ></v-select>
           </v-col>
         </v-row>
@@ -252,9 +251,29 @@
             </template>
 
             <template v-slot:item.actions="{ item }">
-              <v-btn icon>
-                <v-icon>mdi-dots-vertical</v-icon>
-              </v-btn>
+              <v-menu
+                bottom
+                rounded="10"
+                offset-y
+                nudge-bottom="10"
+                left
+              >
+                <template v-slot:activator="{ on }">
+                  <v-btn icon
+                         v-on="on">
+                    <v-icon>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </template>
+                <v-card class="table-action-menu">
+                  <v-list-item-content class="justify-start">
+                    <div class="mx-auto text-left">
+                      <a href="#" @click.prevent="acceptRequest({task_uuid:request_id.uuid, user_uuid: item.uuid})">Принять</a>
+                      <v-divider class="my-3"></v-divider>
+                      <a href="#" @click.prevent="">Отклонить</a>
+                    </div>
+                  </v-list-item-content>
+                </v-card>
+              </v-menu>
             </template>
           </v-data-table>
         </div>
@@ -339,7 +358,15 @@
       </v-tab-item>
     </v-window>
 
-
+    <div class="wrapp-alert">
+      <v-alert
+        :value="requestSuccess.status"
+        :type="requestSuccess.type"
+        dismissible
+        transition="fade-transition">
+        {{requestSuccess.text}}
+      </v-alert>
+    </div>
   </div>
 </template>
 
@@ -397,7 +424,7 @@ export default {
       itemSort: ['По рейтингу', 'По дате'],
       page: 1,
       pageCount: 0,
-      itemsPerPage: 3,
+      itemsPerPage: 5,
       selected: [],
       property1: true,
       property2: true,
@@ -409,7 +436,7 @@ export default {
         {text: 'Адрес', value: 'address'},
         {text: 'На объекте', value: 'onobject'},
         {text: 'Приглашен', value: 'invited'},
-        {text: '', value: 'actions', sortable: false},
+        {text: '', value: 'actions', sortable: false, align: 'right'},
       ],
       headers_history: [
         {text: 'Дата', value: 'date',},
@@ -480,6 +507,9 @@ export default {
       }
       return text;
     },
+    requestSuccess() {
+      return this.$store.getters['requests/requestSuccess']
+    },
   },
   methods: {
     ...mapActions('request_id', ['fetchRequestId',]),
@@ -488,6 +518,7 @@ export default {
     ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchersInvitations',]),
     ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchersaAssigned',]),
     ...mapActions('request_id_dispatchers', ['fetchRequestIdHistory',]),
+    ...mapActions('request_id_dispatchers', ['acceptRequest',]),
 
     updateSearchText(value) {
       this.searchText = value;
@@ -599,6 +630,10 @@ export default {
     color: white;
     margin-right: 10px;
     border: none;
+  }
+
+  .v-select {
+    max-width: 200px;
   }
 
   .v-select__slot {
