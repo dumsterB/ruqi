@@ -131,16 +131,6 @@
         </v-window>
       </v-form>
     </div>
-    <div class="wrapp-alert">
-      <v-alert
-        :value="requestSuccess.status"
-        :type="requestSuccess.type"
-        dismissible
-        transition="fade-transition">
-        {{requestSuccess.text}}
-      </v-alert>
-    </div>
-
   </div>
 
 </template>
@@ -465,9 +455,6 @@ export default {
       console.log(postBody);
       return postBody;
     },
-    requestSuccess() {
-      return this.$store.getters['requests/requestSuccess']
-    },
   },
   methods: {
     ...mapActions('objects', ['fetchObjects',]),
@@ -617,6 +604,10 @@ export default {
     this.meta.meta_object_name[0].params.options = this.objects;
     this.meta.meta_object_info[1].params.options = this.specializations;
     this.meta.meta_object_responsible[0].params.options = this.dispatchers;
+
+    if (this.$route.params.objectId){
+      this.meta.meta_object_name[0].value = this.$route.params.objectId;
+    }
 
     this.meta.meta_object_name.map(f => {
       Vue.set(this.formValues, f.name, f.value);

@@ -85,18 +85,7 @@
         </v-window>
       </v-form>
     </div>
-    <div class="wrapp-alert">
-      <v-alert
-        :value="requestSuccess.status"
-        :type="requestSuccess.type"
-        dismissible
-        transition="fade-transition">
-        {{ requestSuccess.text }}
-      </v-alert>
-    </div>
-
   </div>
-
 </template>
 
 <script>
@@ -409,9 +398,7 @@ export default {
 
       return postBody;
     },
-    requestSuccess() {
-      return this.$store.getters['objects/requestSuccess']
-    },
+
   },
   methods: {
     ...mapActions('object_id', ['fetchObjectId',]),
@@ -480,7 +467,7 @@ export default {
         ],
       );
     },
-    addRequest(){
+    addRequest() {
       this.$router.replace('/objects/create');
     },
     removeItem(index, array) {

@@ -77,7 +77,8 @@
                 height="48"
                 outlined
                 class="btn-blue"
-                href="/request/create"
+                :to="{ name: 'request-create', params: { objectId: object_id.uuid }}"
+                nuxt
               >
                 Создать новую заявку
               </v-btn>
@@ -212,39 +213,7 @@
               </v-data-table>
             </div>
 
-            <v-row no-gutters v-if="pageCount > 1">
-              <v-col
-                cols="12"
-                sm="2"
-              >
-                <v-row class="align-center">
-                  <v-col cols="9" class="pa-0">
-                    <v-subheader>Строк на странице:</v-subheader>
-                  </v-col>
-                  <v-col cols="3" class="pa-0">
-                    <div class="pagination-page-num">
-                      <v-text-field
-                        :value="itemsPerPage"
-                        type="text"
-                        @input="itemsPerPage = $event"
-                        single-line
-                        outlined
-                        hide-details="true"
-                      ></v-text-field>
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-col>
-              <v-col
-                cols="12"
-                sm="10"
-              >
-                <v-pagination
-                  v-model="page"
-                  :length="pageCount"
-                ></v-pagination>
-              </v-col>
-            </v-row>
+            <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page" @setItemsPerPage="setItemsPerPage" @setCurrentPage="setCurrentPage"/>
           </v-tab-item>
           <v-tab-item>
             <div class="table-list-style select">
@@ -311,39 +280,7 @@
               </v-data-table>
             </div>
 
-            <v-row no-gutters v-if="pageCount > 1">
-              <v-col
-                cols="12"
-                sm="2"
-              >
-                <v-row class="align-center">
-                  <v-col cols="9" class="pa-0">
-                    <v-subheader>Строк на странице:</v-subheader>
-                  </v-col>
-                  <v-col cols="3" class="pa-0">
-                    <div class="pagination-page-num">
-                      <v-text-field
-                        :value="itemsPerPage"
-                        type="text"
-                        @input="itemsPerPage = $event"
-                        single-line
-                        outlined
-                        hide-details="true"
-                      ></v-text-field>
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-col>
-              <v-col
-                cols="12"
-                sm="10"
-              >
-                <v-pagination
-                  v-model="page"
-                  :length="pageCount"
-                ></v-pagination>
-              </v-col>
-            </v-row>
+            <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page" @setItemsPerPage="setItemsPerPage" @setCurrentPage="setCurrentPage"/>
           </v-tab-item>
 
 
@@ -365,7 +302,7 @@
               {{ object_id.created_at.substr(0, 10) }}
             </div>
             <div class="bar-element-row color-main">{{ object_id_requests.length }} заявки активно</div>
-            <div class="bar-element-row bar-element-row-top-margin">Основные вакансии:</div>
+            <div class="bar-element-row bar-element-row-top-margin bar-element-title">Основные вакансии:</div>
             <div class="bar-element-row">
               <CloudTag :listTag="listTag"/>
             </div>
@@ -373,9 +310,12 @@
         </div>
 
         <div class="bar-element">
+          <div v-if="object_id.lat">
+            <Map :center_coords="mapCenter" :markers="mapMarker" zoom="12" height="124"/>
+          </div>
           <div class="inner-indent">
             <div class="bar-element-row">
-              <div>Адрес</div>
+              <div class="bar-element-title">Адрес</div>
               <div class="color-black">{{ object_id.region }}, {{ object_id.city }}</div>
             </div>
           </div>
@@ -393,6 +333,7 @@ export default {
   props: [],
   data() {
     return {
+      coords: [54, 39],
       listTag: ['ГРУЗЧИК', 'РАЗНОРАБОЧИЙ', 'РАЗНОРАБОЧИЙ', 'КЛАДОВЩИК', 'КЛАДОВЩИК'],
       title_size: 'large',
       title_create: false,
@@ -460,7 +401,6 @@ export default {
         {text: 'Должность', value: 'position'},
         {text: '', value: 'actions', sortable: false},
       ],
-
     }
   },
   computed: {
@@ -490,10 +430,23 @@ export default {
           return {}
       }
     },
-    requestSuccess() {
-      return this.$store.getters['requests/requestSuccess']
+    mapCenter() {
+      return [this.object_id.lat, this.object_id.lon];
     },
-
+    mapMarker(){
+      return [
+        {
+          "geometry": {
+            "type": "Point",
+            "coordinates": [this.object_id.lat, this.object_id.lon]
+          },
+          "properties": {
+            "hintContent": this.object_id.name
+          },
+          "uuid": this.object_id.uuid
+        }
+      ]
+    }
   },
   methods: {
     ...mapActions('object_id', ['fetchObjectId',]),
@@ -518,6 +471,12 @@ export default {
         this.activeSelectAll = 0;
       }
     },
+    setItemsPerPage(value){
+      this.itemsPerPage = value;
+    },
+    setCurrentPage(value){
+      this.page = value;
+    }
   },
   watch: {
     activeAction: function (val) {
@@ -530,9 +489,9 @@ export default {
     await this.fetchObjectId(this.$route.params.id);
     await this.fetchObjectIdRequest(this.$route.params.id);
 
-
   },
   async mounted() {
+
   }
 }
 </script>

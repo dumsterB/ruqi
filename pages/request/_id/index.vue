@@ -217,7 +217,6 @@
             :items-per-page="itemsPerPageTable"
             @page-count="pageCount = $event"
             hide-default-footer
-            :search="searchText"
           >
             <template v-slot:item.name="{ item }">
               <UserAvatar :first_name="item.firstname" :last_name="item.lastname" :color="avatarColor"
@@ -278,35 +277,7 @@
           </v-data-table>
         </div>
 
-        <v-row no-gutters v-if="pageCount > 1">
-          <v-col
-            cols="4"
-          >
-            <v-row class="align-center">
-              <v-col cols="9" class="d-flex align-center pa-0">
-                <v-subheader>Строк на странице:</v-subheader>
-                <div class="pagination-page-num">
-                  <v-text-field
-                    :value="itemsPerPage"
-                    type="text"
-                    @input="itemsPerPage = $event"
-                    single-line
-                    outlined
-                    hide-details="true"
-                  ></v-text-field>
-                </div>
-              </v-col>
-            </v-row>
-          </v-col>
-          <v-col
-            cols="4"
-          >
-            <v-pagination
-              v-model="page"
-              :length="pageCount"
-            ></v-pagination>
-          </v-col>
-        </v-row>
+        <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page" @setItemsPerPage="setItemsPerPage" @setCurrentPage="setCurrentPage"/>
       </v-tab-item>
 
       <v-tab-item>
@@ -357,16 +328,6 @@
         </div>
       </v-tab-item>
     </v-window>
-
-    <div class="wrapp-alert">
-      <v-alert
-        :value="requestSuccess.status"
-        :type="requestSuccess.type"
-        dismissible
-        transition="fade-transition">
-        {{requestSuccess.text}}
-      </v-alert>
-    </div>
   </div>
 </template>
 
@@ -508,9 +469,6 @@ export default {
       }
       return text;
     },
-    requestSuccess() {
-      return this.$store.getters['request_id_dispatchers/requestSuccess']
-    },
   },
   methods: {
     ...mapActions('request_id', ['fetchRequestId',]),
@@ -524,27 +482,34 @@ export default {
 
     updateSearchText(value) {
       this.searchText = value;
+      this.fetchRequestIdDispatchers({requestId: this.$route.params.id, params: {"name": value}});
     },
     async selectData(index) {
       if (index == 0) {
-        await this.fetchRequestIdDispatchers(this.$route.params.id);
+        await this.fetchRequestIdDispatchers({requestId: this.$route.params.id});
         this.dispatchMetod = 'fetchRequestIdDispatchers';
       } else if (index == 1) {
-        await this.fetchRequestIdDispatchersSelection(this.$route.params.id);
+        await this.fetchRequestIdDispatchersSelection({requestId: this.$route.params.id});
         this.dispatchMetod = 'fetchRequestIdDispatchersSelection';
       } else if (index == 2) {
-        await this.fetchRequestIdDispatchersInvitations(this.$route.params.id);
+        await this.fetchRequestIdDispatchersInvitations({requestId: this.$route.params.id});
         this.dispatchMetod = 'fetchRequestIdDispatchersInvitations';
       } else if (index == 3) {
-        await this.fetchRequestIdDispatchersaAssigned(this.$route.params.id);
+        await this.fetchRequestIdDispatchersaAssigned({requestId: this.$route.params.id});
         this.dispatchMetod = 'fetchRequestIdDispatchersaAssigned';
       }
     },
-    addArtist() {
-
-    },
     openTimesheet(){
       this.$router.push('/request/'+ this.$route.params.id+'/timesheet/');
+    },
+    addArtist(){
+
+    },
+    setItemsPerPage(value){
+      this.itemsPerPage = value;
+    },
+    setCurrentPage(value){
+      this.page = value;
     }
   },
   watch: {
@@ -556,8 +521,8 @@ export default {
   },
   async created() {
     await this.fetchRequestId(this.$route.params.id);
-    await this.fetchRequestIdDispatchers(this.$route.params.id);
-    await this.fetchRequestIdHistory(this.$route.params.id);
+    await this.fetchRequestIdDispatchers({requestId: this.$route.params.id});
+    await this.fetchRequestIdHistory({requestId: this.$route.params.id});
 
 
   },

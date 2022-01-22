@@ -45,9 +45,14 @@
   font-weight: 600;
   font-size: 16px;
   color: $grey;
+  overflow: hidden;
 
   .inner-indent {
     padding: 24px;
+  }
+
+  .bar-element-title {
+    margin-bottom: 16px;
   }
 
   .bar-element-row {

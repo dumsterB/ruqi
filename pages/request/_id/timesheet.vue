@@ -279,54 +279,11 @@
           </v-data-table>
         </div>
 
-        <v-row no-gutters v-if="pageCount > 1">
-          <v-col
-            cols="12"
-            sm="2"
-          >
-            <v-row class="align-center">
-              <v-col cols="9" class="pa-0">
-                <v-subheader>Строк на странице:</v-subheader>
-              </v-col>
-              <v-col cols="3" class="pa-0">
-                <div class="pagination-page-num">
-                  <v-text-field
-                    :value="itemsPerPage"
-                    type="text"
-                    @input="itemsPerPage = $event"
-                    single-line
-                    outlined
-                    hide-details="true"
-                  ></v-text-field>
-                </div>
-              </v-col>
-            </v-row>
-          </v-col>
-          <v-col
-            cols="12"
-            sm="10"
-          >
-            <v-pagination
-              v-model="page"
-              :length="pageCount"
-            ></v-pagination>
-          </v-col>
-        </v-row>
+        <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page" @setItemsPerPage="setItemsPerPage"
+                     @setCurrentPage="setCurrentPage"/>
 
       </v-col>
     </v-row>
-
-    <div class="wrapp-alert">
-      <v-alert
-        :value="requestSuccess.status"
-        :type="requestSuccess.type"
-        dismissible
-        transition="fade-transition">
-        {{ requestSuccess.text }}
-      </v-alert>
-    </div>
-
-
   </div>
 </template>
 
@@ -436,9 +393,6 @@ export default {
     request_id_timesheet() {
       return this.$store.getters['request_id_timesheet/request_id_timesheet']
     },
-    requestSuccess() {
-      return this.$store.getters['request_id_timesheet/requestSuccess']
-    },
     activeSelectBtnOption() {
       switch (this.activeSelectBtn) {
         case 0 :
@@ -546,17 +500,20 @@ export default {
 
       this.selectedItems = [];
     },
+    setItemsPerPage(value) {
+      this.itemsPerPage = value;
+    },
+    setCurrentPage(value) {
+      this.page = value;
+    }
 
   },
-
   async created() {
     await this.fetchRequestId(this.$route.params.id);
     await this.fetchRequestIdTimeSheet(this.$route.params.id);
 
   },
-  mounted() {
 
-  }
 
 }
 </script>

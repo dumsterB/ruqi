@@ -13,6 +13,7 @@
             <Topbar/>
             <div class="content">
               <Nuxt/>
+              <Alert :requestSuccess="requestSuccess"/>
             </div>
           </div>
         </v-container>
@@ -23,7 +24,12 @@
 
 <script>
 export default {
-  name: "default"
+  name: "default",
+  computed:{
+    requestSuccess() {
+      return this.$store.getters['response/requestSuccess'];
+    },
+  }
 }
 </script>
 

@@ -1,18 +1,10 @@
 export const state = () => ({
   requests: [],
-  response: {
-    status: false,
-    text: '',
-    type: 'error'
-  },
 })
 
 export const getters = {
   requests(state) {
     return state.requests;
-  },
-  requestSuccess(state) {
-    return state.response;
   },
 }
 
@@ -40,9 +32,9 @@ export const actions = {
       .then((response) => {
         console.log(response);
         dispatch('fetch');
-        commit('setSuccess', {type: 'success', text: 'Ваша заявка успешно создана'});
+        commit('response/setSuccess', {type: 'success', text: 'Ваша заявка успешно создана', }, {root: true});
         setTimeout(function() {
-          commit('removeSuccess');
+          commit('response/removeSuccess', null, { root: true });
         }, 2000);
         setTimeout(function() {
           self.$router.push('/request/');
@@ -50,9 +42,9 @@ export const actions = {
 
       })
       .catch((error) => {
-        commit('setSuccess', {type: 'error', text: 'Заполните поля заявки'});
+        commit('response/setSuccess', {type: 'error', text: 'Заполните поля заявки', }, {root: true});
         setTimeout(function() {
-          commit('removeSuccess');
+          commit('response/removeSuccess', null, { root: true });
         }, 3000);
         console.log(error);
       });
@@ -89,9 +81,9 @@ export const actions = {
       .then((response) => {
         console.log(response);
         dispatch('fetch');
-        commit('setSuccess', {type: 'success', text: 'Ваша заявка успешно обновлена'});
+        commit('response/setSuccess', {type: 'success', text: 'Ваша заявка успешно обновлена', }, {root: true});
         setTimeout(function() {
-          commit('removeSuccess');
+          commit('response/removeSuccess', null, { root: true });
         }, 2000);
         setTimeout(function() {
           self.$router.push('/request/');
@@ -109,17 +101,6 @@ export const mutations = {
   setRequest(state, requests) {
     state.requests = requests.data.data;
   },
-  createRequest(state, newRequest) {
-    state.requests.data.data.unshift(newRequest);
-  },
-  setSuccess(state, { type, text }){
-    state.response.status = true;
-    state.response.type = type;
-    state.response.text = text;
-  },
-  removeSuccess(state){
-    state.response.status  = false;
-  }
 }
 
 

@@ -1,18 +1,10 @@
 export const state = () => ({
   request_id_timesheet: [],
-  response: {
-    status: false,
-    text: '',
-    type: 'error'
-  },
 })
 
 export const getters = {
   request_id_timesheet(state) {
     return state.request_id_timesheet;
-  },
-  requestSuccess(state) {
-    return state.response;
   },
 }
 
@@ -39,9 +31,9 @@ export const actions = {
       .then((response) => {
         console.log(response);
         dispatch('fetchRequestIdTimeSheet', requestId);
-        commit('setSuccess', {type: 'success', text: 'Данные обновлены'});
+        commit('response/setSuccess', {type: 'success', text: 'Данные обновлены', }, {root: true});
         setTimeout(function () {
-          commit('removeSuccess');
+          commit('response/removeSuccess', null, { root: true });
         }, 2000);
 
       })
@@ -65,9 +57,9 @@ export const actions = {
       .then((response) => {
         console.log(response);
         dispatch('fetchRequestIdTimeSheet', uuid);
-        commit('setSuccess', {type: 'success', text: 'Данные обновлены'});
+        commit('response/setSuccess', {type: 'success', text: 'Данные обновлены', }, {root: true});
         setTimeout(function () {
-          commit('removeSuccess');
+          commit('response/removeSuccess', null, { root: true });
         }, 2000);
       })
       .catch((error) => {
@@ -95,12 +87,4 @@ export const mutations = {
   updateChangeButton(state, {id, activeStatus}) {
     state.request_id_timesheet.assigned[id].activeChangeButton = +activeStatus;
   },
-  setSuccess(state, { type, text }){
-    state.response.status = true;
-    state.response.type = type;
-    state.response.text = text;
-  },
-  removeSuccess(state){
-    state.success = false;
-  }
 }

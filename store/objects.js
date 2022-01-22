@@ -1,18 +1,14 @@
 export const state = () => ({
   objects: [],
-  response: {
-    status: false,
-    text: '',
-    type: 'error'
-  },
+  objects_map: [],
 })
 
 export const getters = {
   objects(state) {
     return state.objects;
   },
-  requestSuccess(state) {
-    return state.response;
+  objects_map(state) {
+    return state.objects_map;
   },
 }
 
@@ -29,6 +25,17 @@ export const actions = {
     commit('setObjects', objects)
 
   },
+  async fetchObjectsMap({commit}) {
+
+    const objects_map = await this.$axios.get('/manager/objects', {
+      headers: {
+        "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
+      },
+      params: {"type": "map"}
+    });
+    commit('setObjectsMap', objects_map)
+
+  },
   async createRequest({commit, dispatch}, newRequest) {
     let self= this;
     const requests = await this.$axios.post('/manager/objects',
@@ -43,9 +50,9 @@ export const actions = {
       .then((response) => {
         console.log(response);
         dispatch('fetchObjects');
-        commit('setSuccess', {type: 'success', text: 'Объект успешно создан'});
+        commit('response/setSuccess', {type: 'success', text: 'Объект успешно создан', }, {root: true});
         setTimeout(function() {
-          commit('removeSuccess');
+          commit('response/removeSuccess', null, { root: true });
         }, 2000);
         setTimeout(function() {
           self.$router.push('/objects/');
@@ -53,9 +60,9 @@ export const actions = {
 
       })
       .catch((error) => {
-        commit('setSuccess', {type: 'error', text: 'Заполните поля объекта'});
+        commit('response/setSuccess', {type: 'error', text: 'Заполните поля объекта', }, {root: true});
         setTimeout(function() {
-          commit('removeSuccess');
+          commit('response/removeSuccess', null, { root: true });
         }, 3000);
         console.log(error);
       });
@@ -75,9 +82,9 @@ export const actions = {
       .then((response) => {
         console.log(response);
         dispatch('fetchObjects');
-        commit('setSuccess', {type: 'success', text: 'Объект успешно обновлен'});
+        commit('response/setSuccess', {type: 'success', text: 'Объект успешно обновлен', }, {root: true});
         setTimeout(function() {
-          commit('removeSuccess');
+          commit('response/removeSuccess', null, { root: true });
         }, 2000);
         setTimeout(function() {
           self.$router.push('/objects/');
@@ -112,13 +119,8 @@ export const mutations = {
   setObjects(state, objects) {
     state.objects = objects.data.data;
   },
-  setSuccess(state, { type, text }){
-    state.response.status = true;
-    state.response.type = type;
-    state.response.text = text;
+  setObjectsMap(state, objects_map) {
+    state.objects_map = objects_map.data.data;
   },
-  removeSuccess(state){
-    state.response.status = false;
-  }
 }
 

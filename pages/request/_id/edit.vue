@@ -129,18 +129,7 @@
         </v-window>
       </v-form>
     </div>
-    <div class="wrapp-alert">
-      <v-alert
-        :value="requestSuccess.status"
-        :type="requestSuccess.type"
-        dismissible
-        transition="fade-transition">
-        {{requestSuccess.text}}
-      </v-alert>
-    </div>
-
   </div>
-
 </template>
 
 <script>
@@ -414,9 +403,6 @@ export default {
     },
     dispatchers() {
       return this.$store.getters['dispatchers/dispatchers']
-    },
-    requestSuccess() {
-      return this.$store.getters['requests/requestSuccess']
     },
     postBody() {
 

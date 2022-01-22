@@ -80,16 +80,6 @@
         </v-window>
       </v-form>
     </div>
-    <div class="wrapp-alert">
-      <v-alert
-        :value="requestSuccess.status"
-        :type="requestSuccess.type"
-        dismissible
-        transition="fade-transition">
-        {{ requestSuccess.text }}
-      </v-alert>
-    </div>
-
   </div>
 
 </template>
@@ -399,9 +389,6 @@ export default {
       };
 
       return postBody;
-    },
-    requestSuccess() {
-      return this.$store.getters['objects/requestSuccess']
     },
   },
   methods: {

@@ -31,8 +31,24 @@ export default {
     return {}
   },
   computed: {
+    firstChar() {
+      if (this.first_name && this.first_name.length > 1) {
+        return this.first_name.substr(0, 1)
+      }
+      else{
+        return '';
+      }
+    },
+    secondChar() {
+      if (this.last_name && this.last_name.length > 1) {
+        return this.last_name.substr(0, 1)
+      }
+      else{
+        return '';
+      }
+    },
     initials: function () {
-      return this.first_name.substr(0, 1) + this.last_name.substr(0, 1);
+      return this.firstChar + this.secondChar;
     },
   },
 }
@@ -40,7 +56,7 @@ export default {
 
 <style lang="scss">
 
-.user-plate{
+.user-plate {
   display: flex;
   align-items: center;
 
@@ -53,6 +69,7 @@ export default {
       border-radius: 8px;
       font-size: 13px;
     }
+
     .user-response {
       position: absolute;
       bottom: -10px;
@@ -60,21 +77,21 @@ export default {
     }
   }
 
-  .user-date{
+  .user-date {
     display: flex;
     flex-direction: column;
     line-height: 1.25;
     align-items: flex-start;
     font-weight: 600;
 
-    .user-name{
+    .user-name {
       color: #000;
 
     }
   }
 }
 
-.wrap-composite-state .user-plate{
+.wrap-composite-state .user-plate {
   .user-avatar {
     margin-right: 8px;
   }
