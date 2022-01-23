@@ -177,17 +177,13 @@
               </div>
             </template>
 
+            <template v-slot:item.hours="{ item }">
+              <div class="color-black">
+                {{ item.hours }} ч
+              </div>
+            </template>
+
             <template v-slot:item.actions="{ item }">
-              <v-btn
-                height="31"
-                @click=""
-                color="#F2F4F5"
-                class="elevation-0"
-              >
-                <v-icon color="#7A91A9">
-                  mdi-phone-outgoing-outline
-                </v-icon>
-              </v-btn>
               <v-btn
                 height="31"
                 @click="editItem(item)"
@@ -210,7 +206,7 @@
                   lazy-validation
                 >
                   <v-data-table
-                    :headers="headers.slice(3,11)"
+                    :headers="headers.slice(3,12)"
                     :items="[item]"
                     class="elevation-0"
                     hide-default-footer
@@ -256,6 +252,11 @@
                     <template v-slot:item.end="{ item }">
                       <div>
                         <FTypeTime name="end" :value="item.end.substring(0, 5)" @input="updateFiled('end', $event)"/>
+                      </div>
+                    </template>
+                    <template v-slot:item.hours="{ item }">
+                      <div>
+                        <FTypeText name="hours" :value="item.hours" :validation="['number']" @input="updateFiled('hours', $event)"/>
                       </div>
                     </template>
 
@@ -313,6 +314,7 @@ export default {
         {text: 'вид', value: 'calculation'},
         {text: 'начало', value: 'begin'},
         {text: 'конец', value: 'end'},
+        {text: 'колво', value: 'hours'},
         {text: '', value: 'actions', sortable: false, align: 'right'},
       ],
       page: 1,
@@ -434,7 +436,7 @@ export default {
     updateActionSelect(field, value) {
       this.actionParamsComponent.name = value;
 
-      if (value == 'position' || value == 'zone') {
+      if (value == 'position' || value == 'zone' || value == 'hours') {
         this.actionParamsComponent.type = 'FTypeText'
       } else if (value == 'smena' || value == 'status' || value == 'calculation') {
         this.actionParamsComponent.type = 'FTypeSelectUIID'

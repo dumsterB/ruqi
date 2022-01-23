@@ -10,6 +10,7 @@
       @input="$emit('input', new_value)"
       hide-details="auto"
       :rules="validation_array"
+      :class="{'number': validation && validation[0] == 'number'}"
     ></v-text-field>
   </div>
 </template>
@@ -29,6 +30,10 @@ export default {
         phone: value => {
           const pattern = /^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$/;
           return pattern.test(value) || 'Введите корректный телефон'
+        },
+        number: value => {
+          const pattern = /(?<=^| )\d+(\.\d+)?(?=$| )/;
+          return pattern.test(value) || 'Введите число'
         },
       },
     }
@@ -73,6 +78,9 @@ export default {
   .v-text-field--enclosed .v-input__prepend-outer,
   .v-text-field--enclosed .v-input__prepend-inner {
     margin-top: 10px;
+  }
+  .v-input.number{
+    max-width: 68px;
   }
 }
 

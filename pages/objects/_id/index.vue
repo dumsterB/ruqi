@@ -29,11 +29,12 @@
                   v-model="selectStatus"
                   :items="selectStatusOptions"
                   item-text="title"
-                  item-value="uuid"
+                  item-value="id"
                   solo
                   hide-details="true"
                   return-object
                   color="E5F3FC"
+                  @input="changeStatus(selectStatus.id)"
                 ></v-select>
                 <v-subheader>Ответственный:</v-subheader>
                 <UserAvatar v-if="" first_name="Василий" last_name="Петров" :color="avatarColorManager"
@@ -45,7 +46,7 @@
                   label="Действия"
                   :items="selectAction"
                   item-text="title"
-                  item-value="uuid"
+                  item-value="id"
                   hide-details="true"
                   single-line
                   outlined
@@ -344,31 +345,45 @@ export default {
         'Описание',
       ],
       tab: null,
-      selectStatus: "0001",
+      selectStatus: null,
       selectStatusOptions: [
         {
-          "uuid": "0001",
-          "title": 'Активна'
+          "id": "active",
+          "title": 'Активен'
         },
         {
-          "uuid": "0002",
-          "title": 'Не активна'
+          "id": "open",
+          "title": 'Открыт'
+        },
+        {
+          "id": "close",
+          "title": 'Закрыт'
         }
       ],
-      mfirstname: 'Андрей',
-      mlastname: 'Петров',
       avatarColor: '#36B368',
       avatarColorManager: '#D6D0FE',
       avatarRounded: 'rounded',
       selectAction: [
         {
-          "uuid": "0001",
+          "id": "edit",
           "title": 'Редактировать',
         },
         {
-          "uuid": "0002",
+          "id": "delete",
           "title": 'Удалить'
-        }
+        },
+        {
+          "id": "close",
+          "title": 'Закрыть'
+        },
+        {
+          "id": "open",
+          "title": 'Открыть'
+        },
+        {
+          "id": "active",
+          "title": 'Активен'
+        },
       ],
       activeAction: null,
       itemSortStatus: ['Все', 'Работает', 'Готов к работе', 'Неактивен'],
@@ -446,11 +461,13 @@ export default {
           "uuid": this.object_id.uuid
         }
       ]
-    }
+    },
+
   },
   methods: {
     ...mapActions('object_id', ['fetchObjectId',]),
     ...mapActions('object_id', ['fetchObjectIdRequest',]),
+    ...mapActions('object_id', ['putStatus',]),
 
     openRequest(id) {
       this.$router.push('/request/' + id);
@@ -471,6 +488,9 @@ export default {
         this.activeSelectAll = 0;
       }
     },
+    changeStatus(status){
+      this.putStatus({requestId: this.object_id.uuid, status: status});
+    },
     setItemsPerPage(value){
       this.itemsPerPage = value;
     },
@@ -480,14 +500,23 @@ export default {
   },
   watch: {
     activeAction: function (val) {
-      if (val == '0001') {
-        this.$router.push('/objects/' + this.$route.params.id + '/edit/');
+      if (val == 'edit'){
+        this.$router.push('/objects/'+ this.$route.params.id+'/edit/');
+      }
+      if (val == 'delete'){
+
+      }
+      else{
+        this.changeStatus(val);
+        this.selectStatus = val;
       }
     },
   },
   async created() {
     await this.fetchObjectId(this.$route.params.id);
     await this.fetchObjectIdRequest(this.$route.params.id);
+
+    this.selectStatus = this.object_id.status;
 
   },
   async mounted() {

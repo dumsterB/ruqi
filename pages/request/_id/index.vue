@@ -32,11 +32,12 @@
               v-model="selectStatus"
               :items="selectStatusOptions"
               item-text="title"
-              item-value="uuid"
+              item-value="id"
               solo
               hide-details="true"
               return-object
               color="E5F3FC"
+              @input="changeStatus(selectStatus.id)"
             ></v-select>
             <v-subheader>Ответственный:</v-subheader>
             <UserAvatar v-if="request_id.manager" :first_name="request_id.manager.firstname" :last_name="request_id.manager.lastname" :color="avatarColorManager"
@@ -63,7 +64,7 @@
               label="Действия"
               :items="selectAction"
               item-text="title"
-              item-value="uuid"
+              item-value="id"
               hide-details="true"
               single-line
               outlined
@@ -354,31 +355,45 @@ export default {
         'История изменений'
       ],
       tab: null,
-      selectStatus: "0001",
+      selectStatus: null,
       selectStatusOptions: [
         {
-          "uuid": "0001",
+          "id": "active",
           "title": 'Активна'
         },
         {
-          "uuid": "0002",
-          "title": 'Не активна'
+          "id": "open",
+          "title": 'Открыта'
+        },
+        {
+          "id": "close",
+          "title": 'Закрыта'
         }
       ],
-      mfirstname: 'Андрей',
-      mlastname: 'Петров',
       avatarColor: '#36B368',
       avatarColorManager: '#D6D0FE',
       avatarRounded: 'rounded',
       selectAction: [
         {
-          "uuid": "0001",
+          "id": "edit",
           "title": 'Редактировать',
         },
         {
-          "uuid": "0002",
+          "id": "delete",
           "title": 'Удалить'
-        }
+        },
+        {
+          "id": "close",
+          "title": 'Закрыть'
+        },
+        {
+          "id": "open",
+          "title": 'Открыть'
+        },
+        {
+          "id": "active",
+          "title": 'Активная'
+        },
       ],
       activeAction: null,
       itemSortStatus: ['Все', 'Работает', 'Готов к работе', 'Неактивен'],
@@ -472,6 +487,7 @@ export default {
   },
   methods: {
     ...mapActions('request_id', ['fetchRequestId',]),
+    ...mapActions('request_id', ['putStatus',]),
     ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchers',]),
     ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchersSelection',]),
     ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchersInvitations',]),
@@ -505,6 +521,9 @@ export default {
     addArtist(){
 
     },
+    changeStatus(status){
+      this.putStatus({requestId: this.request_id.uuid, status: status});
+    },
     setItemsPerPage(value){
       this.itemsPerPage = value;
     },
@@ -514,8 +533,15 @@ export default {
   },
   watch: {
     activeAction: function (val) {
-      if (val == '0001'){
+      if (val == 'edit'){
         this.$router.push('/request/'+ this.$route.params.id+'/edit/');
+      }
+      if (val == 'delete'){
+
+      }
+      else{
+        this.changeStatus(val);
+        this.selectStatus = val;
       }
     },
   },
@@ -524,6 +550,7 @@ export default {
     await this.fetchRequestIdDispatchers({requestId: this.$route.params.id});
     await this.fetchRequestIdHistory({requestId: this.$route.params.id});
 
+    this.selectStatus = this.request_id.status;
 
   },
   async mounted() {

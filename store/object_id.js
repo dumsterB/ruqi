@@ -34,6 +34,26 @@ export const actions = {
     commit('setObjectIdRequests', object_id_requests);
 
   },
+  async putStatus({commit, dispatch}, {requestId, status}) {
+    await this.$axios.put('/manager/objects/'+requestId+'/'+status,
+      {},
+      {
+        headers: {
+          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        dispatch('fetchObjectId', requestId);
+        commit('response/setSuccess', {type: 'success', text: 'Объект успешно обновлен', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
 }
 
 export const mutations = {

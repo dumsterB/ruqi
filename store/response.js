@@ -22,7 +22,6 @@ export const mutations = {
     state.response.status = true;
     state.response.type = type;
     state.response.text = text;
-    console.log('я сработал - ',type, text)
   },
   removeSuccess(state){
     state.response.status = false;
