@@ -25,13 +25,13 @@ export const actions = {
     commit('setObjects', objects)
 
   },
-  async fetchObjectsMap({commit}) {
+  async fetchObjectsMap({commit}, params) {
 
     const objects_map = await this.$axios.get('/manager/objects', {
       headers: {
         "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
       },
-      params: {"type": "map"}
+      params: params
     });
     commit('setObjectsMap', objects_map)
 

@@ -109,6 +109,9 @@ export default {
     fullDate() {
       return this.dateFormatted + ' ' + this.time;
     },
+  },
+  mounted() {
+    this.$emit('input', this.fullDate);
   }
 }
 </script>

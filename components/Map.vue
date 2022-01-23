@@ -11,6 +11,7 @@
         :marker-id="item.uuid"
         :hint-content="item.properties.hintContent"
         marker-type="placemark"
+        :balloon-template="balloonTemplate(item.info)"
       />
     </yandex-map>
   </div>
@@ -23,6 +24,13 @@ export default {
   data() {
     return {}
   },
+  methods:{
+    balloonTemplate(info) {
+      return `
+        <p>${info}</p>
+      `
+    }
+  }
 }
 </script>
 

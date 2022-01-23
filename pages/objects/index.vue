@@ -154,36 +154,37 @@
             </template>
           </v-data-table>
         </div>
-<!--        <v-row no-gutters v-if="pageCount > 1">
-          <v-col
-            cols="4"
-          >
-            <v-row class="align-center">
-              <v-col cols="9" class="d-flex align-center pa-0">
-                <v-subheader>Строк на странице:</v-subheader>
-                <div class="pagination-page-num">
-                  <v-text-field
-                    :value="itemsPerPage"
-                    type="text"
-                    @input="itemsPerPage = $event"
-                    single-line
-                    outlined
-                    hide-details="true"
-                  ></v-text-field>
-                </div>
-              </v-col>
-            </v-row>
-          </v-col>
-          <v-col
-            cols="4"
-          >
-            <v-pagination
-              v-model="page"
-              :length="pageCount"
-            ></v-pagination>
-          </v-col>
-        </v-row>-->
-        <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page" @setItemsPerPage="setItemsPerPage" @setCurrentPage="setCurrentPage"/>
+        <!--        <v-row no-gutters v-if="pageCount > 1">
+                  <v-col
+                    cols="4"
+                  >
+                    <v-row class="align-center">
+                      <v-col cols="9" class="d-flex align-center pa-0">
+                        <v-subheader>Строк на странице:</v-subheader>
+                        <div class="pagination-page-num">
+                          <v-text-field
+                            :value="itemsPerPage"
+                            type="text"
+                            @input="itemsPerPage = $event"
+                            single-line
+                            outlined
+                            hide-details="true"
+                          ></v-text-field>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                  <v-col
+                    cols="4"
+                  >
+                    <v-pagination
+                      v-model="page"
+                      :length="pageCount"
+                    ></v-pagination>
+                  </v-col>
+                </v-row>-->
+        <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page" @setItemsPerPage="setItemsPerPage"
+                     @setCurrentPage="setCurrentPage"/>
       </v-tab-item>
       <v-tab-item>
         <v-row class="mt-11">
@@ -267,12 +268,16 @@ export default {
     },
     filter() {
       const newRequet = this.postBody;
-      this.fetchObjects(newRequet);
+      if (this.tab == 0) {
+        this.fetchObjects(newRequet);
+      } else if (this.tab == 1) {
+        this.fetchObjectsMap(newRequet);
+      }
     },
-    setItemsPerPage(value){
+    setItemsPerPage(value) {
       this.itemsPerPage = value;
     },
-    setCurrentPage(value){
+    setCurrentPage(value) {
       this.page = value;
     }
 
@@ -298,6 +303,7 @@ export default {
       }
     },
     postBody() {
+      let type;
       let specialization = this.specialization,
         region = this.region;
       if (specialization == 'Все') {
@@ -306,12 +312,16 @@ export default {
       if (region == 'Все') {
         region = '';
       }
+      if (this.tab == 1) {
+        type = 'map';
+      }
       let postBody = {
         "specialization": specialization,
         "region": region,
         "active": this.active,
         "sort": "city",
-        "order": "asc"
+        "order": "asc",
+        "type": type
       }
       console.log(postBody);
       return postBody;
@@ -319,7 +329,7 @@ export default {
   },
   async mounted() {
     await this.fetchObjects();
-    await this.fetchObjectsMap();
+    await this.fetchObjectsMap({"type": "map"});
   }
 }
 </script>

@@ -23,7 +23,7 @@
 export default {
   props: {
     rating : {
-      type  : Object,
+      type  : String,
     },
 
     color : {

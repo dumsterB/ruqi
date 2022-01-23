@@ -458,7 +458,8 @@ export default {
           "properties": {
             "hintContent": this.object_id.name
           },
-          "uuid": this.object_id.uuid
+          "uuid": this.object_id.uuid,
+          "info": this.object_id.description
         }
       ]
     },
