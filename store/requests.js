@@ -1,27 +1,17 @@
-import Vue from "vue";
-
 export const state = () => ({
   requests: [],
-  response: {
-    status: false,
-    text: '',
-    type: 'error'
-  },
 })
 
 export const getters = {
   requests(state) {
     return state.requests;
   },
-  requestSuccess(state) {
-    return state.response;
-  },
 }
 
 
 export const actions = {
   async fetch({commit}) {
-    const requests = await this.$axios.get('https://cdn.ruqi.maxber.ru/api/v1/manager/tasks', {
+    const requests = await this.$axios.get('/manager/tasks', {
       headers: {
         "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
       }
@@ -30,7 +20,7 @@ export const actions = {
   },
   async createRequest({commit, dispatch}, newRequest) {
     let self= this;
-    const requests = await this.$axios.post('https://cdn.ruqi.maxber.ru/api/v1/manager/tasks',
+    const requests = await this.$axios.post('/manager/tasks',
       newRequest,
       {
         headers: {
@@ -42,9 +32,9 @@ export const actions = {
       .then((response) => {
         console.log(response);
         dispatch('fetch');
-        commit('setSuccess', {type: 'success', text: 'Ваша заявка успешно создана'});
+        commit('response/setSuccess', {type: 'success', text: 'Ваша заявка успешно создана', }, {root: true});
         setTimeout(function() {
-          commit('removeSuccess');
+          commit('response/removeSuccess', null, { root: true });
         }, 2000);
         setTimeout(function() {
           self.$router.push('/request/');
@@ -52,9 +42,9 @@ export const actions = {
 
       })
       .catch((error) => {
-        commit('setSuccess', {type: 'error', text: 'Заполните поля заявки'});
+        commit('response/setSuccess', {type: 'error', text: 'Заполните поля заявки', }, {root: true});
         setTimeout(function() {
-          commit('removeSuccess');
+          commit('response/removeSuccess', null, { root: true });
         }, 3000);
         console.log(error);
       });
@@ -62,7 +52,7 @@ export const actions = {
   },
   async removeRequest({commit, dispatch}, requestID) {
 
-    await this.$axios.delete('https://cdn.ruqi.maxber.ru/api/v1/manager/tasks/'+requestID, {
+    await this.$axios.delete('/manager/tasks/'+requestID, {
       headers: {
         "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
       },
@@ -79,7 +69,7 @@ export const actions = {
   },
   async putRequest({commit, dispatch}, {uuid, body}) {
     let self= this;
-    await this.$axios.put('https://cdn.ruqi.maxber.ru/api/v1/manager/tasks/'+uuid,
+    await this.$axios.put('/manager/tasks/'+uuid,
       body,
       {
         headers: {
@@ -91,9 +81,9 @@ export const actions = {
       .then((response) => {
         console.log(response);
         dispatch('fetch');
-        commit('setSuccess', {type: 'success', text: 'Ваша заявка успешно обновлена'});
+        commit('response/setSuccess', {type: 'success', text: 'Ваша заявка успешно обновлена', }, {root: true});
         setTimeout(function() {
-          commit('removeSuccess');
+          commit('response/removeSuccess', null, { root: true });
         }, 2000);
         setTimeout(function() {
           self.$router.push('/request/');
@@ -111,18 +101,6 @@ export const mutations = {
   setRequest(state, requests) {
     state.requests = requests.data.data;
   },
-  createRequest(state, newRequest) {
-    state.requests.data.data.unshift(newRequest);
-  },
-  setSuccess(state, { type, text }){
-    console.log(type, text);
-    state.response.status = true;
-    state.response.type = type;
-    state.response.text = text;
-  },
-  removeSuccess(state){
-    state.success = false;
-  }
 }
 
 

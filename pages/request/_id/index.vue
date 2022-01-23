@@ -26,20 +26,19 @@
     <div class="wrap-composite-state">
       <v-container>
         <v-row>
-          <v-col cols="3" class="d-flex">
+          <v-col cols="7" class="d-flex">
             <v-subheader>Статус:</v-subheader>
             <v-select
               v-model="selectStatus"
               :items="selectStatusOptions"
               item-text="title"
-              item-value="uuid"
+              item-value="id"
               solo
               hide-details="true"
               return-object
               color="E5F3FC"
+              @input="changeStatus(selectStatus.id)"
             ></v-select>
-          </v-col>
-          <v-col cols="4" class="d-flex">
             <v-subheader>Ответственный:</v-subheader>
 
             <UserAvatar
@@ -52,13 +51,13 @@
               :uuid="item ? item.uuid : ''"
             />
           </v-col>
-          <v-col cols="5" class="d-flex">
+          <v-col cols="5" class="d-flex justify-end ">
             <v-btn
               text
               height="48"
               outlined
               class="bt-time-sheet"
-              @click=""
+              @click="openTimesheet"
             >
               <v-icon
                 left
@@ -73,11 +72,12 @@
               label="Действия"
               :items="selectAction"
               item-text="title"
-              item-value="uuid"
+              item-value="id"
               hide-details="true"
               single-line
               outlined
               filled
+              max-width="200px"
             ></v-select>
           </v-col>
         </v-row>
@@ -232,7 +232,6 @@
             :items-per-page="itemsPerPageTable"
             @page-count="pageCount = $event"
             hide-default-footer
-            :search="searchText"
           >
             <template v-slot:item.name="{ item }">
               <UserAvatar
@@ -274,46 +273,34 @@
             </template>
 
             <template v-slot:item.actions="{ item }">
-              <v-btn icon>
-                <v-icon>mdi-dots-vertical</v-icon>
-              </v-btn>
+              <v-menu
+                bottom
+                rounded="10"
+                offset-y
+                nudge-bottom="10"
+                left
+              >
+                <template v-slot:activator="{ on }">
+                  <v-btn icon
+                         v-on="on">
+                    <v-icon>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </template>
+                <v-card class="table-action-menu">
+                  <v-list-item-content class="justify-start">
+                    <div class="mx-auto text-left">
+                      <a v-if="tab==0" href="#" @click.prevent="acceptRequest({task_uuid:request_id.uuid, user_uuid: item.uuid})">Принять</a>
+                      <v-divider class="my-3" v-if="tab==0"></v-divider>
+                      <a href="#" @click.prevent="rejectRequest({task_uuid:request_id.uuid, user_uuid: item.uuid, dispatchMetod: dispatchMetod})">Отклонить</a>
+                    </div>
+                  </v-list-item-content>
+                </v-card>
+              </v-menu>
             </template>
           </v-data-table>
         </div>
 
-        <v-row no-gutters v-if="pageCount > 1">
-          <v-col
-            cols="12"
-            sm="2"
-          >
-            <v-row class="align-center">
-              <v-col cols="9" class="pa-0">
-                <v-subheader>Строк на странице:</v-subheader>
-              </v-col>
-              <v-col cols="3" class="pa-0">
-                <div class="pagination-page-num">
-                  <v-text-field
-                    :value="itemsPerPage"
-                    type="text"
-                    @input="itemsPerPage = $event"
-                    single-line
-                    outlined
-                    hide-details="true"
-                  ></v-text-field>
-                </div>
-              </v-col>
-            </v-row>
-          </v-col>
-          <v-col
-            cols="12"
-            sm="10"
-          >
-            <v-pagination
-              v-model="page"
-              :length="pageCount"
-            ></v-pagination>
-          </v-col>
-        </v-row>
+        <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page" @setItemsPerPage="setItemsPerPage" @setCurrentPage="setCurrentPage"/>
       </v-tab-item>
 
       <v-tab-item>
@@ -392,38 +379,52 @@ export default {
         'История изменений'
       ],
       tab: null,
-      selectStatus: "0001",
+      selectStatus: null,
       selectStatusOptions: [
         {
-          "uuid": "0001",
+          "id": "active",
           "title": 'Активна'
         },
         {
-          "uuid": "0002",
-          "title": 'Не активна'
+          "id": "open",
+          "title": 'Открыта'
+        },
+        {
+          "id": "close",
+          "title": 'Закрыта'
         }
       ],
-      mfirstname: 'Андрей',
-      mlastname: 'Петров',
       avatarColor: '#36B368',
       avatarColorManager: '#D6D0FE',
       avatarRounded: 'rounded',
       selectAction: [
         {
-          "uuid": "0001",
+          "id": "edit",
           "title": 'Редактировать',
         },
         {
-          "uuid": "0002",
+          "id": "delete",
           "title": 'Удалить'
-        }
+        },
+        {
+          "id": "close",
+          "title": 'Закрыть'
+        },
+        {
+          "id": "open",
+          "title": 'Открыть'
+        },
+        {
+          "id": "active",
+          "title": 'Активная'
+        },
       ],
       activeAction: null,
       itemSortStatus: ['Все', 'Работает', 'Готов к работе', 'Неактивен'],
       itemSort: ['По рейтингу', 'По дате'],
       page: 1,
       pageCount: 0,
-      itemsPerPage: 3,
+      itemsPerPage: 5,
       selected: [],
       property1: true,
       property2: true,
@@ -435,7 +436,7 @@ export default {
         {text: 'Адрес', value: 'address'},
         {text: 'На объекте', value: 'onobject'},
         {text: 'Приглашен', value: 'invited'},
-        {text: '', value: 'actions', sortable: false},
+        {text: '', value: 'actions', sortable: false, align: 'right'},
       ],
       headers_history: [
         {text: 'Дата', value: 'date',},
@@ -443,6 +444,7 @@ export default {
         {text: 'Элемент', value: 'element'},
         {text: 'Изменение', value: 'change'},
       ],
+
       desserts: [
         {
           name: 'Васильев Петр Иванович',
@@ -471,12 +473,13 @@ export default {
           invited: '',
           id: 1
         },
-
       ],
 
       /* data for Overlay of adding Performers START*/
         addPerformersOverlay  : false,
       /* data for Overlay of adding Performers END*/
+
+      dispatchMetod: 'fetchRequestIdDispatchers',
     }
   },
 
@@ -491,17 +494,12 @@ export default {
     request_id() {
       return this.$store.getters['request_id/request_id'];
     },
-    request_id_dispatchers() {
-      if (this.$store.getters['request_id_dispatchers/request_id_dispatchers'] == '[]'){
-        return [];
-      }
-      else{
-        console.debug( "request_id_dispatchers" ); // TODO delete
-        console.debug( this.$store.getters['request_id_dispatchers/request_id_dispatchers'] ); // TODO delete
 
-        return this.$store.getters['request_id_dispatchers/request_id_dispatchers'];
-      }
+    request_id_dispatchers ()
+    {
+      return this.$store.getters['request_id_dispatchers/request_id_dispatchers'];
     },
+
     request_id_history() {
       return this.$store.getters['request_id_dispatchers/request_id_history']
     },
@@ -553,26 +551,50 @@ export default {
 
   methods: {
     ...mapActions('request_id', ['fetchRequestId',]),
+    ...mapActions('request_id', ['putStatus',]),
     ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchers',]),
     ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchersSelection',]),
     ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchersInvitations',]),
     ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchersaAssigned',]),
     ...mapActions('request_id_dispatchers', ['fetchRequestIdHistory',]),
+    ...mapActions('request_id_dispatchers', ['acceptRequest',]),
+    ...mapActions('request_id_dispatchers', ['rejectRequest',]),
 
     updateSearchText(value) {
       this.searchText = value;
+      this.fetchRequestIdDispatchers({requestId: this.$route.params.id, params: {"name": value}});
     },
 
     async selectData(index) {
       if (index == 0) {
-        await this.fetchRequestIdDispatchers(this.$route.params.id);
+        await this.fetchRequestIdDispatchers({requestId: this.$route.params.id});
+        this.dispatchMetod = 'fetchRequestIdDispatchers';
       } else if (index == 1) {
-        await this.fetchRequestIdDispatchersSelection(this.$route.params.id);
+        await this.fetchRequestIdDispatchersSelection({requestId: this.$route.params.id});
+        this.dispatchMetod = 'fetchRequestIdDispatchersSelection';
       } else if (index == 2) {
-        await this.fetchRequestIdDispatchersInvitations(this.$route.params.id);
+        await this.fetchRequestIdDispatchersInvitations({requestId: this.$route.params.id});
+        this.dispatchMetod = 'fetchRequestIdDispatchersInvitations';
       } else if (index == 3) {
-        await this.fetchRequestIdDispatchersaAssigned(this.$route.params.id);
+        await this.fetchRequestIdDispatchersaAssigned({requestId: this.$route.params.id});
+        this.dispatchMetod = 'fetchRequestIdDispatchersaAssigned';
       }
+    },
+
+    openTimesheet(){
+      this.$router.push('/request/'+ this.$route.params.id+'/timesheet/');
+    },
+
+    changeStatus(status){
+      this.putStatus({requestId: this.request_id.uuid, status: status});
+    },
+
+    setItemsPerPage(value){
+      this.itemsPerPage = value;
+    },
+
+    setCurrentPage(value){
+      this.page = value;
     },
 
     addArtist ( params = {} ) // FIXME
@@ -604,19 +626,25 @@ export default {
   },
   watch: {
     activeAction: function (val) {
-      if (val == '0001'){
+      if (val == 'edit'){
         this.$router.push('/request/'+ this.$route.params.id+'/edit/');
+      }
+      if (val == 'delete'){
+
+      }
+      else{
+        this.changeStatus(val);
+        this.selectStatus = val;
       }
     },
   },
 
   async created() {
     await this.fetchRequestId(this.$route.params.id);
-    await this.fetchRequestIdDispatchers(this.$route.params.id);
-    await this.fetchRequestIdHistory(this.$route.params.id);
+    await this.fetchRequestIdDispatchers({requestId: this.$route.params.id});
+    await this.fetchRequestIdHistory({requestId: this.$route.params.id});
 
-    console.debug( 'this.$route.params.id' );
-    console.debug( this.$route.params.id );
+    this.selectStatus = this.request_id.status;
   },
 
   async mounted() {
@@ -653,7 +681,7 @@ export default {
   display: flex;
   align-items: center;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 600;
   color: $grey;
   padding-left: 66px;
   margin-bottom: 32px;
@@ -694,6 +722,10 @@ export default {
     color: white;
     margin-right: 10px;
     border: none;
+  }
+
+  .v-select {
+    max-width: 200px;
   }
 
   .v-select__slot {

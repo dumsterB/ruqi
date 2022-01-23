@@ -1,47 +1,58 @@
 <template>
   <div>
     <Header :content="title" :size="title_size" :isnew="false" :isback="false"/>
-
     <v-row no-gutters class="table-filter-row">
       <v-col
-        cols="12"
-        sm="2"
+        cols="2"
       >
         <v-select
-          :items="itemSort"
+          :items="sortRegions"
+          v-model="region"
           outlined
-          value="Все"
           hide-details="true"
+          label="Расположение"
+          item-text="name"
+          @change="filter('region', region)"
         ></v-select>
       </v-col>
       <v-col
-        cols="12"
-        sm="2"
+        cols="2"
       >
         <v-select
-          :items="itemSort"
+          :items="sortSpecializations"
+          v-model="specialization"
           outlined
-          value="Все"
           hide-details="true"
+          label="Категория"
+          item-text="name"
+          @change="filter('specialization', specialization)"
+        ></v-select>
+      </v-col>
+      <v-col
+        cols="2"
+      >
+        <v-select
+          :items="sortActive"
+          v-model="active"
+          outlined
+          hide-details="true"
+          label="Активность"
+          item-text="title"
+          @change="filter('active', active)"
         ></v-select>
       </v-col>
 
       <v-col
-        cols="12"
-        sm="7"
+        cols="6"
         class="d-flex justify-end"
       >
-        <Search :searchText="searchText" @updateSearchText = "updateSearchText"/>
-      </v-col>
 
-      <v-col
-        cols="12"
-        sm="1"
-      >
+        <Search :searchText="searchText" @updateSearchText="updateSearchText"/>
         <v-tabs right class="icon-tabs"
-                height="40">
+                height="40"
+                v-model="tab">
           <v-tab>
-            <img src="img/ico_list.svg" alt="list">
+            <img src="/img/ico_list.svg" alt="list">
           </v-tab>
           <v-tab>
             <v-icon
@@ -54,203 +65,262 @@
         </v-tabs>
       </v-col>
     </v-row>
-    <v-row no-gutters class="table-filter-row">
-      <v-col
-        cols="12"
-        sm="6"
-        class="d-flex"
-      >
-        <v-checkbox
-          v-model="property1"
-          label="Свойство 1"
-        ></v-checkbox>
-        <v-checkbox
-          v-model="property2"
-          label="Свойство 2"
-        ></v-checkbox>
-      </v-col>
-    </v-row>
+
     <v-divider></v-divider>
 
-    <div class="table-list-style">
-      <v-data-table
-        v-model="selected"
-        show-select
-        :headers="headers"
-        :items="desserts"
-        class="elevation-0"
-        item-key="id"
-        :page.sync="page"
-        :items-per-page="itemsPerPageTable"
-        @page-count="pageCount = $event"
-        hide-default-footer
-        :search="searchText"
-      >
-        <template v-slot:item.name="{ item }">
-          <span class="request-i"></span>
-          {{ item.name }}
-        </template>
-
-        <template v-slot:item.pay="{ item }">
-          <span class="request-pay">{{ item.pay }}</span>
-        </template>
-
-        <template v-slot:item.rating="{ item }">
-          <v-rating
-            color="#FFCB45"
-            empty-icon="mdi-star"
-            full-icon="mdi-star"
-            half-icon="mdi-star-half-full"
-            hover
-            half-increments
-            length="5"
-            size="14"
-            v-model="item.rating"
-          ></v-rating>
-          <span class="grey--text text--lighten-2 text-caption mr-2">
-              {{ item.rating }}
-            </span>
-        </template>
-
-        <template v-slot:item.manager="{ item }">
-          <UserAvatar :first_name="item.manager_name" :last_name="item.manager_lastname" :color="avatarColor"/>
-        </template>
-
-        <template v-slot:item.actions="{ item }">
-          <v-btn icon>
-            <v-icon>mdi-dots-vertical</v-icon>
-          </v-btn>
-        </template>
-      </v-data-table>
-    </div>
-
-    <v-row no-gutters>
-      <v-col
-        cols="12"
-        sm="2"
-      >
-        <v-row class="align-center">
-          <v-col cols="8" class="pa-0">
-            <v-subheader>Строк на странице:</v-subheader>
-          </v-col>
-          <v-col cols="4" class="pa-0">
-            <div class="pagination-page-num">
-              <v-text-field
-                :value="itemsPerPage"
-                type="text"
-                @input="itemsPerPage = $event"
-                single-line
-                outlined
-                hide-details="true"
-              ></v-text-field>
-            </div>
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-col
-        cols="12"
-        sm="10"
-      >
-        <v-pagination
-          v-model="page"
-          :length="pageCount"
-        ></v-pagination>
+    <v-row no-gutters class="mt-8">
+      <v-col>
+        <v-btn
+          text
+          height="48"
+          outlined
+          class="btn-blue"
+          :href="$route.name + '/create'"
+        >
+          Создать новый объект
+        </v-btn>
       </v-col>
     </v-row>
+
+    <v-window v-model="tab">
+      <v-tab-item>
+        <div class="table-list-style">
+          <v-data-table
+            v-model="selected"
+            :headers="headers"
+            :items="objects"
+            class="elevation-0"
+            item-key="uuid"
+            :page.sync="page"
+            :items-per-page="itemsPerPageTable"
+            @page-count="pageCount = $event"
+            hide-default-footer
+          >
+            <template v-slot:item.name="{ item }">
+              <div class="color-black" @click="openRequest(item.uuid)">
+                <span class="request-i"></span>
+                {{ item.name }}
+              </div>
+
+            </template>
+
+            <template v-slot:item.rating="{ item }">
+              <Rating :rating="item.raiting"/>
+            </template>
+
+            <template v-slot:item.request="{ item }">
+              <div class="color-black">
+                {{ item.count_tasks }}
+              </div>
+            </template>
+
+            <template v-slot:item.dispatcher="{ item }">
+              <UserAvatar :first_name="item.dispatchers.firstname" :last_name="item.dispatchers.lastname"
+                          :color="avatarColor" v-if="item.dispatchers.firstname"/>
+            </template>
+
+            <template v-slot:item.address="{ item }">
+              <div>
+                {{ item.region }}, {{ item.city }}
+              </div>
+            </template>
+
+            <template v-slot:item.actions="{ item }">
+              <v-menu
+                bottom
+                rounded="10"
+                offset-y
+                nudge-bottom="10"
+                left
+              >
+                <template v-slot:activator="{ on }">
+                  <v-btn icon
+                         v-on="on">
+                    <v-icon>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-list-item-content class="justify-start">
+                    <div class="mx-auto text-left">
+                      <nuxt-link :to="'/objects/'+ item.uuid +'/edit/'">
+                        <span>Редактировать</span>
+                      </nuxt-link>
+                      <v-divider class="my-3"></v-divider>
+                      <a href="#" @click.prevent="removeRequest(item.uuid)">Удалить</a>
+                    </div>
+                  </v-list-item-content>
+                </v-card>
+              </v-menu>
+            </template>
+          </v-data-table>
+        </div>
+<!--        <v-row no-gutters v-if="pageCount > 1">
+          <v-col
+            cols="4"
+          >
+            <v-row class="align-center">
+              <v-col cols="9" class="d-flex align-center pa-0">
+                <v-subheader>Строк на странице:</v-subheader>
+                <div class="pagination-page-num">
+                  <v-text-field
+                    :value="itemsPerPage"
+                    type="text"
+                    @input="itemsPerPage = $event"
+                    single-line
+                    outlined
+                    hide-details="true"
+                  ></v-text-field>
+                </div>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col
+            cols="4"
+          >
+            <v-pagination
+              v-model="page"
+              :length="pageCount"
+            ></v-pagination>
+          </v-col>
+        </v-row>-->
+        <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page" @setItemsPerPage="setItemsPerPage" @setCurrentPage="setCurrentPage"/>
+      </v-tab-item>
+      <v-tab-item>
+        <v-row class="mt-11">
+          <v-col cols="12">
+            <Map :center_coords="coords" :markers="objects_map" zoom="8" height="546"/>
+          </v-col>
+        </v-row>
+      </v-tab-item>
+    </v-window>
   </div>
 </template>
 
 <script>
-import UserAvatar from "@/components/UserAvatar";
+
+import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 
 export default {
-  components: {UserAvatar},
+  async fetch({store}) {
+    if (store.getters['specializations/specializations'].length === 0) {
+      await store.dispatch('specializations/fetch')
+    }
+    if (store.getters['dictionary/regions'].length === 0) {
+      await store.dispatch('dictionary/fetchRegions')
+    }
+  },
   data() {
     return {
       title: 'Объекты',
       title_size: 'big',
       title_create: false,
       title_page_create: 'create',
-      itemSort: ['Все', 'Леруа Мерлен', 'SBS'],
+      sortSpecializations: [],
+      sortRegions: [],
+      sortActive: [
+        {title: 'Неделя', value: 1},
+        {title: 'Месяц', value: 4},
+        {title: 'Полгода ', value: 26},
+        {title: 'Год', value: 52},
+      ],
+      defSort: [{name: 'Все', uuid: '0000'}],
+      specialization: '',
+      region: '',
+      active: '',
+      searchText: '',
+      selectObject: null,
       page: 1,
       pageCount: 0,
-      itemsPerPage: 3,
+      itemsPerPage: 5,
       selected: [],
       avatarColor: '#EFCD4F',
-      property1: true,
-      property2: true,
-      searchText: '',
       headers: [
         {text: 'Название', align: 'start', value: 'name',},
         {text: 'Рейтинг', value: 'rating'},
         {text: 'Заявки', value: 'request'},
-        {text: 'Менеджер', value: 'manager'},
+        {text: 'Диспетчер', value: 'dispatcher'},
         {text: 'Расположен', value: 'address'},
-        {text: '', value: 'actions', sortable: false},
+        {text: '', value: 'actions', sortable: false, align: 'right'},
       ],
-      desserts: [
-        {
-          name: 'Леруа мерлен',
-          rating: 4.5,
-          request: 999,
-          manager_name: 'Алексей',
-          manager_lastname: 'Петров',
-          address: 'Промышленный проезд, 9, село Беседы, Ленинский городской округ',
-          id: 1
-        },
-        {
-          name: 'Леруа мерлен',
-          rating: 4.5,
-          request: 25,
-          manager_name: 'Алексей',
-          manager_lastname: 'Петров',
-          address: 'Промышленный проезд, 9, село Беседы, Ленинский городской округ',
-          id: 2
-        },
-        {
-          name: 'Леруа мерлен',
-          rating: 4.5,
-          request: 105,
-          manager_name: 'Алексей',
-          manager_lastname: 'Петров',
-          address: 'Промышленный проезд, 9, село Беседы, Ленинский городской округ',
-          id: 3
-        },
-        {
-          name: 'Леруа мерлен',
-          rating: 4.5,
-          request: 999,
-          manager_name: 'Алексей',
-          manager_lastname: 'Петров',
-          address: 'Промышленный проезд, 9, село Беседы, Ленинский городской округ',
-          id: 4
-        },
-        {
-          name: 'Леруа мерлен',
-          rating: 4.5,
-          request: 999,
-          manager_name: 'Алексей',
-          manager_lastname: 'Петров',
-          address: 'Промышленный проезд, 9, село Беседы, Ленинский городской округ',
-          id: 5
-        },
-      ],
+      tab: null,
+      coords: [45.04, 38.98],
     }
+  },
+  created() {
+
+    this.sortSpecializations = this.defSort.concat(this.specializations);
+    this.sortRegions = this.defSort.concat(this.regions);
   },
   methods: {
-    updateSearchText(value){
+    ...mapActions('objects', ['fetchObjects',]),
+    ...mapActions('objects', ['fetchObjectsMap',]),
+    ...mapActions('objects', ['removeRequest',]),
+    ...mapActions('specializations', ['fetch',]),
+    ...mapActions('dictionary', ['fetchRegions',]),
+
+    openRequest(id) {
+      this.$router.push('/objects/' + id);
+    },
+    updateSearchText(value) {
       this.searchText = value;
+      this.fetchObjects({"name": value});
+    },
+    filter() {
+      const newRequet = this.postBody;
+      this.fetchObjects(newRequet);
+    },
+    setItemsPerPage(value){
+      this.itemsPerPage = value;
+    },
+    setCurrentPage(value){
+      this.page = value;
     }
+
   },
   computed: {
+    objects() {
+      return this.$store.getters['objects/objects'];
+    },
+    objects_map() {
+      return this.$store.getters['objects/objects_map'];
+    },
+    specializations() {
+      return this.$store.getters['specializations/specializations'];
+    },
+    regions() {
+      return this.$store.getters['dictionary/regions'];
+    },
     itemsPerPageTable() {
       if (this.itemsPerPage) {
         return parseInt(this.itemsPerPage, 10)
       } else {
         return 1;
       }
+    },
+    postBody() {
+      let specialization = this.specialization,
+        region = this.region;
+      if (specialization == 'Все') {
+        specialization = '';
+      }
+      if (region == 'Все') {
+        region = '';
+      }
+      let postBody = {
+        "specialization": specialization,
+        "region": region,
+        "active": this.active,
+        "sort": "city",
+        "order": "asc"
+      }
+      console.log(postBody);
+      return postBody;
     }
   },
+  async mounted() {
+    await this.fetchObjects();
+    await this.fetchObjectsMap();
+  }
 }
 </script>
 
@@ -258,33 +328,9 @@ export default {
 
 @import '../../assets/scss/colors';
 
-.request-i {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  background: $green;
-  margin-right: 8px;
-  border-radius: 10px;
-}
 
-.request-pay {
-  background: $light_blue;
-  color: $blue;
-  padding: 7px 8px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.request-time {
-  display: flex;
-  align-items: center;
-  line-height: 1;
-
-  img {
-    margin-right: 12px;
-  }
+.v-divider {
+  margin: 24px 0;
 }
 
 </style>
-

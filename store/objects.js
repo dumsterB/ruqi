@@ -1,32 +1,126 @@
 export const state = () => ({
-  objects: []
+  objects: [],
+  objects_map: [],
 })
 
 export const getters = {
-  objects: s => s.objects
+  objects(state) {
+    return state.objects;
+  },
+  objects_map(state) {
+    return state.objects_map;
+  },
 }
 
 
 export const actions = {
-  async fetchObjects({commit}) {
+  async fetchObjects({commit}, params) {
 
-    const objects = await this.$axios.get('https://cdn.ruqi.maxber.ru/api/v1/manager/objects', {
+    const objects = await this.$axios.get('/manager/objects', {
       headers: {
-        "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
-      }
+        "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
+      },
+      params: params
     });
     commit('setObjects', objects)
 
-  }
+  },
+  async fetchObjectsMap({commit}) {
+
+    const objects_map = await this.$axios.get('/manager/objects', {
+      headers: {
+        "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
+      },
+      params: {"type": "map"}
+    });
+    commit('setObjectsMap', objects_map)
+
+  },
+  async createRequest({commit, dispatch}, newRequest) {
+    let self= this;
+    const requests = await this.$axios.post('/manager/objects',
+      newRequest,
+      {
+        headers: {
+          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
+          'Content-Type': 'application/json',
+        },
+
+      })
+      .then((response) => {
+        console.log(response);
+        dispatch('fetchObjects');
+        commit('response/setSuccess', {type: 'success', text: 'Объект успешно создан', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+        setTimeout(function() {
+          self.$router.push('/objects/');
+        }, 3000);
+
+      })
+      .catch((error) => {
+        commit('response/setSuccess', {type: 'error', text: 'Заполните поля объекта', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 3000);
+        console.log(error);
+      });
+
+  },
+  async putRequest({commit, dispatch}, {uuid, body}) {
+    let self= this;
+    await this.$axios.put('/manager/objects/'+uuid,
+      body,
+      {
+        headers: {
+          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
+          'Content-Type': 'application/json',
+        },
+
+      })
+      .then((response) => {
+        console.log(response);
+        dispatch('fetchObjects');
+        commit('response/setSuccess', {type: 'success', text: 'Объект успешно обновлен', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+        setTimeout(function() {
+          self.$router.push('/objects/');
+        }, 3000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+
+  },
+  async removeRequest({commit, dispatch}, requestID) {
+
+    await this.$axios.delete('/manager/objects/'+requestID, {
+      headers: {
+        "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
+      },
+    })
+      .then((response) => {
+        console.log(response);
+        dispatch('fetchObjects');
+
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  },
 }
 
 export const mutations = {
   setObjects(state, objects) {
     state.objects = objects.data.data;
-    /*state.objects.unshift({
-      "uuid": "0000",
-      "name": "Все"
-    });*/
-  }
+  },
+  setObjectsMap(state, objects_map) {
+    state.objects_map = objects_map.data.data;
+  },
 }
 

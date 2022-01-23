@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header :content="title" :size="title_size" :isnew="false" :isback="true"/>
+    <Header :content="object_id.name" :size="title_size" :isnew="false" :isback="true"/>
     <v-tabs
       v-model="tab"
       class="form-tabs"
@@ -10,7 +10,7 @@
         {{ item }}
       </v-tab>
     </v-tabs>
-    <div class="wrap-form">
+    <div class="wrap-form" :class="{'full': tab == 3}">
       <v-form
         ref="form"
         v-model="valid"
@@ -73,6 +73,11 @@
               <AddFormPart :text="addContactPersText" @addFormPart="addFormPart"/>
             </v-form>
           </v-tab-item>
+          <v-tab-item>
+            <v-form ref="form_part_3" v-model="valid" lazy-validation>
+              <AddFormPart text="Создать новую заявку" @addFormPart="addRequest"/>
+            </v-form>
+          </v-tab-item>
 
           <FNavigation :indexTab="tab" :nextButtonsText="nextButtonsText" @nextFromButton="nextFromButton"
                        @prevFromButton="prevFromButton"/>
@@ -81,7 +86,6 @@
       </v-form>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -91,9 +95,7 @@ import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 
 export default {
   async fetch({store}) {
-    if (store.getters['objects/objects'].length === 0) {
-      // await store.dispatch('objects/fetchObjects')
-    }
+
     if (store.getters['specializations/specializations'].length === 0) {
       await store.dispatch('specializations/fetch')
     }
@@ -121,13 +123,14 @@ export default {
       title_create: false,
       title_page_create: '',
       tabs_list: [
-        'Общее', 'Ответственные', 'Контактные лица',
+        'Общее', 'Ответственные', 'Контактные лица', 'Заявки'
       ],
       tab: null,
       nextButtonsText: [
         'Указать ответственных',
         'указать контактных лиц',
-        'создать объект'
+        'добавить заявки',
+        'сохранить'
       ],
       meta: {
         meta_object_info: [
@@ -324,6 +327,9 @@ export default {
     }
   },
   computed: {
+    object_id() {
+      return this.$store.getters['object_id/object_id']
+    },
     specializations() {
       return this.$store.getters['specializations/specializations'];
     },
@@ -388,33 +394,37 @@ export default {
         "contacts": contacts
       };
 
+      console.log(postBody);
+
       return postBody;
     },
+
   },
   methods: {
-    ...mapActions('objects', ['fetchObjects',]),
+    ...mapActions('object_id', ['fetchObjectId',]),
     ...mapActions('specializations', ['fetchSpecializations',]),
     ...mapActions('dictionary', ['fetchDispatchers',]),
     ...mapActions('dictionary', ['fetchManagers',]),
     ...mapActions('objects', ['createRequest',]),
+    ...mapActions('objects', ['putRequest',]),
     ...mapActions('dictionary', ['fetchClients',]),
     ...mapActions('dictionary', ['fetchOrganizations',]),
 
     addResponsible(resp_name) {
       let resp = this.dispatchers;
-      this.meta['meta_object_'+resp_name].push({
+      this.meta['meta_object_' + resp_name].push({
           type: 'FTypeSelectUIID',
           icon: 'mdi-account',
           label: '',
           col: 12,
-          name: 'object_' + resp_name + '_' + this.meta['meta_object_'+resp_name].length,
+          name: 'object_' + resp_name + '_' + this.meta['meta_object_' + resp_name].length,
           remove: true,
           params: {
             options: resp,
             item_text: 'fullname',
             label: 'Не выбрано'
           },
-          parent_array: 'meta_object_'+resp_name,
+          parent_array: 'meta_object_' + resp_name,
           validation: 'required',
         },
       );
@@ -457,6 +467,9 @@ export default {
         ],
       );
     },
+    addRequest() {
+      this.$router.replace('/objects/create');
+    },
     removeItem(index, array) {
       if (index != 0) {
         this.meta[array].splice(index, 1);
@@ -478,7 +491,7 @@ export default {
       } else {
         const newRequet = JSON.stringify(this.postBody);
         console.log(newRequet);
-       this.createRequest(newRequet);
+        this.putRequest({uuid: this.object_id.uuid, body: newRequet});
       }
     },
     prevFromButton() {
@@ -488,8 +501,63 @@ export default {
       this.formValues[field] = value;
       console.log(field, value);
     },
+    addFileds(length, method, args) {
+      if (length > 1) {
+        for (let i = 1; i < length; i++) {
+          this[method](args);
+        }
+      }
+    }
   },
-  created() {
+  async created() {
+
+    await this.fetchObjectId(this.$route.params.id);
+    console.log(this.$route.params.id);
+
+    console.log(this.object_id);
+
+    let contact_length = this.object_id.contacts.length,
+      dispatchers_length = this.object_id.dispatchers.length,
+      managers_length = this.object_id.managers.length;
+
+    await this.addFileds(contact_length, 'addFormPart', '');
+    await this.addFileds(dispatchers_length, 'addResponsible', 'dispatchers');
+    await this.addFileds(managers_length, 'addResponsible', 'manager');
+
+    this.meta.meta_object_info[0].params.options = this.organizations;
+    this.meta.meta_object_entity[0].params.options = this.clients;
+    this.meta.meta_object_info[2].params.options = this.objectType;
+    this.meta.meta_object_info[3].params.options = this.specializations;
+    this.meta.meta_object_manager[0].params.options = this.managers;
+    this.meta.meta_object_dispatchers[0].params.options = this.dispatchers;
+
+    this.meta.meta_object_info[0].value = this.object_id.organization.uuid;
+    this.meta.meta_object_info[2].value = this.object_id.type.uuid;
+    this.meta.meta_object_info[3].value = this.object_id.specialization.uuid;
+
+    this.meta.meta_object_info[1].value = this.object_id.name;
+    this.meta.meta_object_info[4].value = this.object_id.description;
+
+    this.meta.meta_object_location[0].value = this.object_id.city;
+    this.meta.meta_object_location[1].value = this.object_id.region;
+    this.meta.meta_object_location[2].value = this.object_id.scheme;
+
+    this.meta.meta_object_entity[0].value = this.object_id.account.uuid;
+
+
+    for (let i = 0; i < contact_length; i++) {
+      this.meta.meta_object_contact[i][0].value = this.object_id.contacts[i].fullname;
+      this.meta.meta_object_contact[i][1].value = this.object_id.contacts[i].position;
+      this.meta.meta_object_contact[i][2].value = this.object_id.contacts[i].phone;
+      this.meta.meta_object_contact[i][3].value = this.object_id.contacts[i].email;
+    }
+
+    for (let i = 0; i < dispatchers_length; i++) {
+      this.meta.meta_object_dispatchers[i].value = this.object_id.dispatchers[i].uuid;
+    }
+    for (let i = 0; i < managers_length; i++) {
+      this.meta.meta_object_manager[i].value = this.object_id.managers[i].uuid;
+    }
 
     this.meta.meta_object_info.map(f => {
       Vue.set(this.formValues, f.name, f.value);
@@ -500,28 +568,27 @@ export default {
     this.meta.meta_object_contact.map(subarray => subarray.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     }));
+    this.meta.meta_object_dispatchers.map(f => {
+      Vue.set(this.formValues, f.name, f.value);
+    })
+    this.meta.meta_object_manager.map(f => {
+      Vue.set(this.formValues, f.name, f.value);
+    })
 
-    this.meta.meta_object_info[0].params.options = this.organizations;
-    this.meta.meta_object_entity[0].params.options = this.clients;
-    this.meta.meta_object_info[2].params.options = this.objectType;
-    this.meta.meta_object_info[3].params.options = this.specializations;
-    this.meta.meta_object_manager[0].params.options = this.dispatchers;
-    this.meta.meta_object_dispatchers[0].params.options = this.managers;
+
   }
 }
 </script>
 
 <style lang="scss" scoped>
 
-@import '../../assets/scss/colors';
-
-.wrapp-alert{
+.wrapp-alert {
   position: fixed;
   width: 100%;
   bottom: 0;
   left: 0;
 
-  .v-alert{
+  .v-alert {
     margin: 0;
   }
 }

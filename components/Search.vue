@@ -31,7 +31,7 @@ export default {
 .ruqi {
   .wrap-search {
     .v-input {
-      max-width: 208px;
+      max-width: 264px;
 
       fieldset {
         border-radius: 50px;
@@ -43,6 +43,12 @@ export default {
         align-items: center;
         height: 100%;
       }
+    }
+    .v-text-field--full-width .v-input__prepend-outer,
+    .v-text-field--full-width .v-input__prepend-inner,
+    .v-text-field--enclosed .v-input__prepend-outer,
+    .v-text-field--enclosed .v-input__prepend-inner {
+      margin-top: 10px;
     }
   }
 }

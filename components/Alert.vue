@@ -1,25 +1,22 @@
 <template>
-  <div class="wrapp-alert">
-    <v-alert
-      :value="text"
-      type="success"
-      dismissible
-      transition="fade-transition">
-      Ваша заявка успешно создана.
-    </v-alert>
-  </div>
+    <div class="wrapp-alert">
+      <v-alert
+        :value="requestSuccess.status"
+        :type="requestSuccess.type"
+        dismissible
+        transition="fade-transition">
+        {{ requestSuccess.text }}
+      </v-alert>
+    </div>
 </template>
 
 <script>
 export default {
-  props: ['type', 'text',],
+  props: ['requestSuccess',],
   data() {
     return {}
   },
   methods: {
-    openCreatePage(){
-      this.$router.push(this.$route.name + '/create');
-    },
   }
 }
 </script>

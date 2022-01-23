@@ -14,7 +14,7 @@
       @input="$emit('input', select)"
       hide-details="auto"
       :prepend-inner-icon="icon_code"
-
+      :label="params.label"
     ></v-select>
   </div>
 </template>
@@ -47,6 +47,11 @@ export default {
     value: function () {
       this.select = this.value;
     },
+  },
+  created() {
+    if (this.value) {
+      this.select = this.value;
+    }
   }
 }
 </script>
