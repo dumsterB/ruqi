@@ -558,6 +558,7 @@ export default {
     ...mapActions('request_id_dispatchers', ['fetchRequestIdHistory',]),
     ...mapActions('request_id_dispatchers', ['acceptRequest',]),
     ...mapActions('request_id_dispatchers', ['rejectRequest',]),
+    ...mapActions( 'contractors', [ 'getContractors', 'setFilterRegion', 'setFilterSpecialization', 'setFilterProfessions', 'setFilterPayments', ] ),
 
     updateSearchText(value) {
       this.searchText = value;
@@ -601,6 +602,9 @@ export default {
       console.debug( "addArtist" );
 
       this.addPerformersOverlay = true;
+
+      console.debug( 'this.getContractors()' );
+      this.getContractors();
     },
 
     handlers ()
@@ -615,6 +619,11 @@ export default {
           
           this.fetchRequestIdDispatchersSelection( { requestId: this.$route.params.id } );
           this.fetchRequestId( this.$route.params.id );
+
+          this.setFilterRegion( '' );
+          this.setFilterSpecialization( '' );
+          this.setFilterProfessions( '' );
+          this.setFilterPayments( '' );
         }
       }
     },

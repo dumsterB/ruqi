@@ -7,6 +7,8 @@ export const state = () => (
     objectType      : [],
     dispatchers     : [],
     managers        : [],
+    professions     : [],
+    payments        : [],
   }
 )
 
@@ -45,6 +47,16 @@ export const mutations = {
   {
     state.managers = managers.data.data;
   },
+
+  setProfessions( state, professions )
+  {
+    state.professions = professions;
+  },
+
+  setPayments( state, payments )
+  {
+    state.payments = payments;
+  },
 }
 
 
@@ -52,7 +64,7 @@ export const actions = {
   async fetchRegions ( ctx )
   {
     const regions = await this.$axios.get(
-      `https://cdn.ruqi.maxber.ru/api/v1/dictionary/regions`,
+      `/dictionary/regions`,
 
       {
         headers : {
@@ -70,7 +82,7 @@ export const actions = {
   async fetchSpecializations ( ctx )
   {
     const specializations = await this.$axios.get(
-      `https://cdn.ruqi.maxber.ru/api/v1/dictionary/specializations`,
+      `/dictionary/specializations`,
 
       {
         headers : {
@@ -134,6 +146,44 @@ export const actions = {
     });
     commit('setManagers', managers)
   },
+
+  async fetcProfessions ( { commit } )
+  {
+
+    const professions = await this.$axios.get(
+      '/dictionary/works',
+      
+      {
+        headers : {
+          "Authorization" : "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
+        }
+      }
+    );
+
+    console.debug( 'store : professions' );
+    console.debug( professions );
+
+    commit( 'setProfessions', professions.data.data );
+  },
+
+  async fetcPayments ( { commit } )
+  {
+
+    const payments = await this.$axios.get(
+      '/dictionary/payments',
+      
+      {
+        headers : {
+          "Authorization" : "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
+        }
+      }
+    );
+
+    console.debug( 'store : payments' );
+    console.debug( payments );
+
+    commit( 'setPayments', payments.data.data );
+  },
 }
 
 export const getters = {
@@ -170,5 +220,15 @@ export const getters = {
   managers( state )
   {
     return state.managers;
+  },
+
+  professions( state )
+  {
+    return state.professions;
+  },
+
+  payments( state )
+  {
+    return state.payments;
   },
 }

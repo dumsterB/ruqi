@@ -60,8 +60,6 @@
 
 <script>
 
-  import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
-
   export default {
     components  : {},
 
@@ -91,8 +89,6 @@
     },
 
     methods : {
-      ...mapActions( 'contractors', [ 'fetchRegions', 'fetchSpecializations' ] ),
-
       handlers ( params = {} )
       {
         return {

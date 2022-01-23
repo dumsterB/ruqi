@@ -12,7 +12,7 @@
 
         <AddPerformersFilterSelect
           class="select"
-          :items="selects.category.items"
+          :items="specializations"
           :title="selects.category.name"
           :slug="selects.category.slug"
           @set_filter="( params ) => { handlers().setFilter( params ) }"
@@ -20,7 +20,7 @@
 
         <AddPerformersFilterSelect
           class="select"
-          :items="specializations"
+          :items="professions"
           :title="selects.profession.name"
           :slug="selects.profession.slug"
           @set_filter="( params ) => { handlers().setFilter( params ) }"
@@ -28,7 +28,7 @@
 
         <AddPerformersFilterSelect
           class="select"
-          :items="selects.rate.items"
+          :items="payments"
           :title="selects.rate.name"
           :slug="selects.rate.slug"
           @set_filter="( params ) => { handlers().setFilter( params ) }"
@@ -56,7 +56,7 @@
     props : {},
 
     computed : {
-      ...mapGetters( 'dictionary', [ 'regions', 'specializations' ] ),
+      ...mapGetters( 'dictionary', [ 'regions', 'specializations', 'professions', 'payments', ] ),
     },
 
     data ()
@@ -97,7 +97,7 @@
 
           profession : {
             name  : 'Профессия',
-            slug  : 'profession',
+            slug  : 'professions',
             items : [
               {
                 name  : "option Профессия",
@@ -119,8 +119,8 @@
     },
 
     methods : {
-      ...mapActions( 'dictionary', [ 'fetchRegions', 'fetchSpecializations', ] ),
-      ...mapActions( 'contractors', [ 'setFilterRegion', 'setFilterSpecialization', ] ),
+      ...mapActions( 'dictionary', [ 'fetchRegions', 'fetchSpecializations', 'fetcProfessions', 'fetcPayments', ] ),
+      ...mapActions( 'contractors', [ 'setFilterRegion', 'setFilterSpecialization', 'setFilterProfessions', 'setFilterPayments', ] ),
 
       handlers ()
       {
@@ -135,8 +135,16 @@
                 this.setFilterRegion( params.value );
               break;
 
-              case 'profession' :
+              case 'category' :
                 this.setFilterSpecialization( params.value );
+              break;
+
+              case 'professions' :
+                this.setFilterProfessions( params.value );
+              break;
+
+              case 'rate' :
+                this.setFilterPayments( params.value );
               break;
             }
           },
@@ -151,6 +159,8 @@
       {
         this.fetchRegions();
         this.fetchSpecializations();
+        this.fetcProfessions();
+        this.fetcPayments();
       },
     },
 
@@ -192,6 +202,7 @@
 
         .apply-btn {
           margin-left : 32px;
+          cursor      : pointer;
 
           .wrapper {
             padding : 5px;

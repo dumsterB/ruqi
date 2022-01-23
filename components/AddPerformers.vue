@@ -293,8 +293,8 @@
 
     mounted ()
     {
-      console.debug( 'this.getContractors()' );
-      this.getContractors();
+      /*console.debug( 'this.getContractors()' );
+      this.getContractors();*/
     }
   }
 </script>

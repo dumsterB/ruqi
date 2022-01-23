@@ -5,6 +5,8 @@ export const state = () => (
     filters     : {
       region          : '',
       specialization  : '',
+      professions     : '',
+      payments        : '',
     },
   }
 )
@@ -29,29 +31,34 @@ export const mutations = {
   {
     state.filters.specialization = specialization;
   },
+
+  setFilterProfessions ( state, professions )
+  {
+    state.filters.professions = professions;
+  },
+
+  setFilterPayments ( state, payments )
+  {
+    state.filters.payments = payments;
+  },
 }
 
 export const actions = {
 
   async getContractors ( ctx )
   {
-    let filters = {
-      'region'          : ctx.state.filters.region,
-      'specialization'  : ctx.state.filters.specialization,
-    };
-
     console.debug( 'filters' );
-    console.debug( filters );
+    console.debug( ctx.state.filters );
 
     const contractors = await this.$axios.get(
-      'https://cdn.ruqi.maxber.ru/api/v1/dispatcher/contractors',
+      '/dispatcher/contractors',
 
       {
         headers : {
           "Authorization" : "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68", //FIXME need refactoring ( Rasulov )
         },
 
-        params  : filters,
+        params  : ctx.state.filters,
       },
     );
 
@@ -64,7 +71,7 @@ export const actions = {
   async getContractor ( ctx, uuid )
   {
     const contractor = await this.$axios.get(
-      `https://cdn.ruqi.maxber.ru/api/v1/dispatcher/contractors/${uuid}`,
+      `/dispatcher/contractors/${uuid}`,
 
       {
         headers : {
@@ -108,7 +115,7 @@ export const actions = {
       if ( params.contractors.length )
       {
         return this.$axios.post(
-          `https://cdn.ruqi.maxber.ru/api/v1/dispatcher/tasks/${params.taskId}/contractors/invite`,
+          `/dispatcher/tasks/${params.taskId}/contractors/invite`,
 
           params.contractors,
 
@@ -130,6 +137,16 @@ export const actions = {
   setFilterSpecialization ( ctx, specialization )
   {
     ctx.commit( 'setFilterSpecialization', specialization );
+  },
+
+  setFilterProfessions ( ctx, professions )
+  {
+    ctx.commit( 'setFilterProfessions', professions );
+  },
+
+  setFilterPayments ( ctx, payments )
+  {
+    ctx.commit( 'setFilterPayments', payments );
   },
 }
 
