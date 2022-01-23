@@ -1,7 +1,8 @@
 <template>
+
   <div class="wrap-rating">
     <v-rating
-      color="#FFCB45"
+      :color="color"
       empty-icon="mdi-star"
       full-icon="mdi-star"
       half-icon="mdi-star-half-full"
@@ -20,7 +21,16 @@
 
 <script>
 export default {
-  props: ['rating',],
+  props: {
+    rating : {
+      type  : Object,
+    },
+
+    color : {
+      type    : String,
+      default : "#FFCB45",
+    },
+  },
   data() {
     return {}
   },

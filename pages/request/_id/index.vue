@@ -41,8 +41,16 @@
           </v-col>
           <v-col cols="4" class="d-flex">
             <v-subheader>Ответственный:</v-subheader>
-            <UserAvatar v-if="request_id.manager" :first_name="request_id.manager.firstname" :last_name="request_id.manager.lastname" :color="avatarColorManager"
-                        :radius="avatarRounded"/>
+
+            <UserAvatar
+              v-if="request_id.manager"
+              :first_name="request_id.manager.firstname"
+              :last_name="request_id.manager.lastname"
+              :color="avatarColorManager"
+              :radius="avatarRounded"
+              :ist_detail_erlaubt="true"
+              :uuid="item ? item.uuid : ''"
+            />
           </v-col>
           <v-col cols="5" class="d-flex">
             <v-btn
@@ -86,6 +94,7 @@
         {{ item }}
       </v-tab>
     </v-tabs>
+
     <v-window v-model="tabContent">
       <v-tab-item>
         <v-row v-show="tab == 0" no-gutters class="table-filter-row">
@@ -178,6 +187,11 @@
 
         <AddFormPart v-show="tab == 1" text="Добавить исполнителей" @addFormPart="addArtist"/>
 
+        <AddPerformers
+          :addPerformersOverlay="addPerformersOverlay"
+          @close="handlers().closePerformersOverlay()"
+        />
+
         <v-row no-gutters class="dispatchers-header">
           <v-col
             cols="12"
@@ -221,8 +235,16 @@
             :search="searchText"
           >
             <template v-slot:item.name="{ item }">
-              <UserAvatar :first_name="item.firstname" :last_name="item.lastname" :color="avatarColor"
-                          :radius="avatarBorderRadius" :date="item.birthday" response="true"/>
+              <UserAvatar
+                :first_name="item.firstname"
+                :last_name="item.lastname"
+                :color="avatarColor"
+                :radius="avatarBorderRadius"
+                :date="item.birthday"
+                response="true"
+                :ist_detail_erlaubt="true"
+                :uuid="item ? item.uuid : ''"
+              />
             </template>
 
             <template v-slot:item.rating="{ item }">
@@ -343,7 +365,7 @@
       </v-tab-item>
     </v-window>
 
-
+    <PerformersDetailing />
   </div>
 </template>
 
@@ -451,8 +473,13 @@ export default {
         },
 
       ],
+
+      /* data for Overlay of adding Performers START*/
+        addPerformersOverlay  : false,
+      /* data for Overlay of adding Performers END*/
     }
   },
+
   computed: {
     itemsPerPageTable() {
       if (this.itemsPerPage) {
@@ -462,13 +489,16 @@ export default {
       }
     },
     request_id() {
-      return this.$store.getters['request_id/request_id']
+      return this.$store.getters['request_id/request_id'];
     },
     request_id_dispatchers() {
       if (this.$store.getters['request_id_dispatchers/request_id_dispatchers'] == '[]'){
         return [];
       }
       else{
+        console.debug( "request_id_dispatchers" ); // TODO delete
+        console.debug( this.$store.getters['request_id_dispatchers/request_id_dispatchers'] ); // TODO delete
+
         return this.$store.getters['request_id_dispatchers/request_id_dispatchers'];
       }
     },
@@ -520,6 +550,7 @@ export default {
       return text;
     },
   },
+
   methods: {
     ...mapActions('request_id', ['fetchRequestId',]),
     ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchers',]),
@@ -531,6 +562,7 @@ export default {
     updateSearchText(value) {
       this.searchText = value;
     },
+
     async selectData(index) {
       if (index == 0) {
         await this.fetchRequestIdDispatchers(this.$route.params.id);
@@ -542,9 +574,33 @@ export default {
         await this.fetchRequestIdDispatchersaAssigned(this.$route.params.id);
       }
     },
-    addArtist() {
 
-    }
+    addArtist ( params = {} ) // FIXME
+    {
+      console.debug( "addArtist" );
+
+      this.addPerformersOverlay = true;
+    },
+
+    handlers ()
+    {
+      return {
+        closePerformersOverlay : () => {
+          console.debug( "closePerformersOverlay" );
+          this.addPerformersOverlay = false;
+
+          console.debug( 'this.$route.params.id' );
+          console.debug( this.$route.params.id );
+          
+          this.fetchRequestIdDispatchersSelection( this.$route.params.id );
+          this.fetchRequestId( this.$route.params.id );
+        }
+      }
+    },
+
+    helpers : () => {
+      return {};
+    },
   },
   watch: {
     activeAction: function (val) {
@@ -553,13 +609,16 @@ export default {
       }
     },
   },
+
   async created() {
     await this.fetchRequestId(this.$route.params.id);
     await this.fetchRequestIdDispatchers(this.$route.params.id);
     await this.fetchRequestIdHistory(this.$route.params.id);
 
-
+    console.debug( 'this.$route.params.id' );
+    console.debug( this.$route.params.id );
   },
+
   async mounted() {
   }
 }

@@ -12,7 +12,7 @@
       </span>
     </div>
     <div class="user-date">
-      <span class="user-name">
+      <span class="user-name" @click="handlers().onUserNameClick( { uuid } )">
       {{ first_name + ' ' + last_name }}
     </span>
       <span v-if="date" class="user-date">
@@ -25,17 +25,49 @@
 </template>
 
 <script>
-export default {
-  props: ['first_name', 'last_name', 'color', 'radius', 'date', 'response'],
-  data() {
-    return {}
-  },
-  computed: {
-    initials: function () {
-      return this.first_name.substr(0, 1) + this.last_name.substr(0, 1);
+  import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
+
+  export default {
+    props: ['first_name', 'last_name', 'color', 'radius', 'date', 'response', 'ist_detail_erlaubt', 'uuid'],
+
+    data() {
+      return {}
     },
-  },
-}
+
+    computed : {
+      ...mapGetters( 'performersDetailing', [ 'isDialogOpen', ] ),
+      ...mapGetters( 'contractors', [ 'contractor', ] ),
+
+      initials: function () {
+        return this.first_name.substr(0, 1) + this.last_name.substr(0, 1);
+      },
+    },
+
+    methods : {
+      ...mapActions( 'performersDetailing', [ 'setStateDialog', ] ),
+      ...mapActions( 'contractors', [ 'getContractor', ] ),
+
+      handlers ()
+      {
+        return {
+          onUserNameClick : ( params = {} ) => {
+            if ( this.ist_detail_erlaubt )
+            {
+              console.debug( 'onUserNameClick' );
+
+              this.setStateDialog( true );
+
+              console.debug( 'isDialogOpen after set: ' + this.isDialogOpen );
+
+              this.getContractor( this.uuid );
+            }
+          },
+        }
+      },
+    },
+
+    mounted () {},
+  }
 </script>
 
 <style lang="scss">
