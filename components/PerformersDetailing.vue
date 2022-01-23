@@ -18,7 +18,7 @@
                   <div class="bewertung">
                     <div class="wrapper">
                       <div class="icon">
-                        <v-icon class="ic-item">{{ icons.mdiStar }}</v-icon>
+                        <v-icon class="ic-item">mdi-star</v-icon>
                       </div>
 
                       <div class="wert">
@@ -224,7 +224,6 @@
 
 <script>
   import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
-  import { mdiStar } from '@mdi/js'
 
   export default {
     components  : {},
@@ -238,11 +237,7 @@
 
     data ()
     {
-      return {
-        icons : {
-          mdiStar
-        }
-      }
+      return {}
     },
 
     methods: {
