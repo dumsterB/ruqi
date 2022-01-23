@@ -35,8 +35,12 @@
       return {}
     },
 
-    computed: {
-      firstChar() {
+    computed : {
+      ...mapGetters( 'performersDetailing', [ 'isDialogOpen', ] ),
+      ...mapGetters( 'contractors', [ 'contractor', ] ),
+
+      firstChar ()
+      {
         if (this.first_name && this.first_name.length > 1) {
           return this.first_name.substr(0, 1)
         }
@@ -44,7 +48,9 @@
           return '';
         }
       },
-      secondChar() {
+
+      secondChar ()
+      {
         if (this.last_name && this.last_name.length > 1) {
           return this.last_name.substr(0, 1)
         }
@@ -52,44 +58,37 @@
           return '';
         }
       },
-      initials: function () {
+
+      initials ()
+      {
         return this.firstChar + this.secondChar;
       },
+    },
 
-      computed : {
-        ...mapGetters( 'performersDetailing', [ 'isDialogOpen', ] ),
-        ...mapGetters( 'contractors', [ 'contractor', ] ),
+    methods : {
+      ...mapActions( 'performersDetailing', [ 'setStateDialog', ] ),
+      ...mapActions( 'contractors', [ 'getContractor', ] ),
 
-        initials: function () {
-          return this.first_name.substr(0, 1) + this.last_name.substr(0, 1);
-        },
+      handlers ()
+      {
+        return {
+          onUserNameClick : ( params = {} ) => {
+            if ( this.ist_detail_erlaubt )
+            {
+              console.debug( 'onUserNameClick' );
+
+              this.setStateDialog( true );
+
+              console.debug( 'isDialogOpen after set: ' + this.isDialogOpen );
+
+              this.getContractor( this.uuid );
+            }
+          },
+        }
       },
+    },
 
-      methods : {
-        ...mapActions( 'performersDetailing', [ 'setStateDialog', ] ),
-        ...mapActions( 'contractors', [ 'getContractor', ] ),
-
-        handlers ()
-        {
-          return {
-            onUserNameClick : ( params = {} ) => {
-              if ( this.ist_detail_erlaubt )
-              {
-                console.debug( 'onUserNameClick' );
-
-                this.setStateDialog( true );
-
-                console.debug( 'isDialogOpen after set: ' + this.isDialogOpen );
-
-                this.getContractor( this.uuid );
-              }
-            },
-          }
-        },
-      },
-
-      mounted () {},
-    }
+    mounted () {},
   }
 
 </script>

@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div class="wrap-composite-header">
       <Header :content="request_id.name" :size="title_size" :isnew="false" :isback="true"/>
       <div class="composite-header-progress" v-if="request_id.completion">
@@ -614,7 +613,7 @@ export default {
           console.debug( 'this.$route.params.id' );
           console.debug( this.$route.params.id );
           
-          this.fetchRequestIdDispatchersSelection( this.$route.params.id );
+          this.fetchRequestIdDispatchersSelection( { requestId: this.$route.params.id } );
           this.fetchRequestId( this.$route.params.id );
         }
       }

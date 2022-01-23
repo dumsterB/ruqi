@@ -272,6 +272,8 @@
           },
 
           applyFilter : () => {
+            console.debug( 'applyFilter' ); //TODO //FIXME muss weg
+
             this.getContractors();
           },
         }
