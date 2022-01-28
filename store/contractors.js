@@ -2,6 +2,9 @@ export const state = () => (
   {
     contractors : [],
     contractor  : {},
+    sortColumn  : '',
+    sortOrder   : '',
+
     filters     : {
       region          : '',
       specialization  : '',
@@ -41,14 +44,36 @@ export const mutations = {
   {
     state.filters.payments = payments;
   },
+
+  updateActiveParameter ( state, activeParameter )
+  {
+    state.sortTable.activeParameter = activeParameter;
+  },
+
+  updateSortColumn ( state, sortColumn )
+  {
+    state.sortColumn = sortColumn;
+  },
+
+  updateSortOrder ( state, sortOrder )
+  {
+    state.sortOrder = sortOrder;
+  },
 }
 
 export const actions = {
 
-  async getContractors ( ctx )
+  async getContractors ( ctx, params = {} )
   {
-    console.debug( 'filters' );
-    console.debug( ctx.state.filters );
+    let searchParams = {
+      ...ctx.state.filters,
+
+      sort  : ctx.state.sortColumn,
+      order : ctx.state.sortOrder,
+    }
+
+    console.debug( 'searchParams' );
+    console.debug( searchParams );
 
     const contractors = await this.$axios.get(
       '/dispatcher/contractors',
@@ -58,7 +83,7 @@ export const actions = {
           "Authorization" : "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68", //FIXME need refactoring ( Rasulov )
         },
 
-        params  : ctx.state.filters,
+        params  : searchParams,
       },
     );
 
@@ -148,6 +173,21 @@ export const actions = {
   {
     ctx.commit( 'setFilterPayments', payments );
   },
+
+  setSortTableActiveParameter ( ctx, activeParameter  )
+  {
+    ctx.commit( 'updateActiveParameter', activeParameter );
+  },
+
+  setSortColumn ( ctx, sortColumn )
+  {
+    ctx.commit( 'updateSortColumn', sortColumn );
+  },
+
+  setSortOrder ( ctx, sortOrder )
+  {
+    ctx.commit( 'updateSortOrder', sortOrder );
+  },
 }
 
 export const getters = {
@@ -160,4 +200,9 @@ export const getters = {
   {
     return state.contractor;
   },
+
+  sortTable ( state )
+  {
+    return state.sortTable;
+  }
 }

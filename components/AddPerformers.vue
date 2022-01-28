@@ -15,7 +15,7 @@
 
       </div>
 
-      
+
       <div class="addPerformersOverlay__content">
         <div class="addPerformersOverlay__content_header">
           Добавить исполнителей в заявку
@@ -50,7 +50,47 @@
               hide-default-footer
               :search="searchText"
               light
+              :disable-sort="true"
             >
+              <template v-slot:header.name="{ header }">
+                <div class="tb-column" @click="sortieren( header.sortColumn )">
+                  <span class="">{{ header.text }}</span>
+                  <i
+                    :class="[ 'v-icon', 'sort-icon', 'mdi', 'mdi-arrow-up', { active : sortTable.parameters.firstname.active, asc : sortTable.parameters.firstname.orderBy == 'asc', desc : sortTable.parameters.firstname.orderBy == 'desc', } ]"
+                  ></i>
+                </div>
+              </template>
+
+              <template v-slot:header.rating="{ header }">
+                <div class="tb-column" @click="sortieren( header.sortColumn )">
+                  <span class="">{{ header.text }}</span>
+
+                  <i
+                    :class="[ 'v-icon', 'sort-icon', 'mdi', 'mdi-arrow-up', { active : sortTable.parameters.value.active, asc : sortTable.parameters.value.orderBy == 'asc', desc : sortTable.parameters.value.orderBy == 'desc', } ]"
+                  ></i>
+                </div>
+              </template>
+
+              <template v-slot:header.address="{ header }">
+                <div class="tb-column" @click="sortieren( header.sortColumn )">
+                  <span class="">{{ header.text }}</span>
+
+                  <i
+                    :class="[ 'v-icon', 'sort-icon', 'mdi', 'mdi-arrow-up', { active : sortTable.parameters.location_address.active, asc : sortTable.parameters.location_address.orderBy == 'asc', desc : sortTable.parameters.location_address.orderBy == 'desc', } ]"
+                  ></i>
+                </div>
+              </template>
+
+              <template v-slot:header.onobject="{ header }">
+                <div class="tb-column" @click="sortieren( header.sortColumn )">
+                  <span class="">{{ header.text }}</span>
+
+                  <i
+                    :class="[ 'v-icon', 'sort-icon', 'mdi', 'mdi-arrow-up', { active : sortTable.parameters.count_tasks.active, asc : sortTable.parameters.count_tasks.orderBy == 'asc', desc : sortTable.parameters.count_tasks.orderBy == 'desc', } ]"
+                  ></i>
+                </div>
+              </template>
+
               <template v-slot:item.name="{ item }">
                 <UserAvatar
                   :first_name="item.firstname"
@@ -65,7 +105,7 @@
               </template>
 
               <template v-slot:item.rating="{ item }">
-                <Rating :rating="item.rating" />
+                <Rating :rating="item.raiting" />
               </template>
 
               <template v-slot:item.address="{ item }">
@@ -78,7 +118,7 @@
                 <div class="d-flex table-on-object">
                   <v-icon>mdi-home-variant-outline</v-icon>
                   <span class="num">
-                    {{ item.work_count }}
+                    {{ item.count_tasks }}
                   </span>
                 </div>
               </template>
@@ -149,68 +189,78 @@
         avatarColorManager    : '#36B368',
 
         PerformersTableHeaders  : [
-          { text: 'фио', align: 'start', value: 'name', },
-          { text: 'Рейтинг', value: 'rating'},
-          { text: 'География работ', value: 'address'},
-          { text: 'Работал', value: 'onobject'},
-          { text: 'Приглашен', value: 'invited'},
-          { text: '', value: 'actions', sortable: false},
+          { text: 'фио', align: 'start',  value: 'name',                        sortColumn : 'firstname' },
+          { text: 'Рейтинг',              value: 'rating',                      sortColumn : 'value' },
+          { text: 'География работ',      value: 'address',                     sortColumn : 'location_address' },
+          { text: 'Работал',              value: 'onobject',                    sortColumn : 'count_tasks' },
+          { text: 'Приглашен',            value: 'invited',                     sortColumn : '' },
+          { text: '',                     value: 'actions',   sortable: false,  sortColumn : '' } ,
         ],
 
-        request_id_dispatchers  : [
-          {
-            address: "",
-            avg_price: 3000,
-            birthday: "2005-12-28 19:55:56",
-            firstname: "Celia",
-            fullname: "Marks Celia Abernathy",
-            lastname: "Marks",
-            middlename: "Abernathy",
-            rating: 0,
-            uuid: "329bf2d0-6fb6-4e0c-8ea2-553f7ebb9466",
-          },
+        sortTable : {
+          activeParameter : '',
 
-          {
-            address: "",
-            avg_price: 3000,
-            birthday: "2005-12-28 19:55:56",
-            firstname: "Celia",
-            fullname: "Marks Celia Abernathy",
-            lastname: "Marks",
-            middlename: "Abernathy",
-            rating: 0,
-            uuid: "329bf2d0-6fb6-4e0c-8ea2-553f7ebb9466",
-          },
-
-          {
-            address: "",
-            avg_price: 3000,
-            birthday: "2005-12-28 19:55:56",
-            firstname: "Celia",
-            fullname: "Marks Celia Abernathy",
-            lastname: "Marks",
-            middlename: "Abernathy",
-            rating: 0,
-            uuid: "329bf2d0-6fb6-4e0c-8ea2-553f7ebb9466",
-          },
-
-          {
-            address: "",
-            avg_price: 3000,
-            birthday: "2005-12-28 19:55:56",
-            firstname: "Celia",
-            fullname: "Marks Celia Abernathy",
-            lastname: "Marks",
-            middlename: "Abernathy",
-            rating: 0,
-            uuid: "329bf2d0-6fb6-4e0c-8ea2-553f7ebb9466",
-          },
-        ],
+          parameters : {
+            firstname   : { active : false, orderBy : '' },
+            value       : { active : false, orderBy : '' },
+            location_address        : { active : false, orderBy : '' },
+            count_tasks : { active : false, orderBy : '' },
+          }
+        },
       }
     },
 
     methods: {
-      ...mapActions( 'contractors', [ 'getContractors', 'inviteContractorsToVacancy', ] ),
+      ...mapActions( 'contractors', [ 'getContractors', 'inviteContractorsToVacancy', 'setSortColumn', 'setSortOrder' ] ),
+
+      sortieren ( column )
+      {
+        console.log( 'sortTable' );
+        console.log( column );
+
+        if ( column != this.sortTable.activeParameter )
+        {
+          this.helpers().resetSortTable( { this : this, activeParameter : column, } );
+        }
+
+        console.log( 'activeParameter' );
+        console.log( this.sortTable );
+
+        switch ( this.sortTable.parameters[ column ].orderBy )
+        {
+          case '' :
+            this.sortTable.parameters[ column ].orderBy = 'asc';
+          break;
+
+          case 'asc' :
+            this.sortTable.parameters[ column ].orderBy = 'desc';
+          break;
+
+          case 'desc' :
+            this.sortTable.parameters[ column ].orderBy = '';
+          break;
+        }
+
+        if ( this.sortTable.activeParameter && this.sortTable.parameters[ column ].orderBy )
+        {
+          this.sortTable.parameters[ column ].active = true;
+
+          console.debug("check active " + this.sortTable.activeParameter );
+        }
+        else
+        {
+          this.sortTable.parameters[ column ].active = false;
+
+          console.debug("check active " + this.sortTable.activeParameter );
+        }
+
+        console.debug("TEST DATA OUT " );
+        console.debug( this.sortTable );
+
+        this.setSortColumn( this.sortTable.activeParameter );
+        this.setSortOrder( this.sortTable.parameters[ column ].orderBy );
+        this.getContractors();
+      },
 
       handlers ()
       {
@@ -272,7 +322,7 @@
           },
 
           applyFilter : () => {
-            console.debug( 'applyFilter' ); //TODO //FIXME muss weg
+            console.debug( 'applyFilter' ); //FIXME muss weg
 
             this.getContractors();
           },
@@ -286,6 +336,25 @@
 
             params._this.selected = [];
             params._this.$emit( 'close' );
+          },
+
+          resetSortTable : ( params = {} ) => {
+            console.debug( 'resetSortTable' );
+            console.debug( params );
+
+            params.this.sortTable.activeParameter = params.activeParameter;
+
+            params.this.sortTable.parameters.firstname.active   = false;
+            params.this.sortTable.parameters.firstname.orderBy  = '';
+
+            params.this.sortTable.parameters.value.active   = false;
+            params.this.sortTable.parameters.value.orderBy  = '';
+
+            params.this.sortTable.parameters.location_address.active   = false;
+            params.this.sortTable.parameters.location_address.orderBy  = '';
+
+            params.this.sortTable.parameters.count_tasks.active   = false;
+            params.this.sortTable.parameters.count_tasks.orderBy  = '';
           },
         }
       },
@@ -341,6 +410,36 @@
             line-height   : 125%;
             color         : #263043;
             margin-bottom : 20px;
+          }
+        }
+      }
+    }
+
+    .tb-column {
+      cursor : pointer;
+
+      .sort-icon {
+        opacity   : 0;
+        font-size : 18px;
+
+        &:hover {
+          opacity : 1;
+        }
+
+        &.active {
+          opacity : 1;
+          color   : #000000;
+        }
+
+        &.asc {
+          transform: rotate( 0deg );
+        }
+
+        &.desc {
+          transform: rotate( 180deg );
+
+          &:hover {
+            transform: rotate( 180deg ) !important;
           }
         }
       }
