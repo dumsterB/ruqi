@@ -1,6 +1,12 @@
 <template>
-  <div>
-    <v-app-bar app elevation="0" height="98" color="transparent" class="justify-end align-end d-flex">
+  <div class="header-wrap">
+    <v-app-bar app elevation="0" height="98" color="transparent" class="header-content-crt_exd justify-end align-end d-flex">
+      <v-breadcrumbs :items="items">
+        <template v-slot:divider>
+          <v-icon>mdi-checkbox-blank-circle</v-icon>
+        </template>
+      </v-breadcrumbs>
+
       <v-row>
         <v-menu
           bottom
@@ -99,11 +105,94 @@ export default {
       fullName: 'Антон Васильев',
       email: 'vasilyev@mail.ru',
     },
+
+    items: [
+      {
+        text: 'Dashboard',
+        disabled: false,
+        href: 'breadcrumbs_dashboard',
+      },
+
+      {
+        text: 'Link 1',
+        disabled: false,
+        href: 'breadcrumbs_link_1',
+      },
+
+      {
+        text: 'Link 2',
+        disabled: true,
+        href: 'breadcrumbs_link_2',
+      },
+    ],
   }),
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+
+/* OBJECTS STYLES START */
+  .header-content-crt_exd
+  {
+    .v-toolbar__content
+    {
+      position        : relative;
+      display         : flex;
+      align-items     : center;
+      z-index         : 0;
+      flex-direction  : row;
+      flex-wrap       : nowrap;
+      align-content   : center;
+      justify-content : space-between;
+      width           : 100%;
+
+      .v-breadcrumbs
+      {
+        .v-breadcrumbs__item
+        {
+          font-weight : normal;
+          font-size   : 16px;
+          line-height : 22px;
+          color       : #627F9C;
+        }
+
+        .v-breadcrumbs__divider
+        {
+          .v-icon
+          {
+            font-size : 4px;
+            color     : #7A91A9;
+          }
+        }
+      }
+
+      .row
+      {
+        margin  : 0;
+        flex    : unset;
+      }
+    }
+  }
+/* OBJECTS STYLES END */
+
+/* MIXINS STYLES START */
+  .header-content-crt_exd
+  {
+    .v-breadcrumbs
+    {
+      li:not( .v-breadcrumbs__divider )
+      {
+        &:last-child
+        {
+          .v-breadcrumbs__item
+          {
+            color : #A6BACC;
+          }
+        }
+      }
+    }
+  }
+/* MIXINS STYLES END */
 
 .v-app-bar {
   padding: 0 24px;

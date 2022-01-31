@@ -125,21 +125,8 @@
   export default {
     components  : { Search, UserAvatar },
 
-    async fetch( { store } )
-    {
-      if ( store.getters[ 'performers/performers' ].length === 0 )
-      {
-        await store.dispatch( 'performers/fetch' );
-      }
-    },
-
     computed : {
       ...mapGetters( 'contractors', [ 'contractors', ] ),
-
-      performers ()
-      {
-        return this.$store.getters['performers/performers']
-      },
     },
 
     data ()
