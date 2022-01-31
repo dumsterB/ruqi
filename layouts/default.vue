@@ -23,14 +23,62 @@
 </template>
 
 <script>
+
 export default {
-  name: "default",
-  computed:{
+  name  : "default",
+
+  computed  : {
     requestSuccess() {
       return this.$store.getters['response/requestSuccess'];
     },
-  }
+  },
+
+  watch: {
+    $route: {
+      handler ( to, from ) {
+        const ruqi = document.querySelector( '.ruqi' );
+        console.log( 'ruqi' );
+        console.log( ruqi );
+
+        if ( !ruqi )
+        {
+          setTimeout(() => {
+            const ruqi = document.querySelector( '.ruqi' );
+
+            console.log( 'ruqi wieder' );
+            console.log( ruqi);
+
+            ruqi.classList.add('page--' + to.name.toLowerCase());
+          }, 500);
+
+          return;
+        }
+
+        if ( from !== undefined )
+        {
+          console.log( 'page--' + from.name );
+          console.log( from.name );
+
+          ruqi.classList.remove('page--' + from.name.toLowerCase());
+        }
+
+        console.log( 'page--' + to.name );
+        console.log( to.name );
+
+        ruqi.classList.add('page--' + to.name.toLowerCase());
+
+        // const body = document.getElementsByTagName('body')[0];
+        // if (from !== undefined) {
+        //   body.classList.remove();
+        // }
+        // body.classList.add('page--' + to.name.toLowerCase());
+      },
+
+      immediate: true,
+    }
+  },
 }
+
 </script>
 
 <style lang="scss">
@@ -55,4 +103,14 @@ export default {
       z-index: 100;
     }
   }
+
+  /* MIXINS STYLES START */
+    .page--performers-id {
+      background-color  : #F2FAFF;
+
+      #app {
+        background-color  : #F2FAFF;
+      }
+    }
+  /* MIXINS STYLES END */
 </style>

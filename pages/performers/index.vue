@@ -165,6 +165,9 @@
       init ()
       {
         this.getContractors();
+
+        console.debug( 'route' );
+        console.debug( this.$route );
       },
 
       handlers ()
@@ -199,6 +202,5 @@
     padding: 2px;
   }
 }
-
 
 </style>

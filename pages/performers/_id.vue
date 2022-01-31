@@ -1,6 +1,11 @@
 <template>
   <div class="contractor-extended">
-    <h1>Исполнитель {{ contractor.fullname }}</h1>
+    <div class="wrapper">
+      <div class="content">
+        <ContractorMainInfo />
+        <ContractorAdditionalInfo />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -9,6 +14,8 @@
   import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
 
   export default {
+    name : 'contractor-extended',
+
     components  : {},
 
     computed : {
@@ -43,15 +50,27 @@
 </script>
 
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 /* OBJECTS STYLES START */
+  .contractor-extended
+  {
+    .wrapper
+    {
+      .content
+      {
+        display         : flex;
+        flex-direction  : row;
+        flex-wrap       : nowrap;
+        align-content   : center;
+        justify-content : flex-start;
+        align-items     : center;
+      }
+    }
+  }
 /* OBJECTS STYLES END */
 
 /* MIXINS STYLES START */
-  .ruqi, #app {
-    background-color  : #F2FAFF;
-  }
 /* OBJECTS STYLES END */
 
 </style>
