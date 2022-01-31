@@ -364,7 +364,7 @@
     {
       /*console.debug( 'this.getContractors()' );
       this.getContractors();*/
-    }
+    },
   }
 </script>
 

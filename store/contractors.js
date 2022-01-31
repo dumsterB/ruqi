@@ -62,7 +62,6 @@ export const mutations = {
 }
 
 export const actions = {
-
   async getContractors ( ctx, params = {} )
   {
     let searchParams = {
@@ -113,8 +112,8 @@ export const actions = {
 
   /**
    * This method resets the performer's card data.
-   * 
-   * @param { object } ctx default 
+   *
+   * @param { object } ctx default
    */
   resetContractor ( ctx )
   {
@@ -122,8 +121,8 @@ export const actions = {
   },
 
   /**
-   * 
-   * @param { vuex }    ctx 
+   *
+   * @param { vuex }    ctx
    * @param { object }  params
    * {
    *  @param { array }  contractors

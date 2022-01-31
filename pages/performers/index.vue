@@ -6,8 +6,7 @@
         v-model="tab"
         class="form-tabs"
       >
-        <v-tab v-for="(item, index) in tabs_list"
-               :key="index">
+        <v-tab v-for="(item, index) in tabs_list" :key="index">
           {{ item }}
         </v-tab>
       </v-tabs>
@@ -39,7 +38,7 @@
           v-model="selected"
           show-select
           :headers="headers"
-          :items="performers"
+          :items="contractors"
           class="elevation-0"
           item-key="id"
           :page.sync="page"
@@ -49,8 +48,8 @@
           :search="searchText"
         >
           <template v-slot:item.name="{ item }"  >
-            <a href="#" @click.prevent="openPerformer(item.id)">
-              <UserAvatar :first_name="item.name" :last_name="item.name" :color="avatarColor" :radius="avatarBorderRadius" :date="temp_date"/>
+            <a href="#" @click.prevent="handlers().openPerformer(item.uuid)">
+              <UserAvatar :first_name="item.firstname" :last_name="item.lastname" :color="avatarColor" :radius="avatarBorderRadius" :date="temp_date"/>
             </a>
           </template>
 
@@ -118,55 +117,90 @@
 </template>
 
 <script>
-import UserAvatar from "@/components/UserAvatar";
-import Search from "@/components/Search";
-export default {
-  components: {Search, UserAvatar},
-  async fetch({store}) {
-    if (store.getters['performers/performers'].length === 0) {
-      await store.dispatch('performers/fetch')
-    }
-  },
-  data: () => ({
-    title: 'Исполнители',
-    title_size: 'big',
-    tabs_list: [
-      'Активные', 'Архив',
-    ],
-    tab: null,
-    itemSort: ['По рейтингу', 'По дате',],
-    page: 1,
-    pageCount: 0,
-    itemsPerPage: 5,
-    selected: [],
-    avatarColor: '#36B368',
-    headers: [
-      {text: 'ФИО', align: 'start',  value: 'name',},
-      {text: 'Рейтинг', value: 'rating'},
-      {text: 'Адрес', value: 'address'},
-      {text: 'Средняя ставка', value: 'salary'},
-      {text: 'Зарегистрирован', value: 'reg'},
-      {text: '', value: 'actions', sortable: false},
-    ],
-    rating: 4.5,
-    temp_date: '26.06.1984',
-    avatarBorderRadius: 'rounded',
-    searchText: '',
-  }),
-  computed: {
-    performers() {
-      return this.$store.getters['performers/performers']
+
+  import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
+  import UserAvatar                                         from "@/components/UserAvatar";
+  import Search                                             from "@/components/Search";
+
+  export default {
+    components  : { Search, UserAvatar },
+
+    async fetch( { store } )
+    {
+      if ( store.getters[ 'performers/performers' ].length === 0 )
+      {
+        await store.dispatch( 'performers/fetch' );
+      }
     },
-  },
-  methods: {
-    openPerformer(id){
-      this.$router.push('/performers/'+ id);
+
+    computed : {
+      ...mapGetters( 'contractors', [ 'contractors', ] ),
+
+      performers ()
+      {
+        return this.$store.getters['performers/performers']
+      },
     },
-    updateSearchText(value){
-      this.searchText = value;
-    }
+
+    data ()
+    {
+      return {
+        title: 'Исполнители',
+        title_size: 'big',
+        tabs_list: [
+          'Активные', 'Архив',
+        ],
+        tab: null,
+        itemSort: ['По рейтингу', 'По дате',],
+        page: 1,
+        pageCount: 0,
+        itemsPerPage: 5,
+        selected: [],
+        avatarColor: '#36B368',
+        headers: [
+          {text: 'ФИО', align: 'start',  value: 'name',},
+          {text: 'Рейтинг', value: 'rating'},
+          {text: 'Адрес', value: 'address'},
+          {text: 'Средняя ставка', value: 'salary'},
+          {text: 'Зарегистрирован', value: 'reg'},
+          {text: '', value: 'actions', sortable: false},
+        ],
+        rating: 4.5,
+        temp_date: '26.06.1984',
+        avatarBorderRadius: 'rounded',
+        searchText: '',
+      }
+    },
+
+    methods : {
+      ...mapActions( 'contractors', [ 'getContractors', ] ),
+
+      init ()
+      {
+        this.getContractors();
+      },
+
+      handlers ()
+      {
+        return {
+          openPerformer : ( id ) => {
+            this.$router.push('/performers/'+ id);
+          },
+        }
+      },
+
+      updateSearchText ( value )
+      {
+        this.searchText = value;
+      }
+    },
+
+    mounted ()
+    {
+      this.init();
+    },
   }
-}
+
 </script>
 
 <style lang="scss">
