@@ -29,12 +29,14 @@ export default {
     }
   },
   methods: {},
-  created() {
+  created () {
     if (this.value) {
       this.select = this.value;
     } else {
       this.select = this.params.options[0];
     }
+
+    this.$emit( 'input', this.select );
   }
 }
 </script>

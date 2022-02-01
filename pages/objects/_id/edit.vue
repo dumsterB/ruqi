@@ -59,6 +59,7 @@
               </div>
             </v-form>
           </v-tab-item>
+
           <v-tab-item>
             <v-form ref="form_part_2" v-model="valid" lazy-validation>
               <div class="form-part form-part-contact"
@@ -73,9 +74,77 @@
               <AddFormPart :text="addContactPersText" @addFormPart="addFormPart"/>
             </v-form>
           </v-tab-item>
+
           <v-tab-item>
             <v-form ref="form_part_3" v-model="valid" lazy-validation>
               <AddFormPart text="Создать новую заявку" @addFormPart="addRequest"/>
+
+              <div class="table-list-style">
+                <v-data-table
+                  :headers="headers"
+                  :items="object_id_requests"
+                  class="elevation-0"
+                  item-key="table_1"
+                  :page.sync="page"
+                  :items-per-page="itemsPerPageTable"
+                  @page-count="pageCount = $event"
+                  hide-default-footer
+                  hide-default-header
+                  :search="searchText"
+                >
+                  <template v-slot:item.name="{ item }">
+                    <div @click="openRequest(item.uuid)">
+                      <span class="request-i"></span>
+                      <span class="color-black">{{ item.name }}</span>
+                    </div>
+
+                  </template>
+
+                  <template v-slot:item.pay="{ item }">
+                    <span class="request-pay">{{ item.payment.value }} {{ item.payment.current }} / {{
+                        item.payment.period
+                      }}</span>
+                  </template>
+
+                  <template v-slot:item.object="{ item }">
+                    {{ item.object.name }}
+                  </template>
+
+                  <template v-slot:item.date="{ item }">
+                    <div v-if="item.created_at">
+                      {{ item.created_at.substr(0, 10) }}
+                    </div>
+                  </template>
+
+                  <template v-slot:item.actions="{ item }">
+                    <div class="d-flex justify-end">
+                      <v-menu
+                        bottom
+                        rounded="10"
+                        offset-y
+                        nudge-bottom="10"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <v-btn icon
+                                v-on="on">
+                            <v-icon>mdi-dots-vertical</v-icon>
+                          </v-btn>
+                        </template>
+                        <v-card>
+                          <v-list-item-content class="justify-start">
+                            <div class="mx-auto text-left">
+                              <nuxt-link :to="'/request/'+ item.uuid +'/edit/'">
+                                <span>Редактировать</span>
+                              </nuxt-link>
+                            </div>
+                          </v-list-item-content>
+                        </v-card>
+                      </v-menu>
+                    </div>
+                  </template>
+
+                </v-data-table>
+              </div>
             </v-form>
           </v-tab-item>
 
@@ -96,6 +165,8 @@ import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 export default {
   async fetch({store}) {
 
+    console.log( 'test fect' );
+
     if (store.getters['specializations/specializations'].length === 0) {
       await store.dispatch('specializations/fetch')
     }
@@ -115,8 +186,23 @@ export default {
       await store.dispatch('dictionary/fetchObjectType')
     }
   },
-  data() {
+
+  data ()
+  {
     return {
+      headers: [
+        {text: 'Название', align: 'start', value: 'name',},
+        {text: 'Оплата', value: 'pay'},
+        {
+          text: 'Объект', value: 'object',
+          filter: item => {
+            if (!this.selectObject) return true;
+            return item.uuid == this.selectObject;
+          },
+        },
+        {text: 'Дата', value: 'date'},
+        {text: '', value: 'actions', sortable: false},
+      ],
       formValues: {},
       title: 'Создание нового объекта',
       title_size: 'large',
@@ -318,7 +404,6 @@ export default {
             value: '',
           },
         ],
-
       },
       valid: true,
       select: null,
@@ -326,6 +411,7 @@ export default {
       formHasErrors: false,
     }
   },
+
   computed: {
     object_id() {
       return this.$store.getters['object_id/object_id']
@@ -350,6 +436,7 @@ export default {
     },
     postBody() {
       let contacts = [];
+
       for (let i = 0; i < this.meta.meta_object_contact.length; i++) {
         contacts.push(
           {
@@ -362,17 +449,20 @@ export default {
       }
 
       let managers = [];
+
       for (let i = 0; i < this.meta.meta_object_manager.length; i++) {
         managers.push(
           this.formValues['object_manager_' + i]
         )
       }
-      managers.push(
-        "e19e332e-2db2-4830-8e62-252f3fca541e",
-        "ce23e853-6405-46a7-bfc2-2f460efc7a79"
-      )
+
+      // managers.push(
+      //   "e19e332e-2db2-4830-8e62-252f3fca541e",
+      //   "ce23e853-6405-46a7-bfc2-2f460efc7a79"
+      // )
 
       let dispatchers = [];
+
       for (let i = 0; i < this.meta.meta_object_dispatchers.length; i++) {
         dispatchers.push(
           this.formValues['object_dispatchers_' + i]
@@ -394,11 +484,16 @@ export default {
         "contacts": contacts
       };
 
+      console.log('postBody');
       console.log(postBody);
 
       return postBody;
     },
 
+    object_id_requests ()
+    {
+      return this.$store.getters[ 'object_id/object_id_requests' ];
+    },
   },
   methods: {
     ...mapActions('object_id', ['fetchObjectId',]),
@@ -409,10 +504,45 @@ export default {
     ...mapActions('objects', ['putRequest',]),
     ...mapActions('dictionary', ['fetchClients',]),
     ...mapActions('dictionary', ['fetchOrganizations',]),
+    ...mapActions('object_id', ['fetchObjectIdRequest',]),
 
-    addResponsible(resp_name) {
-      let resp = this.dispatchers;
-      this.meta['meta_object_' + resp_name].push({
+    addResponsible( resp_name )
+    {
+      console.log( 'this.meta[meta_object_ + resp_name]' ); console.log( this.meta['meta_object_' + resp_name] );
+
+      console.log( 'this.formValues' ); console.log( this.formValues );
+
+      let flag = false;
+
+      if ( !this.meta['meta_object_' + resp_name].length )
+      {
+        flag = false;
+      }
+      else if ( !this.formValues[ 'object_' + resp_name + '_' + ( this.meta['meta_object_' + resp_name].length - 1 ) ] )
+      {
+        flag = true;
+      }
+
+      if ( flag )
+      {
+        return;
+      }
+
+      let resp = [];
+
+      switch ( resp_name )
+      {
+        case 'manager' :
+          resp = this.managers;
+        break;
+
+        case 'dispatchers' :
+          resp = this.dispatchers;
+        break;
+      }
+
+      this.meta['meta_object_' + resp_name].push(
+        {
           type: 'FTypeSelectUIID',
           icon: 'mdi-account',
           label: '',
@@ -429,7 +559,9 @@ export default {
         },
       );
     },
-    addFormPart() {
+
+    addFormPart()
+    {
       this.meta.meta_object_contact.push(
         [
           {
@@ -467,16 +599,34 @@ export default {
         ],
       );
     },
-    addRequest() {
+
+    addRequest()
+    {
       this.$router.replace('/objects/create');
     },
-    removeItem(index, array) {
-      if (index != 0) {
-        this.meta[array].splice(index, 1);
+
+    removeItem( index, array )
+    {
+      console.debug( 'removeItem' );
+      console.debug( 'index' ); console.debug( index );
+      console.debug( 'array' ); console.debug( array );
+
+      if ( index >= 0 )
+      {
+        this.meta[ array ].splice( index, 1 );
+
+        console.log( `${array.replace( 'meta_', '' )}_${index}` );
+
+        delete this.formValues[ `${array.replace( 'meta_', '' )}_${index}` ];
       }
+
+      console.debug( 'this.meta[ array ]' ); console.debug( this.meta[ array ] );
     },
-    nextFromButton() {
-      if (this.tab < this.tabs_list.length - 1) {
+
+    nextFromButton()
+    {
+      if (this.tab < this.tabs_list.length - 1)
+      {
         let formPart = 'form_part_' + this.tab;
         this.$refs[formPart].validate();
 
@@ -488,19 +638,25 @@ export default {
             this.$vuetify.goTo(el);
           }
         });
-      } else {
-        const newRequet = JSON.stringify(this.postBody);
+      }
+      else
+      {
+        const newRequet = JSON.stringify( this.postBody );
         console.log(newRequet);
         this.putRequest({uuid: this.object_id.uuid, body: newRequet});
       }
     },
+
     prevFromButton() {
       this.tab -= 1;
     },
-    updateFiled(field, value) {
+
+    updateFiled(field, value)
+    {
       this.formValues[field] = value;
       console.log(field, value);
     },
+
     addFileds(length, method, args) {
       if (length > 1) {
         for (let i = 1; i < length; i++) {
@@ -509,9 +665,11 @@ export default {
       }
     }
   },
-  async created() {
 
+  async created ()
+  {
     await this.fetchObjectId(this.$route.params.id);
+    await this.fetchObjectIdRequest(this.$route.params.id);
     console.log(this.$route.params.id);
 
     console.log(this.object_id);
@@ -575,7 +733,8 @@ export default {
       Vue.set(this.formValues, f.name, f.value);
     })
 
-
+    console.log('vvvvvvv');
+    console.log(this.object_id_requests);
   }
 }
 </script>

@@ -345,8 +345,9 @@ export default {
           {title: 'Изменить профессию', uuid: 'position'},
           {title: 'Изменить участок', uuid: 'zone'},
           {title: 'Изменить смену', uuid: 'smena'},
-          {title: 'Изменить вид', uuid: 'status'},
-          {title: 'Изменить часы', uuid: 'calculation'},
+          {title: 'Изменить статус', uuid: 'status'},
+          {title: 'Изменить вид', uuid: 'calculation'},
+          {title: 'Изменить часы', uuid: 'hours'},
           {title: 'Изменить время начала', uuid: 'begin'},
           {title: 'Изменить время конца', uuid: 'end'},
         ],
@@ -433,7 +434,11 @@ export default {
       this.formGroupAction[field] = value;
       //console.log(this.formGroupAction.action_value);
     },
-    updateActionSelect(field, value) {
+    updateActionSelect(field, value)
+    {
+      console.debug( 'updateActionSelect' );
+      console.debug( value );
+
       this.actionParamsComponent.name = value;
 
       if (value == 'position' || value == 'zone' || value == 'hours') {
@@ -472,16 +477,25 @@ export default {
 
       this.updateChangeButton({id: array_index, activeStatus: !current_status_change});
     },
-    saveItem(id) {
+
+    saveItem( id )
+    {
       delete this.formValues.id;
       delete this.formValues.activeChangeButton;
 
-      const newRequet = JSON.stringify(this.formValues);
-      console.log(newRequet);
-      this.putRequestIdTimeSheet({uuid: this.$route.params.id, body: newRequet});
+      console.log( this.formValues );
+
+      //if ()
+
+      const newRequet = JSON.stringify( this.formValues );
+
+      console.log( newRequet );
+
+      this.putRequestIdTimeSheet( { uuid: this.$route.params.id, body: newRequet } );
 
       this.expanded = [];
     },
+
     saveGroupItem() {
       let field = this.actionParamsComponent.name,
         objects = [];

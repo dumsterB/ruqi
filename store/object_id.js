@@ -26,11 +26,17 @@ export const actions = {
   },
   async fetchObjectIdRequest({commit}, requestId) {
 
+    console.log('fetchObjectIdRequest ###');
+
     const object_id_requests = await this.$axios.get('/objects/'+requestId+'/tasks', {
       headers: {
         "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
       }
     });
+
+    console.log('object_id_requests');
+    console.log(object_id_requests);
+
     commit('setObjectIdRequests', object_id_requests);
 
   },
