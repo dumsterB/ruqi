@@ -11,7 +11,7 @@
         :marker-id="item.uuid"
         :hint-content="item.properties.hintContent"
         marker-type="placemark"
-        :balloon-template="balloonTemplate(item.info)"
+        :balloon-template="balloonTemplate(item.info, item.uuid)"
       />
     </yandex-map>
   </div>
@@ -25,9 +25,12 @@ export default {
     return {}
   },
   methods:{
-    balloonTemplate(info) {
+    balloonTemplate(info, uuid) {
       return `
-        <p>${info}</p>
+        <h2 class="balloon-header">${info.name}</h2>
+        <p>Рейтинг: ${info.raiting}</p>
+        <p>Описание: ${info.description}</p>
+        <a href="/objects/${uuid}">Перейти</a>
       `
     }
   }
@@ -44,6 +47,9 @@ export default {
     height: 100%;
   }
 
+  .balloon-header{
+    padding-bottom: 10px;
+  }
 }
 
 </style>

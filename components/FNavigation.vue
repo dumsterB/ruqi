@@ -52,6 +52,7 @@ export default {
 .wrap-form-navigation{
   button {
     font-weight: 700;
+    text-transform: uppercase;
   }
 
   button.public{
