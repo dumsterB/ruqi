@@ -518,7 +518,6 @@ export default {
     await this.fetchObjectIdRequest(this.$route.params.id);
 
     this.selectStatus = this.object_id.status;
-
   },
   async mounted() {
 

@@ -506,7 +506,7 @@ export default {
     ...mapActions('dictionary', ['fetchOrganizations',]),
     ...mapActions('object_id', ['fetchObjectIdRequest',]),
 
-    addResponsible( resp_name )
+    addResponsible( resp_name, isInit = false )
     {
       console.log( 'this.meta[meta_object_ + resp_name]' ); console.log( this.meta['meta_object_' + resp_name] );
 
@@ -514,18 +514,21 @@ export default {
 
       let flag = false;
 
-      if ( !this.meta['meta_object_' + resp_name].length )
+      if ( !isInit )
       {
-        flag = false;
-      }
-      else if ( !this.formValues[ 'object_' + resp_name + '_' + ( this.meta['meta_object_' + resp_name].length - 1 ) ] )
-      {
-        flag = true;
-      }
+        if ( !this.meta['meta_object_' + resp_name].length )
+        {
+          flag = false;
+        }
+        else if ( !this.formValues[ 'object_' + resp_name + '_' + ( this.meta['meta_object_' + resp_name].length - 1 ) ] )
+        {
+          flag = true;
+        }
 
-      if ( flag )
-      {
-        return;
+        if ( flag )
+        {
+          return;
+        }
       }
 
       let resp = [];
@@ -556,6 +559,7 @@ export default {
           },
           parent_array: 'meta_object_' + resp_name,
           validation: 'required',
+          value : '',
         },
       );
     },
@@ -660,7 +664,7 @@ export default {
     addFileds(length, method, args) {
       if (length > 1) {
         for (let i = 1; i < length; i++) {
-          this[method](args);
+          this[method](args, true);
         }
       }
     }
@@ -709,6 +713,9 @@ export default {
       this.meta.meta_object_contact[i][2].value = this.object_id.contacts[i].phone;
       this.meta.meta_object_contact[i][3].value = this.object_id.contacts[i].email;
     }
+
+    console.log( 'marker 1' );
+    console.log( this.meta.meta_object_dispatchers );
 
     for (let i = 0; i < dispatchers_length; i++) {
       this.meta.meta_object_dispatchers[i].value = this.object_id.dispatchers[i].uuid;
