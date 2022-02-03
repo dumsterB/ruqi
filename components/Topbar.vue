@@ -60,7 +60,7 @@
         <v-badge
           bordered
           color="error"
-          content="25"
+          :content="notifications.length"
           overlap
         >
           <v-btn
@@ -71,6 +71,7 @@
             rounded
             width="56"
             height="56"
+            @click="$router.push('/notification')"
           >
             <img src="/img/ico_bell.svg" alt="Оповещение">
           </v-btn>
@@ -98,6 +99,8 @@
   </div>
 </template>
 <script>
+import {mapActions} from "vuex";
+
 export default {
   data: () => ({
     user: {
@@ -126,6 +129,17 @@ export default {
       },
     ],
   }),
+  computed:{
+    notifications() {
+      return this.$store.getters['notifications/notifications'];
+    },
+  },
+  methods:{
+    ...mapActions('notifications', ['fetchNotifications',]),
+  },
+  async mounted() {
+    await this.fetchNotifications();
+  }
 }
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header :content="title" :size="title_size" :isnew="false" :isback="true"/>
+    <Header :content="client_id.name" :size="title_size" :isnew="false" :isback="true"/>
     <v-tabs
       v-model="tab"
       class="form-tabs"
@@ -26,17 +26,19 @@
           </v-tab-item>
           <v-tab-item>
             <v-form ref="form_part_1" v-model="valid" lazy-validation>
-              <div class="form-part form-part-contact"
-                   v-for="(item, index) in meta.meta_object_doc"
-                   :key="index">
-                <a v-show="index != 0" href="#" @click.prevent="removeItem(index, 'meta_object_doc')" class="remove-item">
-                  <img src="/img/ico_close.svg" alt="Удалить">
-                </a>
-                <FormBuilder :meta="item" @updateFiled="updateFiled"/>
+              <div class="form-part">
+                <FormBuilder :meta="meta.meta_object_doc" @updateFiled="updateFiled"/>
               </div>
-              <AddFormPart text="Добавить документ" @addFormPart="addDocument"/>
             </v-form>
           </v-tab-item>
+          <v-tab-item>
+            <v-form ref="form_part_2" v-model="valid" lazy-validation>
+              <div class="form-part">
+                <FormBuilder :meta="meta.meta_object_objects" @updateFiled="updateFiled"/>
+              </div>
+            </v-form>
+          </v-tab-item>
+
           <FNavigation :indexTab="tab" :nextButtonsText="nextButtonsText" @nextFromButton="nextFromButton"
                        @prevFromButton="prevFromButton"/>
 
@@ -54,6 +56,9 @@ import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 
 export default {
   async fetch({store}) {
+    if (store.getters['objects/objects'].length === 0) {
+      await store.dispatch('objects/fetchObjects')
+    }
     if (store.getters['dictionary/specializations'].length === 0) {
       await store.dispatch('dictionary/fetchSpecializations')
     }
@@ -67,12 +72,13 @@ export default {
       title_create: false,
       title_page_create: '',
       tabs_list: [
-        'Данные', 'Документы',
+        'Данные', 'Документы', 'Объекты',
       ],
       tab: null,
       nextButtonsText: [
         'Добавить документы',
-        'создать клиента'
+        'указать объекты',
+        'Сохранить'
       ],
       meta: {
         meta_object_info: [
@@ -87,22 +93,6 @@ export default {
           {
             type: 'FTypeSelectUIID',
             label: 'Вид контрагента',
-            col: 12,
-            name: 'object_type',
-            params: {
-              options: [
-                {name: 'Юр. лицо', uuid: 'entity'},
-                {name: 'Физ. лицо', uuid: 'personal'},
-              ],
-              item_text: 'name',
-              label: 'Не выбрано'
-            },
-            validation: 'required',
-            value: ''
-          },
-          {
-            type: 'FTypeSelectUIID',
-            label: 'Специализация',
             col: 12,
             name: 'object_spec',
             params: {
@@ -219,25 +209,40 @@ export default {
           },
 
         ],
-        meta_object_doc:[
-          [
-            {
-              type: 'FTypeText',
-              label: 'Введите название и загрузите документ',
-              col: 12,
-              name: 'doc_title_0',
-              validation: ['required'],
-              value: ''
-            },
-            {
-              type: 'FTypeFile',
-              label: '',
-              col: 12,
-              name: 'doc_file_0',
-              value: ''
-            },
-          ],
+        meta_object_doc: [
+          {
+            type: 'FTypeFile',
+            label: 'Паспорт - основной разворот',
+            col: 12,
+            name: 'doc_pass_01',
+            value: ''
+          },
+          {
+            type: 'FTypeFile',
+            label: 'Паспорт - страница регистрации',
+            col: 12,
+            name: 'doc_pass_02',
+            value: ''
+          },
         ],
+        meta_object_objects: [
+          {
+            type: 'FTypeSelectUIID',
+            label: '',
+            col: 12,
+            id: 'object_entity',
+            name: 'object_entity',
+            params: {
+              options: [],
+              item_text: 'name',
+              label: 'Не выбрано',
+            },
+            validation: 'required',
+            value: ''
+          },
+
+        ],
+
       },
       valid: true,
       select: null,
@@ -245,15 +250,28 @@ export default {
     }
   },
   computed: {
+    objects() {
+      return this.$store.getters['objects/objects'];
+    },
     specializations() {
       return this.$store.getters['dictionary/specializations'];
     },
+    client_id(){
+      return this.$store.getters['client_id/client_id'];
+    },
     postBody() {
+      let objects = [];
+      for (let i = 0; i < this.meta.meta_object_objects.length; i++) {
+        objects.push(
+          {
+          }
+        )
+      }
+
       let postBody = {
         "name": this.formValues.name,
         "address": this.formValues.post_address,
         "specialization_uuid": this.formValues.object_spec,
-        "type": this.formValues.object_type,
         "legal_address": this.formValues.legal_address,
         "inn": this.formValues.inn,
         "ogrn": this.formValues.ogrn,
@@ -272,8 +290,10 @@ export default {
     },
   },
   methods: {
+    ...mapActions('objects', ['fetchObjects',]),
     ...mapActions('dictionary', ['fetchSpecializations',]),
-    ...mapActions('clients', ['createRequest',]),
+    ...mapActions('client_id', ['fetchClientId',]),
+    ...mapActions('client_id', ['putRequest',]),
 
     nextFromButton() {
       if (this.tab < this.tabs_list.length - 1) {
@@ -291,7 +311,7 @@ export default {
       } else {
         const newRequet = JSON.stringify(this.postBody);
         console.log(newRequet);
-       this.createRequest(newRequet);
+        this.putRequest({uuid: this.client_id.uuid, body: newRequet});
       }
     },
     prevFromButton() {
@@ -301,43 +321,35 @@ export default {
       this.formValues[field] = value;
       console.log(field, value);
     },
-    addDocument() {
-      this.meta.meta_object_doc.push(
-        [
-          {
-            type: 'FTypeText',
-            label: 'Введите название и загрузите документ',
-            col: 12,
-            name: 'doc_title_' + this.meta.meta_object_doc.length,
-            validation: ['required'],
-            value: ''
-          },
-          {
-            type: 'FTypeFile',
-            label: '',
-            col: 12,
-            name: 'doc_file_' + this.meta.meta_object_doc.length,
-            value: ''
-          },
-        ]
-      );
-    },
-    removeItem(index, array) {
-      if (index != 0) {
-        this.meta[array].splice(index, 1);
-      }
-    },
   },
-  created() {
+  async created() {
+    await this.fetchClientId(this.$route.params.id);
+
+    this.meta.meta_object_info[1].params.options = this.specializations;
+    this.meta.meta_object_objects[0].params.options = this.objects;
+
+    this.meta.meta_object_info[0].value = this.client_id.name;
+    this.meta.meta_object_info[1].value = this.client_id.specialization;
+    this.meta.meta_object_info[2].value = this.client_id.legal_address;
+    this.meta.meta_object_info[3].value = this.client_id.address;
+    this.meta.meta_object_info[4].value = this.client_id.ogrn;
+    this.meta.meta_object_info[5].value = this.client_id.okato;
+    this.meta.meta_object_info[6].value = this.client_id.inn;
+    this.meta.meta_object_info[7].value = this.client_id.kpp;
+    this.meta.meta_object_info[8].value = this.client_id.bik;
+    this.meta.meta_object_info[9].value = this.client_id.payment_account;
+    this.meta.meta_object_info[10].value = this.client_id.correspondent_account;
+    this.meta.meta_object_info[11].value = this.client_id.bank;
+    this.meta.meta_object_info[12].value = this.client_id.gen_director;
+    this.meta.meta_object_info[13].value = this.client_id.mail;
+    this.meta.meta_object_info[14].value = this.client_id.phone;
 
     this.meta.meta_object_info.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     })
-    this.meta.meta_object_doc.map(subarray => subarray.map(f => {
+    this.meta.meta_object_objects.map(f => {
       Vue.set(this.formValues, f.name, f.value);
-    }));
-
-    this.meta.meta_object_info[2].params.options = this.specializations;
+    })
 
   }
 }
@@ -345,7 +357,6 @@ export default {
 
 <style lang="scss" scoped>
 
-@import '../../assets/scss/colors';
 
 
 </style>

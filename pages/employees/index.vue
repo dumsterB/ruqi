@@ -19,22 +19,22 @@
           height="48"
           outlined
           class="btn-blue"
-          href="/clients/create"
+          :href="$route.name + '/create'"
         >
-          СОЗДАТЬ НОВОГО КЛИЕНТА
+          СОЗДАТЬ НОВОГО СОТРУДНИКА
         </v-btn>
       </v-col>
-      <v-col cols="6" class="d-flex justify-end">
+      <!--<v-col cols="6" class="d-flex justify-end">
         <v-select
           :items="sortFiled"
-          v-model="sortTypeValue"
+          v-model="sortFieldValue"
           outlined
-          label="Фильтр"
+          label="Сортировка"
           item-text="name"
-          item-value="type"
+          item-value="uuid"
           @change="filter()"
         ></v-select>
-        <!--<v-select
+        <v-select
           :items="sortType"
           v-model="sortTypeValue"
           outlined
@@ -42,8 +42,8 @@
           item-text="name"
           item-value="uuid"
           @change="filter()"
-        ></v-select>-->
-      </v-col>
+        ></v-select>
+      </v-col>-->
     </v-row>
 
     <v-row>
@@ -52,7 +52,7 @@
           <v-data-table
             v-model="selected"
             :headers="headers"
-            :items="clients"
+            :items="employees"
             class="elevation-0"
             item-key="uuid"
             :page.sync="page"
@@ -62,18 +62,17 @@
             show-select
           >
             <template v-slot:item.name="{ item }">
-              <UserAvatar :first_name="item.name" last_name="" :color="avatarColor" :radius="avatarBorderRadius"/>
+              <UserAvatar :first_name="item.firstname" :last_name="item.lastname" :color="avatarColor" :radius="avatarBorderRadius"/>
             </template>
 
-            <template v-slot:item.inn="{ item }">
+            <template v-slot:item.phone="{ item }">
               <div class="color-black">
-                {{ item.inn }}
+                {{ item.phone }}
               </div>
             </template>
 
-            <template v-slot:item.created_at="{ item }">
-              {{ item.created_at.substring(0, 10) }} <br>
-              {{ item.created_at.substring(11, 16) }}
+            <template v-slot:item.efficiency="{ item }">
+              <Efficiency :efficiency="item.efficiency"/>
             </template>
 
             <template v-slot:item.actions="{ item }">
@@ -93,11 +92,11 @@
                 <v-card>
                   <v-list-item-content class="justify-start">
                     <div class="mx-auto text-left">
-                      <nuxt-link :to="'/clients/'+ item.uuid +'/edit/'">
+                      <nuxt-link :to="'/employees/'+ item.uuid +'/edit/'">
                         <span>Редактировать</span>
                       </nuxt-link>
                       <v-divider class="my-3"></v-divider>
-                      <a href="#" @click.prevent="removeRequest({requestId: item.uuid, status: tabs_list[tab].id})">Удалить</a>
+                      <a href="#" @click.prevent="removeRequest({requestId: item.uuid, params: postBody})">Удалить</a>
                     </div>
                   </v-list-item-content>
                 </v-card>
@@ -117,17 +116,9 @@
 import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 
 export default {
-  async fetch({store}) {
-    if (store.getters['specializations/specializations'].length === 0) {
-      await store.dispatch('specializations/fetch')
-    }
-    if (store.getters['dictionary/regions'].length === 0) {
-      await store.dispatch('dictionary/fetchRegions')
-    }
-  },
   data() {
     return {
-      title: 'Клиенты',
+      title: 'Сотрудники',
       title_size: 'big',
       title_create: false,
       title_page_create: 'create',
@@ -136,8 +127,9 @@ export default {
         {name: 'По убыванию', uuid: 'desc'},
       ],
       sortFiled: [
-        {name: 'Юр. лицо', type: 'entity'},
-        {name: 'Физ. лицо', type: 'personal'},
+        {name: 'Имя', uuid: 'name'},
+        {name: 'Объекты', uuid: 'objects'},
+        {name: 'Заявки', uuid: 'tasks'},
       ],
       page: 1,
       pageCount: 0,
@@ -145,37 +137,41 @@ export default {
       selected: [],
       avatarColor: '#36B368',
       headers: [
-        {text: 'Наименование', align: 'start', value: 'name',},
-        {text: 'вид', value: 'type'},
-        {text: 'ИНН', value: 'inn'},
-        {text: 'создан', value: 'created_at'},
+        {text: 'Имя', align: 'start', value: 'name',},
+        {text: 'Телефон', value: 'phone'},
+        {text: 'объекты', value: 'objects'},
+        {text: 'заявки', value: 'tasks'},
+        {text: 'эффективность', value: 'efficiency'},
         {text: '', value: 'actions', sortable: false, align: 'right'},
       ],
       tabs_list: [
-        { title: 'Активные', id: 'active'},
-        { title: 'Архив', id: 'archive'},
+        { title: 'Диспетчеры', id: 'dispatcher'},
+        { title: 'Менеджеры', id: 'manager'},
       ],
       tab: 0,
-      sortTypeValue: 'entity',
+      sortTypeValue: 'asc',
+      sortFieldValue: 'name',
       avatarBorderRadius: 'rounded',
+      typeEmployees: 'dispatcher',
     }
   },
   created() {
 
   },
   methods: {
-    ...mapActions('clients', ['fetchClients',]),
-    ...mapActions('clients', ['removeRequest',]),
+    ...mapActions('employees', ['fetchEmployees',]),
+    ...mapActions('employees', ['removeRequest',]),
 
     openRequest(id) {
-      this.$router.push('/clients/' + id);
+      this.$router.push('/employees/' + id);
     },
-    async selectData(status) {
-      await this.fetchClients({"status": status});
+    selectData(type) {
+      this.typeEmployees = type;
+      this.filter();
     },
     filter() {
       const newRequet = this.postBody;
-      this.fetchClients(newRequet);
+      this.fetchEmployees(newRequet);
     },
     setItemsPerPage(value) {
       this.itemsPerPage = value;
@@ -186,8 +182,8 @@ export default {
 
   },
   computed: {
-    clients() {
-      return this.$store.getters['clients/clients'];
+    employees() {
+      return this.$store.getters['employees/employees'];
     },
     itemsPerPageTable() {
       if (this.itemsPerPage) {
@@ -198,15 +194,14 @@ export default {
     },
     postBody() {
       let postBody = {
-        "type": this.sortTypeValue,
-        "status": this.tabs_list[this.tab].id,
+        "type": this.typeEmployees,
       }
       console.log(postBody)
       return postBody;
     }
   },
   async mounted() {
-    await this.fetchClients({"status": "active"});
+    await this.fetchEmployees({"type": "dispatcher"});
   }
 }
 </script>

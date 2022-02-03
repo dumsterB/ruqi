@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-file-input
-      label="Загрузить фото"
+      placeholder="Загрузить фото"
       single-line
       outlined
       filled
@@ -9,6 +9,7 @@
       prepend-inner-icon="mdi-camera-plus-outline"
       @input="$emit('input', file)"
       v-model="file"
+      @change="$emit('input', file)"
       accept="image/png, image/jpeg, image/bmp"
     ></v-file-input>
   </div>
@@ -19,7 +20,7 @@ export default {
   props: ['name', 'icon', 'params', 'value', 'label'],
   data() {
     return {
-      file: '',
+      file: [],
     }
   },
   computed: {
@@ -47,5 +48,14 @@ export default {
 
 <style lang="scss">
 
+@import '/assets/scss/colors.scss';
 
+.theme--light.v-icon {
+  color: $blue;
+}
+
+.theme--light.v-file-input .v-file-input__text--placeholder {
+  color: $blue;
+  margin-left: 4px;
+}
 </style>

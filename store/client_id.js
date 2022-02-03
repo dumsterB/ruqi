@@ -30,7 +30,7 @@ export const actions = {
       })
       .then((response) => {
         console.log(response);
-        dispatch('fetchClientId');
+        dispatch('fetchClientId', uuid);
         commit('response/setSuccess', {type: 'success', text: 'Клиент успешно обновлен', }, {root: true});
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });

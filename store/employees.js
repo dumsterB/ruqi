@@ -1,25 +1,24 @@
 export const state = () => ({
-  clients: [],
+  employees: [],
 })
 
 export const getters = {
-  clients(state) {
-    return state.clients;
+  employees(state) {
+    return state.employees;
   },
 }
 
 
 export const actions = {
-  async fetchClients({commit}, params) {
-    console.log('фетч', params)
+  async fetchEmployees({commit}, params) {
 
-    const clients = await this.$axios.get('/super_manager/accounts', {
+    const employees = await this.$axios.get('/super_manager/accounts/57721e51-d7ba-492d-8579-24e9df1a1cbc/employees', {
       headers: {
         "Authorization": "Bearer af2cf5b991716c8fe1d0c6bf9c7a03f6fa088887dd10921d605dad809e2df125"
       },
       params: params
     });
-    commit('setClients', clients)
+    commit('setEmployees', employees)
 
   },
   async createRequest({commit, dispatch}, newRequest) {
@@ -35,8 +34,8 @@ export const actions = {
       })
       .then((response) => {
         console.log(response);
-        dispatch('fetchClients');
-        commit('response/setSuccess', {type: 'success', text: 'Клиент успешно создан', }, {root: true});
+        dispatch('fetchEmployees');
+        commit('response/setSuccess', {type: 'success', text: 'Сотрудник успешно создан', }, {root: true});
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
@@ -53,8 +52,7 @@ export const actions = {
         console.log(error);
       });
   },
-  async removeRequest({commit, dispatch}, {requestId, status}) {
-    console.log(status);
+  async removeRequest({commit, dispatch}, {requestId, params}) {
 
     await this.$axios.delete('/super_manager/accounts/'+requestId, {
       headers: {
@@ -63,8 +61,11 @@ export const actions = {
     })
       .then((response) => {
         console.log(response);
-        dispatch('fetchClients', {"status": status});
-
+        dispatch('fetchEmployees', params);
+        commit('response/setSuccess', {type: 'success', text: 'Клиент удален', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 3000);
       })
       .catch((error) => {
         console.log(error);
@@ -74,8 +75,8 @@ export const actions = {
 }
 
 export const mutations = {
-  setClients(state, clients) {
-    state.clients = clients.data.data;
+  setEmployees(state, employees) {
+    state.employees = employees.data.data;
   },
 }
 
