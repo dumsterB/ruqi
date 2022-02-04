@@ -25,9 +25,9 @@
 <script>
 
 export default {
-  name  : "default",
+  name: "default",
 
-  computed  : {
+  computed: {
     requestSuccess() {
       return this.$store.getters['response/requestSuccess'];
     },
@@ -35,18 +35,12 @@ export default {
 
   watch: {
     $route: {
-      handler ( to, from ) {
-        const ruqi = document.querySelector( '.ruqi' );
-        console.log( 'ruqi' );
-        console.log( ruqi );
+      handler(to, from) {
+        const ruqi = document.querySelector('.ruqi');
 
-        if ( !ruqi )
-        {
+        if (!ruqi) {
           setTimeout(() => {
-            const ruqi = document.querySelector( '.ruqi' );
-
-            console.log( 'ruqi wieder' );
-            console.log( ruqi);
+            const ruqi = document.querySelector('.ruqi');
 
             ruqi.classList.add('page--' + to.name.toLowerCase());
           }, 500);
@@ -54,16 +48,12 @@ export default {
           return;
         }
 
-        if ( from !== undefined )
-        {
-          console.log( 'page--' + from.name );
-          console.log( from.name );
+        if (from !== undefined) {
+          //console.log('page--' + from.name);
+          //console.log(from.name);
 
           ruqi.classList.remove('page--' + from.name.toLowerCase());
         }
-
-        console.log( 'page--' + to.name );
-        console.log( to.name );
 
         ruqi.classList.add('page--' + to.name.toLowerCase());
 
@@ -82,35 +72,36 @@ export default {
 </script>
 
 <style lang="scss">
-  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap');
-  @import '/assets/scss/colors.scss';
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap');
+@import '/assets/scss/colors.scss';
 
-  html {
+html {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 16px;
+  color: $grey;
+
+  .v-application {
     font-family: 'Source Sans Pro', sans-serif;
-    font-size: 16px;
-    color: $grey;
-
-    .v-application {
-      font-family: 'Source Sans Pro', sans-serif;
-    }
-
-    .wrapper-main-menu {
-      height: 100%;
-    }
-
-    .content{
-      position: relative;
-      z-index: 100;
-    }
   }
 
-  /* MIXINS STYLES START */
-    .page--performers-id {
-      background-color  : #F2FAFF;
+  .wrapper-main-menu {
+    height: 100%;
+  }
 
-      #app {
-        background-color  : #F2FAFF;
-      }
-    }
-  /* MIXINS STYLES END */
+  .content {
+    position: relative;
+    z-index: 100;
+  }
+}
+
+/* MIXINS STYLES START */
+.page--performers-id {
+  background-color: #F2FAFF;
+
+  #app {
+    background-color: #F2FAFF;
+  }
+}
+
+/* MIXINS STYLES END */
 </style>

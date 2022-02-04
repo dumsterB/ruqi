@@ -88,16 +88,23 @@
               @input="updateActionSelect('action', $event)"
             />
 
-            <div v-if="actionParamsComponent.type" class="">
-              <component
-                class="mass"
-                :is="actionParamsComponent.type"
-                :name="actionParamsComponent.name"
-                :params="actionParamsComponent.params"
-                :value="actionParamsComponent.value"
-                @input="updateFiledAction('action_value', $event)"
-              />
-            </div>
+            <v-form
+              ref="form_group"
+              v-model="valid_group"
+              lazy-validation
+            >
+              <div v-if="actionParamsComponent.type" class="">
+                <component
+                  class="mass"
+                  :is="actionParamsComponent.type"
+                  :name="actionParamsComponent.name"
+                  :params="actionParamsComponent.params"
+                  :value="actionParamsComponent.value"
+                  :validation = "actionParamsComponent.validation"
+                  @input="updateFiledAction('action_value', $event)"
+                />
+              </div>
+            </v-form>
 
             <v-btn
               text
@@ -257,7 +264,8 @@
                     </template>
                     <template v-slot:item.hours="{ item }">
                       <div>
-                        <FTypeText class="ein" name="hours" :value="item.hours" :validation="['number']" @input="updateFiled('hours', $event)"/>
+                        <FTypeText class="ein" name="hours" :value="item.hours" :validation="['number']"
+                                   @input="updateFiled('hours', $event)"/>
                       </div>
                     </template>
 
@@ -328,6 +336,7 @@ export default {
         action_value: ''
       },
       valid: true,
+      valid_group: true,
       expanded: [],
       changeButtonSettings: [
         {
@@ -361,6 +370,7 @@ export default {
         params: '',
         value: '',
         label: '',
+        validation: [],
       },
       smenaListOptions: {
         options: [
@@ -428,52 +438,22 @@ export default {
       }
     },
 
-    updateFiled( field, value )
-    {
-      switch ( field )
-      {
-        case 'hours' :
-          value = value.replace( /[A-Za-zА-Яа-яЁё.,\-_\s+]/g, "" );
-        break;
-      }
+    updateFiled(field, value) {
       this.formValues[0][field] = value;
     },
 
-    updateFiledAction( field, value )
-    {
-      console.debug( 'updateFiledAction' );
-      console.debug( field, value );
-      console.debug( this.actionParamsComponent.name );
-
-      switch ( this.actionParamsComponent.name )
-      {
-        case 'hours' :
-          console.debug( field, value );
-
-          setTimeout(() => {
-            document.querySelector( '.mass input[name="hours"]' ).value = document.querySelector( '.mass input[name="hours"]' ).value.replace( /[A-Za-zА-Яа-яЁё.,\-_\s+]/g, "" );
-          }, 50);
-
-          console.debug( 'result: ' );
-          console.debug( document.querySelector( '.mass input[name="hours"]').value.replace( /[A-Za-zА-Яа-яЁё.,\-_\s+]/g, "" ) );
-
-          this.formGroupAction[field] = document.querySelector( '.mass input[name="hours"]' ).value.replace( /[A-Za-zА-Яа-яЁё.,\-_\s+]/g, "" );
-        return;
-      }
-
-      this.formGroupAction[field] = document.querySelector( '.mass input[name="hours"]' ).value;
-      //console.log(this.formGroupAction.action_value);
+    updateFiledAction(field, value) {
+      this.formGroupAction[field] = value;
     },
 
-    updateActionSelect(field, value)
-    {
-      console.debug( 'updateActionSelect' );
-      console.debug( value );
-
+    updateActionSelect(field, value) {
       this.actionParamsComponent.name = value;
 
       if (value == 'position' || value == 'zone' || value == 'hours') {
         this.actionParamsComponent.type = 'FTypeText'
+        if ( value == 'hours'){
+          this.actionParamsComponent.validation = ['number'];
+        }
       } else if (value == 'smena' || value == 'status' || value == 'calculation') {
         this.actionParamsComponent.type = 'FTypeSelectUIID'
         this.actionParamsComponent.params = this[value + 'ListOptions'];
@@ -481,7 +461,6 @@ export default {
       } else if (value == 'begin' || value == 'end') {
         this.actionParamsComponent.type = 'FTypeTime'
       }
-
     },
 
     fill() {
@@ -511,43 +490,47 @@ export default {
       this.updateChangeButton({id: array_index, activeStatus: !current_status_change});
     },
 
-    saveItem( id )
-    {
-      delete this.formValues.id;
-      delete this.formValues.activeChangeButton;
+    saveItem(id) {
+      this.$refs.form.validate();
 
-      console.log( this.formValues );
+      this.$nextTick(() => {
+        if (this.valid) {
+          delete this.formValues.id;
+          delete this.formValues.activeChangeButton;
 
-      //if ()
+          const newRequet = JSON.stringify(this.formValues);
+          this.putRequestIdTimeSheet({uuid: this.$route.params.id, body: newRequet});
 
-      const newRequet = JSON.stringify( this.formValues );
-
-      console.log( newRequet );
-
-      this.putRequestIdTimeSheet( { uuid: this.$route.params.id, body: newRequet } );
-
-      this.expanded = [];
+          this.expanded = [];
+        }
+      });
     },
 
     saveGroupItem() {
-      let field = this.actionParamsComponent.name,
-        objects = [];
+      this.$refs.form_group.validate();
 
-      for (let i = 0; i < this.selectedItems.length; i++) {
+      this.$nextTick(() => {
+        if (this.valid_group) {
+          let field = this.actionParamsComponent.name,
+            objects = [];
 
-        let object = {};
-        Object.assign(object, this.selectedItems[i]);
+          for (let i = 0; i < this.selectedItems.length; i++) {
 
-        delete object.id;
-        delete object.activeChangeButton;
-        object[field] = this.formGroupAction.action_value;
-        objects.push(object);
-      }
+            let object = {};
+            Object.assign(object, this.selectedItems[i]);
 
-      const newRequet = JSON.stringify(objects);
-      this.putRequestIdTimeSheet({uuid: this.$route.params.id, body: newRequet});
+            delete object.id;
+            delete object.activeChangeButton;
+            object[field] = this.formGroupAction.action_value;
+            objects.push(object);
+          }
 
-      this.selectedItems = [];
+          const newRequet = JSON.stringify(objects);
+          this.putRequestIdTimeSheet({uuid: this.$route.params.id, body: newRequet});
+
+          this.selectedItems = [];
+        }
+      });
     },
 
     setItemsPerPage(value) {

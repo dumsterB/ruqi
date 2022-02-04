@@ -126,7 +126,7 @@
                       >
                         <template v-slot:activator="{ on }">
                           <v-btn icon
-                                v-on="on">
+                                 v-on="on">
                             <v-icon>mdi-dots-vertical</v-icon>
                           </v-btn>
                         </template>
@@ -165,8 +165,6 @@ import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 export default {
   async fetch({store}) {
 
-    console.log( 'test fect' );
-
     if (store.getters['specializations/specializations'].length === 0) {
       await store.dispatch('specializations/fetch')
     }
@@ -187,8 +185,7 @@ export default {
     }
   },
 
-  data ()
-  {
+  data() {
     return {
       headers: [
         {text: 'Название', align: 'start', value: 'name',},
@@ -409,6 +406,8 @@ export default {
       select: null,
       addContactPersText: 'Добавить контактное лицо',
       formHasErrors: false,
+      searchText: '',
+      page: 1,
     }
   },
 
@@ -456,11 +455,6 @@ export default {
         )
       }
 
-      // managers.push(
-      //   "e19e332e-2db2-4830-8e62-252f3fca541e",
-      //   "ce23e853-6405-46a7-bfc2-2f460efc7a79"
-      // )
-
       let dispatchers = [];
 
       for (let i = 0; i < this.meta.meta_object_dispatchers.length; i++) {
@@ -477,22 +471,26 @@ export default {
         "description": this.formValues.object_desc,
         "region": this.formValues.object_region,
         "city": this.formValues.object_city,
-        "schema": this.formValues.object_driving_directions,
+        "scheme": this.formValues.object_driving_directions,
         "account": this.formValues.object_entity,
         "managers": managers,
         "dispatchers": dispatchers,
         "contacts": contacts
       };
 
-      console.log('postBody');
       console.log(postBody);
-
       return postBody;
     },
 
-    object_id_requests ()
-    {
-      return this.$store.getters[ 'object_id/object_id_requests' ];
+    object_id_requests() {
+      return this.$store.getters['object_id/object_id_requests'];
+    },
+    itemsPerPageTable() {
+      if (this.itemsPerPage) {
+        return parseInt(this.itemsPerPage, 10)
+      } else {
+        return 1;
+      }
     },
   },
   methods: {
@@ -506,42 +504,32 @@ export default {
     ...mapActions('dictionary', ['fetchOrganizations',]),
     ...mapActions('object_id', ['fetchObjectIdRequest',]),
 
-    addResponsible( resp_name, isInit = false )
-    {
-      console.log( 'this.meta[meta_object_ + resp_name]' ); console.log( this.meta['meta_object_' + resp_name] );
-
-      console.log( 'this.formValues' ); console.log( this.formValues );
+    addResponsible(resp_name, isInit = false) {
 
       let flag = false;
 
-      if ( !isInit )
-      {
-        if ( !this.meta['meta_object_' + resp_name].length )
-        {
+      if (!isInit) {
+        if (!this.meta['meta_object_' + resp_name].length) {
           flag = false;
-        }
-        else if ( !this.formValues[ 'object_' + resp_name + '_' + ( this.meta['meta_object_' + resp_name].length - 1 ) ] )
-        {
+        } else if (!this.formValues['object_' + resp_name + '_' + (this.meta['meta_object_' + resp_name].length - 1)]) {
           flag = true;
         }
 
-        if ( flag )
-        {
+        if (flag) {
           return;
         }
       }
 
       let resp = [];
 
-      switch ( resp_name )
-      {
+      switch (resp_name) {
         case 'manager' :
           resp = this.managers;
-        break;
+          break;
 
         case 'dispatchers' :
           resp = this.dispatchers;
-        break;
+          break;
       }
 
       this.meta['meta_object_' + resp_name].push(
@@ -559,13 +547,12 @@ export default {
           },
           parent_array: 'meta_object_' + resp_name,
           validation: 'required',
-          value : '',
+          value: '',
         },
       );
     },
 
-    addFormPart()
-    {
+    addFormPart() {
       this.meta.meta_object_contact.push(
         [
           {
@@ -604,33 +591,31 @@ export default {
       );
     },
 
-    addRequest()
-    {
+    addRequest() {
       this.$router.replace('/objects/create');
     },
 
-    removeItem( index, array )
-    {
-      console.debug( 'removeItem' );
-      console.debug( 'index' ); console.debug( index );
-      console.debug( 'array' ); console.debug( array );
+    removeItem(index, array) {
+      console.debug('removeItem');
+      console.debug('index');
+      console.debug(index);
+      console.debug('array');
+      console.debug(array);
 
-      if ( index >= 0 )
-      {
-        this.meta[ array ].splice( index, 1 );
+      if (index >= 0) {
+        this.meta[array].splice(index, 1);
 
-        console.log( `${array.replace( 'meta_', '' )}_${index}` );
+        console.log(`${array.replace('meta_', '')}_${index}`);
 
-        delete this.formValues[ `${array.replace( 'meta_', '' )}_${index}` ];
+        delete this.formValues[`${array.replace('meta_', '')}_${index}`];
       }
 
-      console.debug( 'this.meta[ array ]' ); console.debug( this.meta[ array ] );
+      console.debug('this.meta[ array ]');
+      console.debug(this.meta[array]);
     },
 
-    nextFromButton()
-    {
-      if (this.tab < this.tabs_list.length - 1)
-      {
+    nextFromButton() {
+      if (this.tab < this.tabs_list.length - 1) {
         let formPart = 'form_part_' + this.tab;
         this.$refs[formPart].validate();
 
@@ -642,10 +627,8 @@ export default {
             this.$vuetify.goTo(el);
           }
         });
-      }
-      else
-      {
-        const newRequet = JSON.stringify( this.postBody );
+      } else {
+        const newRequet = JSON.stringify(this.postBody);
         console.log(newRequet);
         this.putRequest({uuid: this.object_id.uuid, body: newRequet});
       }
@@ -655,8 +638,7 @@ export default {
       this.tab -= 1;
     },
 
-    updateFiled(field, value)
-    {
+    updateFiled(field, value) {
       this.formValues[field] = value;
       console.log(field, value);
     },
@@ -670,13 +652,9 @@ export default {
     }
   },
 
-  async created ()
-  {
+  async created() {
     await this.fetchObjectId(this.$route.params.id);
     await this.fetchObjectIdRequest(this.$route.params.id);
-    console.log(this.$route.params.id);
-
-    console.log(this.object_id);
 
     let contact_length = this.object_id.contacts.length,
       dispatchers_length = this.object_id.dispatchers.length,
@@ -714,14 +692,13 @@ export default {
       this.meta.meta_object_contact[i][3].value = this.object_id.contacts[i].email;
     }
 
-    console.log( 'marker 1' );
-    console.log( this.meta.meta_object_dispatchers );
-
     for (let i = 0; i < dispatchers_length; i++) {
       this.meta.meta_object_dispatchers[i].value = this.object_id.dispatchers[i].uuid;
+      console.log('dispatcher', i, this.meta.meta_object_dispatchers[i], this.object_id.dispatchers[i].uuid)
     }
     for (let i = 0; i < managers_length; i++) {
       this.meta.meta_object_manager[i].value = this.object_id.managers[i].uuid;
+      console.log('manager', i, this.meta.meta_object_dispatchers[i], this.object_id.managers[i].uuid)
     }
 
     this.meta.meta_object_info.map(f => {
@@ -739,9 +716,6 @@ export default {
     this.meta.meta_object_manager.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     })
-
-    console.log('vvvvvvv');
-    console.log(this.object_id_requests);
   }
 }
 </script>

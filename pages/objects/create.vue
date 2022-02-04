@@ -344,6 +344,7 @@ export default {
     },
     postBody() {
       let contacts = [];
+
       for (let i = 0; i < this.meta.meta_object_contact.length; i++) {
         contacts.push(
           {
@@ -356,17 +357,15 @@ export default {
       }
 
       let managers = [];
+
       for (let i = 0; i < this.meta.meta_object_manager.length; i++) {
         managers.push(
           this.formValues['object_manager_' + i]
         )
       }
-      managers.push(
-        "e19e332e-2db2-4830-8e62-252f3fca541e",
-        "ce23e853-6405-46a7-bfc2-2f460efc7a79"
-      )
 
       let dispatchers = [];
+
       for (let i = 0; i < this.meta.meta_object_dispatchers.length; i++) {
         dispatchers.push(
           this.formValues['object_dispatchers_' + i]
@@ -381,13 +380,14 @@ export default {
         "description": this.formValues.object_desc,
         "region": this.formValues.object_region,
         "city": this.formValues.object_city,
-        "schema": this.formValues.object_driving_directions,
+        "scheme": this.formValues.object_driving_directions,
         "account": this.formValues.object_entity,
         "managers": managers,
         "dispatchers": dispatchers,
         "contacts": contacts
       };
 
+      console.log(postBody);
       return postBody;
     },
   },
@@ -400,22 +400,50 @@ export default {
     ...mapActions('dictionary', ['fetchClients',]),
     ...mapActions('dictionary', ['fetchOrganizations',]),
 
-    addResponsible(resp_name) {
-      let resp = this.dispatchers;
-      this.meta['meta_object_'+resp_name].push({
+    addResponsible(resp_name, isInit = false) {
+
+      let flag = false;
+
+      if (!isInit) {
+        if (!this.meta['meta_object_' + resp_name].length) {
+          flag = false;
+        } else if (!this.formValues['object_' + resp_name + '_' + (this.meta['meta_object_' + resp_name].length - 1)]) {
+          flag = true;
+        }
+
+        if (flag) {
+          return;
+        }
+      }
+
+      let resp = [];
+
+      switch (resp_name) {
+        case 'manager' :
+          resp = this.managers;
+          break;
+
+        case 'dispatchers' :
+          resp = this.dispatchers;
+          break;
+      }
+
+      this.meta['meta_object_' + resp_name].push(
+        {
           type: 'FTypeSelectUIID',
           icon: 'mdi-account',
           label: '',
           col: 12,
-          name: 'object_' + resp_name + '_' + this.meta['meta_object_'+resp_name].length,
+          name: 'object_' + resp_name + '_' + this.meta['meta_object_' + resp_name].length,
           remove: true,
           params: {
             options: resp,
             item_text: 'fullname',
             label: 'Не выбрано'
           },
-          parent_array: 'meta_object_'+resp_name,
+          parent_array: 'meta_object_' + resp_name,
           validation: 'required',
+          value: '',
         },
       );
     },
@@ -500,13 +528,19 @@ export default {
     this.meta.meta_object_contact.map(subarray => subarray.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     }));
+    this.meta.meta_object_dispatchers.map(f => {
+      Vue.set(this.formValues, f.name, f.value);
+    })
+    this.meta.meta_object_manager.map(f => {
+      Vue.set(this.formValues, f.name, f.value);
+    })
 
     this.meta.meta_object_info[0].params.options = this.organizations;
     this.meta.meta_object_entity[0].params.options = this.clients;
     this.meta.meta_object_info[2].params.options = this.objectType;
     this.meta.meta_object_info[3].params.options = this.specializations;
-    this.meta.meta_object_manager[0].params.options = this.dispatchers;
-    this.meta.meta_object_dispatchers[0].params.options = this.managers;
+    this.meta.meta_object_manager[0].params.options = this.managers;
+    this.meta.meta_object_dispatchers[0].params.options = this.dispatchers;
   }
 }
 </script>
