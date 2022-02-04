@@ -6,8 +6,8 @@
       WorkSchedule
 
     .trustworthiness-average_rate-wrapper
-      Trustworthiness
-      AverageRate
+      Trustworthiness.item
+      AverageRate.item
 
     .favorite-objects-wrapper
       FavoriteObjects
@@ -72,7 +72,9 @@
   .wrapper
   {
     .work-schedule-wrapper
-    {}
+    {
+      margin-bottom : 32px;
+    }
 
     .trustworthiness-average_rate-wrapper
     {
@@ -81,6 +83,17 @@
       flex-wrap       : nowrap;
       align-content   : center;
       justify-content : flex-start;
+      width           : 100%;
+
+      .item
+      {
+        width : 50%;
+
+        &:last-child
+        {
+          margin-left : 24px;
+        }
+      }
     }
 
     .favorite-objects-wrapper

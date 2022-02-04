@@ -11,11 +11,21 @@
 
       .histograms
         .wrapper
-          .histogram
-            .value {{ '500' }}
+          .item
+            .histogram( :style="{ height : `${ ( 750 / 1000 ) * 100 }%` }" )
+              .value {{ '750' }}
 
-          .histogram
-            .value {{ '500' }}
+          .item
+            .histogram( :style="{ height : `${ ( 550 / 1000 ) * 100 }%` }" )
+              .value {{ '550' }}
+
+          .item
+            .histogram( :style="{ height : `${ ( 800 / 1000 ) * 100 }%` }" )
+              .value {{ '800' }}
+
+          .item
+            .histogram( :style="{ height : `${ ( 1000 / 1000 ) * 100 }%` }" )
+              .value {{ '1000' }}
 
 </template>
 
@@ -76,7 +86,6 @@
     box-sizing      : border-box;
     border-radius   : 30px;
     padding         : 24px;
-    padding-bottom  : 50px;
 
     .wrapper
     {
@@ -93,12 +102,44 @@
         }
       }
 
-      .body {}
+      .body {
+        .histograms
+        {
+          height  : 150px;
+
+          .wrapper
+          {
+            display         : flex;
+            flex-direction  : row;
+            flex-wrap       : nowrap;
+            align-content   : center;
+            justify-content : flex-start;
+            height          : 100%;
+
+            .item
+            {
+              display         : flex;
+              flex-direction  : column;
+              flex-wrap       : nowrap;
+              align-content   : flex-start;
+              justify-content : flex-end;
+              margin-right    : 8px;
+
+              &:last-child
+              {
+                margin-right  : 0;
+              }
+            }
+          }
+        }
+      }
     }
   }
 
   .rate
   {
+    margin-bottom : 11px;
+
     .value
     {
       font-style  : normal;
@@ -111,9 +152,17 @@
 
   .histogram
   {
-    //transform     : rotate( -90deg );
-    background    : #F2F4F5;
-    border-radius : 40px;
+    display         : flex;
+    flex-direction  : column;
+    flex-wrap       : nowrap;
+    align-content   : center;
+    justify-content : flex-end;
+    align-items     : center;
+    background      : #F2F4F5;
+    border-radius   : 40px;
+    width           : 25px;
+    height          : 150px;
+    padding         : 10px;
 
     .value
     {
@@ -121,6 +170,7 @@
       font-size   : 16px;
       line-height : 125%;
       color       : #263043;
+      transform   : rotate( -90deg );
     }
   }
 /* OBJECTS STYLES END */

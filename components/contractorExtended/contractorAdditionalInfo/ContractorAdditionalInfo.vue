@@ -1,7 +1,7 @@
 <template lang="pug">
 
 .contractor-additional-info
-    v-tabs
+    v-tabs.additional-info__tabs
       v-tab( v-for="( tab, index ) in tabs" :key="index" v-model="active_tab" align-with-title @click="active_tab = index" ) {{ tab }}
 
     v-tabs-items( v-model="active_tab" )
@@ -58,7 +58,8 @@
   /* OBJECTS STYLES START */
     .contractor-additional-info
     {
-      width : 100%;
+      width   : 100%;
+      padding : 13px 24px 32px 24px;
     }
 
     .v-window-item
@@ -76,6 +77,10 @@
   /* OBJECTS STYLES END */
 
   /* MIXINS STYLES START */
+    .additional-info__tabs
+    {
+      margin-bottom : 32px;
+    }
   /* MIXINS STYLES END */
 
 </style>
