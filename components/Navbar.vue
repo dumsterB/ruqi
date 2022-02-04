@@ -22,7 +22,9 @@
       showMenu: true,
       items: [
         {title: 'Заявки', link: '/request', img: '/img/ico_app.svg'},
+        {title: 'Сотрудники', link: '/employees', img: '/img/ico_employees.svg'},
         {title: 'Исполнители', link: '/performers', img: '/img/ico_performers.svg'},
+        {title: 'Клиенты', link: '/clients', img: '/img/ico_clients.svg'},
         {title: 'Объекты', link: '/objects', img: '/img/ico_objects.svg'},
         {title: 'Финансы', link: '/finance', img: '/img/ico_finance.svg'},
         {title: 'Обращения', link: '/appeal', img: '/img/ico_appeal.svg'},

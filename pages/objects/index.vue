@@ -154,35 +154,6 @@
             </template>
           </v-data-table>
         </div>
-        <!--        <v-row no-gutters v-if="pageCount > 1">
-                  <v-col
-                    cols="4"
-                  >
-                    <v-row class="align-center">
-                      <v-col cols="9" class="d-flex align-center pa-0">
-                        <v-subheader>Строк на странице:</v-subheader>
-                        <div class="pagination-page-num">
-                          <v-text-field
-                            :value="itemsPerPage"
-                            type="text"
-                            @input="itemsPerPage = $event"
-                            single-line
-                            outlined
-                            hide-details="true"
-                          ></v-text-field>
-                        </div>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                  <v-col
-                    cols="4"
-                  >
-                    <v-pagination
-                      v-model="page"
-                      :length="pageCount"
-                    ></v-pagination>
-                  </v-col>
-                </v-row>-->
         <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page" @setItemsPerPage="setItemsPerPage"
                      @setCurrentPage="setCurrentPage"/>
       </v-tab-item>

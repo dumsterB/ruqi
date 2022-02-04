@@ -17,6 +17,10 @@
   color: $black;
 }
 
+.color-green{
+  color: $green;
+}
+
 .color-main {
   color: $blue;
 }
@@ -223,6 +227,14 @@ h1.large {
     font-weight: 600;
   }
 
+  .row-auto .v-input {
+    flex: none;
+  }
+
+  .row-auto .v-input__control {
+    flex-grow: 0;
+    width: auto;
+  }
 }
 
 /* Tabs */
@@ -238,6 +250,10 @@ h1.large {
 
   .form-tabs .v-slide-group__content {
     border-bottom: 1px solid $table-border-color;
+  }
+
+  .v-tabs-slider-wrapper {
+    bottom: -1px;
   }
 
   .v-tab {
@@ -318,6 +334,10 @@ h1.large {
 
     .v-input {
       margin-right: 18px;
+    }
+
+    .v-input:last-child {
+      margin-right: 0;
     }
 
     .v-input--selection-controls {

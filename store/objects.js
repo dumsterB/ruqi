@@ -36,6 +36,16 @@ export const actions = {
     commit('setObjectsMap', objects_map)
 
   },
+  async fetchObjectsAccount({commit}, requestID) {
+
+    const objects = await this.$axios.get('/super_manager/accounts/'+requestID+'/object', {
+      headers: {
+        "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
+      },
+    });
+    commit('setObjects', objects)
+
+  },
   async createRequest({commit, dispatch}, newRequest) {
     let self= this;
     const requests = await this.$axios.post('/manager/objects',
