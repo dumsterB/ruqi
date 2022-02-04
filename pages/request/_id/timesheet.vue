@@ -433,12 +433,9 @@ export default {
       switch ( field )
       {
         case 'hours' :
-          setTimeout(() => {
-            document.querySelector( '.ein input[name="hours"]' ).value = document.querySelector( '.ein input[name="hours"]' ).value.replace( /[A-Za-zА-Яа-яЁё.,\-_\s+]/g, "" );
-          }, 100);
+          value = value.replace( /[A-Za-zА-Яа-яЁё.,\-_\s+]/g, "" );
         break;
       }
-
       this.formValues[0][field] = value;
     },
 
