@@ -64,7 +64,6 @@
         flex-wrap       : nowrap;
         align-content   : center;
         justify-content : flex-start;
-        align-items     : center;
       }
     }
   }

@@ -90,6 +90,7 @@
 
             <div v-if="actionParamsComponent.type" class="">
               <component
+                class="mass"
                 :is="actionParamsComponent.type"
                 :name="actionParamsComponent.name"
                 :params="actionParamsComponent.params"
@@ -256,7 +257,7 @@
                     </template>
                     <template v-slot:item.hours="{ item }">
                       <div>
-                        <FTypeText name="hours" :value="item.hours" :validation="['number']" @input="updateFiled('hours', $event)"/>
+                        <FTypeText class="ein" name="hours" :value="item.hours" :validation="['number']" @input="updateFiled('hours', $event)"/>
                       </div>
                     </template>
 
@@ -347,9 +348,9 @@ export default {
           {title: 'Изменить смену', uuid: 'smena'},
           {title: 'Изменить статус', uuid: 'status'},
           {title: 'Изменить вид', uuid: 'calculation'},
-          {title: 'Изменить часы', uuid: 'hours'},
           {title: 'Изменить время начала', uuid: 'begin'},
           {title: 'Изменить время конца', uuid: 'end'},
+          {title: 'Изменить часы', uuid: 'hours'},
         ],
         item_text: 'title',
         label: 'Выберите действие'
@@ -426,14 +427,47 @@ export default {
         this.activeSelectAll = 0;
       }
     },
-    updateFiled(field, value) {
+
+    updateFiled( field, value )
+    {
+      switch ( field )
+      {
+        case 'hours' :
+          setTimeout(() => {
+            document.querySelector( '.ein input[name="hours"]' ).value = document.querySelector( '.ein input[name="hours"]' ).value.replace( /[A-Za-zА-Яа-яЁё.,\-_\s+]/g, "" );
+          }, 100);
+        break;
+      }
+
       this.formValues[0][field] = value;
-      //console.log(this.formValues);
     },
-    updateFiledAction(field, value) {
-      this.formGroupAction[field] = value;
+
+    updateFiledAction( field, value )
+    {
+      console.debug( 'updateFiledAction' );
+      console.debug( field, value );
+      console.debug( this.actionParamsComponent.name );
+
+      switch ( this.actionParamsComponent.name )
+      {
+        case 'hours' :
+          console.debug( field, value );
+
+          setTimeout(() => {
+            document.querySelector( '.mass input[name="hours"]' ).value = document.querySelector( '.mass input[name="hours"]' ).value.replace( /[A-Za-zА-Яа-яЁё.,\-_\s+]/g, "" );
+          }, 50);
+
+          console.debug( 'result: ' );
+          console.debug( document.querySelector( '.mass input[name="hours"]').value.replace( /[A-Za-zА-Яа-яЁё.,\-_\s+]/g, "" ) );
+
+          this.formGroupAction[field] = document.querySelector( '.mass input[name="hours"]' ).value.replace( /[A-Za-zА-Яа-яЁё.,\-_\s+]/g, "" );
+        return;
+      }
+
+      this.formGroupAction[field] = document.querySelector( '.mass input[name="hours"]' ).value;
       //console.log(this.formGroupAction.action_value);
     },
+
     updateActionSelect(field, value)
     {
       console.debug( 'updateActionSelect' );
@@ -452,9 +486,11 @@ export default {
       }
 
     },
+
     fill() {
       this.fillOutAssigned(this.$route.params.id);
     },
+
     editItem(value) {
       this.expanded = [];
       this.formValues = [];
@@ -516,9 +552,11 @@ export default {
 
       this.selectedItems = [];
     },
+
     setItemsPerPage(value) {
       this.itemsPerPage = value;
     },
+
     setCurrentPage(value) {
       this.page = value;
     }
