@@ -39,9 +39,7 @@
     {
       return {
         titles : {
-          header          : 'Благонадежность',
-          appInvitations  : 'Приглашений на заявку',
-          absenteeism     : 'Невыходы',
+          header  : 'Средняя ставка',
         },
       }
     },

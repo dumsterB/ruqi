@@ -84,6 +84,7 @@
       align-content   : center;
       justify-content : flex-start;
       width           : 100%;
+      margin-bottom   : 40px;
 
       .item
       {
