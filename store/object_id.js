@@ -16,7 +16,7 @@ export const getters = {
 export const actions = {
   async fetchObjectId({commit}, requestId) {
 
-    const object_id = await this.$axios.get('/manager/objects/'+requestId, {
+    const object_id = await this.$axios.get('/manager/objects/' + requestId, {
       headers: {
         "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
       }
@@ -26,22 +26,17 @@ export const actions = {
   },
   async fetchObjectIdRequest({commit}, requestId) {
 
-    console.log('fetchObjectIdRequest ###');
-
-    const object_id_requests = await this.$axios.get('/objects/'+requestId+'/tasks', {
+    const object_id_requests = await this.$axios.get('/objects/' + requestId + '/tasks', {
       headers: {
         "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
       }
     });
 
-    console.log('object_id_requests');
-    console.log(object_id_requests);
-
     commit('setObjectIdRequests', object_id_requests);
 
   },
   async putStatus({commit, dispatch}, {requestId, status}) {
-    await this.$axios.put('/manager/objects/'+requestId+'/'+status,
+    await this.$axios.put('/manager/objects/' + requestId + '/' + status,
       {},
       {
         headers: {
@@ -51,9 +46,9 @@ export const actions = {
       })
       .then((response) => {
         dispatch('fetchObjectId', requestId);
-        commit('response/setSuccess', {type: 'success', text: 'Объект успешно обновлен', }, {root: true});
-        setTimeout(function() {
-          commit('response/removeSuccess', null, { root: true });
+        commit('response/setSuccess', {type: 'success', text: 'Объект успешно обновлен',}, {root: true});
+        setTimeout(function () {
+          commit('response/removeSuccess', null, {root: true});
         }, 2000);
       })
       .catch((error) => {

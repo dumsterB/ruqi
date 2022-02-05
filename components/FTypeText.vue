@@ -1,16 +1,16 @@
 <template>
   <div class="">
     <v-text-field
-      :name="name"
-      single-line
-      outlined
-      filled
-      :prepend-inner-icon="icon_code"
-      v-model="new_value"
-      @input="$emit('input', new_value)"
-      hide-details="auto"
-      :rules="validation_array"
-      :class="{'number': validation && validation[0] == 'number'}"
+        :name="name"
+        single-line
+        outlined
+        filled
+        :prepend-inner-icon="icon_code"
+        v-model="new_value"
+        @input="$emit('input', new_value)"
+        hide-details="auto"
+        :rules="validation_array"
+        :class="{'number': validation && validation[0] == 'number'}"
     ></v-text-field>
   </div>
 </template>
@@ -40,26 +40,23 @@ export default {
   },
   computed: {
     icon_code() {
-      if (this.icon){
+      if (this.icon) {
         return this.icon;
-      }
-      else{
+      } else {
         return null;
       }
     },
-    validation_array(){
+    validation_array() {
       let validation_array = [];
-      if( this.validation ){
-        for( let i = 0; i < this.validation.length; i++){
+      if (this.validation) {
+        for (let i = 0; i < this.validation.length; i++) {
           validation_array.push(this.rules[this.validation[i]]);
         }
       }
       return validation_array;
     },
   },
-  methods: {
-
-  },
+  methods: {},
   created() {
     this.new_value = this.value;
   },
@@ -72,15 +69,22 @@ export default {
 </script>
 
 <style lang="scss">
-.ruqi{
+.ruqi {
   .v-text-field--full-width .v-input__prepend-outer,
   .v-text-field--full-width .v-input__prepend-inner,
   .v-text-field--enclosed .v-input__prepend-outer,
   .v-text-field--enclosed .v-input__prepend-inner {
     margin-top: 10px;
   }
-  .v-input.number{
-    max-width: 68px;
+
+  .v-input.number {
+    max-width: 78px;
+
+    .v-text-field__details {
+      padding: 0;
+      position: absolute;
+      bottom: -18px;
+    }
   }
 }
 

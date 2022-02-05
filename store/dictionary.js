@@ -1,100 +1,89 @@
 export const state = () => (
   {
-    regions         : [],
-    specializations : [],
-    clients         : [],
-    organizations   : [],
-    objectType      : [],
-    dispatchers     : [],
-    managers        : [],
-    professions     : [],
-    payments        : [],
+    regions: [],
+    specializations: [],
+    clients: [],
+    organizations: [],
+    objectType: [],
+    dispatchers: [],
+    managers: [],
+    professions: [],
+    payments: [],
   }
 )
 
 export const mutations = {
-  setRegions ( state, regions )
-  {
+  setRegions(state, regions) {
     state.regions = regions;
   },
 
-  setSpecializations ( state, specializations )
-  {
+  setSpecializations(state, specializations) {
     state.specializations = specializations;
   },
 
-  setClients( state, clients )
-  {
+  setClients(state, clients) {
     state.clients = clients.data.data;
   },
 
-  setOrganizations( state, organizations )
-  {
+  setOrganizations(state, organizations) {
     state.organizations = organizations.data.data;
   },
 
-  setObjectType( state, objectType )
-  {
+  setObjectType(state, objectType) {
     state.objectType = objectType.data.data;
   },
 
-  setDispatchers( state, dispatchers )
-  {
+  setDispatchers(state, dispatchers) {
     state.dispatchers = dispatchers.data.data;
   },
 
-  setManagers( state, managers )
-  {
+  setManagers(state, managers) {
     state.managers = managers.data.data;
   },
 
-  setProfessions( state, professions )
-  {
+  setProfessions(state, professions) {
     state.professions = professions;
   },
 
-  setPayments( state, payments )
-  {
+  setPayments(state, payments) {
     state.payments = payments;
   },
 }
 
 
 export const actions = {
-  async fetchRegions ( ctx )
-  {
+  async fetchRegions(ctx) {
     const regions = await this.$axios.get(
       `/dictionary/regions`,
 
       {
-        headers : {
-          "Authorization" : "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68", //FIXME need refactoring ( Rasulov )
+        headers: {
+          "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68", //FIXME need refactoring ( Rasulov )
         },
       },
     );
 
-    ctx.commit( 'setRegions', regions.data.data );
+    ctx.commit('setRegions', regions.data.data);
 
-    console.debug( 'fetchRegions' ); // FIXME // TODO es muss später entfernt werden
-    console.debug( regions.data.data ); // FIXME // TODO es muss später entfernt werden
+    console.debug('fetchRegions'); // FIXME // TODO es muss später entfernt werden
+    console.debug(regions.data.data); // FIXME // TODO es muss später entfernt werden
   },
 
-  async fetchSpecializations ( ctx )
-  {
+  async fetchSpecializations(ctx) {
     const specializations = await this.$axios.get(
       `/dictionary/specializations`,
 
       {
-        headers : {
-          "Authorization" : "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68", //FIXME need refactoring ( Rasulov )
+        headers: {
+          "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68", //FIXME need refactoring ( Rasulov )
         },
       },
     );
 
-    ctx.commit( 'setSpecializations', specializations.data.data );
+    ctx.commit('setSpecializations', specializations.data.data);
 
-    console.debug( 'fetchSpecializations' ); // FIXME // TODO es muss später entfernt werden
-    console.debug( specializations.data.data ); // FIXME // TODO es muss später entfernt werden
+    console.debug('fetchSpecializations'); // FIXME // TODO es muss später entfernt werden
+    console.debug(specializations.data.data); // FIXME // TODO es muss später entfernt werden
   },
 
   async fetchClients({commit}) {
@@ -147,88 +136,77 @@ export const actions = {
     commit('setManagers', managers)
   },
 
-  async fetcProfessions ( { commit } )
-  {
+  async fetcProfessions({commit}) {
 
     const professions = await this.$axios.get(
       '/dictionary/works',
-      
+
       {
-        headers : {
-          "Authorization" : "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
+        headers: {
+          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
         }
       }
     );
 
-    console.debug( 'store : professions' );
-    console.debug( professions );
+    console.debug('store : professions');
+    console.debug(professions);
 
-    commit( 'setProfessions', professions.data.data );
+    commit('setProfessions', professions.data.data);
   },
 
-  async fetcPayments ( { commit } )
-  {
+  async fetcPayments({commit}) {
 
     const payments = await this.$axios.get(
       '/dictionary/payments',
-      
+
       {
-        headers : {
-          "Authorization" : "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
+        headers: {
+          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
         }
       }
     );
 
-    console.debug( 'store : payments' );
-    console.debug( payments );
+    console.debug('store : payments');
+    console.debug(payments);
 
-    commit( 'setPayments', payments.data.data );
+    commit('setPayments', payments.data.data);
   },
 }
 
 export const getters = {
-  regions ( state )
-  {
+  regions(state) {
     return state.regions;
   },
 
-  specializations ( state )
-  {
+  specializations(state) {
     return state.specializations;
   },
 
-  clients( state )
-  {
+  clients(state) {
     return state.clients;
   },
 
-  organizations( state )
-  {
+  organizations(state) {
     return state.organizations;
   },
 
-  objectType( state )
-  {
+  objectType(state) {
     return state.objectType;
   },
 
-  dispatchers( state )
-  {
+  dispatchers(state) {
     return state.dispatchers;
   },
 
-  managers( state )
-  {
+  managers(state) {
     return state.managers;
   },
 
-  professions( state )
-  {
+  professions(state) {
     return state.professions;
   },
 
-  payments( state )
-  {
+  payments(state) {
     return state.payments;
   },
 }
