@@ -12,7 +12,7 @@
         Applications( :user_type="user_type" )
 
       v-tab-item
-        Inquiries
+        Inquiries( :user_type="user_type" )
 
       v-tab-item
         Documentation

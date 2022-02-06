@@ -1,7 +1,7 @@
 <template lang="pug">
 
 .applications
-  .table-display-settings
+  TableDisplaySettings( :sort_select_items="sort_select_items" )
 
   .table-applications
     .table-list-style
@@ -47,7 +47,7 @@
 <script>
 
   import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
-  import { CONTRACTOR, EMPLOYEE }                           from '@/constants/'
+  import { CONTRACTOR, EMPLOYEE }                           from '@/constants/';
 
   export default {
 
@@ -87,6 +87,8 @@
           {text: 'date',      value: 'date', },
           {text: 'actions',   value: 'actions', sortable: false},
         ],
+
+        sort_select_items : ['по рейтингу', 'Bar', 'Fizz', 'Buzz'],
       }
     },
 
@@ -183,33 +185,33 @@
 
   .payment
   {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-    background: #E4F1FA;
-    border-radius: 6px;
-    padding: 7px 8px;
+    display         : flex;
+    flex-direction  : row;
+    flex-wrap       : nowrap;
+    align-content   : center;
+    justify-content : center;
+    align-items     : center;
+    background      : #E4F1FA;
+    border-radius   : 6px;
+    padding         : 7px 8px;
 
     .wrapper
     {
-      display: flex;
-      flex-direction: column;
-      flex-wrap: nowrap;
-      align-content: center;
-      justify-content: center;
-      align-items: center;
+      display         : flex;
+      flex-direction  : column;
+      flex-wrap       : nowrap;
+      align-content   : center;
+      justify-content : center;
+      align-items     : center;
 
       .value
       {
-        font-style: normal;
-        font-weight: bold;
-        font-size: 14px;
-        line-height: 125%;
-        letter-spacing: 0.01em;
-        color: #0082DE;
+        font-style      : normal;
+        font-weight     : bold;
+        font-size       : 14px;
+        line-height     : 125%;
+        letter-spacing  : 0.01em;
+        color           : #0082DE;
       }
     }
   }
