@@ -359,16 +359,18 @@ export default {
       let managers = [];
 
       for (let i = 0; i < this.meta.meta_object_manager.length; i++) {
+        let name = this.meta.meta_object_manager[i].name;
         managers.push(
-          this.formValues['object_manager_' + i]
+          this.formValues[name]
         )
       }
 
       let dispatchers = [];
 
       for (let i = 0; i < this.meta.meta_object_dispatchers.length; i++) {
+        let name = this.meta.meta_object_dispatchers[i].name;
         dispatchers.push(
-          this.formValues['object_dispatchers_' + i]
+          this.formValues[name]
         )
       }
 
@@ -405,12 +407,12 @@ export default {
       let flag = false;
 
       if (!isInit) {
+        let name = this.meta['meta_object_' + resp_name][this.meta['meta_object_' + resp_name].length - 1].name;
         if (!this.meta['meta_object_' + resp_name].length) {
           flag = false;
-        } else if (!this.formValues['object_' + resp_name + '_' + (this.meta['meta_object_' + resp_name].length - 1)]) {
+        } else if (!this.formValues[name]) {
           flag = true;
         }
-
         if (flag) {
           return;
         }
@@ -486,8 +488,9 @@ export default {
       );
     },
     removeItem(index, array) {
-      if (index != 0) {
+      if (index >= 0 || this.meta[array].length > 1) {
         this.meta[array].splice(index, 1);
+        delete this.formValues[`${array.replace('meta_', '')}_${index}`];
       }
     },
     nextFromButton() {
@@ -515,6 +518,10 @@ export default {
     updateFiled(field, value) {
       this.formValues[field] = value;
       console.log(field, value);
+    },
+    updateFiledResp(field, value, index, parent_array) {
+      this.formValues[field] = value;
+      this.meta[parent_array][index].value = value;
     },
   },
   created() {

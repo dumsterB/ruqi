@@ -12,7 +12,7 @@
             :params="filed.params"
             :validation="filed.validation"
             :value = "filed.value"
-            @input="updateFiled(filed.name, $event)"
+            @input="updateFiled(filed.name, $event, index, filed.parent_array)"
           />
           <a href="#" v-if="filed.remove" @click.prevent="removeItem(index, filed.parent_array)" class="remove-item">
             <img src="/img/ico_close.svg" alt="Удалить">
@@ -35,8 +35,8 @@ export default {
     }
   },
   methods: {
-    updateFiled(field, value) {
-      this.$emit('updateFiled', field, value);
+    updateFiled(field, value, index, parent_array) {
+      this.$emit('updateFiled', field, value, index, parent_array);
     },
     removeItem(index, parent_array) {
       this.$emit('removeItem', index, parent_array);

@@ -49,12 +49,12 @@
               </div>
               <div class="form-part">
                 <div class="form-part-label">Менеджеры</div>
-                <FormBuilder :meta="meta.meta_object_manager" @removeItem="removeItem" @updateFiled="updateFiled"/>
+                <FormBuilder :meta="meta.meta_object_manager" @removeItem="removeItem" @updateFiled="updateFiledResp"/>
                 <a href="#" @click.prevent="addResponsible('manager')" class="add_link">Добавить менеджера</a>
               </div>
               <div class="form-part">
                 <div class="form-part-label">Диспетчеры</div>
-                <FormBuilder :meta="meta.meta_object_dispatchers" @removeItem="removeItem" @updateFiled="updateFiled"/>
+                <FormBuilder :meta="meta.meta_object_dispatchers" @removeItem="removeItem" @updateFiled="updateFiledResp"/>
                 <a href="#" @click.prevent="addResponsible('dispatchers')" class="add_link">Добавить диспетчера</a>
               </div>
             </v-form>
@@ -450,16 +450,18 @@ export default {
       let managers = [];
 
       for (let i = 0; i < this.meta.meta_object_manager.length; i++) {
+        let name = this.meta.meta_object_manager[i].name;
         managers.push(
-          this.formValues['object_manager_' + i]
+          this.formValues[name]
         )
       }
 
       let dispatchers = [];
 
       for (let i = 0; i < this.meta.meta_object_dispatchers.length; i++) {
+        let name = this.meta.meta_object_dispatchers[i].name;
         dispatchers.push(
-          this.formValues['object_dispatchers_' + i]
+          this.formValues[name]
         )
       }
 
@@ -509,12 +511,12 @@ export default {
       let flag = false;
 
       if (!isInit) {
+        let name = this.meta['meta_object_' + resp_name][this.meta['meta_object_' + resp_name].length - 1].name;
         if (!this.meta['meta_object_' + resp_name].length) {
           flag = false;
-        } else if (!this.formValues['object_' + resp_name + '_' + (this.meta['meta_object_' + resp_name].length - 1)]) {
+        } else if (!this.formValues[name]) {
           flag = true;
         }
-
         if (flag) {
           return;
         }
@@ -596,22 +598,11 @@ export default {
     },
 
     removeItem(index, array) {
-      console.debug('removeItem');
-      console.debug('index');
-      console.debug(index);
-      console.debug('array');
-      console.debug(array);
 
-      if (index >= 0) {
+      if (index >= 0 || this.meta[array].length > 1) {
         this.meta[array].splice(index, 1);
-
-        console.log(`${array.replace('meta_', '')}_${index}`);
-
         delete this.formValues[`${array.replace('meta_', '')}_${index}`];
       }
-
-      console.debug('this.meta[ array ]');
-      console.debug(this.meta[array]);
     },
 
     nextFromButton() {
@@ -641,6 +632,10 @@ export default {
     updateFiled(field, value) {
       this.formValues[field] = value;
       console.log(field, value);
+    },
+    updateFiledResp(field, value, index, parent_array) {
+      this.formValues[field] = value;
+      this.meta[parent_array][index].value = value;
     },
 
     addFileds(length, method, args) {
@@ -692,13 +687,12 @@ export default {
       this.meta.meta_object_contact[i][3].value = this.object_id.contacts[i].email;
     }
 
-    for (let i = 0; i < dispatchers_length; i++) {
-      this.meta.meta_object_dispatchers[i].value = this.object_id.dispatchers[i].uuid;
-      console.log('dispatcher', i, this.meta.meta_object_dispatchers[i], this.object_id.dispatchers[i].uuid)
-    }
     for (let i = 0; i < managers_length; i++) {
       this.meta.meta_object_manager[i].value = this.object_id.managers[i].uuid;
-      console.log('manager', i, this.meta.meta_object_dispatchers[i], this.object_id.managers[i].uuid)
+    }
+    for (let i = 0; i < dispatchers_length; i++) {
+      this.meta.meta_object_dispatchers[i].value = this.object_id.dispatchers[i].uuid;
+      console.log(this.object_id.dispatchers[i].uuid)
     }
 
     this.meta.meta_object_info.map(f => {

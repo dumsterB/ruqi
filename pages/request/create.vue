@@ -119,8 +119,8 @@
             <v-form ref="form_part_3" v-model="valid" lazy-validation>
               <div class="form-part">
                 <div class="form-part-label">Диспетчеры</div>
-                <FormBuilder :meta="meta.meta_object_responsible" @removeItem="removeItem" @updateFiled="updateFiled"/>
-                <a href="#" @click.prevent="addResponsible" class="add_link">Добавить диспетчера</a>
+                <FormBuilder :meta="meta.meta_object_responsible" @removeItem="removeItem" @updateFiled="updateFiledResp"/>
+                <a href="#" @click.prevent="addResponsible('responsible')" class="add_link">Добавить диспетчера</a>
               </div>
             </v-form>
           </v-tab-item>
@@ -416,14 +416,14 @@ export default {
 
       let dispatchers = [];
       for (let i = 0; i < this.meta.meta_object_responsible.length; i++) {
+        let name = this.meta.meta_object_responsible[i].name;
         dispatchers.push(
-           this.formValues['object_resp_'+i]
+           this.formValues[name]
         )
       }
-      dispatchers.push(
+      /*dispatchers.push(
         "e19e332e-2db2-4830-8e62-252f3fca541e",
-        "ce23e853-6405-46a7-bfc2-2f460efc7a79"
-      )
+      )*/
 
       let works = [];
       for (let i = 0; i < this.meta.meta_object_pay.length; i++) {
@@ -462,7 +462,21 @@ export default {
     ...mapActions('dispatchers', ['fetchDispatchers',]),
     ...mapActions('requests', ['createRequest',]),
 
-    addResponsible() {
+    addResponsible(resp_name, isInit = false) {
+      let flag = false;
+
+      if (!isInit) {
+        let name = this.meta['meta_object_' + resp_name][this.meta['meta_object_' + resp_name].length - 1].name;
+        if (!this.meta['meta_object_' + resp_name].length) {
+          flag = false;
+        } else if (!this.formValues[name]) {
+          flag = true;
+        }
+        if (flag) {
+          return;
+        }
+      }
+
       let dispatchers = this.dispatchers;
       this.meta.meta_object_responsible.push({
           type: 'FTypeSelectUIID',
@@ -478,6 +492,7 @@ export default {
           },
           parent_array: 'meta_object_responsible',
           validation: 'required',
+          value: ''
         },
       );
     },
@@ -520,7 +535,7 @@ export default {
       );
     },
     removeItem(index, array) {
-      if (index != 0) {
+      if (index != 0 || this.meta[array].length > 1) {
         this.meta[array].splice(index, 1);
       }
     },
@@ -597,6 +612,10 @@ export default {
     updateFiled(field, value) {
       this.formValues[field] = value;
       console.log(field, value);
+    },
+    updateFiledResp(field, value, index) {
+      this.formValues[field] = value;
+      this.meta.meta_object_responsible[index].value = value;
     },
   },
   created() {
