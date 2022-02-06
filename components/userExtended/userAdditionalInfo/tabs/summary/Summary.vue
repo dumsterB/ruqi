@@ -10,19 +10,19 @@
       AverageRate.item
 
     .favorite-objects-wrapper
-      FavoriteObjects
+      FavoriteObjects( :user_type="user_type" )
 
 </template>
 
 <script>
 
-  import WorkSchedule     from './WorkSchedule.vue';
-  import Trustworthiness  from './Trustworthiness.vue';
-  import AverageRate      from './AverageRate.vue';
-  import FavoriteObjects  from './FavoriteObjects.vue';
+  import { CONTRACTOR, EMPLOYEE } from '@/constants/';
+  import WorkSchedule             from './WorkSchedule.vue';
+  import Trustworthiness          from './Trustworthiness.vue';
+  import AverageRate              from './AverageRate.vue';
+  import FavoriteObjects          from './FavoriteObjects.vue';
 
   export default {
-
     components : {
       WorkSchedule,
       Trustworthiness,
@@ -32,7 +32,9 @@
 
     data ()
     {
-      return {}
+      return {
+        user_type : CONTRACTOR,
+      }
     },
 
     methods : {
@@ -59,8 +61,7 @@
       init (){},
 
       bindActions (){},
-    }
-
+    },
   }
 
 </script>

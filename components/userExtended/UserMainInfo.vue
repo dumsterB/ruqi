@@ -1,151 +1,111 @@
-<template>
-  <div class="contractor-main-info">
-    <div class="wrapper">
-      <div class="header">
-        <div class="contractor">
-          <div class="view">
-            <ContractorAvatar
-              :first_name="contractor.firstname"
-              :last_name="contractor.lastname"
-            />
+<template lang="pug">
+.user-main-info
+  .wrapper
+    .header
+      .user
+        .view
+          ContractorAvatar( :first_name="user.firstname" :last_name="user.lastname" )
+          ContractorRating( user-rating )
 
-            <ContractorRating class="contractor-rating" />
-          </div>
+        .bio
+          .name {{ `${user.firstname} ${user.lastname}` }}
 
-          <div class="bio">
-            <div class="name">
-              {{ `${contractor.firstname} ${contractor.lastname}` }}
-            </div>
+          .id( v-if="helpers().isContractor( { user : user_type } )" ) {{ `ID ${user.number}` }}
 
-            <div class="id">
-              {{ `ID ${contractor.number}` }}
-            </div>
+          .age-and-city( v-if="helpers().isContractor( { user : user_type } )" )
+            .age 37 лет
+            .city Краснодар
 
-            <div class="age-and-city">
-              <div class="age">
-                37 лет
-              </div>
+          .registration-date {{ `Зарегистрирован ${getters().getRegDate( { created_at : user.created_at } )}` }}
 
-              <div class="city">
-                Краснодар
-              </div>
-            </div>
+        .doc-confirm-status
+          .confirmed
+            img.logo( src="../../assets/img/doc-status-success.svg" alt="Документы подтверждены" )
+            span.title-txt Документы подтверждены
 
-            <div class="registration-date">
-              {{ `Зарегистрирован ${getters().getRegDate( { created_at : contractor.created_at } )}` }}
-            </div>
-          </div>
+          .not-confirmed
+            img.logo( src="../../assets/img/doc-status-success.svg" alt="Документы не подтверждены" )
+            span.title-txt Документы не подтверждены
 
-          <div class="doc-сonfirm-status">
-            <div class="confirmed">
-              <img src="../../assets/img/doc-status-success.svg" alt="Документы подтверждены" class="logo">
+        .connect-methods
+          .wrapper
+            .call
+              img.logo( src="../../assets/img/call.svg" alt="Позвонить" )
 
-              <span class="title-txt">
-                Документы подтверждены
-              </span>
-            </div>
+            .email
+              img.logo( src="../../assets/img/email.svg" alt="Отправить письмо" )
 
-            <div class="not-confirmed">
-              <img src="../../assets/img/doc-status-success.svg" alt="Документы не подтверждены" class="logo">
+            .chat
+              img.logo( src="../../assets/img/chat.svg" alt="Написать в чат" )
 
-              <span class="title-txt">
-                Документы не подтверждены
-              </span>
-            </div>
-          </div>
+    .body
+      v-divider
 
-          <div class="connect-methods">
-            <div class="wrapper">
-              <div class="call">
-                <img src="../../assets/img/call.svg" alt="Позвонить" class="logo">
-              </div>
+      .parameter.mix-specializations
+        .p-name.mix-specialization-name Специализация
 
-              <div class="email">
-                <img src="../../assets/img/email.svg" alt="Отправить письмо" class="logo">
-              </div>
+        .p-value
+          .specialization-list
+            .specialization-item( v-for="specialization in user.specializations" :key="specialization-uuid" )
+              .s-text {{ specialization.name }}
 
-              <div class="chat">
-                <img src="../../assets/img/chat.svg" alt="Написать в чат" class="logo">
-              </div>
-            </div>
-          </div>
-        </div>
+      v-divider
 
+      .contact-info
+        .parameter
+          .p-name Номер телефона
 
-      </div>
+          .p-value {{ user.phone }}
 
-      <div class="body">
-        <v-divider></v-divider>
+        .parameter
+          .p-name Whatsapp
 
-        <div class="parameter mix-specializations">
-          <div class="p-name mix-specialization-name">Специализация</div>
+          .p-value {{ user.whatsapp }}
 
-          <div class="p-value">
-            <div class="specialization-list">
-              <div class="specialization-item" v-for="specialization in contractor.specializations" :key="specialization-uuid">
-                <div class="s-text">
-                  {{ specialization.name }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        .parameter
+          .p-name Email
 
-        <v-divider></v-divider>
+          .p-value {{ user.email }}
 
-        <div class="contact-info">
-          <div class="parameter">
-            <div class="p-name">
-              Номер телефона
-            </div>
-
-            <div class="p-value">
-              {{ contractor.phone }}
-            </div>
-          </div>
-
-          <div class="parameter">
-            <div class="p-name">
-              Whatsapp
-            </div>
-
-            <div class="p-value">
-              {{ contractor.whatsapp }}
-            </div>
-          </div>
-
-          <div class="parameter">
-            <div class="p-name">
-              Email
-            </div>
-
-            <div class="p-value">
-              {{ contractor.email }}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="footer">
-        <div class="actions-panel">
-          <div class="action-edit">
-            <div class="action-edit-txt">
-              Редактировать профиль
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    .footer
+      .actions-panel
+        .action-edit
+          .action-edit-txt Редактировать профиль
 </template>
 
 <script>
 
   import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
+  import { CONTRACTOR, EMPLOYEE }                           from '@/constants/';
 
   export default {
+    props : {
+      user_type : {
+        type      : String,
+        required  : true,
+      },
+    },
+
+    data ()
+    {
+      return {}
+    },
+
     computed : {
-      ...mapGetters( 'contractors', [ 'contractor', ] ),
+      user ()
+      {
+        switch ( this.user_type )
+        {
+          case CONTRACTOR :
+          return this.$store.getters[ 'contractors/contractor' ];
+
+          case EMPLOYEE :
+          return this.$store.getters[ 'employee_id/employee_id' ];
+
+          default :
+          return {};
+        }
+      },
     },
 
     methods : {
@@ -230,6 +190,21 @@
               return '';
             }
           },
+
+          isContractor : ( params = {} ) => {
+            console.debug( 'helpers : isContractor', params, CONTRACTOR );
+
+            switch ( params.user )
+            {
+              case CONTRACTOR :
+                console.debug( 'CONTRACTOR' );
+              return true;
+
+              default :
+                console.debug( 'DEFAULT' );
+              return false;
+            }
+          },
         }
       },
     },
@@ -240,7 +215,7 @@
 <style lang="scss" scoped>
 
 /* OBJECTS STYLES START */
-  .contractor-main-info
+  .user-main-info
   {
     background-color  : #FFFFFF;
     border            : 1px solid #E0E0E0;
@@ -254,7 +229,7 @@
 
       .header
       {
-        .contractor
+        .user
         {
           .view, .bio, .doc-сonfirm-status, .connect-methods
           {
@@ -431,7 +406,7 @@
     }
   }
 
-  .contractor-rating
+  .user-rating
   {
     margin-top  : -15px;
     z-index     : 2;

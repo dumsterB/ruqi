@@ -8,10 +8,10 @@
     .table-list-style
       v-data-table(
         :headers="headers"
-        :items="contractor.favorite_objects"
-        class="elevation-0"
+        :items="user.favorite_objects"
+        class="favorite-objects-table"
         item-key="uuid"
-        item-class="tr_class"
+        :item-class="rowClass"
         show-select
         hide-default-footer
         hide-default-header
@@ -46,13 +46,33 @@
 <script>
 
   import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
+  import { CONTRACTOR, EMPLOYEE }                           from '@/constants/'
 
   export default {
-
     components : {},
 
+    props : {
+      user_type : {
+        type      : String,
+        required  : true,
+      },
+    },
+
     computed : {
-      ...mapGetters( 'contractors', [ 'contractor', ] ),
+      user ()
+      {
+        switch ( this.user_type )
+        {
+          case CONTRACTOR :
+          return this.$store.getters[ 'contractors/contractor' ];
+
+          case EMPLOYEE :
+          return this.$store.getters[ 'employee_id/employee_id' ];
+
+          default :
+          return {};
+        }
+      },
     },
 
     data ()
@@ -62,9 +82,7 @@
           header  : 'Любимые объекты',
         },
 
-        tr_class : 'murad-class',
-
-        headers: [
+        headers : [
           {text: 'Фио',       value: 'name', width: '16px'},
           {text: 'Телефон',   value: 'rating'},
           {text: 'Должность', value: 'tasks'},
@@ -98,15 +116,37 @@
       init (){},
 
       bindActions (){},
+
+      rowClass( item )
+      {
+        const rowClass = 'favorite-row';
+
+        return rowClass;;
+      }
+
     }
 
   }
 
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 /* OBJECTS STYLES START */
+  .favorite-objects-table
+  {
+    background-color  : unset !important;
+
+    .v-data-table__empty-wrapper
+    {
+      background-color  : #FFFFFF;
+    }
+  }
+
+  .favorite-row
+  {
+    background-color  : #FFFFFF !important;
+  }
 /* OBJECTS STYLES END */
 
 /* MIXINS STYLES START */

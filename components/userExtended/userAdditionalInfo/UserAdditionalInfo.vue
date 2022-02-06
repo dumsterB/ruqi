@@ -9,7 +9,7 @@
         Summary
 
       v-tab-item
-        Applications
+        Applications( :user_type="user_type" )
 
       v-tab-item
         Inquiries
@@ -24,11 +24,12 @@
 
 <script>
 
-  import Summary        from './tabs/summary/Summary.vue';
-  import Applications   from './tabs/applications/Applications.vue';
-  import Inquiries      from './tabs/inquiries/Inquiries.vue';
-  import Documentation  from './tabs/documentation/Documentation.vue';
-  import Activity       from './tabs/activity/Activity.vue';
+  import { CONTRACTOR, EMPLOYEE } from '@/constants/'
+  import Summary                  from './tabs/summary/Summary.vue';
+  import Applications             from './tabs/applications/Applications.vue';
+  import Inquiries                from './tabs/inquiries/Inquiries.vue';
+  import Documentation            from './tabs/documentation/Documentation.vue';
+  import Activity                 from './tabs/activity/Activity.vue';
 
   export default {
     components : {
@@ -48,6 +49,8 @@
         tabs  : [
           'Сводка', 'Заявки', 'Обращения', 'Документы', 'Активность',
         ],
+
+        user_type : CONTRACTOR,
       }
     },
   }

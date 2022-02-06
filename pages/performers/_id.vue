@@ -2,8 +2,8 @@
   <div class="contractor-extended">
     <div class="wrapper">
       <div class="content">
-        <ContractorMainInfo />
-        <ContractorAdditionalInfo />
+        <UserMainInfo :user_type="user_type" />
+        <UserAdditionalInfo />
       </div>
     </div>
   </div>
@@ -12,6 +12,7 @@
 <script>
 
   import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
+  import { CONTRACTOR }                                     from '@/constants/'
 
   export default {
     name : 'contractor-extended',
@@ -24,15 +25,18 @@
 
     data ()
     {
-      return {}
+      return {
+        user_type : CONTRACTOR,
+      }
     },
 
     methods : {
-      ...mapActions( 'contractors', [ 'getContractor', ] ),
+      ...mapActions( 'contractors', [ 'getContractor', 'getContractorTasks' ] ),
 
       init ()
       {
         this.getContractor( this.$route.params.id );
+        this.getContractorTasks( this.$route.params.id );
       },
 
       handlers ()
