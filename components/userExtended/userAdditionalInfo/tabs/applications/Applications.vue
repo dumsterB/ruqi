@@ -20,12 +20,14 @@
             span.request-i
             span( class="color-black" ) {{ item.name }}
 
-        template( v-slot:item.rating="{ item }" )
-          span( class="request-pay" ) {{ item.payment.value }}
+        template( v-slot:item.payment="{ item }" )
+          .payment
+            .wrapper
+              span.value {{ `${ item.payment.value } р. / смена` }}
 
-        template( v-slot:item.tasks="{ item }" ) {{ item.object.name }}
+        template( v-slot:item.object="{ item }" ) {{ item.object.name }}
 
-        template( v-slot:item.address="{ item }" ) {{ helpers().parseDate( { date : item.created_at } ) }}
+        template( v-slot:item.date="{ item }" ) {{ helpers().parseDate( { date : item.created_at } ) }}
 
         template( v-slot:item.actions="{ item }" )
           div( class="d-flex justify-end" )
@@ -79,11 +81,11 @@
     {
       return {
         headers : [
-          {text: 'Фио',       value: 'name', width: '16px'},
-          {text: 'Телефон',   value: 'rating'},
-          {text: 'Должность', value: 'tasks'},
-          {text: '',          value: 'address', },
-          {text: '',          value: 'actions', sortable: false},
+          {text: 'name',      value: 'name', width: '16px'},
+          {text: 'payment',   value: 'payment'},
+          {text: 'object',    value: 'object'},
+          {text: 'date',      value: 'date', },
+          {text: 'actions',   value: 'actions', sortable: false},
         ],
       }
     },
@@ -175,6 +177,39 @@
           left              : -35px;
           top               : 5px;
         }
+      }
+    }
+  }
+
+  .payment
+  {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    background: #E4F1FA;
+    border-radius: 6px;
+    padding: 7px 8px;
+
+    .wrapper
+    {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-content: center;
+      justify-content: center;
+      align-items: center;
+
+      .value
+      {
+        font-style: normal;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 125%;
+        letter-spacing: 0.01em;
+        color: #0082DE;
       }
     }
   }
