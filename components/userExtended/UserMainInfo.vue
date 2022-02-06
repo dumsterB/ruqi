@@ -231,7 +231,7 @@
       {
         .user
         {
-          .view, .bio, .doc-сonfirm-status, .connect-methods
+          .view, .bio, .connect-methods, .doc-confirm-status
           {
             display         : flex;
             flex-direction  : column;
@@ -299,7 +299,7 @@
             }
           }
 
-          .doc-сonfirm-status
+          .doc-confirm-status
           {
             font-size   : 14px;
             line-height : 28px;

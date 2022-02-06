@@ -7,23 +7,29 @@
 
     .body
       .percent
-        .value {{ `50%` }}
+        .value {{ `${ contractor.reliability }%` }}
 
       .app-invitations( class="statistics-parameter" )
         .titel {{ titles.appInvitations }}
-        .value {{ '20' }}
+        .value {{ contractor.invite_task }}
 
       .absenteeism( class="statistics-parameter" )
         .titel {{ titles.absenteeism }}
-        .value {{ '10' }}
+        .value {{ contractor.skip }}
 
 </template>
 
 <script>
 
+  import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
+
   export default {
 
     components : {},
+
+    computed : {
+      ...mapGetters( 'contractors', [ 'contractor', ] ),
+    },
 
     data ()
     {

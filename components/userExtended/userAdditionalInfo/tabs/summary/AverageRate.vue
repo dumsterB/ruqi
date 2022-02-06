@@ -7,33 +7,27 @@
 
     .body
       .rate
-        .value {{ `1000 p.` }}
+        .value {{ `${ contractor.avg_price } p.` }}
 
       .histograms
         .wrapper
-          .item
-            .histogram( :style="{ height : `${ ( 750 / 1000 ) * 100 }%` }" )
-              .value {{ '750' }}
-
-          .item
-            .histogram( :style="{ height : `${ ( 550 / 1000 ) * 100 }%` }" )
-              .value {{ '550' }}
-
-          .item
-            .histogram( :style="{ height : `${ ( 800 / 1000 ) * 100 }%` }" )
-              .value {{ '800' }}
-
-          .item
-            .histogram( :style="{ height : `${ ( 1000 / 1000 ) * 100 }%` }" )
-              .value {{ '1000' }}
+          .item( v-for="price in contractor.avg_price_detailed" :key="price.payment" )
+            .histogram( :style="{ height : `${ ( Number( price.payment ) / Number( contractor.avg_price ) ) * 100 }%` }" )
+              .value {{ price.payment }}
 
 </template>
 
 <script>
 
+  import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
+
   export default {
 
     components : {},
+
+    computed : {
+      ...mapGetters( 'contractors', [ 'contractor', ] ),
+    },
 
     data ()
     {

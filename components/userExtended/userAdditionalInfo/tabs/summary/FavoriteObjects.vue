@@ -18,7 +18,6 @@
       )
         template( v-slot:item.name="{ item }" )
           div
-            span.request-i
             span( class="color-black" ) {{ item.name }}
 
         template( v-slot:item.rating="{ item }" )
@@ -141,11 +140,28 @@
     {
       background-color  : #FFFFFF;
     }
-  }
 
-  .favorite-row
-  {
-    background-color  : #FFFFFF !important;
+    .favorite-row
+    {
+      background-color  : #FFFFFF !important;
+
+      .color-black
+      {
+        position : relative;
+
+        &::before
+        {
+          content           : "";
+          position          : absolute;
+          width             : 10px;
+          height            : 10px;
+          background-color  : #19A74A;
+          border-radius     : 100%;
+          left              : -35px;
+          top               : 5px;
+        }
+      }
+    }
   }
 /* OBJECTS STYLES END */
 

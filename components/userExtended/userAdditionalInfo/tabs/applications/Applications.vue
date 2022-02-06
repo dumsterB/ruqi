@@ -25,7 +25,7 @@
 
         template( v-slot:item.tasks="{ item }" ) {{ item.object.name }}
 
-        template( v-slot:item.address="{ item }" ) {{ 'qwer' }}
+        template( v-slot:item.address="{ item }" ) {{ helpers().parseDate( { date : item.created_at } ) }}
 
         template( v-slot:item.actions="{ item }" )
           div( class="d-flex justify-end" )
@@ -106,7 +106,26 @@
 
       helpers ()
       {
-        return {}
+        return {
+
+          /**
+           *
+           * @param { object } params
+           * {
+           *    date : '2021-12-23T12:59:03.000000Z'
+           * }
+           */
+          parseDate : ( payload = {} ) => {
+            let splitedPayloadDate = payload.date.split( 'T' );
+
+            let date = splitedPayloadDate[ 0 ].split( '-' );
+            let time = splitedPayloadDate[ 1 ].split( '.' )[ 0 ].split( ':' );
+
+            let result = `${ date[ 2 ] }.${ date[ 1 ] }.${ date[ 0 ] } ${ time[ 0 ] }:${ time[ 1 ] }`;
+
+            return result;
+          },
+        }
       },
 
       init (){},
@@ -136,11 +155,28 @@
     {
       background-color  : #FFFFFF;
     }
-  }
 
-  .applications-row
-  {
-    background-color  : #FFFFFF !important;
+    .applications-row
+    {
+      background-color  : #FFFFFF !important;
+
+      .color-black
+      {
+        position : relative;
+
+        &::before
+        {
+          content           : "";
+          position          : absolute;
+          width             : 10px;
+          height            : 10px;
+          background-color  : #19A74A;
+          border-radius     : 100%;
+          left              : -35px;
+          top               : 5px;
+        }
+      }
+    }
   }
 /* OBJECTS STYLES END */
 

@@ -14,12 +14,20 @@
       .setting-areas
         .setting-area( class="desired-schedule" )
           .area-title {{ desiredSchedule }}
-          .area-description {{ 'пн, вт, ср, чт, пт' }}
+          .area-description
+            .graph( v-if="contractor.ready_work && contractor.ready_work.graph.length" )
+              span.day( v-for="( day, index ) in contractor.ready_work.graph" :key="index" ) {{ day }}
+
+            .graph.empty( v-else ) {{ graphEmpty }}
 
 
         .setting-area( class="night-shifts" )
           .area-title {{ nightShifts }}
-          .area-description {{ 'нет' }}
+          .area-description
+            .graph( v-if="contractor.ready_work && contractor.ready_work.night.length" )
+              span.day( v-for="( day, index ) in contractor.ready_work.night" :key="index" ) {{ day }}
+
+            .graph.empty( v-else ) {{ graphEmpty }}
 
     .actions
       .change-status-btn
@@ -29,9 +37,15 @@
 
 <script>
 
+  import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
+
   export default {
 
     components : {},
+
+    computed : {
+      ...mapGetters( 'contractors', [ 'contractor', ] ),
+    },
 
     data ()
     {
@@ -41,6 +55,7 @@
         untertitelTeil  : 'установлено',
         desiredSchedule : 'Желаемый график:',
         nightShifts     : 'Ночные смены:',
+        graphEmpty      : 'нет',
       }
     },
 
@@ -205,6 +220,22 @@
         font-size   : 16px;
         line-height : 125%;
         color       : #263043;
+
+        .graph
+        {
+          .day
+          {
+            &::after
+            {
+              content : ", ",
+            }
+
+            &:last-child::after
+            {
+              content : "",
+            }
+          }
+        }
       }
     }
   /* OBJECTS STYLES END */
