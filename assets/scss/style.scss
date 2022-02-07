@@ -17,7 +17,7 @@
   color: $black;
 }
 
-.color-green{
+.color-green {
   color: $green;
 }
 
@@ -152,16 +152,15 @@ h1.large {
   }
 
   .v-text-field--outlined.v-input--is-focused fieldset,
-  .v-text-field--outlined.v-input--has-state fieldse {
+  .v-text-field--outlined.v-input--has-state fieldset {
     border: 1px solid $table-border-color;
-    background: #fff;
   }
 
   .theme--light.v-text-field--filled:not(.v-input--is-focused):not(.v-input--has-state) > .v-input__control > .v-input__slot:hover {
     background: $table-hover-input;
 
     .v-text-field--outlined.v-input--is-focused fieldset,
-    .v-text-field--outlined.v-input--has-state fieldse {
+    .v-text-field--outlined.v-input--has-state fieldset {
       border: 1px solid $table-border-color;
     }
   }
@@ -234,6 +233,10 @@ h1.large {
   .row-auto .v-input__control {
     flex-grow: 0;
     width: auto;
+  }
+
+  .theme--light.v-label {
+    color: $black;
   }
 }
 
@@ -699,6 +702,10 @@ h1.large {
       font-weight: 600;
       font-size: 16px;
       margin-bottom: 16px;
+    }
+
+    .form-part-label.spacer{
+      margin-top: 32px;
     }
 
     .form-part-description {

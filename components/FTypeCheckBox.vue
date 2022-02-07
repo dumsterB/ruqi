@@ -1,11 +1,11 @@
 <template>
   <div>
-    <v-switch
-      v-model="switch_val"
+    <v-checkbox
+      v-model="checkbox"
       :label="params.label"
-      inset
-      hide-details="auto"
-    ></v-switch>
+      color="primary"
+      hide-details
+    ></v-checkbox>
   </div>
 </template>
 
@@ -14,24 +14,27 @@ export default {
   props: ['name', 'params', 'value', 'label'],
   data() {
     return {
-      switch_val: '',
+      checkbox: '',
     }
   },
   methods: {},
   created() {
     if (this.value) {
-      this.switch_val = this.value;
+      this.checkbox = this.value;
     }
   },
   watch: {
     value: function () {
-      this.switch_val = this.value;
+      this.checkbox = this.value;
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
+
+@import '/assets/scss/colors.scss';
+
 .v-input--selection-controls {
   margin-top: 0;
 }

@@ -54,7 +54,8 @@
               </div>
               <div class="form-part">
                 <div class="form-part-label">Диспетчеры</div>
-                <FormBuilder :meta="meta.meta_object_dispatchers" @removeItem="removeItem" @updateFiled="updateFiledResp"/>
+                <FormBuilder :meta="meta.meta_object_dispatchers" @removeItem="removeItem"
+                             @updateFiled="updateFiledResp"/>
                 <a href="#" @click.prevent="addResponsible('dispatchers')" class="add_link">Добавить диспетчера</a>
               </div>
             </v-form>
@@ -69,7 +70,7 @@
                    class="remove-item">
                   <img src="/img/ico_close.svg" alt="Удалить">
                 </a>
-                <FormBuilder :meta="item" @updateFiled="updateFiled"/>
+                <FormBuilder :meta="item" @updateFiled="updateFiledinArray(index, ...arguments)"/>
               </div>
               <AddFormPart :text="addContactPersText" @addFormPart="addFormPart"/>
             </v-form>
@@ -315,7 +316,8 @@ export default {
               id: 'object_contact_fio',
               name: 'object_contact_fio_0',
               validation: ['required'],
-              value: ''
+              value: '',
+              parent_array: 'meta_object_contact',
             },
             {
               type: 'FTypeText',
@@ -324,7 +326,8 @@ export default {
               id: 'object_contact_post',
               name: 'object_contact_post_0',
               validation: ['required'],
-              value: ''
+              value: '',
+              parent_array: 'meta_object_contact',
             },
             {
               type: 'FTypeText',
@@ -333,7 +336,8 @@ export default {
               id: 'object_contact_phone',
               name: 'object_contact_phone_0',
               validation: ['required', 'phone'],
-              value: ''
+              value: '',
+              parent_array: 'meta_object_contact',
             },
             {
               type: 'FTypeText',
@@ -342,7 +346,8 @@ export default {
               id: 'object_contact_email',
               name: 'object_contact_email_0',
               validation: ['required', 'email'],
-              value: ''
+              value: '',
+              parent_array: 'meta_object_contact',
             },
           ],
         ],
@@ -408,6 +413,7 @@ export default {
       formHasErrors: false,
       searchText: '',
       page: 1,
+      nameCounter: 1,
     }
   },
 
@@ -437,12 +443,14 @@ export default {
       let contacts = [];
 
       for (let i = 0; i < this.meta.meta_object_contact.length; i++) {
+        let index_name = this.meta.meta_object_contact[i][0].name.substr(19, 20);
+
         contacts.push(
           {
-            "fullname": this.formValues['object_contact_fio_' + i],
-            "position": this.formValues['object_contact_post_' + i],
-            "phone": this.formValues['object_contact_phone_' + i],
-            "email": this.formValues['object_contact_email_' + i],
+            "fullname": this.formValues['object_contact_fio_' + index_name],
+            "position": this.formValues['object_contact_post_' + index_name],
+            "phone": this.formValues['object_contact_phone_' + index_name],
+            "email": this.formValues['object_contact_email_' + index_name],
           }
         )
       }
@@ -511,10 +519,9 @@ export default {
       let flag = false;
 
       if (!isInit) {
-        let name = this.meta['meta_object_' + resp_name][this.meta['meta_object_' + resp_name].length - 1].name;
         if (!this.meta['meta_object_' + resp_name].length) {
           flag = false;
-        } else if (!this.formValues[name]) {
+        } else if (!this.formValues[this.meta['meta_object_' + resp_name][this.meta['meta_object_' + resp_name].length - 1].name]) {
           flag = true;
         }
         if (flag) {
@@ -540,7 +547,7 @@ export default {
           icon: 'mdi-account',
           label: '',
           col: 12,
-          name: 'object_' + resp_name + '_' + this.meta['meta_object_' + resp_name].length,
+          name: 'object_' + resp_name + '_' + this.nameCounter++,
           remove: true,
           params: {
             options: resp,
@@ -562,35 +569,41 @@ export default {
             label: 'ФИО',
             col: 12,
             id: 'object_contact_fio',
-            name: 'object_contact_fio_' + this.meta.meta_object_contact.length,
+            name: 'object_contact_fio_' + this.nameCounter,
             validation: ['required'],
+
+            parent_array: 'meta_object_contact',
           },
           {
             type: 'FTypeText',
             label: 'Должность',
             col: 12,
             id: 'object_contact_post',
-            name: 'object_contact_post_' + this.meta.meta_object_contact.length,
+            name: 'object_contact_post_' + this.nameCounter,
             validation: ['required'],
+            parent_array: 'meta_object_contact',
           },
           {
             type: 'FTypeText',
             label: 'Телефон',
             col: 12,
             id: 'object_contact_phone',
-            name: 'object_contact_phone_' + this.meta.meta_object_contact.length,
+            name: 'object_contact_phone_' + this.nameCounter,
             validation: ['required', 'phone'],
+            parent_array: 'meta_object_contact',
           },
           {
             type: 'FTypeText',
             label: 'Email',
             col: 12,
             id: 'object_contact_email',
-            name: 'object_contact_email_' + this.meta.meta_object_contact.length,
+            name: 'object_contact_email_' + this.nameCounter,
             validation: ['required', 'email'],
+            parent_array: 'meta_object_contact',
           },
         ],
       );
+      this.nameCounter++;
     },
 
     addRequest() {
@@ -628,7 +641,6 @@ export default {
     prevFromButton() {
       this.tab -= 1;
     },
-
     updateFiled(field, value) {
       this.formValues[field] = value;
       console.log(field, value);
@@ -636,15 +648,23 @@ export default {
     updateFiledResp(field, value, index, parent_array) {
       this.formValues[field] = value;
       this.meta[parent_array][index].value = value;
+      console.log(field, value);
     },
-
+    updateFiledinArray(index_block, field, value, index, parent_array) {
+      this.formValues[field] = value;
+      this.meta[parent_array][index_block][index].value = value;
+      console.log(field, value);
+    },
     addFileds(length, method, args) {
       if (length > 1) {
         for (let i = 1; i < length; i++) {
           this[method](args, true);
         }
       }
-    }
+    },
+    openRequest(id) {
+      this.$router.push('/objects/' + id);
+    },
   },
 
   async created() {
@@ -692,7 +712,6 @@ export default {
     }
     for (let i = 0; i < dispatchers_length; i++) {
       this.meta.meta_object_dispatchers[i].value = this.object_id.dispatchers[i].uuid;
-      console.log(this.object_id.dispatchers[i].uuid)
     }
 
     this.meta.meta_object_info.map(f => {
@@ -710,6 +729,8 @@ export default {
     this.meta.meta_object_manager.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     })
+
+    this.nameCounter = Math.max(contact_length, managers_length, dispatchers_length);
   }
 }
 </script>

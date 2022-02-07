@@ -89,7 +89,7 @@
                       <div class="form-part-label" v-if="item.label">{{ item.label }}</div>
                       <div class="d-flex w-100">
                         <FormBuilder :meta="meta.meta_object_pay[index]" @removeItem="removeItem"
-                                     @updateFiled="updateFiled"/>
+                                     @updateFiled="updateFiledinArray(index, ...arguments)"/>
                         <a href="#" @click.prevent="removeItem(index, 'meta_object_pay')" class="remove-item">
                           <img src="/img/ico_close.svg" alt="Удалить">
                         </a>
@@ -105,10 +105,13 @@
           </v-tab-item>
           <v-tab-item eager>
             <v-form ref="form_part_2" v-model="valid" lazy-validation>
-              <div class="form-part"
+              <div class="form-part form-part-contact"
                    v-for="(item, index) in meta.meta_object_contact"
                    :key="index">
-                <FormBuilder :meta="item" @updateFiled="updateFiled"/>
+                <a v-show="index != 0" href="#" @click.prevent="removeItem(index, 'meta_object_contact')" class="remove-item">
+                  <img src="/img/ico_close.svg" alt="Удалить">
+                </a>
+                <FormBuilder :meta="item" @updateFiled="updateFiledinArray(index, ...arguments)"/>
               </div>
               <AddFormPart :text="addContactPersText" @addFormPart="addFormPart"/>
             </v-form>
@@ -125,7 +128,6 @@
 
           <FNavigation :indexTab="tab" :nextButtonsText="nextButtonsText" @nextFromButton="nextFromButton"
                        @prevFromButton="prevFromButton"/>
-
         </v-window>
       </v-form>
     </div>
@@ -149,9 +151,6 @@ export default {
       await store.dispatch('dispatchers/fetch')
     }
   },
-  /*async asyncData({ store, params }) {
-    await store.dispatch("request_id/fetchRequestId", 'ab4309a6-4f29-4ee5-aaf7-6e2becb7f527');
-  },*/
 
   data() {
     return {
@@ -343,9 +342,9 @@ export default {
               label: '',
               icon: '',
               col: 5,
-              id: 'object_pay_title_0',
               name: 'object_pay_title_0',
               remove: false,
+              parent_array: 'meta_object_pay',
               value: '',
             },
             {
@@ -353,16 +352,15 @@ export default {
               label: '',
               icon: '',
               col: 2,
-              id: 'object_pay_salary_0',
               name: 'object_pay_salary_0',
               remove: false,
+              parent_array: 'meta_object_pay',
               value: '',
             },
             {
               type: 'FTypeSelect',
               label: '',
               col: 3,
-              id: 'object_pay_time_0',
               name: 'object_pay_time_0',
               params: {
                 options: [
@@ -370,6 +368,7 @@ export default {
                   'за час',
                 ],
               },
+              parent_array: 'meta_object_pay',
               value: '',
             },
             {
@@ -380,6 +379,7 @@ export default {
               id: 'object_pay_cw_0',
               name: 'object_pay_cw_0',
               remove: false,
+              parent_array: 'meta_object_pay',
               value: '',
             },
           ],
@@ -389,6 +389,7 @@ export default {
       select: null,
       addContactPersText: 'Добавить контактное лицо',
       formHasErrors: false,
+      nameCounter: 1,
     }
   },
   computed: {
@@ -408,12 +409,13 @@ export default {
 
       let contacts = [];
       for (let i = 0; i < this.meta.meta_object_contact.length; i++) {
+        let index_name = this.meta.meta_object_contact[i][0].name.substr(19, 20);
         contacts.push(
           {
-            "fullname": this.formValues['object_contact_fio_'+i],
-            "position": this.formValues['object_contact_post_'+i],
-            "phone": this.formValues['object_contact_phone_'+i],
-            "email": this.formValues['object_contact_email_'+i],
+            "fullname": this.formValues['object_contact_fio_' + index_name],
+            "position": this.formValues['object_contact_post_' + index_name],
+            "phone": this.formValues['object_contact_phone_' + index_name],
+            "email": this.formValues['object_contact_email_' + index_name],
           }
         )
       }
@@ -425,18 +427,16 @@ export default {
           this.formValues[name]
         )
       }
-      /*dispatchers.push(
-        "e19e332e-2db2-4830-8e62-252f3fca541e",
-      )*/
 
       let works = [];
       for (let i = 0; i < this.meta.meta_object_pay.length; i++) {
+        let index_name = this.meta.meta_object_pay[i][0].name.substr(17, 18);
         works.push(
           {
-            "name": this.formValues['object_pay_title_'+i],
-            "payment": this.formValues['object_pay_salary_'+i],
-            "period": this.formValues['object_pay_time_'+i],
-            "requires_people": this.formValues['object_pay_cw_'+i],
+            "name": this.formValues['object_pay_title_'+index_name],
+            "payment": this.formValues['object_pay_salary_'+index_name],
+            "period": this.formValues['object_pay_time_'+index_name],
+            "requires_people": this.formValues['object_pay_cw_'+index_name],
           }
         )
       }
@@ -489,7 +489,7 @@ export default {
           label: '',
           col: 12,
           id: 'object_resp',
-          name: 'object_resp_' + this.meta.meta_object_responsible.length,
+          name: 'object_resp_' + this.nameCounter++,
           remove: true,
           params: {
             options: dispatchers,
@@ -509,8 +509,9 @@ export default {
             label: 'ФИО',
             col: 12,
             id: 'object_contact_fio',
-            name: 'object_contact_fio_' + this.meta.meta_object_contact.length,
+            name: 'object_contact_fio_' + this.nameCounter,
             validation: ['required'],
+            parent_array: 'meta_object_contact',
             value: ''
           },
           {
@@ -518,8 +519,9 @@ export default {
             label: 'Должность',
             col: 12,
             id: 'object_contact_post',
-            name: 'object_contact_post_' + this.meta.meta_object_contact.length,
+            name: 'object_contact_post_' + this.nameCounter,
             validation: ['required'],
+            parent_array: 'meta_object_contact',
             value: ''
           },
           {
@@ -527,8 +529,9 @@ export default {
             label: 'Телефон',
             col: 12,
             id: 'object_contact_phone',
-            name: 'object_contact_phone_' + this.meta.meta_object_contact.length,
+            name: 'object_contact_phone_' + this.nameCounter,
             validation: ['required', 'phone'],
+            parent_array: 'meta_object_contact',
             value: ''
           },
           {
@@ -536,12 +539,14 @@ export default {
             label: 'Email',
             col: 12,
             id: 'object_contact_email',
-            name: 'object_contact_email_' + this.meta.meta_object_contact.length,
+            name: 'object_contact_email_' + this.nameCounter,
             validation: ['required', 'email'],
-            value: '',
+            parent_array: 'meta_object_contact',
+            value: ''
           },
         ],
       );
+      this.nameCounter++;
     },
     removeItem(index, array) {
       if (index != 0 || this.meta[array].length > 1) {
@@ -556,9 +561,9 @@ export default {
             label: '',
             icon: '',
             col: 5,
-            id: 'object_pay_title_' + this.meta.meta_object_pay.length,
-            name: 'object_pay_title_' + this.meta.meta_object_pay.length,
+            name: 'object_pay_title_' + this.nameCounter,
             remove: false,
+            parent_array: 'meta_object_pay',
             value: '',
           },
           {
@@ -566,23 +571,23 @@ export default {
             label: '',
             icon: '',
             col: 2,
-            id: 'object_pay_time',
-            name: 'object_pay_salary_' + this.meta.meta_object_pay.length,
+            name: 'object_pay_salary_' + this.nameCounter,
             remove: false,
+            parent_array: 'meta_object_pay',
             value: '',
           },
           {
             type: 'FTypeSelect',
             label: '',
             col: 3,
-            id: 'object_pay_time',
-            name: 'object_pay_time_' + this.meta.meta_object_pay.length,
+            name: 'object_pay_time_' + this.nameCounter,
             params: {
               options: [
                 'за смену',
                 'за час',
               ],
             },
+            parent_array: 'meta_object_pay',
             value: '',
           },
           {
@@ -590,13 +595,14 @@ export default {
             label: '',
             icon: '',
             col: 2,
-            id: 'object_pay_cw',
-            name: 'object_pay_cw_' + this.meta.meta_object_pay.length,
+            name: 'object_pay_cw_' + this.nameCounter,
             remove: false,
+            parent_array: 'meta_object_pay',
             value: '',
           },
         ],
       );
+      this.nameCounter++;
     },
     nextFromButton() {
       if (this.tab < this.tabs_list.length - 1) {
@@ -627,6 +633,12 @@ export default {
     updateFiledResp(field, value, index) {
       this.formValues[field] = value;
       this.meta.meta_object_responsible[index].value = value;
+      console.log(field, value);
+    },
+    updateFiledinArray(index_block, field, value, index, parent_array) {
+      this.formValues[field] = value;
+      this.meta[parent_array][index_block][index].value = value;
+      console.log(field, value);
     },
     addFileds(length, method, args) {
       if (length > 1) {
@@ -691,6 +703,7 @@ export default {
     }
 
     for (let i = 0; i < dispatchers_length; i++) {
+      console.log(i, this.meta.meta_object_responsible[i]);
       this.meta.meta_object_responsible[i].value = this.request_id.dispatchers[i].uuid;
     }
 
@@ -712,6 +725,8 @@ export default {
     this.meta.meta_object_pay.map(subarray => subarray.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     }));
+
+    this.nameCounter = Math.max(contact_length, works_length, dispatchers_length);
 
   },
   async mounted() {
