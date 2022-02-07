@@ -402,6 +402,10 @@ export default {
           "title": 'Редактировать',
         },
         {
+          "id": "copy",
+          "title": 'Копировать',
+        },
+        {
           "id": "delete",
           "title": 'Удалить'
         },
@@ -442,36 +446,6 @@ export default {
         {text: 'Автор', value: 'author'},
         {text: 'Элемент', value: 'element'},
         {text: 'Изменение', value: 'change'},
-      ],
-
-      desserts: [
-        {
-          name: 'Васильев Петр Иванович',
-          date: '26.06.1984',
-          rating: 4.5,
-          address: 'Москва,  район длинное название',
-          onobject: 15,
-          invited: '',
-          id: 1
-        },
-        {
-          name: 'Васильев Петр Иванович',
-          date: '26.06.1984',
-          rating: 4.5,
-          address: 'Москва,  район длинное название',
-          onobject: 15,
-          invited: '',
-          id: 1
-        },
-        {
-          name: 'Васильев Петр Иванович',
-          date: '26.06.1984',
-          rating: 4.5,
-          address: 'Москва,  район длинное название',
-          onobject: 15,
-          invited: '',
-          id: 1
-        },
       ],
 
       /* data for Overlay of adding Performers START*/
@@ -559,6 +533,8 @@ export default {
     ...mapActions('request_id_dispatchers', ['acceptRequest',]),
     ...mapActions('request_id_dispatchers', ['rejectRequest',]),
     ...mapActions( 'contractors', [ 'getContractors', 'setFilterRegion', 'setFilterSpecialization', 'setFilterProfessions', 'setFilterPayments', ] ),
+    ...mapActions('requests', ['copyRequest',]),
+    ...mapActions('requests', ['removeRequest',]),
 
     updateSearchText(value) {
       this.searchText = value;
@@ -616,7 +592,7 @@ export default {
 
           console.debug( 'this.$route.params.id' );
           console.debug( this.$route.params.id );
-          
+
           this.fetchRequestIdDispatchersSelection( { requestId: this.$route.params.id } );
           this.fetchRequestId( this.$route.params.id );
 
@@ -637,8 +613,12 @@ export default {
       if (val == 'edit'){
         this.$router.push('/request/'+ this.$route.params.id+'/edit/');
       }
-      if (val == 'delete'){
-
+      else if (val == 'delete'){
+        this.$router.push('/request/');
+        this.removeRequest(this.$route.params.id);
+      }
+      else if (val == 'copy'){
+        this.copyRequest(this.$route.params.id);
       }
       else{
         this.changeStatus(val);

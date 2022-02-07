@@ -84,6 +84,8 @@
                     <span>Редактировать</span>
                   </nuxt-link>
                   <v-divider class="my-3"></v-divider>
+                  <a href="#" @click.prevent="copyRequest(item.uuid)">Копировать</a>
+                  <v-divider class="my-3"></v-divider>
                   <a href="#" @click.prevent="removeRequest(item.uuid)">Удалить</a>
                 </div>
               </v-list-item-content>
@@ -137,6 +139,7 @@ export default {
   methods: {
     ...mapActions('requests', ['fetch',]),
     ...mapActions('requests', ['removeRequest',]),
+    ...mapActions('requests', ['copyRequest',]),
     ...mapActions('objects', ['fetchObjects',]),
 
     openRequest(id){

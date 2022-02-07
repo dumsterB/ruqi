@@ -50,6 +50,30 @@ export const actions = {
       });
 
   },
+  async copyRequest({commit, dispatch}, requestID) {
+    let self= this;
+    const requests = await this.$axios.post('/manager/tasks/'+requestID+'/copy',
+      '',
+      {
+        headers: {
+          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
+          'Content-Type': 'application/json',
+        },
+
+      })
+      .then((response) => {
+        console.log(response);
+        dispatch('fetch');
+        commit('response/setSuccess', {type: 'success', text: 'Заявка успешно скопирована', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  },
   async removeRequest({commit, dispatch}, requestID) {
 
     await this.$axios.delete('/manager/tasks/'+requestID, {
@@ -60,6 +84,10 @@ export const actions = {
       .then((response) => {
         console.log(response);
         dispatch('fetch');
+        commit('response/setSuccess', {type: 'success', text: 'Заявка удалена', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
 
       })
       .catch((error) => {
