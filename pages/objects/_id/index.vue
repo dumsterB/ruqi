@@ -36,9 +36,12 @@
                   color="E5F3FC"
                   @input="changeStatus(selectStatus.id)"
                 ></v-select>
-                <v-subheader>Ответственный:</v-subheader>
-                <UserAvatar v-if="object_id.responsible" :first_name="object_id.responsible.firstname" :last_name="object_id.responsible.lastname" :color="avatarColorManager"
-                            :radius="avatarRounded"/>
+                <div class="d-flex" v-if="object_id.responsible && object_id.responsible.firstname">
+                  <v-subheader>Ответственный:</v-subheader>
+                  <UserAvatar v-if="object_id.responsible" :first_name="object_id.responsible.firstname"
+                              :last_name="object_id.responsible.lastname" :color="avatarColorManager"
+                              :radius="avatarRounded"/>
+                </div>
               </v-col>
               <v-col cols="2" class="d-flex justify-end">
                 <v-select
@@ -214,7 +217,8 @@
               </v-data-table>
             </div>
 
-            <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page" @setItemsPerPage="setItemsPerPage" @setCurrentPage="setCurrentPage"/>
+            <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page"
+                         @setItemsPerPage="setItemsPerPage" @setCurrentPage="setCurrentPage"/>
           </v-tab-item>
           <v-tab-item>
             <div class="table-list-style select">
@@ -248,40 +252,11 @@
                 <template v-slot:item.position="{ item }">
                   {{ item.position }}
                 </template>
-
-                <template v-slot:item.actions="{ item }">
-                  <div class="d-flex justify-end">
-                    <v-menu
-                      bottom
-                      rounded="10"
-                      offset-y
-                      nudge-bottom="10"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-btn icon
-                               v-on="on">
-                          <v-icon>mdi-dots-vertical</v-icon>
-                        </v-btn>
-                      </template>
-                      <v-card>
-                        <v-list-item-content class="justify-start">
-                          <div class="mx-auto text-left">
-                            <nuxt-link to="">
-                              <span>Редактировать</span>
-                            </nuxt-link>
-                            <v-divider class="my-3"></v-divider>
-                            <a href="#" @click.prevent="">Удалить</a>
-                          </div>
-                        </v-list-item-content>
-                      </v-card>
-                    </v-menu>
-                  </div>
-                </template>
-
               </v-data-table>
             </div>
 
-            <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page" @setItemsPerPage="setItemsPerPage" @setCurrentPage="setCurrentPage"/>
+            <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page"
+                         @setItemsPerPage="setItemsPerPage" @setCurrentPage="setCurrentPage"/>
           </v-tab-item>
 
 
@@ -414,7 +389,6 @@ export default {
         {text: 'Фио', value: 'name', width: '16px'},
         {text: 'Телефон', value: 'phone'},
         {text: 'Должность', value: 'position'},
-        {text: '', value: 'actions', sortable: false},
       ],
     }
   },
@@ -448,7 +422,7 @@ export default {
     mapCenter() {
       return [this.object_id.lat, this.object_id.lon];
     },
-    mapMarker(){
+    mapMarker() {
       return [
         {
           "geometry": {
@@ -489,25 +463,24 @@ export default {
         this.activeSelectAll = 0;
       }
     },
-    changeStatus(status){
+    changeStatus(status) {
       this.putStatus({requestId: this.object_id.uuid, status: status});
     },
-    setItemsPerPage(value){
+    setItemsPerPage(value) {
       this.itemsPerPage = value;
     },
-    setCurrentPage(value){
+    setCurrentPage(value) {
       this.page = value;
     }
   },
   watch: {
     activeAction: function (val) {
-      if (val == 'edit'){
-        this.$router.push('/objects/'+ this.$route.params.id+'/edit/');
+      if (val == 'edit') {
+        this.$router.push('/objects/' + this.$route.params.id + '/edit/');
       }
-      if (val == 'delete'){
+      if (val == 'delete') {
 
-      }
-      else{
+      } else {
         this.changeStatus(val);
         this.selectStatus = val;
       }
