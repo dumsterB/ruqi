@@ -42,7 +42,7 @@
                 <div class="form-part-label">Действия</div>
                 <FormBuilder :meta="meta.meta_object_rights" @updateFiled="updateFiled"/>
 
-                <div class="form-part-label">Оповещения</div>
+                <div class="form-part-label spacer">Оповещения</div>
                 <FormBuilder :meta="meta.meta_object_notification" @updateFiled="updateFiled"/>
               </div>
             </v-form>
@@ -50,7 +50,15 @@
           <v-tab-item>
             <v-form ref="form_part_2" v-model="valid" lazy-validation>
               <div class="form-part">
-
+                <v-btn
+                  text
+                  height="48"
+                  outlined
+                  class="btn-blue"
+                  href="#"
+                >
+                  Cбросить пароль
+                </v-btn>
               </div>
             </v-form>
           </v-tab-item>
@@ -148,7 +156,21 @@ export default {
             label: 'Email',
             col: 12,
             name: 'object_contact_email',
+            params: {
+              note: 'На данный email будет отправлена ссылка-приглашение для регистрации '
+            },
             validation: ['required' ,'email'],
+            value: ''
+          },
+          {
+            type: 'FTypeCheckBox',
+            label: '',
+            col: 12,
+            name: 'object_contact_rule',
+            params: {
+              label: 'Разрешить регистрацию без подтверждения'
+            },
+            validation: ['required' ,],
             value: ''
           },
           {
@@ -171,7 +193,7 @@ export default {
           {
             type: 'FTypeSwitch',
             params: {
-              label: 'Разрешать пользователю добавлять новых менеджеров',
+              label: 'Разрешить добавлять новых менеджеров',
             },
             col: 12,
             name: 'mor_01',
@@ -180,19 +202,10 @@ export default {
           {
             type: 'FTypeSwitch',
             params: {
-              label: 'Разрешать пользователю добавлять новых менеджеров',
+              label: 'Разрешить добавлять новых диспетчеров',
             },
             col: 12,
             name: 'mor_02',
-            value: ''
-          },
-          {
-            type: 'FTypeSwitch',
-            params: {
-              label: 'Разрешать пользователю добавлять новых менеджеров',
-            },
-            col: 12,
-            name: 'mor_03',
             value: ''
           },
         ],
@@ -200,28 +213,10 @@ export default {
           {
             type: 'FTypeSwitch',
             params: {
-              label: 'Разрешать пользователю добавлять новых менеджеров',
+              label: 'Уведомлять о новых связанных объектах',
             },
             col: 12,
-            name: 'mor_01',
-            value: ''
-          },
-          {
-            type: 'FTypeSwitch',
-            params: {
-              label: 'Разрешать пользователю добавлять новых менеджеров',
-            },
-            col: 12,
-            name: 'mor_02',
-            value: ''
-          },
-          {
-            type: 'FTypeSwitch',
-            params: {
-              label: 'Разрешать пользователю добавлять новых менеджеров',
-            },
-            col: 12,
-            name: 'mor_03',
+            name: 'mon_01',
             value: ''
           },
         ],
@@ -345,7 +340,7 @@ export default {
     })
 
     this.meta.meta_object_info[0].params.options = this.specializations;
-    this.meta.meta_object_info[5].params.options = this.objects;
+    this.meta.meta_object_info[6].params.options = this.objects;
 
   }
 }

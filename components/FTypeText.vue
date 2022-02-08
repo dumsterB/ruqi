@@ -12,6 +12,7 @@
         :rules="validation_array"
         :class="{'number': validation && validation[0] == 'number'}"
     ></v-text-field>
+    <div class="note" v-if="params">{{params.note}}</div>
   </div>
 </template>
 
@@ -68,7 +69,10 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+
+@import '/assets/scss/colors.scss';
+
 .ruqi {
   .v-text-field--full-width .v-input__prepend-outer,
   .v-text-field--full-width .v-input__prepend-inner,
@@ -85,6 +89,12 @@ export default {
       position: absolute;
       bottom: -18px;
     }
+  }
+
+  .note{
+    font-size: 14px;
+    margin-top: 12px;
+    color: $grey;
   }
 }
 

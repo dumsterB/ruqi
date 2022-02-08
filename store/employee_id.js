@@ -17,6 +17,21 @@ export const getters = {
   },
 }
 
-export const actions = {}
+export const actions = {
+  async fetchEmployees({commit}, requestId) {
 
-export const mutations = {}
+    const employee_id = await this.$axios.get('/super_manager/accounts/'+requestId, {
+      headers: {
+        "Authorization": "Bearer af2cf5b991716c8fe1d0c6bf9c7a03f6fa088887dd10921d605dad809e2df125"
+      },
+    });
+    commit('setEmployeeID', employee_id)
+
+  },
+}
+
+export const mutations = {
+  setEmployeeID(state, employee_id) {
+    state.employee_id = employee_id.data.data;
+  },
+}

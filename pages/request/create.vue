@@ -88,7 +88,7 @@
                          v-for="(item, index) in meta.meta_object_pay" :key="index">
                     <div class="form-part-label" v-if="item.label">{{ item.label }}</div>
                     <div class="d-flex w-100">
-                      <FormBuilder :meta="meta.meta_object_pay[index]" @removeItem="removeItem" @updateFiled="updateFiled"/>
+                      <FormBuilder :meta="meta.meta_object_pay[index]" @removeItem="removeItem" @updateFiled="updateFiledinArray(index, ...arguments)"/>
                       <a href="#" @click.prevent="removeItem(index, 'meta_object_pay')" class="remove-item">
                         <img src="/img/ico_close.svg" alt="Удалить">
                       </a>
@@ -110,7 +110,7 @@
                 <a v-show="index != 0" href="#" @click.prevent="removeItem(index, 'meta_object_contact')" class="remove-item">
                   <img src="/img/ico_close.svg" alt="Удалить">
                 </a>
-                <FormBuilder :meta="item" @updateFiled="updateFiled"/>
+                <FormBuilder :meta="item" @updateFiled="updateFiledinArray(index, ...arguments)"/>
               </div>
               <AddFormPart :text="addContactPersText" @addFormPart="addFormPart"/>
             </v-form>
@@ -119,8 +119,8 @@
             <v-form ref="form_part_3" v-model="valid" lazy-validation>
               <div class="form-part">
                 <div class="form-part-label">Диспетчеры</div>
-                <FormBuilder :meta="meta.meta_object_responsible" @removeItem="removeItem" @updateFiled="updateFiled"/>
-                <a href="#" @click.prevent="addResponsible" class="add_link">Добавить диспетчера</a>
+                <FormBuilder :meta="meta.meta_object_responsible" @removeItem="removeItem" @updateFiled="updateFiledResp"/>
+                <a href="#" @click.prevent="addResponsible('responsible')" class="add_link">Добавить диспетчера</a>
               </div>
             </v-form>
           </v-tab-item>
@@ -287,6 +287,7 @@ export default {
               id: 'object_contact_fio',
               name: 'object_contact_fio_0',
               validation: ['required'],
+              parent_array: 'meta_object_contact',
               value: ''
             },
             {
@@ -296,6 +297,7 @@ export default {
               id: 'object_contact_post',
               name: 'object_contact_post_0',
               validation: ['required'],
+              parent_array: 'meta_object_contact',
               value: ''
             },
             {
@@ -305,6 +307,7 @@ export default {
               id: 'object_contact_phone',
               name: 'object_contact_phone_0',
               validation: ['required' ,'phone'],
+              parent_array: 'meta_object_contact',
               value: ''
             },
             {
@@ -314,6 +317,7 @@ export default {
               id: 'object_contact_email',
               name: 'object_contact_email_0',
               validation: ['required' ,'email'],
+              parent_array: 'meta_object_contact',
               value: ''
             },
           ],
@@ -343,9 +347,9 @@ export default {
               label: '',
               icon: '',
               col: 5,
-              id: 'object_pay_title_0',
               name: 'object_pay_title_0',
               remove: false,
+              parent_array: 'meta_object_pay',
               value: '',
             },
             {
@@ -353,16 +357,15 @@ export default {
               label: '',
               icon: '',
               col: 2,
-              id: 'object_pay_salary_0',
               name: 'object_pay_salary_0',
               remove: false,
+              parent_array: 'meta_object_pay',
               value: '',
             },
             {
               type: 'FTypeSelect',
               label: '',
               col: 3,
-              id: 'object_pay_time_0',
               name: 'object_pay_time_0',
               params: {
                 options: [
@@ -370,6 +373,7 @@ export default {
                   'за час',
                 ],
               },
+              parent_array: 'meta_object_pay',
               value: 'за смену',
             },
             {
@@ -377,9 +381,9 @@ export default {
               label: '',
               icon: '',
               col: 2,
-              id: 'object_pay_cw_0',
               name: 'object_pay_cw_0',
               remove: false,
+              parent_array: 'meta_object_pay',
               value: '',
             },
           ],
@@ -389,6 +393,7 @@ export default {
       select: null,
       addContactPersText: 'Добавить контактное лицо',
       formHasErrors: false,
+      nameCounter: 1,
     }
   },
   computed: {
@@ -404,35 +409,34 @@ export default {
     postBody() {
       let contacts = [];
       for (let i = 0; i < this.meta.meta_object_contact.length; i++) {
+        let index_name = this.meta.meta_object_contact[i][0].name.substr(19, 20);
         contacts.push(
           {
-            "fullname": this.formValues['object_contact_fio_'+i],
-            "position": this.formValues['object_contact_post_'+i],
-            "phone": this.formValues['object_contact_phone_'+i],
-            "email": this.formValues['object_contact_email_'+i],
+            "fullname": this.formValues['object_contact_fio_' + index_name],
+            "position": this.formValues['object_contact_post_' + index_name],
+            "phone": this.formValues['object_contact_phone_' + index_name],
+            "email": this.formValues['object_contact_email_' + index_name],
           }
         )
       }
 
       let dispatchers = [];
       for (let i = 0; i < this.meta.meta_object_responsible.length; i++) {
+        let name = this.meta.meta_object_responsible[i].name;
         dispatchers.push(
-           this.formValues['object_resp_'+i]
+           this.formValues[name]
         )
       }
-      dispatchers.push(
-        "e19e332e-2db2-4830-8e62-252f3fca541e",
-        "ce23e853-6405-46a7-bfc2-2f460efc7a79"
-      )
 
       let works = [];
       for (let i = 0; i < this.meta.meta_object_pay.length; i++) {
+        let index_name = this.meta.meta_object_pay[i][0].name.substr(17, 18);
         works.push(
           {
-            "name": this.formValues['object_pay_title_'+i],
-            "payment": this.formValues['object_pay_salary_'+i],
-            "period": this.formValues['object_pay_time_'+i],
-            "requires_people": this.formValues['object_pay_cw_'+i],
+            "name": this.formValues['object_pay_title_'+index_name],
+            "payment": this.formValues['object_pay_salary_'+index_name],
+            "period": this.formValues['object_pay_time_'+index_name],
+            "requires_people": this.formValues['object_pay_cw_'+index_name],
           }
         )
       }
@@ -462,7 +466,21 @@ export default {
     ...mapActions('dispatchers', ['fetchDispatchers',]),
     ...mapActions('requests', ['createRequest',]),
 
-    addResponsible() {
+    addResponsible(resp_name, isInit = false) {
+      let flag = false;
+
+      if (!isInit) {
+        let name = this.meta['meta_object_' + resp_name][this.meta['meta_object_' + resp_name].length - 1].name;
+        if (!this.meta['meta_object_' + resp_name].length) {
+          flag = false;
+        } else if (!this.formValues[name]) {
+          flag = true;
+        }
+        if (flag) {
+          return;
+        }
+      }
+
       let dispatchers = this.dispatchers;
       this.meta.meta_object_responsible.push({
           type: 'FTypeSelectUIID',
@@ -478,6 +496,7 @@ export default {
           },
           parent_array: 'meta_object_responsible',
           validation: 'required',
+          value: ''
         },
       );
     },
@@ -489,38 +508,47 @@ export default {
             label: 'ФИО',
             col: 12,
             id: 'object_contact_fio',
-            name: 'object_contact_fio_' + this.meta.meta_object_contact.length,
+            name: 'object_contact_fio_' + this.nameCounter,
             validation: ['required'],
+            parent_array: 'meta_object_contact',
+            value: ''
           },
           {
             type: 'FTypeText',
             label: 'Должность',
             col: 12,
             id: 'object_contact_post',
-            name: 'object_contact_post_' + this.meta.meta_object_contact.length,
+            name: 'object_contact_post_' + this.nameCounter,
             validation: ['required'],
+            parent_array: 'meta_object_contact',
+            value: ''
           },
           {
             type: 'FTypeText',
             label: 'Телефон',
             col: 12,
             id: 'object_contact_phone',
-            name: 'object_contact_phone_' + this.meta.meta_object_contact.length,
-            validation: ['required' ,'phone'],
+            name: 'object_contact_phone_' + this.nameCounter,
+            validation: ['required', 'phone'],
+            parent_array: 'meta_object_contact',
+            value: ''
           },
           {
             type: 'FTypeText',
             label: 'Email',
             col: 12,
             id: 'object_contact_email',
-            name: 'object_contact_email_' + this.meta.meta_object_contact.length,
-            validation: ['required' ,'email'],
+            name: 'object_contact_email_' + this.nameCounter,
+            validation: ['required', 'email'],
+            parent_array: 'meta_object_contact',
+            value: ''
           },
         ],
       );
+      this.nameCounter++;
     },
     removeItem(index, array) {
-      if (index != 0) {
+      if (index != 0 || this.meta[array].length > 1) {
         this.meta[array].splice(index, 1);
       }
     },
@@ -532,43 +560,48 @@ export default {
             label: '',
             icon: '',
             col: 5,
-            id: 'object_pay_title_' + this.meta.meta_object_pay.length,
-            name: 'object_pay_title_' + this.meta.meta_object_pay.length,
+            name: 'object_pay_title_' + this.nameCounter,
             remove: false,
+            parent_array: 'meta_object_pay',
+            value: '',
           },
           {
             type: 'FTypeText',
             label: '',
             icon: '',
             col: 2,
-            id: 'object_pay_time',
-            name: 'object_pay_salary_' + this.meta.meta_object_pay.length,
+            name: 'object_pay_salary_' + this.nameCounter,
             remove: false,
+            parent_array: 'meta_object_pay',
+            value: '',
           },
           {
             type: 'FTypeSelect',
             label: '',
             col: 3,
-            id: 'object_pay_time',
-            name: 'object_pay_time_' + this.meta.meta_object_pay.length,
+            name: 'object_pay_time_' + this.nameCounter,
             params: {
               options: [
                 'за смену',
                 'за час',
               ],
-            }
+            },
+            parent_array: 'meta_object_pay',
+            value: 'за смену',
           },
           {
             type: 'FTypeText',
             label: '',
             icon: '',
             col: 2,
-            id: 'object_pay_cw',
-            name: 'object_pay_cw_' + this.meta.meta_object_pay.length,
+            name: 'object_pay_cw_' + this.nameCounter,
             remove: false,
+            parent_array: 'meta_object_pay',
+            value: '',
           },
         ],
       );
+      this.nameCounter++;
     },
     nextFromButton() {
       if (this.tab < this.tabs_list.length - 1) {
@@ -596,6 +629,15 @@ export default {
     },
     updateFiled(field, value) {
       this.formValues[field] = value;
+      console.log(field, value);
+    },
+    updateFiledResp(field, value, index) {
+      this.formValues[field] = value;
+      this.meta.meta_object_responsible[index].value = value;
+    },
+    updateFiledinArray(index_block, field, value, index, parent_array) {
+      this.formValues[field] = value;
+      this.meta[parent_array][index_block][index].value = value;
       console.log(field, value);
     },
   },
@@ -635,15 +677,5 @@ export default {
 
 @import '../../assets/scss/colors';
 
-.wrapp-alert{
-  position: fixed;
-  width: 100%;
-  bottom: 0;
-  left: 0;
-
-  .v-alert{
-    margin: 0;
-  }
-}
 
 </style>

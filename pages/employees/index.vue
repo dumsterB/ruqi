@@ -62,7 +62,9 @@
             show-select
           >
             <template v-slot:item.name="{ item }">
-              <UserAvatar :first_name="item.firstname" :last_name="item.lastname" :color="avatarColor" :radius="avatarBorderRadius"/>
+              <div @click="openRequest(item.uuid)">
+                <UserAvatar :first_name="item.firstname" :last_name="item.lastname" :color="avatarColor" :radius="avatarBorderRadius"/>
+              </div>
             </template>
 
             <template v-slot:item.phone="{ item }">

@@ -95,7 +95,8 @@ html {
 }
 
 /* MIXINS STYLES START */
-.page--performers-id {
+.page--performers-id,
+.page--employees-id {
   background-color: #F2FAFF;
 
   #app {

@@ -30,10 +30,9 @@ export default {
       return this.params.item_text
     },
     icon_code() {
-      if (this.icon){
+      if (this.icon) {
         return this.icon;
-      }
-      else{
+      } else {
         return null;
       }
     },
@@ -56,6 +55,11 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+.ruqi {
+  .v-input__prepend-inner {
+    margin-top: 10px;
+  }
+}
 
 </style>
