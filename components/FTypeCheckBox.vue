@@ -5,6 +5,7 @@
       :label="params.label"
       color="primary"
       hide-details
+      @change="$emit('input', checkbox)"
     ></v-checkbox>
   </div>
 </template>

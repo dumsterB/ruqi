@@ -5,6 +5,7 @@
       :label="params.label"
       inset
       hide-details="auto"
+      @change="$emit('input', switch_val)"
     ></v-switch>
   </div>
 </template>

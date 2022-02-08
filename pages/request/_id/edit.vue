@@ -726,8 +726,6 @@ export default {
       Vue.set(this.formValues, f.name, f.value);
     }));
 
-    this.nameCounter = Math.max(contact_length, works_length, dispatchers_length) + 1;
-
   },
   async mounted() {
 
