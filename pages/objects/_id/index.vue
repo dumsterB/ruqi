@@ -37,7 +37,7 @@
                   @input="changeStatus(selectStatus.id)"
                 ></v-select>
                 <v-subheader>Ответственный:</v-subheader>
-                <UserAvatar v-if="" first_name="Василий" last_name="Петров" :color="avatarColorManager"
+                <UserAvatar v-if="object_id.responsible" :first_name="object_id.responsible.firstname" :last_name="object_id.responsible.lastname" :color="avatarColorManager"
                             :radius="avatarRounded"/>
               </v-col>
               <v-col cols="2" class="d-flex justify-end">
