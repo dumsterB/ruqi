@@ -18,7 +18,7 @@
         Documentation
 
       v-tab-item
-        Activity
+        Activity( :user_type="user_type" )
 
 </template>
 

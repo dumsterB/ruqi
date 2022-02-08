@@ -35,7 +35,6 @@
               template( v-slot:activator="{ on }" )
                 v-btn.icon( v-on="on" class="mix-edit-btn" )
                   v-icon mdi-dots-vertical
-
               v-card
                 v-list-item-content( class="justify-start" )
                   div( class="mx-auto text-left" )

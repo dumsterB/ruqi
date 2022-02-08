@@ -22,7 +22,7 @@
             span {{ `№6438` }}
 
         template( v-slot:item.name="{ item }" )
-          div
+          .name-inquiries
             span( class="color-black" ) {{ item.name }}
 
         template( v-slot:item.payment="{ item }" )
@@ -205,6 +205,14 @@
           left              : -25px;
           top               : 5px;
         }
+      }
+
+      .name-inquiries
+      {
+        width         : 200px;
+        white-space   : nowrap;
+        overflow      : hidden;
+        text-overflow : ellipsis;
       }
     }
   }
