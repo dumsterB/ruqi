@@ -370,11 +370,11 @@
 
     .status-activity
     {
-      font-style: normal;
-      font-weight: 600;
-      font-size: 16px;
-      line-height: 125%;
-      color: #272833;
+      font-style  : normal;
+      font-weight : 600;
+      font-size   : 16px;
+      line-height : 125%;
+      color       : #272833;
 
       width: 140px;
     }
