@@ -123,11 +123,11 @@ html {
   {
     padding: 0;
     margin: 0;
-    background-color  : #006EDF;
+    // background-color  : #006EDF;
 
     .v-application
     {
-      background-color  : #006EDF;
+      // background-color  : #006EDF;
 
       .container
       {
