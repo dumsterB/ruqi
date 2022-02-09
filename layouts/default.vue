@@ -3,14 +3,19 @@
     <v-app app>
       <v-main>
         <v-container>
-          <v-navigation-drawer width="98" color="blue" app>
+          <v-navigation-drawer
+            v-if="!helpers().isLoginPage()"
+            width="98"
+            color="blue"
+            app
+          >
             <div class="wrapper-main-menu d-flex flex-column justify-space-between">
               <Navbar/>
               <Settingsnav/>
             </div>
           </v-navigation-drawer>
           <div>
-            <Topbar/>
+            <Topbar v-if="!helpers().isLoginPage()" />
             <div class="content">
               <Nuxt/>
               <Alert :requestSuccess="requestSuccess"/>
@@ -27,18 +32,20 @@
 export default {
   name: "default",
 
-  computed: {
+  computed : {
     requestSuccess() {
       return this.$store.getters['response/requestSuccess'];
     },
   },
 
   watch: {
-    $route: {
-      handler(to, from) {
-        const ruqi = document.querySelector('.ruqi');
+    $route : {
+      handler( to, from )
+      {
+        const ruqi = document.querySelector( '.ruqi' );
 
-        if (!ruqi) {
+        if (!ruqi)
+        {
           setTimeout(() => {
             const ruqi = document.querySelector('.ruqi');
 
@@ -48,7 +55,8 @@ export default {
           return;
         }
 
-        if (from !== undefined) {
+        if (from !== undefined)
+        {
           //console.log('page--' + from.name);
           //console.log(from.name);
 
@@ -66,6 +74,22 @@ export default {
 
       immediate: true,
     }
+  },
+
+  methods : {
+    helpers ()
+    {
+      return {
+        isLoginPage : () => {
+          return this.$route.name === 'login';
+        },
+      }
+    },
+  },
+
+  mounted ()
+  {
+    console.debug( 'mounted', this.helpers().isLoginPage() );
   },
 }
 
@@ -94,15 +118,36 @@ html {
   }
 }
 
-/* MIXINS STYLES START */
-.page--performers-id,
-.page--employees-id {
-  background-color: #F2FAFF;
+/* OBJECTS STYLES START */
+  .page--login
+  {
+    padding: 0;
+    margin: 0;
+    background-color  : #006EDF;
 
-  #app {
-    background-color: #F2FAFF;
+    .v-application
+    {
+      background-color  : #006EDF;
+
+      .container
+      {
+        padding: 0;
+        margin: 0;
+      }
+    }
   }
-}
+/* OBJECTS STYLES END */
 
+/* MIXINS STYLES START */
+  .page--performers-id,
+  .page--employees-id
+  {
+    background-color: #F2FAFF;
+
+    #app
+    {
+      background-color: #F2FAFF;
+    }
+  }
 /* MIXINS STYLES END */
 </style>

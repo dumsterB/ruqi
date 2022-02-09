@@ -1,30 +1,41 @@
 <template lang="pug">
 
-.Documentation
+.document
   .wrapper
-    Document( :name="titles.passport" )
-    Document( :name="titles.snils" )
+    .header
+      .titel {{ name }}
+      v-divider
+    .body
+      .attachment-list
+        Attachment
 
 </template>
 
 <script>
 
-  import Document from './Document.vue';
+  import Attachment from "./Attachment";
 
   export default {
 
+    props : {
+      name : {
+        type      : String,
+        required  : true,
+      },
+
+      attachment : {
+        type      : Array,
+        required  : true,
+      },
+    },
+
     components : {
-      Document,
+      Attachment,
     },
 
     data ()
     {
-      return {
-        titles : {
-          passport  : 'Паспорт',
-          snils     : 'Снилс',
-        },
-      }
+      return {}
     },
 
     methods : {

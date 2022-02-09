@@ -222,6 +222,7 @@
     box-sizing        : border-box;
     border-radius     : 30px;
     max-width         : 330px;
+    height            : max-content;
 
     .wrapper
     {
@@ -344,13 +345,18 @@
 
               .call, .email, .chat
               {
-                width: 40px;
-                height: 40px;
-                display: flex;
-                flex-wrap: nowrap;
-                align-content: center;
-                justify-content: center;
-                align-items: center;
+                width           : 40px;
+                height          : 40px;
+                display         : flex;
+                flex-wrap       : nowrap;
+                align-content   : center;
+                justify-content : center;
+                align-items     : center;
+                background      : #FFFFFF;
+                border          : 1px solid #E0E0E0;
+                box-sizing      : border-box;
+                box-shadow      : 0px 6px 73px rgb(0 0 0 / 7%);
+                border-radius   : 100%;
               }
 
               .email

@@ -1,30 +1,20 @@
 <template lang="pug">
 
-.Documentation
+.Attachment
   .wrapper
-    Document( :name="titles.passport" )
-    Document( :name="titles.snils" )
+    .pp qwerty
 
 </template>
 
 <script>
 
-  import Document from './Document.vue';
-
   export default {
 
-    components : {
-      Document,
-    },
+    components : {},
 
     data ()
     {
-      return {
-        titles : {
-          passport  : 'Паспорт',
-          snils     : 'Снилс',
-        },
-      }
+      return {}
     },
 
     methods : {
