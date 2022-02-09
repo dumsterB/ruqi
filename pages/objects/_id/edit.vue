@@ -541,6 +541,8 @@ export default {
           break;
       }
 
+      console.log('было - ', this.nameCounter);
+
       this.meta['meta_object_' + resp_name].push(
         {
           type: 'FTypeSelectUIID',
@@ -559,6 +561,7 @@ export default {
           value: '',
         },
       );
+      console.log('стало - ', this.nameCounter);
     },
 
     addFormPart() {
@@ -730,22 +733,11 @@ export default {
       Vue.set(this.formValues, f.name, f.value);
     })
 
-    this.nameCounter = Math.max(contact_length, managers_length, dispatchers_length) + 1;
   }
 }
 </script>
 
 <style lang="scss" scoped>
 
-.wrapp-alert {
-  position: fixed;
-  width: 100%;
-  bottom: 0;
-  left: 0;
-
-  .v-alert {
-    margin: 0;
-  }
-}
 
 </style>

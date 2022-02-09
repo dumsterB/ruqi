@@ -27,6 +27,8 @@
                   Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное расположение.
                 </div>
                 <FormBuilder :meta="meta.meta_object_info" @updateFiled="updateFiled"/>
+                <FormBuilder :meta="meta.meta_object_object" @updateFiled="updateFiled"  @removeItem="removeItem"/>
+                <a href="#" @click.prevent="addObject('object')" class="add_link">Добавить объект</a>
               </div>
             </v-form>
           </v-tab-item>
@@ -173,21 +175,23 @@ export default {
             validation: ['required' ,],
             value: ''
           },
+        ],
+        meta_object_object:[
           {
             type: 'FTypeSelectUIID',
             label: 'Назначить на объекты',
             col: 12,
             name: 'object_0',
+            remove: true,
             params: {
               options: [],
               item_text: 'name',
               label: 'Не выбрано'
             },
             validation: 'required',
+            parent_array: 'meta_object_object',
             value: ''
           },
-
-
         ],
         meta_object_rights: [
           {
@@ -259,6 +263,7 @@ export default {
       valid: true,
       select: null,
       formHasErrors: false,
+      nameCounter: 1,
     }
   },
   computed: {
@@ -329,6 +334,45 @@ export default {
       this.formValues[field] = value;
       console.log(field, value);
     },
+    removeItem(index, array) {
+      if (index >= 0 || this.meta[array].length > 1) {
+        this.meta[array].splice(index, 1);
+        delete this.formValues[`${array.replace('meta_', '')}_${index}`];
+      }
+    },
+    addObject(resp_name, isInit = false) {
+
+      let flag = false;
+
+      if (!isInit) {
+        if (!this.meta['meta_object_' + resp_name].length) {
+          flag = false;
+        } else if (!this.formValues[this.meta['meta_object_' + resp_name][this.meta['meta_object_' + resp_name].length - 1].name]) {
+          flag = true;
+        }
+        if (flag) {
+          return;
+        }
+      }
+
+      this.meta['meta_object_' + resp_name].push(
+        {
+          type: 'FTypeSelectUIID',
+          label: '',
+          col: 12,
+          name: 'object_' + this.nameCounter++,
+          remove: true,
+          params: {
+            options: this.objects,
+            item_text: 'name',
+            label: 'Не выбрано'
+          },
+          validation: 'required',
+          parent_array: 'meta_object_object',
+          value: ''
+        },
+      );
+    },
   },
   created() {
 
@@ -340,7 +384,7 @@ export default {
     })
 
     this.meta.meta_object_info[0].params.options = this.specializations;
-    this.meta.meta_object_info[6].params.options = this.objects;
+    this.meta.meta_object_object[0].params.options = this.objects;
 
   }
 }

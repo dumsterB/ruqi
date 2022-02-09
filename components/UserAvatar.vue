@@ -13,7 +13,12 @@
     </div>
     <div class="user-date">
       <span class="user-name no-wrap" @click="handlers().onUserNameClick( { uuid } )">
-        {{ first_name + ' ' + last_name }}
+        <span>
+          {{ first_name }}
+        </span>
+        <span v-if="last_name != 'undefined'">
+          {{ last_name }}
+        </span>
       </span>
 
       <span v-if="date" class="user-date">

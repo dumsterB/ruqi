@@ -23,7 +23,7 @@ export const actions = {
   },
   async createRequest({commit, dispatch}, newRequest) {
     let self= this;
-    const requests = await this.$axios.post('/super_manager/accounts',
+    const requests = await this.$axios.post('/super_manager/accounts/57721e51-d7ba-492d-8579-24e9df1a1cbc/employees',
       newRequest,
       {
         headers: {
@@ -40,7 +40,7 @@ export const actions = {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
         setTimeout(function() {
-          self.$router.push('/clients/');
+          self.$router.push('/employees/');
         }, 3000);
 
       })
