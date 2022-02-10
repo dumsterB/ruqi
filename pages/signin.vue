@@ -42,8 +42,8 @@
     {
       return {
         login: {
-          phone: '78889998877',
-          password: 'test'
+          phone: '',
+          password: ''
         }
       }
     },
