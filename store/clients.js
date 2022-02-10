@@ -66,8 +66,8 @@ export const actions = {
   },
 
   async putRequest({commit, dispatch}, {uuid, body}) {
-    let self= this;
-    await this.$axios.put('/super_manager/accounts/'+uuid,
+    let self = this;
+    await this.$axios.put('/super_manager/accounts/' + uuid,
       body,
       {
         headers: {
@@ -79,11 +79,11 @@ export const actions = {
       .then((response) => {
         console.log(response);
         dispatch('fetchClients');
-        commit('response/setSuccess', {type: 'success', text: 'Клиент успешно обновлен', }, {root: true});
-        setTimeout(function() {
-          commit('response/removeSuccess', null, { root: true });
+        commit('response/setSuccess', {type: 'success', text: 'Клиент успешно обновлен',}, {root: true});
+        setTimeout(function () {
+          commit('response/removeSuccess', null, {root: true});
         }, 2000);
-        setTimeout(function() {
+        setTimeout(function () {
           self.$router.push('/clients/');
         }, 3000);
       })
@@ -93,10 +93,31 @@ export const actions = {
 
   },
 
+  async putStatus({commit, dispatch}, {requestId, status}) {
+    await this.$axios.put('/super_manager/accounts/' + requestId + '/' + status,
+      '',
+      {
+        headers: {
+          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        dispatch('fetchClients');
+        commit('response/setSuccess', {type: 'success', text: 'Статус клиента изминен',}, {root: true});
+        setTimeout(function () {
+          commit('response/removeSuccess', null, {root: true});
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+
   async removeRequest({commit, dispatch}, {requestId, status}) {
     console.log(status);
 
-    await this.$axios.delete('/super_manager/accounts/'+requestId, {
+    await this.$axios.delete('/super_manager/accounts/' + requestId, {
       headers: {
         "Authorization": "Bearer af2cf5b991716c8fe1d0c6bf9c7a03f6fa088887dd10921d605dad809e2df125",
       },

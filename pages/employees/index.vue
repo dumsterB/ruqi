@@ -19,7 +19,7 @@
           height="48"
           outlined
           class="btn-blue"
-          :href="$route.name + '/create'"
+          href="/employees/create"
         >
           СОЗДАТЬ НОВОГО СОТРУДНИКА
         </v-btn>
@@ -98,7 +98,7 @@
                         <span>Редактировать</span>
                       </nuxt-link>
                       <v-divider class="my-3"></v-divider>
-                      <a href="#" @click.prevent="removeRequest({requestId: item.uuid, params: postBody})">Удалить</a>
+                      <a href="#" @click.prevent="removeRequest({requestId: [item.uuid], params: postBody})">Удалить</a>
                     </div>
                   </v-list-item-content>
                 </v-card>
