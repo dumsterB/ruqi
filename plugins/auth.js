@@ -18,7 +18,16 @@ export default ( { app }, inject ) => {
         catch ( err ) {
           console.error( err );
         }
-      }
+      },
+
+      setToken ()
+      {
+        const token = JSON.parse( localStorage.getItem( 'ruqi_auth_data' ) ).token;
+
+        console.log( 'setToken', token );
+
+        app.$axios.setToken( token, 'Bearer' );
+      },
     }
   );
 }

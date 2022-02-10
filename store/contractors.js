@@ -103,11 +103,11 @@ export const actions = {
     const contractor = await this.$axios.get(
       `/dispatcher/contractors/${uuid}`,
 
-      {
-        headers : {
-          "Authorization" : "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68", //FIXME need refactoring ( Rasulov )
-        },
-      },
+      // {
+      //   headers : {
+      //     "Authorization" : "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68", //FIXME need refactoring ( Rasulov )
+      //   },
+      // },
     );
 
     ctx.commit( 'setContractor', contractor.data.data );
