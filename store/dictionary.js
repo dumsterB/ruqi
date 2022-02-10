@@ -64,9 +64,6 @@ export const actions = {
     );
 
     ctx.commit('setRegions', regions.data.data);
-
-    console.debug('fetchRegions'); // FIXME // TODO es muss später entfernt werden
-    console.debug(regions.data.data); // FIXME // TODO es muss später entfernt werden
   },
 
   async fetchSpecializations(ctx) {

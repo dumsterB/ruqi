@@ -488,7 +488,7 @@ export default {
           label: '',
           col: 12,
           id: 'object_resp',
-          name: 'object_resp_' + this.meta.meta_object_responsible.length,
+          name: 'object_resp_' + this.nameCounter++,
           remove: true,
           params: {
             options: dispatchers,

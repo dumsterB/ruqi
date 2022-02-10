@@ -108,7 +108,8 @@
               <div class="form-part form-part-contact"
                    v-for="(item, index) in meta.meta_object_contact"
                    :key="index">
-                <a v-show="index != 0" href="#" @click.prevent="removeItem(index, 'meta_object_contact')" class="remove-item">
+                <a v-show="index != 0" href="#" @click.prevent="removeItem(index, 'meta_object_contact')"
+                   class="remove-item">
                   <img src="/img/ico_close.svg" alt="Удалить">
                 </a>
                 <FormBuilder :meta="item" @updateFiled="updateFiledinArray(index, ...arguments)"/>
@@ -120,7 +121,8 @@
             <v-form ref="form_part_3" v-model="valid" lazy-validation>
               <div class="form-part">
                 <div class="form-part-label">Диспетчеры</div>
-                <FormBuilder :meta="meta.meta_object_responsible" @removeItem="removeItem" @updateFiled="updateFiledResp"/>
+                <FormBuilder :meta="meta.meta_object_responsible" @removeItem="removeItem"
+                             @updateFiled="updateFiledResp"/>
                 <a href="#" @click.prevent="addResponsible('responsible')" class="add_link">Добавить диспетчера</a>
               </div>
             </v-form>
@@ -433,10 +435,10 @@ export default {
         let index_name = this.meta.meta_object_pay[i][0].name.substr(17, 18);
         works.push(
           {
-            "name": this.formValues['object_pay_title_'+index_name],
-            "payment": this.formValues['object_pay_salary_'+index_name],
-            "period": this.formValues['object_pay_time_'+index_name],
-            "requires_people": this.formValues['object_pay_cw_'+index_name],
+            "name": this.formValues['object_pay_title_' + index_name],
+            "payment": this.formValues['object_pay_salary_' + index_name],
+            "period": this.formValues['object_pay_time_' + index_name],
+            "requires_people": this.formValues['object_pay_cw_' + index_name],
           }
         )
       }
@@ -669,12 +671,12 @@ export default {
     this.meta.meta_object_info[1].value = this.request_id.specialization.uuid;
 
     let start_date = '';
-    if (this.request_id.start_date != null){
+    if (this.request_id.start_date != null) {
       start_date = this.request_id.start_date.substring(0, 10) + ' ' + this.request_id.start_date.substring(11, 16);
     }
 
     let end_date = '';
-    if (this.request_id.start_date != null){
+    if (this.request_id.start_date != null) {
       end_date = this.request_id.start_date.substring(0, 10) + ' ' + this.request_id.start_date.substring(11, 16);
     }
 

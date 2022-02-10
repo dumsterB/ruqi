@@ -62,7 +62,9 @@
             show-select
           >
             <template v-slot:item.name="{ item }">
-              <UserAvatar :first_name="item.name" last_name="" :color="avatarColor" :radius="avatarBorderRadius"/>
+              <div class="color-black" @click="openRequest(item.uuid)">
+                <UserAvatar :first_name="item.name" last_name="" :color="avatarColor" :radius="avatarBorderRadius"/>
+              </div>
             </template>
 
             <template v-slot:item.inn="{ item }">
@@ -152,8 +154,8 @@ export default {
         {text: '', value: 'actions', sortable: false, align: 'right'},
       ],
       tabs_list: [
-        { title: 'Активные', id: 'active'},
-        { title: 'Архив', id: 'archive'},
+        {title: 'Активные', id: 'active'},
+        {title: 'Архив', id: 'archive'},
       ],
       tab: 0,
       sortTypeValue: 'entity',
@@ -168,7 +170,7 @@ export default {
     ...mapActions('clients', ['removeRequest',]),
 
     openRequest(id) {
-      this.$router.push('/clients/' + id);
+      this.$router.push('/clients/' + id + '/edit');
     },
     async selectData(status) {
       await this.fetchClients({"status": status});

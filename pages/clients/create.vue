@@ -10,13 +10,13 @@
         {{ item }}
       </v-tab>
     </v-tabs>
-    <div class="wrap-form">
-      <v-form
-        ref="form"
-        v-model="valid"
-        lazy-validation
-      >
-        <v-window v-model="tab">
+    <v-window v-model="tab">
+      <div class="wrap-form">
+        <v-form
+          ref="form"
+          v-model="valid"
+          lazy-validation
+        >
           <v-tab-item>
             <v-form ref="form_part_0" v-model="valid" lazy-validation>
               <div class="form-part">
@@ -29,20 +29,24 @@
               <div class="form-part form-part-contact"
                    v-for="(item, index) in meta.meta_object_doc"
                    :key="index">
-                <a v-show="index != 0" href="#" @click.prevent="removeItem(index, 'meta_object_doc')" class="remove-item">
+                <a href="#" @click.prevent="removeItem(index, 'meta_object_doc')"
+                   class="remove-item">
                   <img src="/img/ico_close.svg" alt="Удалить">
                 </a>
-                <FormBuilder :meta="item" @updateFiled="updateFiled"/>
+                <FormBuilder :meta="item" @updateFiled="updateDocs(index, ...arguments)"
+                             @removeItem="removeItemDoc(index, false, ...arguments)"/>
+                <a href="#" @click.prevent="addPhoto(index, 'new')" class="add_link">Добавить
+                  фото</a>
               </div>
-              <AddFormPart text="Добавить документ" @addFormPart="addDocument"/>
+              <AddFormPart text="Добавить документ" @addFormPart="addDocumentClick('new')"/>
             </v-form>
           </v-tab-item>
-          <FNavigation :indexTab="tab" :nextButtonsText="nextButtonsText" @nextFromButton="nextFromButton"
+          <FNavigation v-show="tab < 2" :indexTab="tab" :nextButtonsText="nextButtonsText"
+                       @nextFromButton="nextFromButton"
                        @prevFromButton="prevFromButton"/>
-
-        </v-window>
-      </v-form>
-    </div>
+        </v-form>
+      </div>
+    </v-window>
   </div>
 
 </template>
@@ -57,11 +61,16 @@ export default {
     if (store.getters['dictionary/specializations'].length === 0) {
       await store.dispatch('dictionary/fetchSpecializations')
     }
-
   },
   data() {
     return {
       formValues: {},
+      formDocs: [
+        {
+          value: '',
+          file: null
+        }
+      ],
       title: 'Создание нового клиента',
       title_size: 'large',
       title_create: false,
@@ -72,7 +81,7 @@ export default {
       tab: null,
       nextButtonsText: [
         'Добавить документы',
-        'создать клиента'
+        'Сохранить'
       ],
       meta: {
         meta_object_info: [
@@ -206,7 +215,7 @@ export default {
             label: 'Электронная почта',
             col: 12,
             name: 'object_contact_email',
-            validation: ['required' ,'email'],
+            validation: ['required', 'email'],
             value: ''
           },
           {
@@ -214,46 +223,45 @@ export default {
             label: 'Телефон',
             col: 12,
             name: 'object_contact_phone',
-            validation: ['required' ,'phone'],
+            validation: ['required', 'phone'],
             value: ''
           },
 
         ],
-        meta_object_doc:[
-          [
-            {
-              type: 'FTypeText',
-              label: 'Введите название и загрузите документ',
-              col: 12,
-              name: 'doc_title_0',
-              validation: ['required'],
-              value: ''
-            },
-            {
-              type: 'FTypeFile',
-              label: '',
-              col: 12,
-              name: 'doc_file_0',
-              value: ''
-            },
-          ],
-        ],
+        meta_object_doc: [],
       },
       valid: true,
       select: null,
       formHasErrors: false,
+      headers: [
+        {text: 'Название', align: 'start', value: 'name',},
+        {text: 'Рейтинг', value: 'rating'},
+        {text: 'Заявки', value: 'request'},
+        {text: 'Диспетчер', value: 'dispatcher'},
+        {text: 'Расположен', value: 'address'},
+        {text: '', value: 'actions', sortable: false, align: 'right'},
+      ],
+      selected: [],
+      page: 1,
+      pageCount: 0,
+      itemsPerPage: 5,
+      avatarColor: '#EFCD4F',
+      nameCounter: 1,
+
     }
   },
   computed: {
+    ...mapGetters( 'clients', [ 'statusCreateClient', ] ),
+
     specializations() {
       return this.$store.getters['dictionary/specializations'];
     },
     postBody() {
       let postBody = {
         "name": this.formValues.name,
+        "type": this.formValues.object_type,
         "address": this.formValues.post_address,
         "specialization_uuid": this.formValues.object_spec,
-        "type": this.formValues.object_type,
         "legal_address": this.formValues.legal_address,
         "inn": this.formValues.inn,
         "ogrn": this.formValues.ogrn,
@@ -270,9 +278,32 @@ export default {
 
       return postBody;
     },
+    itemsPerPageTable() {
+      if (this.itemsPerPage) {
+        return parseInt(this.itemsPerPage, 10)
+      } else {
+        return 1;
+      }
+    },
+  },
+  watch: {
+    'statusCreateClient.status': function () {
+      if (this.statusCreateClient.status){
+        this.processingDocs(this.statusCreateClient.uuid);
+      }
+    },
   },
   methods: {
+    ...mapActions('objects', ['fetchObjectsAccount',]),
     ...mapActions('dictionary', ['fetchSpecializations',]),
+    ...mapActions('client_id', ['fetchClientId',]),
+    ...mapActions('client_id', ['createDoc',]),
+    ...mapActions('client_id', ['changeDoc',]),
+    ...mapActions('client_id', ['loadPhoto',]),
+    ...mapActions('client_id', ['getDocs',]),
+    ...mapActions('client_id', ['removeDoc',]),
+    ...mapActions('client_id', ['removePhoto',]),
+    ...mapActions('clients', ['putRequest',]),
     ...mapActions('clients', ['createRequest',]),
 
     nextFromButton() {
@@ -291,7 +322,8 @@ export default {
       } else {
         const newRequet = JSON.stringify(this.postBody);
         console.log(newRequet);
-       this.createRequest(newRequet);
+
+        this.createRequest(newRequet);
       }
     },
     prevFromButton() {
@@ -301,51 +333,128 @@ export default {
       this.formValues[field] = value;
       console.log(field, value);
     },
-    addDocument() {
+    updateDocs(index_block, field, value, index) {
+      this.meta.meta_object_doc[index_block][index].value = value;
+
+      if (index > 0 && this.meta.meta_object_doc[index_block][index].exist == 'loaded' && this.meta.meta_object_doc[index_block][index].value) {
+        this.removeItemDoc(index, true, ...arguments);
+        this.meta.meta_object_doc[index_block][index].exist = 'new';
+      }
+
+      if (this.meta.meta_object_doc[index_block][index].exist == 'loaded'){
+        this.meta.meta_object_doc[index_block][index].exist = 'changed';
+      }
+      console.log(field, value);
+    },
+    addDocumentClick(exist) {
+      let formPart = 'form_part_' + this.tab;
+      this.$refs[formPart].validate();
+
+      this.$nextTick(() => {
+        if (this.valid) {
+          this.addDocument(exist)
+        } else {
+          let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
+          this.$vuetify.goTo(el);
+        }
+      });
+
+    },
+    addDocument(exist) {
       this.meta.meta_object_doc.push(
         [
           {
             type: 'FTypeText',
             label: 'Введите название и загрузите документ',
             col: 12,
-            name: 'doc_title_' + this.meta.meta_object_doc.length,
+            name: 'doc_title_' + this.nameCounter++,
             validation: ['required'],
-            value: ''
+            value: '',
+            parent_array: 'meta_object_doc',
+            exist: exist,
+            uuid: null
           },
           {
             type: 'FTypeFile',
             label: '',
             col: 12,
-            name: 'doc_file_' + this.meta.meta_object_doc.length,
-            value: ''
+            name: 'doc_file_' + this.nameCounter++,
+            value: null,
+            remove: true,
+            parent_array: 'meta_object_doc',
+            exist: exist,
+            params: {
+              placeholder: 'Документ не загружен',
+              uuid: null
+            },
           },
         ]
       );
     },
-    removeItem(index, array) {
-      if (index != 0) {
-        this.meta[array].splice(index, 1);
+    addPhoto(index_document, exist) {
+      if (this.meta.meta_object_doc[index_document].length == 1
+        || this.meta.meta_object_doc[index_document][this.meta.meta_object_doc[index_document].length - 1].value
+        || this.meta.meta_object_doc[index_document][this.meta.meta_object_doc[index_document].length - 1].exist == "loaded"
+        && this.meta.meta_object_doc[index_document][this.meta.meta_object_doc[index_document].length - 1].params.placeholder != "Документ не загружен") {
+        this.meta.meta_object_doc[index_document].push(
+          {
+            type: 'FTypeFile',
+            label: '',
+            col: 12,
+            name: 'doc_file_' + this.nameCounter++,
+            value: null,
+            remove: true,
+            parent_array: 'meta_object_doc',
+            exist: exist,
+            params: {
+              placeholder: 'Документ не загружен',
+              uuid: null
+            },
+          },
+        );
+        this.meta.meta_object_doc[index_document][0].exist = 'changed'
       }
     },
+    removeItem(index, array) {
+      if (this.meta[array][index][0].uuid) {
+        this.removeDoc({clientId: this.client_id.uuid, docId: this.meta[array][index][0].uuid});
+      }
+      this.meta[array].splice(index, 1);
+    },
+    removeItemDoc(index_block, isChange, index, array) {
+      if (this.meta[array][index_block][index].placeholder = 'Документ не загружен') {
+        this.removePhoto({
+          clientId: this.client_id.uuid,
+          docId: this.meta[array][index_block][0].uuid,
+          imageId: this.meta[array][index_block][index].params.uuid
+        });
+      }
+      if (!isChange) {
+        this.meta[array][index_block].splice(index, 1);
+      }
+    },
+    processingDocs(clientId) {
+      let self = this;
+      this.meta.meta_object_doc.forEach(function (item, i) {
+        if (item[0].exist == 'new' && item[0].value) {
+          self.createDoc({clientId: clientId, docName: item[0].value, docFiles: item.slice(1)});
+        } else if (item[0].exist == 'changed') {
+          self.changeDoc({clientId: clientId, docId: item[0].uuid, docName: item[0].value, docFiles: item.slice(1)});
+        }
+      });
+    },
   },
-  created() {
-
+  async created() {
     this.meta.meta_object_info.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     })
-    this.meta.meta_object_doc.map(subarray => subarray.map(f => {
-      Vue.set(this.formValues, f.name, f.value);
-    }));
 
     this.meta.meta_object_info[2].params.options = this.specializations;
-
   }
 }
 </script>
 
-<style lang="scss" scoped>
-
-@import '../../assets/scss/colors';
+<style lang="scss">
 
 
 </style>

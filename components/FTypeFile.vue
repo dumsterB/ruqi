@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-file-input
-      placeholder="Загрузить фото"
+      :placeholder="params.placeholder"
       single-line
       outlined
       filled
@@ -11,6 +11,7 @@
       v-model="file"
       @change="$emit('input', file)"
       accept="image/png, image/jpeg, image/bmp"
+      hide-details="auto"
     ></v-file-input>
   </div>
 </template>

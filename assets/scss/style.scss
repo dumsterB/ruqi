@@ -752,7 +752,7 @@ h1.large {
   .form-part-contact {
     position: relative;
 
-    .remove-item {
+    >.remove-item {
       position: absolute;
       right: 32px;
       top: 32px;
