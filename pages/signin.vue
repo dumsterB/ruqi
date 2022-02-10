@@ -17,12 +17,12 @@
                     .titel
                       .txt Email или номер телефона
                     .input
-                      input.item( type="text" v-model="login.phone" )
+                      input.item( type="text" v-model="login.phone_or_email" :class="{ 'error-by-signin' : error }" )
                   .input-line.password
                     .titel
                       .txt Пароль
                     .input
-                      input.item( type="text" v-model="login.password" )
+                      input.item( type="text" v-model="login.password" :class="{ 'error-by-signin' : error }" )
                 .actions
                   .action
                     .signin-btn( @click="handlers().signin()" )
@@ -42,9 +42,11 @@
     {
       return {
         login: {
-          phone: '',
+          phone_or_email: '',
           password: ''
-        }
+        },
+
+        error : false,
       }
     },
 
@@ -63,13 +65,19 @@
       {
         return {
           signin : async () => {
-            this.$auth.signin( this.login ).then(
-              ( response ) => {
-                localStorage.setItem( 'ruqi_auth_data', JSON.stringify( response.data.data ));
+            this.$auth.signin( this.login )
+              .then(
+                ( response ) => {
+                  localStorage.setItem( 'ruqi_auth_data', JSON.stringify( response.data.data ));
 
-                this.$router.push( '/request' );
-              }
-            );
+                  this.$router.push( '/request' );
+                }
+              )
+              .catch(
+                () => {
+                  this.error = true;
+                }
+              );
           },
         }
       },
@@ -202,6 +210,7 @@
         border: 1px solid rgba(86, 103, 137, 0.26);
         box-sizing: border-box;
         border-radius: 8px;
+        padding-left: 16px;
       }
     }
   }
@@ -232,5 +241,12 @@
   }
 
 /* OBJECTS STYLES END */
+
+/* MIXINS STYLES START */
+  .error-by-signin
+  {
+    border-color  : red !important;
+  }
+/* MIXINS STYLES END */
 
 </style>

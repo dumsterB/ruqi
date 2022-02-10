@@ -32,6 +32,13 @@
 export default {
   name: "default",
 
+  data ()
+  {
+    return {
+      timerRuqiId : null,
+    }
+  },
+
   computed : {
     requestSuccess() {
       return this.$store.getters['response/requestSuccess'];
@@ -46,11 +53,22 @@ export default {
 
         if (!ruqi)
         {
-          setTimeout(() => {
-            const ruqi = document.querySelector('.ruqi');
+          this.timerRuqiId = setInterval(
+            () => {
+              console.log(this);
 
-            ruqi.classList.add('page--' + to.name.toLowerCase());
-          }, 500);
+              const ruqi = document.querySelector( '.ruqi' );
+
+              if (ruqi)
+              {
+                ruqi.classList.add('page--' + to.name.toLowerCase());
+
+                clearInterval( this.timerRuqiId );
+              }
+            },
+
+            10
+          );
 
           return;
         }
