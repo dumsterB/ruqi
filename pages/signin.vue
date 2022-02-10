@@ -17,15 +17,15 @@
                     .titel
                       .txt Email или номер телефона
                     .input
-                      input.item()
+                      input.item( type="text" v-model="login.phone" )
                   .input-line.password
                     .titel
                       .txt Пароль
                     .input
-                      input.item()
+                      input.item( type="text" v-model="login.password" )
                 .actions
                   .action
-                    .signin-btn
+                    .signin-btn( @click="handlers().signin()" )
                       .titel Войти в систему
 
             .password-forgot Забыли пароль?  Восстановить
@@ -40,7 +40,12 @@
 
     data ()
     {
-      return {}
+      return {
+        login: {
+          phone: '78889998877',
+          password: 'test'
+        }
+      }
     },
 
     methods : {
@@ -56,7 +61,17 @@
 
       handlers ()
       {
-        return {}
+        return {
+          signin : async () => {
+            this.$auth.signin( this.login ).then(
+              ( response ) => {
+                localStorage.setItem( 'ruqi_auth_data', JSON.stringify( response.data.data ));
+
+                this.$router.push( '/request' );
+              }
+            );
+          },
+        }
       },
 
       helpers ()

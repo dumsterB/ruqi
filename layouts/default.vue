@@ -81,7 +81,7 @@ export default {
     {
       return {
         isLoginPage : () => {
-          return this.$route.name === 'login';
+          return this.$route.name === 'signin';
         },
       }
     },
@@ -119,7 +119,7 @@ html {
 }
 
 /* OBJECTS STYLES START */
-  .page--login
+  .page--signin
   {
     padding: 0;
     margin: 0;

@@ -34,7 +34,8 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    { src: '~/plugins/ymapPlugin.js',  mode: 'client' }
+    { src: '~/plugins/ymapPlugin.js',  mode: 'client' },
+    { src: '~/plugins/auth.js',  mode: 'client' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -48,34 +49,17 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    '@nuxtjs/auth-next',
     '@nuxtjs/vuetify',
   ],
 
-  // router : {
-  //   middleware : [ 'auth' ],
-  // },
+  auth : {
+    redirect : {
+      home : '/',
+    },
+  },
 
-  auth: {
-    strategies: {
-      local: {
-        token: {
-          property: 'token',
-          global: true,
-          // required: true,
-          // type: 'Bearer'
-        },
-        user: {
-          property: 'user',
-          // autoFetch: true
-        },
-        endpoints: {
-          login: { url: '/auth/login', method: 'post' },
-          logout: { url: '/api/auth/logout', method: 'post' },
-          user: { url: '/api/auth/user', method: 'get' }
-        }
-      }
-    }
+  router : {
+    middleware : [ 'check_auth' ],
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
