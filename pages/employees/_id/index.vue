@@ -2,9 +2,8 @@
   <div class="contractor-extended">
     <div class="wrapper">
       <div class="content">
-        {{employee_id}}
         <UserMainInfo :user_type="user_type" />
-        <UserAdditionalInfo />
+        <UserAdditionalInfo :user_type="user_type"/>
       </div>
     </div>
   </div>
@@ -32,12 +31,15 @@ export default {
   },
 
   methods : {
-    ...mapActions( 'employee_id', [ 'fetchEmployees' ] ),
+    ...mapActions( 'employee_id', [ 'fetchEmployee' ] ),
+    ...mapActions( 'employee_id', [ 'fetchEmployeeTasks' ] ),
+    ...mapActions( 'employee_id', [ 'fetchEmployeeSupport' ] ),
 
     init ()
     {
-      this.fetchEmployees( this.$route.params.id );
-      //this.getContractorTasks( this.$route.params.id );
+      this.fetchEmployee( this.$route.params.id );
+      this.fetchEmployeeTasks( this.$route.params.id );
+      this.fetchEmployeeSupport( this.$route.params.id );
     },
 
     handlers ()

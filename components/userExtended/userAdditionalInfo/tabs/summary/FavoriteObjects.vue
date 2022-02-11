@@ -8,7 +8,7 @@
     .table-list-style
       v-data-table(
         :headers="headers"
-        :items="user.favorite_objects"
+        :items="user[nameObjectsArray]"
         class="favorite-objects-table"
         item-key="uuid"
         :item-class="rowClass"
@@ -18,12 +18,14 @@
       )
         template( v-slot:item.name="{ item }" )
           div
+            span.request-i
             span( class="color-black" ) {{ item.name }}
 
         template( v-slot:item.rating="{ item }" )
-          span( class="request-pay" ) {{ item.raiting }}
+          Rating(:rating="item.raiting")
 
-        template( v-slot:item.tasks="{ item }" ) {{ item.tasks }}
+        template( v-slot:item.tasks="{ item }" )
+          span( class="color-black" ) {{ item.tasks }}
 
         template( v-slot:item.address="{ item }" ) {{ item.address }}
 
@@ -37,7 +39,7 @@
               v-card
                 v-list-item-content( class="justify-start" )
                   div( class="mx-auto text-left" )
-                    nuxt-link( :to="'/request/'+ item.uuid +'/edit/'" )
+                    nuxt-link( :to="'/objects/'+ item.uuid +'/edit/'" )
                       span Редактировать
 
 </template>
@@ -72,21 +74,51 @@
           return {};
         }
       },
+      titles ()
+      {
+        switch ( this.user_type )
+        {
+          case CONTRACTOR :
+            return {
+              header  : 'Любимые объекты',
+            };
+
+          case EMPLOYEE :
+            return {
+              header  : 'Активные объекты',
+            };
+
+          default :
+            return {
+            header  : 'Объекты',
+          };
+        }
+      },
+      nameObjectsArray ()
+      {
+        switch ( this.user_type )
+        {
+          case CONTRACTOR :
+            return 'favorite_objects';
+
+          case EMPLOYEE :
+            return 'objects';
+
+          default :
+            return 'objects';
+        }
+      },
     },
 
     data ()
     {
       return {
-        titles : {
-          header  : 'Любимые объекты',
-        },
-
         headers : [
-          {text: 'Фио',       value: 'name', width: '16px'},
-          {text: 'Телефон',   value: 'rating'},
-          {text: 'Должность', value: 'tasks'},
-          {text: '',          value: 'address', },
-          {text: '',          value: 'actions', sortable: false},
+          {text: 'Фио',       value: 'name',},
+          {text: 'Рейтинг',   value: 'rating'},
+          {text: 'Заявки',    value: 'tasks'},
+          {text: 'Адрес',     value: 'address', },
+          {text: '',          value: 'actions', sortable: false, align: 'right'},
         ],
       }
     },
@@ -123,6 +155,9 @@
         return rowClass;;
       }
 
+    },
+    mounted() {
+      console.log('-----------------', this.user_type);
     }
 
   }
@@ -130,6 +165,8 @@
 </script>
 
 <style lang="scss">
+
+@import '../../../../../assets/scss/colors.scss';
 
 /* OBJECTS STYLES START */
   .favorite-objects-table
@@ -145,23 +182,16 @@
     {
       background-color  : #FFFFFF !important;
 
-      .color-black
-      {
-        position : relative;
-
-        &::before
-        {
-          content           : "";
-          position          : absolute;
-          width             : 10px;
-          height            : 10px;
-          background-color  : #19A74A;
-          border-radius     : 100%;
-          left              : -35px;
-          top               : 5px;
-        }
-      }
     }
+    .request-i {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: $green;
+      margin-right: 8px;
+      border-radius: 10px;
+    }
+
   }
 /* OBJECTS STYLES END */
 
