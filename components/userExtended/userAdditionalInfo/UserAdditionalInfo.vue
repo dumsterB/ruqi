@@ -6,7 +6,8 @@
 
     v-tabs-items( v-model="active_tab" )
       v-tab-item
-        Summary
+        Summary( v-if="user_type === CONTRACTOR" )
+        SummaryEmployee( v-if="user_type === EMPLOYEE" )
 
       v-tab-item
         Applications( :user_type="user_type" )
@@ -14,7 +15,7 @@
       v-tab-item
         Inquiries( :user_type="user_type" )
 
-      v-tab-item
+      v-tab-item( v-if="user_type === CONTRACTOR" )
         Documentation
 
       v-tab-item
@@ -26,6 +27,7 @@
 
   import { CONTRACTOR, EMPLOYEE } from '@/constants/'
   import Summary                  from './tabs/summary/Summary.vue';
+  import SummaryEmployee          from './tabs/summary/SummaryEmployee.vue';
   import Applications             from './tabs/applications/Applications.vue';
   import Inquiries                from './tabs/inquiries/Inquiries.vue';
   import Documentation            from './tabs/documentation/Documentation.vue';
@@ -34,23 +36,47 @@
   export default {
     components : {
       Summary,
+      SummaryEmployee,
       Applications,
       Inquiries,
       Documentation,
       Activity,
     },
 
+    props : {
+      user_type : {
+        type      : String,
+        required  : true,
+      },
+    },
+
+    computed : {
+      tabs ()
+      {
+        switch ( this.user_type )
+        {
+          case CONTRACTOR :
+            return [
+              'Сводка', 'Заявки', 'Обращения', 'Документы', 'Активность',
+            ];
+
+          case EMPLOYEE :
+            return [
+            'Сводка', 'Заявки', 'Обращения', 'Активность',
+          ];
+
+          default :
+            return [];
+        }
+      },
+    },
 
     data ()
     {
       return {
         active_tab  : 0,
-
-        tabs  : [
-          'Сводка', 'Заявки', 'Обращения', 'Документы', 'Активность',
-        ],
-
-        user_type : CONTRACTOR,
+        CONTRACTOR: CONTRACTOR,
+        EMPLOYEE: EMPLOYEE,
       }
     },
   }

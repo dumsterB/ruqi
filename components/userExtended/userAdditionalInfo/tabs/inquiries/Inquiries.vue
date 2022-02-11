@@ -176,7 +176,6 @@
         &:first-child
         {
           padding : 0;
-          border  : 1px solid #6EC7A4 !important;
 
           .bunte_seite
           {

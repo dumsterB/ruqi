@@ -5,20 +5,26 @@
       .user
         .view
           ContractorAvatar( :first_name="user.firstname" :last_name="user.lastname" )
-          ContractorRating( user-rating )
+          ContractorRating( user-rating v-if="user_type === CONTRACTOR")
 
         .bio
           .name {{ `${user.firstname} ${user.lastname}` }}
 
-          .id( v-if="helpers().isContractor( { user : user_type } )" ) {{ `ID ${user.number}` }}
+          .id( v-if="user_type === CONTRACTOR" ) {{ `ID ${user.number}` }}
 
-          .age-and-city( v-if="helpers().isContractor( { user : user_type } )" )
+          .age-and-city( v-if="user_type === CONTRACTOR" )
             .age 37 лет
             .city Краснодар
 
+          .status( v-if="user_type === EMPLOYEE" )
+            span.request-i
+            span( class="color-black" ) Активен
+
+          .role( v-if="user_type === EMPLOYEE" ) {{ `${user.type}` }}
+
           .registration-date {{ `Зарегистрирован ${getters().getRegDate( { created_at : user.created_at } )}` }}
 
-        .doc-confirm-status
+        .doc-confirm-status( v-if="user_type === CONTRACTOR" )
           .confirmed
             img.logo( src="../../assets/img/doc-status-success.svg" alt="Документы подтверждены" )
             span.title-txt Документы подтверждены
@@ -46,7 +52,7 @@
 
         .p-value
           .specialization-list
-            .specialization-item( v-for="specialization in user.specializations" :key="specialization-uuid" )
+            .specialization-item( v-for="specialization in user.specializations" :key="specialization.uuid" )
               .s-text {{ specialization.name }}
 
       v-divider
@@ -88,7 +94,10 @@
 
     data ()
     {
-      return {}
+      return {
+        CONTRACTOR: CONTRACTOR,
+        EMPLOYEE: EMPLOYEE,
+      }
     },
 
     computed : {
@@ -200,6 +209,10 @@
                 console.debug( 'CONTRACTOR' );
               return true;
 
+              case EMPLOYEE :
+                console.debug( 'EMPLOYEE' );
+                return true;
+
               default :
                 console.debug( 'DEFAULT' );
               return false;
@@ -213,6 +226,8 @@
 </script>
 
 <style lang="scss" scoped>
+
+@import '../../assets/scss/colors';
 
 /* OBJECTS STYLES START */
   .user-main-info
@@ -289,6 +304,31 @@
               {
                 margin-left : 24px;
               }
+            }
+
+            .status{
+              font-weight: 600;
+
+              .request-i {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                background: $green;
+                margin-right: 8px;
+                border-radius: 10px;
+              }
+            }
+
+            .role
+            {
+              background: $light_blue;
+              color: $blue;
+              padding: 6px 16px;
+              border-radius: 19px;
+              font-size: 12px;
+              font-weight: 600;
+              text-transform: uppercase;
+              margin: 46px 0 16px 0;
             }
 
             .registration-date

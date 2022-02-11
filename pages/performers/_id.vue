@@ -3,7 +3,7 @@
     <div class="wrapper">
       <div class="content">
         <UserMainInfo :user_type="user_type" />
-        <UserAdditionalInfo />
+        <UserAdditionalInfo :user_type="user_type"/>
       </div>
     </div>
   </div>
