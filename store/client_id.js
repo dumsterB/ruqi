@@ -22,7 +22,6 @@ export const actions = {
     commit('setRequest', client_id);
   },
 
-
   async getDocs({commit}, requestId) {
     const documents = await this.$axios.get('/super_manager/accounts/' + requestId + '/documents', {
       headers: {

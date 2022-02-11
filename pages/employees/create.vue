@@ -24,10 +24,11 @@
                   Данные для регистрации нового пользователя
                 </div>
                 <div class="form-part-description">
-                  Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное расположение.
+                  Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное
+                  расположение.
                 </div>
                 <FormBuilder :meta="meta.meta_object_info" @updateFiled="updateFiled"/>
-                <FormBuilder :meta="meta.meta_object_object" @updateFiled="updateFiled"  @removeItem="removeItem"/>
+                <FormBuilder :meta="meta.meta_object_object" @updateFiled="updateFiled" @removeItem="removeItem"/>
                 <a href="#" @click.prevent="addObject('object')" class="add_link">Добавить объект</a>
               </div>
             </v-form>
@@ -39,7 +40,8 @@
                   Действия доступные пользователю
                 </div>
                 <div class="form-part-description">
-                  Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное расположение.
+                  Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное
+                  расположение.
                 </div>
                 <div class="form-part-label">Действия</div>
                 <FormBuilder :meta="meta.meta_object_rights" @updateFiled="updateFiled"/>
@@ -92,10 +94,6 @@ export default {
     if (store.getters['objects/objects'].length === 0) {
       await store.dispatch('objects/fetchObjects')
     }
-    if (store.getters['dictionary/specializations'].length === 0) {
-      await store.dispatch('dictionary/fetchSpecializations')
-    }
-
   },
   data() {
     return {
@@ -122,7 +120,10 @@ export default {
             col: 8,
             name: 'object_role',
             params: {
-              options: [],
+              options: [
+                {name: 'Менеджер', uuid: 'manager'},
+                {name: 'Диспетчер', uuid: 'dispatcher'},
+              ],
               item_text: 'name',
               label: 'Не выбрано'
             },
@@ -161,7 +162,7 @@ export default {
             params: {
               note: 'На данный email будет отправлена ссылка-приглашение для регистрации '
             },
-            validation: ['required' ,'email'],
+            validation: ['required', 'email'],
             value: ''
           },
           {
@@ -172,11 +173,11 @@ export default {
             params: {
               label: 'Разрешить регистрацию без подтверждения'
             },
-            validation: ['required' ,],
+            validation: ['required',],
             value: ''
           },
         ],
-        meta_object_object:[
+        meta_object_object: [
           {
             type: 'FTypeSelectUIID',
             label: 'Назначить на объекты',
@@ -200,7 +201,7 @@ export default {
               label: 'Разрешить добавлять новых менеджеров',
             },
             col: 12,
-            name: 'mor_01',
+            name: 'right_create_manager',
             value: ''
           },
           {
@@ -209,7 +210,7 @@ export default {
               label: 'Разрешить добавлять новых диспетчеров',
             },
             col: 12,
-            name: 'mor_02',
+            name: 'right_create_dispatcher',
             value: ''
           },
         ],
@@ -220,7 +221,7 @@ export default {
               label: 'Уведомлять о новых связанных объектах',
             },
             col: 12,
-            name: 'mon_01',
+            name: 'notification_new_object',
             value: ''
           },
         ],
@@ -230,7 +231,7 @@ export default {
             label: 'Телефон',
             col: 8,
             name: 'object_contact_phone',
-            validation: ['required' ,'phone'],
+            validation: ['required', 'phone'],
             value: ''
           },
           {
@@ -270,34 +271,32 @@ export default {
     objects() {
       return this.$store.getters['objects/objects'];
     },
-    specializations() {
-      return this.$store.getters['dictionary/specializations'];
-    },
     postBody() {
       let objects = [];
-      for (let i = 0; i < this.meta.meta_object_objects.length; i++) {
+      for (let i = 0; i < this.meta.meta_object_object.length; i++) {
+        let name = this.meta.meta_object_object[i].name;
         objects.push(
-          {
-          }
-        )
+          this.formValues[name]
+        );
       }
 
       let postBody = {
-        "name": this.formValues.name,
-        "address": this.formValues.post_address,
-        "specialization_uuid": this.formValues.object_spec,
-        "legal_address": this.formValues.legal_address,
-        "inn": this.formValues.inn,
-        "ogrn": this.formValues.ogrn,
-        "kpp": this.formValues.kpp,
-        "okato": this.formValues.okato,
-        "bik": this.formValues.bik,
-        "payment_account": this.formValues.payment_account,
-        "correspondent_account": this.formValues.cor_account,
-        "bank": this.formValues.bank,
-        "gen_director": this.formValues.general_manager,
-        "mail": this.formValues.object_contact_email,
+        "type": this.formValues.object_role,
+        "firstname": this.formValues.firstname,
+        "lastname": this.formValues.lastname,
+        "email": this.formValues.object_contact_email,
         "phone": this.formValues.object_contact_phone,
+        "objects": objects,
+        "settings": {
+          "create_manager": this.formValues.right_create_manager,
+          "create_dispatcher": this.formValues.right_create_dispatcher,
+          "notification_new_object": this.formValues.notification_new_object,
+          "contact_phone": this.formValues.object_contact_phone,
+          "contact_email": this.formValues.object_contact_email,
+          "whatsapp": this.formValues.object_contact_whatsapp,
+          "telegram": this.formValues.object_contact_telegram
+        }
+
       };
 
       return postBody;
@@ -305,8 +304,7 @@ export default {
   },
   methods: {
     ...mapActions('objects', ['fetchObjects',]),
-    ...mapActions('dictionary', ['fetchSpecializations',]),
-    ...mapActions('clients', ['createRequest',]),
+    ...mapActions('employees', ['createRequest',]),
 
     nextFromButton() {
       if (this.tab < this.tabs_list.length - 1) {
@@ -324,7 +322,7 @@ export default {
       } else {
         const newRequet = JSON.stringify(this.postBody);
         console.log(newRequet);
-       this.createRequest(newRequet);
+        this.createRequest(newRequet);
       }
     },
     prevFromButton() {
@@ -383,7 +381,6 @@ export default {
       Vue.set(this.formValues, f.name, f.value);
     })
 
-    this.meta.meta_object_info[0].params.options = this.specializations;
     this.meta.meta_object_object[0].params.options = this.objects;
 
   }

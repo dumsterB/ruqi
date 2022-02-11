@@ -18,9 +18,9 @@ export const getters = {
 }
 
 export const actions = {
-  async fetchEmployees({commit}, requestId) {
+  async fetchEmployee({commit}, requestId) {
 
-    const employee_id = await this.$axios.get('/super_manager/accounts/'+requestId, {
+    const employee_id = await this.$axios.get('/manager/employee/'+requestId, {
       headers: {
         "Authorization": "Bearer af2cf5b991716c8fe1d0c6bf9c7a03f6fa088887dd10921d605dad809e2df125"
       },

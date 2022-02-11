@@ -415,16 +415,14 @@ export default {
       console.log(field, value);
     },
     updateDocs(index_block, field, value, index) {
-      this.meta.meta_object_doc[index_block][index].value = value;
-
       if (index > 0 && this.meta.meta_object_doc[index_block][index].exist == 'loaded' && this.meta.meta_object_doc[index_block][index].value) {
         this.removeItemDoc(index, true, ...arguments);
         this.meta.meta_object_doc[index_block][index].exist = 'new';
       }
-
       if (this.meta.meta_object_doc[index_block][index].exist == 'loaded'){
         this.meta.meta_object_doc[index_block][index].exist = 'changed';
       }
+      this.meta.meta_object_doc[index_block][index].value = value;
       console.log(field, value);
     },
     addDocumentClick(exist) {
@@ -503,7 +501,7 @@ export default {
       this.meta[array].splice(index, 1);
     },
     removeItemDoc(index_block, isChange, index, array) {
-      if (this.meta[array][index_block][index].placeholder = 'Документ не загружен') {
+      if (this.meta[array][index_block][index].placeholder != 'Документ не загружен') {
         this.removePhoto({
           clientId: this.client_id.uuid,
           docId: this.meta[array][index_block][0].uuid,

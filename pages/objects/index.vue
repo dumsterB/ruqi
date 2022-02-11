@@ -75,7 +75,7 @@
           height="48"
           outlined
           class="btn-blue"
-          :href="$route.name + '/create'"
+          href="/objects/create"
         >
           Создать новый объект
         </v-btn>
