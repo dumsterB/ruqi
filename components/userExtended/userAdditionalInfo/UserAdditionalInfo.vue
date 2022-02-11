@@ -45,8 +45,9 @@
 
     props : {
       cntr_uuid : {
-        type : String,
-        required : true,
+        type: String,
+        required: true,
+      },
 
         user_type : {
           type      : String,
@@ -83,7 +84,6 @@
         EMPLOYEE: EMPLOYEE,
       }
     },
-  }
   }
 </script>
 
