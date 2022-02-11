@@ -12,7 +12,7 @@
 <script>
 
   import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
-  import { CONTRACTOR }                                     from '@/constants/'
+  import { CONTRACTOR }                                     from '@/constants/';
 
   export default {
     name : 'contractor-extended',
@@ -32,11 +32,13 @@
 
     methods : {
       ...mapActions( 'contractors', [ 'getContractor', 'getContractorTasks' ] ),
+      ...mapActions( 'contractorDocs', [ 'getDocuments', ] ),
 
       init ()
       {
         this.getContractor( this.$route.params.id );
         this.getContractorTasks( this.$route.params.id );
+        this.getDocuments( this.$route.params.id );
       },
 
       handlers ()

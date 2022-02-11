@@ -14,12 +14,12 @@ export const getters = {
 export const actions = {
   async getDocuments ( ctx, uuid )
   {
-    const contractor = await this.$axios.get( `/dispatcher/contractors/${uuid}/docs` );
+    const documents = await this.$axios.get( `/dispatcher/contractors/${uuid}/docs` );
 
-    ctx.commit( 'updateDocuments', contractor.data.data );
+    ctx.commit( 'updateDocuments', documents.data.data );
 
     console.debug( 'getDocuments' ); // FIXME // TODO es muss später entfernt werden
-    console.debug( contractor.data.data ); // FIXME // TODO es muss später entfernt werden
+    console.debug( documents ); // FIXME // TODO es muss später entfernt werden
   },
 }
 

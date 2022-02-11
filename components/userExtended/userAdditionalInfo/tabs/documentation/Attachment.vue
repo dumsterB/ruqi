@@ -1,8 +1,7 @@
 <template lang="pug">
 
-.Attachment
-  .wrapper
-    .pp qwerty
+.attachment
+  .wrapper Attachment
 
 </template>
 
@@ -10,7 +9,7 @@
 
   export default {
 
-    components : {},
+    computed : {},
 
     data ()
     {
@@ -41,7 +40,9 @@
       init (){},
 
       bindActions (){},
-    }
+    },
+
+    mounted () {},
 
   }
 

@@ -12,7 +12,7 @@ export default function ( { route, redirect, app } )
 
     return redirect( '/request' );
   }
-  else
+  else if ( window.localStorage.getItem( 'ruqi_auth_data' ) )
   {
     app.$auth.setToken();
   }

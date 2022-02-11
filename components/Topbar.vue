@@ -14,6 +14,7 @@
           rounded="10"
           offset-y
           nudge-bottom="10"
+          z-index="1000"
         >
           <template v-slot:activator="{ on }">
             <v-btn
@@ -50,6 +51,7 @@
                 <v-divider class="my-3"></v-divider>
                 <v-btn
                   text
+                  @click="handlers().signout()"
                 >
                   Выход
                 </v-btn>
@@ -136,6 +138,16 @@ export default {
   },
   methods:{
     ...mapActions('notifications', ['fetchNotifications',]),
+
+    handlers ()
+    {
+      return {
+        signout : () => {
+          window.localStorage.removeItem( 'ruqi_auth_data' );
+          this.$router.push( '/signin' );
+        },
+      }
+    },
   },
   async mounted() {
     await this.fetchNotifications();

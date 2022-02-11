@@ -3,34 +3,40 @@
 .document
   .wrapper
     .header
-      .titel {{ name }}
-      v-divider
+      img.titel-logo( src="@/assets/img/doc-status-success.svg" )
+      .titel {{ doc.name }}
+    v-divider
     .body
       .attachment-list
-        Attachment
+        Attachment.list-item( v-for="( attachment, index ) in doc.media.length" :key="index" )
+        EmptyAttachment.list-item( v-for="emptyAttachment in emptyAttachments" :key="emptyAttachment" :doc_uuid="doc.uuid" )
 
 </template>
 
 <script>
 
   import Attachment from "./Attachment";
+  import EmptyAttachment from "./EmptyAttachment";
 
   export default {
 
     props : {
-      name : {
-        type      : String,
-        required  : true,
-      },
-
-      attachment : {
-        type      : Array,
+      doc : {
+        type      : Object,
         required  : true,
       },
     },
 
     components : {
       Attachment,
+      EmptyAttachment,
+    },
+
+    computed : {
+      emptyAttachments ()
+      {
+        return this.doc.count_media - this.doc.media.length
+      },
     },
 
     data ()
@@ -62,7 +68,12 @@
       init (){},
 
       bindActions (){},
-    }
+    },
+
+    mounted ()
+    {
+      console.log( 'Doc mounted', this.doc.count_media - this.doc.media.length );
+    },
 
   }
 
@@ -70,6 +81,57 @@
 
 <style lang="scss" scoped>
 
+/* OBJECTS STYLES START */
 
+  .document
+  {
+    .wrapper
+    {
+      .header
+      {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-content: center;
+        justify-content: flex-start;
+        align-items: center;
+        margin-bottom: 18px;
+
+        .titel
+        {
+          font-style: normal;
+          font-weight: bold;
+          font-size: 22px;
+          line-height: 125%;
+          color: #263043;
+          margin-left: 15px;
+        }
+      }
+    }
+  }
+
+  .attachment-list
+  {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 20px;
+    margin-bottom: 30px;
+
+    .list-item
+    {
+      margin-left : 25px;
+
+      &:first-child
+      {
+        margin-left : 0;
+      }
+    }
+  }
+
+/* OBJECTS STYLES END */
 
 </style>
