@@ -16,7 +16,7 @@
         Inquiries( :user_type="user_type" )
 
       v-tab-item( v-if="user_type === CONTRACTOR" :cntr_uuid="cntr_uuid"  )
-        Documentation
+        Documentation( :cntr_uuid="cntr_uuid" )
 
       v-tab-item
         Activity( :user_type="user_type" )
