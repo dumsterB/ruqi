@@ -144,6 +144,7 @@ export default {
       return {
         signout : () => {
           window.localStorage.removeItem( 'ruqi_auth_data' );
+
           this.$router.push( '/signin' );
         },
       }
