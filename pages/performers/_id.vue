@@ -3,7 +3,7 @@
     <div class="wrapper">
       <div class="content">
         <UserMainInfo :user_type="user_type" />
-        <UserAdditionalInfo />
+        <UserAdditionalInfo :cntr_uuid="cntr_uuid" />
       </div>
     </div>
   </div>
@@ -21,6 +21,11 @@
 
     computed : {
       ...mapGetters( 'contractors', [ 'contractor', ] ),
+
+      cntr_uuid ()
+      {
+        return this.$route.params.id;
+      },
     },
 
     data ()

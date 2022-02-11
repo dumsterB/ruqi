@@ -8,8 +8,8 @@
     v-divider
     .body
       .attachment-list
-        Attachment.list-item( v-for="( attachment, index ) in doc.media.length" :key="index" )
-        EmptyAttachment.list-item( v-for="emptyAttachment in emptyAttachments" :key="emptyAttachment" :doc_uuid="doc.uuid" )
+        Attachment.list-item( v-for="( attachment, index ) in doc.media" :key="index" :picture="attachment" )
+        EmptyAttachment.list-item( v-for="emptyAttachment in emptyAttachments" :key="emptyAttachment" :cntr_uuid="cntr_uuid" :doc_uuid="doc.uuid" )
 
 </template>
 
@@ -24,6 +24,11 @@
       doc : {
         type      : Object,
         required  : true,
+      },
+
+      cntr_uuid : {
+        type : String,
+        required : true,
       },
     },
 

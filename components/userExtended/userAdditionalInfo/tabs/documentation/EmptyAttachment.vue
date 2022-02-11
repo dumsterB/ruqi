@@ -11,12 +11,19 @@
 
 <script>
 
+  import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
+
   export default {
 
     components : {},
 
     props : {
       doc_uuid : {
+        type : String,
+        required : true,
+      },
+
+      cntr_uuid : {
         type : String,
         required : true,
       },
@@ -28,6 +35,9 @@
     },
 
     methods : {
+
+      ...mapActions( 'contractorDocs', [ 'getDocuments', ] ),
+
       getters ()
       {
         return {}
@@ -51,25 +61,30 @@
             formData.append( 'file', this.$refs.file_addedit1.files[ 0 ] );
             formData.append( 'description', 'text' );
 
+            console.log( 'uploadPicture' );
             console.log( formData );
-            console.log( this.doc_uuid );
+            console.log( 'this.cntr_uuid', this.cntr_uuid );
+            console.log( 'this.doc_uuid', this.doc_uuid );
+            console.log( this.$refs );
 
-            // this.$axios.put(
-            //   `/user/documents/${this.doc_uuid}/uploadImage`,
+            this.$axios.put(
+              `/dispatcher/contractors/${this.cntr_uuid}/docs/${this.doc_uuid}/uploadImage`,
 
-            //   formData,
+              formData,
 
-            //   {
-            //     headers : {
-            //       'Content-Type'  : 'multipart/form-data'
-            //     }
-            //   }
-            // )
-            // .then(
-            //   ( response ) => {
-            //     console.log( response );
-            //   }
-            // );
+              {
+                headers : {
+                  'Content-Type'  : 'multipart/form-data'
+                }
+              }
+            )
+            .then(
+              ( response ) => {
+                console.log( response );
+
+                this.getDocuments( this.cntr_uuid );
+              }
+            );
           },
         }
       },

@@ -14,11 +14,14 @@ export const getters = {
 export const actions = {
   async getDocuments ( ctx, uuid )
   {
+    console.log( 'getDocuments' );
+    console.log( uuid );
+
     const documents = await this.$axios.get( `/dispatcher/contractors/${uuid}/docs` );
 
     ctx.commit( 'updateDocuments', documents.data.data );
 
-    console.debug( 'getDocuments' ); // FIXME // TODO es muss später entfernt werden
+    console.debug( 'Documents:' ); // FIXME // TODO es muss später entfernt werden
     console.debug( documents ); // FIXME // TODO es muss später entfernt werden
   },
 }

@@ -15,7 +15,7 @@
         Inquiries( :user_type="user_type" )
 
       v-tab-item
-        Documentation
+        Documentation( :cntr_uuid="cntr_uuid" )
 
       v-tab-item
         Activity( :user_type="user_type" )
@@ -40,6 +40,12 @@
       Activity,
     },
 
+    props : {
+      cntr_uuid : {
+        type : String,
+        required : true,
+      },
+    },
 
     data ()
     {

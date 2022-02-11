@@ -2,7 +2,7 @@
 
 .Documentation
   .wrapper
-    Document( v-for="doc in documents" :key="doc.uuid" :doc="doc" )
+    Document( v-for="doc in documents" :key="doc.uuid" :cntr_uuid="cntr_uuid" :doc="doc" )
 
 </template>
 
@@ -16,6 +16,13 @@
 
     computed : {
       ...mapGetters( 'contractorDocs', [ 'documents', ] ),
+    },
+
+    props : {
+      cntr_uuid : {
+        type : String,
+        required : true,
+      },
     },
 
     components : {
