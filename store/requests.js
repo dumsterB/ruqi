@@ -62,12 +62,15 @@ export const actions = {
 
       })
       .then((response) => {
-        console.log(response);
+        console.log('--------',response.data.data);
         dispatch('fetch');
         commit('response/setSuccess', {type: 'success', text: 'Заявка успешно скопирована', }, {root: true});
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
+        setTimeout(function() {
+          self.$router.push('/request/'+response.data.data+'/edit');
+        }, 3000);
       })
       .catch((error) => {
         console.log(error);
