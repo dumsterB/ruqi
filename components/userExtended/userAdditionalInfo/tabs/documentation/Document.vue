@@ -9,7 +9,12 @@
     .body
       .attachment-list
         Attachment.list-item( v-for="( attachment, index ) in doc.media" :key="index" :picture="attachment" )
-        EmptyAttachment.list-item( v-for="emptyAttachment in emptyAttachments" :key="emptyAttachment" :cntr_uuid="cntr_uuid" :doc_uuid="doc.uuid" )
+        EmptyAttachment.list-item(
+          v-for="emptyAttachment in emptyAttachments" :key="emptyAttachment"
+          :cntr_uuid="cntr_uuid"
+          :doc_uuid="doc.uuid"
+          :index="emptyAttachment"
+        )
 
 </template>
 

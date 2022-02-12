@@ -17,7 +17,7 @@ export const actions = {
     console.log( 'getDocuments' );
     console.log( uuid );
 
-    const documents = await this.$axios.get( `/dispatcher/contractors/${uuid}/docs` );
+    const documents = await this.$axios.get( `/dispatcher/contractors/${ uuid }/docs` );
 
     ctx.commit( 'updateDocuments', documents.data.data );
 

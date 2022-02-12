@@ -3,7 +3,14 @@
 .emptyAttachment
   .wrapper
     .modal-export__format-content
-      input.picture-upload( type="file" id="import_load" tabindex="-1" name="file" ref="file_addedit1" @change="handlers().uploadPicture()" )
+      input.picture-upload(
+        type="file"
+        :id="input_id"
+        tabindex="-1"
+        name="file"
+        :ref="input_id"
+        @change="handlers().uploadPicture()"
+      )
       .upload-btn( @click="handlers().uploadFile()" )
         img.add-attachment-logo( src="@/assets/img/addAttachment.svg" )
 
@@ -26,6 +33,18 @@
       cntr_uuid : {
         type : String,
         required : true,
+      },
+
+      index : {
+        type : Number,
+        required : true,
+      },
+    },
+
+    computed : {
+      input_id ()
+      {
+        return `file_${ this.doc_uuid }_${ this.index }`;
       },
     },
 
@@ -52,20 +71,21 @@
       {
         return {
           uploadFile : ( payload = {} ) => {
-            document.querySelector( '#import_load' ).click();
+            document.querySelector( `#${ this.input_id }` ).click();
           },
 
           uploadPicture : ( payload = {} ) => {
+            console.log( 'this.$refs', this.$refs );
+
             let formData = new FormData();
 
-            formData.append( 'file', this.$refs.file_addedit1.files[ 0 ] );
+            formData.append( 'file', this.$refs[ this.input_id ].files[ 0 ] );
             formData.append( 'description', 'text' );
 
             console.log( 'uploadPicture' );
             console.log( formData );
             console.log( 'this.cntr_uuid', this.cntr_uuid );
             console.log( 'this.doc_uuid', this.doc_uuid );
-            console.log( this.$refs );
 
             this.$axios.put(
               `/dispatcher/contractors/${this.cntr_uuid}/docs/${this.doc_uuid}/uploadImage`,
