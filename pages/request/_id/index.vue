@@ -47,7 +47,7 @@
               :color="avatarColorManager"
               :radius="avatarRounded"
               :ist_detail_erlaubt="true"
-              :uuid="item ? item.uuid : ''"
+              :uuid="request_id ? request_id.uuid : ''"
             />
           </v-col>
           <v-col cols="5" class="d-flex justify-end ">

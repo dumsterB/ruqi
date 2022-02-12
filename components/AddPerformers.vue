@@ -187,6 +187,7 @@
         searchText            : '',
         avatarBorderRadius    : 'rounded',
         avatarColorManager    : '#36B368',
+        tab: null,
 
         PerformersTableHeaders  : [
           { text: 'фио', align: 'start',  value: 'name',                        sortColumn : 'firstname' },

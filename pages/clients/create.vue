@@ -422,13 +422,6 @@ export default {
       this.meta[array].splice(index, 1);
     },
     removeItemDoc(index_block, isChange, index, array) {
-      if (this.meta[array][index_block][index].placeholder = 'Документ не загружен') {
-        this.removePhoto({
-          clientId: this.client_id.uuid,
-          docId: this.meta[array][index_block][0].uuid,
-          imageId: this.meta[array][index_block][index].params.uuid
-        });
-      }
       if (!isChange) {
         this.meta[array][index_block].splice(index, 1);
       }
