@@ -237,7 +237,9 @@
 
     data ()
     {
-      return {}
+      return {
+        tab: null,
+      }
     },
 
     methods: {
