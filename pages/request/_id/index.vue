@@ -558,7 +558,7 @@ export default {
     },
 
     openTimesheet(){
-      this.$router.push('/request/'+ this.$route.params.id+'/timesheet/');
+      this.$router.push('/request/'+ this.request_id.uuid+'/timesheet/');
     },
 
     changeStatus(status){

@@ -33,7 +33,7 @@ export default {
           return pattern.test(value) || 'Введите корректный телефон'
         },
         number: value => {
-          const pattern = /(?<=^| )\d+(\.\d+)?(?=$| )/;
+          const pattern = /^\d+(?:[\.,]\d+)?$/; // /(?<=^| )\d+(\.\d+)?(?=$| )/;
           return pattern.test(value) || 'Введите число'
         },
       },
