@@ -93,7 +93,7 @@ export const actions = {
 
   },
 
-  async putStatus({commit, dispatch}, {requestId, status}) {
+  async putStatus({commit, dispatch}, {requestId, status, currentList}) {
     await this.$axios.put('/super_manager/accounts/' + requestId + '/' + status,
       '',
       {
@@ -103,7 +103,7 @@ export const actions = {
         },
       })
       .then((response) => {
-        dispatch('fetchClients');
+        dispatch('fetchClients', {status: currentList});
         commit('response/setSuccess', {type: 'success', text: 'Статус клиента изминен',}, {root: true});
         setTimeout(function () {
           commit('response/removeSuccess', null, {root: true});

@@ -99,8 +99,8 @@
                         <span>Редактировать</span>
                       </nuxt-link>
                       <v-divider class="my-3"></v-divider>
-                      <a href="#" @click.prevent="changeStatus(item.uuid, 'active')" v-if="tab==0">Перенести в архив</a>
-                      <a href="#" @click.prevent="changeStatus(item.uuid, 'archive')" v-if="tab==1">Перенести в активные</a>
+                      <a href="#" @click.prevent="changeStatus(item.uuid, 'archive', 'active')" v-if="tab==0">Перенести в архив</a>
+                      <a href="#" @click.prevent="changeStatus(item.uuid, 'active', 'archive')" v-if="tab==1">Перенести в активные</a>
                       <v-divider class="my-3"></v-divider>
                       <a href="#" @click.prevent="removeRequest({requestId: item.uuid, status: tabs_list[tab].id})">Удалить</a>
                     </div>
@@ -189,8 +189,8 @@ export default {
     setCurrentPage(value) {
       this.page = value;
     },
-    changeStatus(uuid, status){
-      this.putStatus({requestId: uuid, status: status});
+    changeStatus(uuid, status, currentList){
+      this.putStatus({requestId: uuid, status: status, currentList: currentList});
     },
 
   },
