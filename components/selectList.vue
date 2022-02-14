@@ -128,7 +128,7 @@
 
         .select-single
         {
-          width: 416px;
+          width : 416px;
         }
 
         fieldset
