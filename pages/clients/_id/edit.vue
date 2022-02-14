@@ -25,6 +25,7 @@
               </div>
             </v-form>
           </v-tab-item>
+
           <v-tab-item>
             <v-form ref="form_part_1" v-model="valid" lazy-validation>
               <div class="form-part form-part-contact"
@@ -42,13 +43,13 @@
               <AddFormPart text="Добавить документ" @addFormPart="addDocumentClick('new')"/>
             </v-form>
           </v-tab-item>
+
           <FNavigation v-show="tab < 2" :indexTab="tab" :nextButtonsText="nextButtonsText"
-                       @nextFromButton="nextFromButton"
-                       @prevFromButton="prevFromButton"/>
-
-
+                      @nextFromButton="nextFromButton"
+                      @prevFromButton="prevFromButton"/>
         </v-form>
       </div>
+
       <v-tab-item>
         <div class="table-list-style">
           <v-data-table
@@ -121,6 +122,7 @@
           </v-data-table>
         </div>
       </v-tab-item>
+
     </v-window>
   </div>
 

@@ -25,7 +25,7 @@
 
 <script>
 
-  import { CONTRACTOR, EMPLOYEE } from '@/constants/'
+  import { CONTRACTOR, EMPLOYEE } from '@/constants/';
   import Summary                  from './tabs/summary/Summary.vue';
   import SummaryEmployee          from './tabs/summary/SummaryEmployee.vue';
   import Applications             from './tabs/applications/Applications.vue';
