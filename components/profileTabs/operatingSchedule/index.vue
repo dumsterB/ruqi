@@ -263,8 +263,8 @@
 
     .v-input--selection-controls
     {
-      margin-top: 0 !important;
-      padding-top: 0 !important;
+      margin-top  : 0 !important;
+      padding-top : 0 !important;
     }
 
     .time-period
