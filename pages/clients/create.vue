@@ -412,7 +412,9 @@ export default {
             },
           },
         );
-        this.meta.meta_object_doc[index_document][0].exist = 'changed'
+        if (this.meta.meta_object_doc[index_document][0].exist == 'loaded'){
+          this.meta.meta_object_doc[index_document][0].exist = 'changed'
+        }
       }
     },
     removeItem(index, array) {
@@ -431,8 +433,10 @@ export default {
       this.meta.meta_object_doc.forEach(function (item, i) {
         if (item[0].exist == 'new' && item[0].value) {
           self.createDoc({clientId: clientId, docName: item[0].value, docFiles: item.slice(1)});
+          console.log('создаю документ');
         } else if (item[0].exist == 'changed') {
           self.changeDoc({clientId: clientId, docId: item[0].uuid, docName: item[0].value, docFiles: item.slice(1)});
+          console.log('меняю документ');
         }
       });
     },
