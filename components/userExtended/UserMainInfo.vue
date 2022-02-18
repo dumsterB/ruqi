@@ -25,11 +25,11 @@
           .registration-date {{ `Зарегистрирован ${getters().getRegDate( { created_at : user.created_at } )}` }}
 
         .doc-confirm-status( v-if="user_type === CONTRACTOR" )
-          .confirmed
+          .confirmed( v-if="user.documents_status" )
             img.logo( src="../../assets/img/doc-status-success.svg" alt="Документы подтверждены" )
             span.title-txt Документы подтверждены
 
-          .not-confirmed
+          .not-confirmed( v-if="!user.documents_status" )
             img.logo( src="../../assets/img/doc-status-success.svg" alt="Документы не подтверждены" )
             span.title-txt Документы не подтверждены
 
