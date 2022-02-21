@@ -36,7 +36,22 @@ export default {
           const pattern = /^\d+(?:[\.,]\d+)?$/; // /(?<=^| )\d+(\.\d+)?(?=$| )/;
           return pattern.test(value) || 'Введите число'
         },
+        ogrn: value => {
+          return this.validateOgrn(value) || this.error.message
+        },
+        inn: value => {
+          return this.validateInn(value) || this.error.message
+        },
+        kpp: value => {
+          return this.validateKpp(value) || this.error.message
+        },
+        bik: value => {
+          return this.validateBik(value) || this.error.message
+        },
       },
+      error: {
+        message: null
+      }
     }
   },
   computed: {
@@ -57,7 +72,110 @@ export default {
       return validation_array;
     },
   },
-  methods: {},
+  methods: {
+    validateOgrn(ogrn) {
+      let result = false;
+      if (typeof ogrn === 'number') {
+        ogrn = ogrn.toString();
+      } else if (typeof ogrn !== 'string') {
+        ogrn = '';
+      }
+      if (!ogrn.length) {
+        this.error.message = 'ОГРН пуст';
+      } else if (/[^0-9]/.test(ogrn)) {
+        this.error.message = 'ОГРН может состоять только из цифр';
+      } else if (ogrn.length !== 13) {
+        this.error.message = 'ОГРН может состоять только из 13 цифр';
+      } else {
+        let n13 = parseInt((parseInt(ogrn.slice(0, -1)) % 11).toString().slice(-1));
+        if (n13 === parseInt(ogrn[12])) {
+          result = true;
+        } else {
+          this.error.message = 'Неправильное контрольное число';
+        }
+      }
+      return result;
+    },
+    validateInn(inn) {
+      let result = false;
+      if (typeof inn === 'number') {
+        inn = inn.toString();
+      } else if (typeof inn !== 'string') {
+        inn = '';
+      }
+      if (!inn.length) {
+        this.error.message = 'ИНН пуст';
+      } else if (/[^0-9]/.test(inn)) {
+        this.error.message = 'ИНН может состоять только из цифр';
+      } else if ([10, 12].indexOf(inn.length) === -1) {
+        this.error.message = 'ИНН может состоять только из 10 или 12 цифр';
+      } else {
+        let checkDigit = function (inn, coefficients) {
+          let n = 0;
+          for (let i in coefficients) {
+            n += coefficients[i] * inn[i];
+          }
+          return parseInt(n % 11 % 10);
+        };
+        switch (inn.length) {
+          case 10:
+            let n10 = checkDigit(inn, [2, 4, 10, 3, 5, 9, 4, 6, 8]);
+            if (n10 === parseInt(inn[9])) {
+              result = true;
+            }
+            break;
+          case 12:
+            let n11 = checkDigit(inn, [7, 2, 4, 10, 3, 5, 9, 4, 6, 8]);
+            let n12 = checkDigit(inn, [3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8]);
+            if ((n11 === parseInt(inn[10])) && (n12 === parseInt(inn[11]))) {
+              result = true;
+            }
+            break;
+        }
+        if (!result) {
+          this.error.message = 'Неправильное контрольное число';
+        }
+      }
+      return result;
+    },
+    validateKpp(kpp) {
+      let result = false;
+      if (typeof kpp === 'number') {
+        kpp = kpp.toString();
+      } else if (typeof kpp !== 'string') {
+        kpp = '';
+      }
+      if (!kpp.length) {
+        this.error.message = 'КПП пуст';
+      } else if (kpp.length !== 9) {
+        this.error.message = 'КПП может состоять только из 9 знаков (цифр или заглавных букв латинского алфавита от A до Z)';
+      } else if (!/^[0-9]{4}[0-9A-Z]{2}[0-9]{3}$/.test(kpp)) {
+        this.error.message = 'Неправильный формат КПП';
+      } else {
+        result = true;
+      }
+      return result;
+    },
+    validateBik(bik) {
+      let result = false;
+      if (typeof bik === 'number') {
+        bik = bik.toString();
+      } else if (typeof bik !== 'string') {
+        bik = '';
+      }
+      if (!bik.length) {
+        this.error.message = 'БИК пуст';
+      } else if (/[^0-9]/.test(bik)) {
+        this.error.message = 'БИК может состоять только из цифр';
+      } else if (bik.length !== 9) {
+        this.error.message = 'БИК может состоять только из 9 цифр';
+      } else {
+        result = true;
+      }
+      return result;
+    },
+
+  },
   created() {
     this.new_value = this.value;
   },
