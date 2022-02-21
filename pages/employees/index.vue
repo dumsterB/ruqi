@@ -61,7 +61,7 @@
             hide-default-footer
             show-select
           >
-            <template v-slot:item.name="{ item }">
+            <template v-slot:item.firstname="{ item }">
               <div @click="openRequest(item.uuid)">
                 <UserAvatar :first_name="item.firstname" :last_name="item.lastname" :color="avatarColor" :radius="avatarBorderRadius"/>
               </div>
@@ -139,7 +139,7 @@ export default {
       selected: [],
       avatarColor: '#36B368',
       headers: [
-        {text: 'Имя', align: 'start', value: 'name',},
+        {text: 'Имя', align: 'start', value: 'firstname',},
         {text: 'Телефон', value: 'phone'},
         {text: 'объекты', value: 'objects'},
         {text: 'заявки', value: 'tasks'},
