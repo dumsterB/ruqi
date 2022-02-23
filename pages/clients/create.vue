@@ -143,7 +143,7 @@ export default {
             label: 'ОГРН',
             col: 6,
             name: 'ogrn',
-            validation: ['required'],
+            validation: ['required', 'ogrn'],
             value: ''
           },
           {
@@ -159,7 +159,7 @@ export default {
             label: 'ИНН',
             col: 4,
             name: 'inn',
-            validation: ['required'],
+            validation: ['required', 'inn'],
             value: ''
           },
           {
@@ -167,7 +167,7 @@ export default {
             label: 'КПП',
             col: 4,
             name: 'kpp',
-            validation: ['required'],
+            validation: ['required', 'kpp'],
             value: ''
           },
           {
@@ -175,7 +175,7 @@ export default {
             label: 'БИК',
             col: 4,
             name: 'bik',
-            validation: ['required'],
+            validation: ['required', 'bik'],
             value: ''
           },
           {
@@ -191,7 +191,7 @@ export default {
             label: 'Корреспондентский счёт',
             col: 6,
             name: 'cor_account',
-            validation: ['required'],
+            validation: ['required', 'ks'],
             value: ''
           },
           {
