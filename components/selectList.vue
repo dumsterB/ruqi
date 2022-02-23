@@ -8,17 +8,17 @@
       .wrapper__body
         .container-list
           .select-list__item(
-            v-for="( item, index ) in items" :key="index"
+            v-for="( option, index ) in options" :key="index"
           )
             selectSingle(
               :id="'select-list'"
               :options="options"
-              :value="item.value"
+              :value="option"
             )
             img.del-logo( src="/img/ico_close.svg" alt="Удалить" )
         .container-actions
           .action-add
-            .titel {{ action_add_title }}
+            .titel( @click="handlers().addItem()" ) {{ action_add_title }}
 
 
 </template>
@@ -72,7 +72,13 @@
 
       handlers ()
       {
-        return {}
+        return {
+          addItem : ( payload = {} ) => {
+            console.debug( "addItem" );
+
+            this.$emit( 'addItem' );
+          },
+        }
       },
 
       helpers ()

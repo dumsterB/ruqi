@@ -70,7 +70,7 @@
                 ( response ) => {
                   localStorage.setItem( 'ruqi_auth_data', JSON.stringify( response.data.data ));
 
-                  this.$router.push( '/request' );
+                  this.$router.push( '/' );
                 }
               )
               .catch(

@@ -12,6 +12,8 @@
           :action_add_title="titles.action_add_title"
           :options="selectOptions"
           :items="items"
+          @addItem="handlers().addItem()"
+          @deleteItem="handlers().deleteItem()"
         )
 
 </template>
@@ -61,7 +63,13 @@
 
       handlers ()
       {
-        return {}
+        return {
+          addItem : ( payload = {} ) => {
+            this.selectOptions.push( 'rr' );
+          },
+
+          deleteItem : ( payload = {} ) => {},
+        }
       },
 
       helpers ()
