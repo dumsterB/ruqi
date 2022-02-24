@@ -7,9 +7,9 @@
     .body
       .wrapper__body
         .haupt-data
-          textInputWithTitle.haupt-data__input( :title="inputTitles.firstname" )
-          textInputWithTitle.haupt-data__input( :title="inputTitles.secondname" )
-          textInputWithTitle.haupt-data__input( :title="inputTitles.thirdname" )
+          Input.mix-input.haupt-data__input( :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.firstname, value : user.firstname }" )
+          Input.mix-input.haupt-data__input( :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.secondname, value : user.middlename }" )
+          Input.mix-input.haupt-data__input( :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.thirdname, value : user.lastname }" )
 
         .birthday
           dateInputWithTitle.birthday__input( :title="inputTitles.birthday" )
@@ -20,24 +20,27 @@
             v-radio( value="male" label="Мужской" color="info" )
             v-radio( value="female" label="Женский" color="info" )
         .city
-          textInputWithTitle.city__input( :title="inputTitles.city" )
+          Input.mix-input.city__input( :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.city, value : user.city }" )
 
         .contact-info
-          textInputWithTitle.contact-info__input.phone( :title="inputTitles.phone" )
-          textInputWithTitle.contact-info__input( :title="inputTitles.email" )
+          Input.mix-input.contact-info__input.phone( :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.phone, value : user.phone }" )
+          Input.mix-input.contact-info__input( :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.email, value : user.email }" )
 
 </template>
 
 <script>
 
+  import { mapActions, mapGetters, } from 'vuex';
   import textInputWithTitle from '@/components/UI/textInputWithTitle';
   import dateInputWithTitle from '@/components/UI/dateInputWithTitle';
+  import Input from '@/components/UI/input';
 
   export default {
 
     components : {
       textInputWithTitle,
       dateInputWithTitle,
+      Input,
     },
 
     data ()
@@ -53,8 +56,20 @@
           city : 'Город',
           phone : 'Телефон',
           email : 'Электронная почта',
-        }
+        },
+
+        textInputDefaultSettings : {
+          type : 'text',
+          value : '',
+          hauptTitel : '',
+          solo : true,
+          hint : '',
+        },
       }
+    },
+
+    computed : {
+      ...mapGetters( 'user', [ 'user', ] ),
     },
 
     methods : {
@@ -81,8 +96,12 @@
       init (){},
 
       bindActions (){},
-    }
+    },
 
+    mounted ()
+    {
+      console.log( 'this.user', this.user);
+    },
   }
 
 </script>
@@ -173,6 +192,23 @@
       }
     }
   /* OBJECTS STYLES END */
+
+  /* MIXINS STYLES START */
+    .mix-input
+    {
+      .v-input__slot
+      {
+        margin: 0 !important;
+        box-shadow: none !important;
+
+        height: 48px;
+        background: #FFFFFF;
+        border: 1px solid #E2E4E5;
+        box-sizing: border-box;
+        border-radius: 4px;
+      }
+    }
+  /* MIXINS STYLES END */
 }
 
 </style>

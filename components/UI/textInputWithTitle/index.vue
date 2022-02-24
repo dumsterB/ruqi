@@ -3,7 +3,7 @@
 .text-input-with-title
   .haupt-titel {{ title }}
   .eingabe
-    input.object
+    input.object( :value="value" )
 
 </template>
 
@@ -17,7 +17,12 @@
       title : {
         type : String,
         default : "",
-      }
+      },
+
+      value : {
+        type : String,
+        default : "",
+      },
     },
 
     data ()

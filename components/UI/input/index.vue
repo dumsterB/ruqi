@@ -8,7 +8,7 @@
     .input-ui__body
       .input-ui__wrapper-body
         v-text-field(
-          v-model="password"
+          :value="params.value"
           :solo="params.solo"
           :append-icon="getters().getAppendIcon( { params } )"
           :rules="[ ...params.rules ]"

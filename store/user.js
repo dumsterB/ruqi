@@ -1,29 +1,44 @@
-export const state = () => ({
-  user: {},
-})
+export const state = () => (
+  {
+    user : {},
+  }
+);
 
 export const getters = {
-  user(state) {
+  user ( state )
+  {
     return state.user;
   },
 }
 
 export const actions = {
-  async fetchUser({commit}, params) {
+  async fetchUser ( { commit } )
+  {
+    const response = await this.$axios.get( 'user/my' );
 
-    const user = await this.$axios.get('/user/my', {
-      headers: {
-        "Authorization": "Bearer 8dfb1b84690ece3d84456b4355322b0ffc561ac8683e4465c8d60db87230cc42"
-      },
-    });
-    commit('setUser', user)
+    console.log( 'fetchUser', response );
+
+    commit( 'updateUserData', response?.data?.data );
   },
 
+  async setUserData ( { commit }, payload )
+  {},
+
+  async uploadUserData ()
+  {
+    const response = await this.$axios.put( 'user/settings' );
+
+    console.log( 'fetchUser', response );
+  },
 }
 
 export const mutations = {
-  setUser(state, user) {
-    state.user = user.data.data;
+  updateUserData ( state, payload )
+  {
+    state.user = {
+      ...state.user,
+      ...payload,
+    };
   },
 }
 

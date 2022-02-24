@@ -10,12 +10,13 @@ export default function ( { route, redirect, app } )
   else if ( route.name === 'signin' && window.localStorage.getItem( 'ruqi_auth_data' ) )
   {
     app.$auth.setToken();
+    app.store.dispatch( 'user/fetchUser' );
 
     return redirect( '/' );
   }
   else if ( window.localStorage.getItem( 'ruqi_auth_data' ) )
   {
     app.$auth.setToken();
-
+    app.store.dispatch( 'user/fetchUser' );
   }
 }
