@@ -37,8 +37,7 @@ export const actions = {
 
   },
   async fetchObjectsAccount({commit}, requestID) {
-
-    const objects = await this.$axios.get('/super_manager/accounts/'+requestID+'/object', {
+    const objects = await this.$axios.get('/super_manager/accounts/'+requestID+'/objects', {
       headers: {
         "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
       },

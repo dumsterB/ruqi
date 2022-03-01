@@ -59,7 +59,7 @@ export default {
 
               const ruqi = document.querySelector( '.ruqi' );
 
-              if (ruqi)
+              if (ruqi && to.name)
               {
                 ruqi.classList.add('page--' + to.name.toLowerCase());
 
