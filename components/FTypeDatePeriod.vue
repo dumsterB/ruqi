@@ -68,30 +68,30 @@ export default {
   },
   computed: {
     dateRangeText() {
-     return this.dateFormatted.join(' - ')
+      return this.dateFormatted.join(' - ')
     },
   },
   methods: {
-    formatDate (date) {
+    formatDate(date) {
       if (!date) return null
 
       const [year, month, day] = date.split('-')
       return `${day}.${month}.${year}`
     },
-    parseDate (date) {
+    parseDate(date) {
       if (!date) return null
 
       const [day, month, year] = date.split('.')
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
     },
-    updateDate(){
+    updateDate() {
       this.menu = false;
       this.$emit('updateFiled', this.name, this.dates);
     },
   },
   watch: {
     dates(val) {
-     this.dateFormatted = [this.formatDate(this.dates[0]), this.formatDate(this.dates[1])];
+      this.dateFormatted = [this.formatDate(this.dates[0]), this.formatDate(this.dates[1])];
     },
     value() {
       this.dateFormatted = this.formatDate(this.value.substring(0, 10));
@@ -144,6 +144,9 @@ export default {
     border: none;
   }
 
+  .v-text-field--outlined .v-input__prepend-outer, .v-text-field--outlined .v-input__append-outer {
+    margin-top: 11px;
+  }
 }
 
 </style>

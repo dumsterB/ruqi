@@ -16,7 +16,7 @@ export const getters = {
 export const actions = {
   async fetchObjects({commit}, params) {
 
-    const objects = await this.$axios.get('/manager/objects', {
+    const objects = await this.$axios.get('/objects', {
       headers: {
         "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
       },
@@ -27,31 +27,23 @@ export const actions = {
   },
   async fetchObjectsMap({commit}, params) {
 
-    const objects_map = await this.$axios.get('/manager/objects', {
-      headers: {
-        "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
-      },
+    const objects_map = await this.$axios.get('/objects', {
       params: params
     });
     commit('setObjectsMap', objects_map)
 
   },
   async fetchObjectsAccount({commit}, requestID) {
-    const objects = await this.$axios.get('/super_manager/accounts/'+requestID+'/objects', {
-      headers: {
-        "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
-      },
-    });
+    const objects = await this.$axios.get('/super_manager/accounts/'+requestID+'/objects');
     commit('setObjects', objects)
 
   },
   async createRequest({commit, dispatch}, newRequest) {
     let self= this;
-    const requests = await this.$axios.post('/manager/objects',
+    const requests = await this.$axios.post('/objects',
       newRequest,
       {
         headers: {
-          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
           'Content-Type': 'application/json',
         },
 
@@ -79,11 +71,10 @@ export const actions = {
   },
   async putRequest({commit, dispatch}, {uuid, body}) {
     let self= this;
-    await this.$axios.put('/manager/objects/'+uuid,
+    await this.$axios.put('/objects/'+uuid,
       body,
       {
         headers: {
-          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
           'Content-Type': 'application/json',
         },
 
@@ -107,11 +98,7 @@ export const actions = {
   },
   async removeRequest({commit, dispatch}, requestID) {
 
-    await this.$axios.delete('/manager/objects/'+requestID, {
-      headers: {
-        "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
-      },
-    })
+    await this.$axios.delete('/objects/'+requestID)
       .then((response) => {
         console.log(response);
         dispatch('fetchObjects');

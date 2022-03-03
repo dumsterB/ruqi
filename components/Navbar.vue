@@ -77,12 +77,7 @@ export default {
       return this.$store.getters['user/user']
     },
   },
-  methods: {
-    ...mapActions('user', ['fetchUser',]),
-  },
-  mounted() {
-    this.fetchUser();
-  }
+  methods: {},
 }
 </script>
 

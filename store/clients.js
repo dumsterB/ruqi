@@ -20,9 +20,6 @@ export const actions = {
   async fetchClients({commit}, params) {
 
     const clients = await this.$axios.get('/super_manager/accounts', {
-      headers: {
-        "Authorization": "Bearer af2cf5b991716c8fe1d0c6bf9c7a03f6fa088887dd10921d605dad809e2df125"
-      },
       params: params
     });
     commit('setClients', clients)
@@ -35,7 +32,6 @@ export const actions = {
       newRequest,
       {
         headers: {
-          "Authorization": "Bearer af2cf5b991716c8fe1d0c6bf9c7a03f6fa088887dd10921d605dad809e2df125",
           'Content-Type': 'application/json',
         },
 
@@ -71,7 +67,6 @@ export const actions = {
       body,
       {
         headers: {
-          "Authorization": "Bearer af2cf5b991716c8fe1d0c6bf9c7a03f6fa088887dd10921d605dad809e2df125",
           'Content-Type': 'application/json',
         },
 
@@ -98,7 +93,6 @@ export const actions = {
       '',
       {
         headers: {
-          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
           'Content-Type': 'application/json',
         },
       })
@@ -117,11 +111,7 @@ export const actions = {
   async removeRequest({commit, dispatch}, {requestId, status}) {
     console.log(status);
 
-    await this.$axios.delete('/super_manager/accounts/' + requestId, {
-      headers: {
-        "Authorization": "Bearer af2cf5b991716c8fe1d0c6bf9c7a03f6fa088887dd10921d605dad809e2df125",
-      },
-    })
+    await this.$axios.delete('/super_manager/accounts/' + requestId)
       .then((response) => {
         console.log(response);
         dispatch('fetchClients', {"status": status});

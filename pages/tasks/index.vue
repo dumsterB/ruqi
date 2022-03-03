@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <Header :content="title" :size="title_size" :isnew="true" :isback="false"/>
+  <div v-if="user.type != 'contractor'">
+    <Header :content="title" :size="title_size" :isnew="isCreate" :isback="false"/>
 
     <v-row no-gutters class="table-filter-row">
       <v-col
@@ -41,7 +41,9 @@
         </template>
 
         <template v-slot:item.pay="{ item }">
-          <span class="request-pay">{{ item.payment.value }} {{ item.payment.current }} / {{ item.payment.period }}</span>
+          <span class="request-pay">{{ item.payment.value }} {{ item.payment.current }} / {{
+              item.payment.period
+            }}</span>
         </template>
 
         <template v-slot:item.object="{ item }">
@@ -55,7 +57,7 @@
         <template v-slot:item.term="{ item }">
           <div class="request-time">
             <img src="/img/ico_timer.svg" alt="timer">
-            {{item.hours_left}} ч {{ item.minutes_left}} м
+            {{ item.hours_left }} ч {{ item.minutes_left }} м
           </div>
         </template>
 
@@ -72,10 +74,10 @@
             left
           >
             <template v-slot:activator="{ on }">
-                <v-btn icon
-                       v-on="on">
-                  <v-icon>mdi-dots-vertical</v-icon>
-                </v-btn>
+              <v-btn icon
+                     v-on="on">
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
             </template>
             <v-card>
               <v-list-item-content class="justify-start">
@@ -94,7 +96,11 @@
         </template>
       </v-data-table>
     </div>
-    <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page" @setItemsPerPage="setItemsPerPage" @setCurrentPage="setCurrentPage"/>
+    <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page" @setItemsPerPage="setItemsPerPage"
+                 @setCurrentPage="setCurrentPage"/>
+  </div>
+  <div v-else>
+    <Header content="Мои заявки" :size="title_size" :isnew="false" :isback="false"/>
   </div>
 </template>
 
@@ -119,7 +125,8 @@ export default {
       headers: [
         {text: 'Название', align: 'start', value: 'name',},
         {text: 'Оплата', value: 'pay'},
-        {text: 'Объект', value: 'object',
+        {
+          text: 'Объект', value: 'object',
           filter: item => {
             if (!this.selectObject) return true;
             return item.uuid == this.selectObject;
@@ -128,7 +135,7 @@ export default {
         {text: 'Менеджер', value: 'manager'},
         {text: 'Срок', value: 'term'},
         {text: 'Заполнение', value: 'occupation'},
-        {text: '', value: 'actions', sortable: false,  align: 'right'},
+        {text: '', value: 'actions', sortable: false, align: 'right'},
       ],
     }
   },
@@ -142,17 +149,28 @@ export default {
     ...mapActions('requests', ['copyRequest',]),
     ...mapActions('objects', ['fetchObjects',]),
 
-    openRequest(id){
-      this.$router.push('/tasks/'+ id);
+    openRequest(id) {
+      this.$router.push('/tasks/' + id);
     },
-    setItemsPerPage(value){
+    setItemsPerPage(value) {
       this.itemsPerPage = value;
     },
-    setCurrentPage(value){
+    setCurrentPage(value) {
       this.page = value;
     }
   },
   computed: {
+    user() {
+      return this.$store.getters['user/user']
+    },
+    isCreate() {
+      if (this.user.type == 'superManager' || this.user.type == 'manager'){
+        return true;
+      }
+      else{
+        return false;
+      }
+    },
     requests() {
       return this.$store.getters['requests/requests']
     },

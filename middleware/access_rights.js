@@ -5,7 +5,7 @@ export default function access_rights ({ route, store, redirect}){
 
   if (Object.keys(user).length != 0){
     user.visibility_sections.forEach(function(item){
-      if(route.name.includes(item)){
+      if(route.name && route.name.includes(item)){
         subroute = true;
       }
     })
