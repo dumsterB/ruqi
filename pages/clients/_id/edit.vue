@@ -135,13 +135,9 @@ import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 
 export default {
   async fetch({store}) {
-    if (store.getters['objects/objects'].length === 0) {
-      await store.dispatch('objects/fetchObjects')
-    }
     if (store.getters['dictionary/specializations'].length === 0) {
       await store.dispatch('dictionary/fetchSpecializations')
     }
-
   },
   data() {
     return {
@@ -216,7 +212,7 @@ export default {
             label: 'Почтовый адрес',
             col: 12,
             name: 'post_address',
-            validation: ['required'],
+            validation: [],
             value: ''
           },
           {
@@ -224,7 +220,7 @@ export default {
             label: 'ОГРН',
             col: 6,
             name: 'ogrn',
-            validation: ['required', 'ogrn'],
+            validation: ['ogrn'],
             value: ''
           },
           {
@@ -232,7 +228,7 @@ export default {
             label: 'ОКАТО',
             col: 6,
             name: 'okato',
-            validation: ['required'],
+            validation: [],
             value: ''
           },
           {
@@ -261,22 +257,6 @@ export default {
           },
           {
             type: 'FTypeText',
-            label: 'Расчетный счет',
-            col: 6,
-            name: 'payment_account',
-            validation: ['required'],
-            value: ''
-          },
-          {
-            type: 'FTypeText',
-            label: 'Корреспондентский счёт',
-            col: 6,
-            name: 'cor_account',
-            validation: ['required'],
-            value: ''
-          },
-          {
-            type: 'FTypeText',
             label: 'Банк',
             col: 12,
             name: 'bank',
@@ -285,10 +265,32 @@ export default {
           },
           {
             type: 'FTypeText',
+            label: 'Расчетный счет',
+            col: 6,
+            name: 'payment_account',
+            validation: ['required', 'rs'],
+            value: '',
+            params: {
+              bik: ''
+            }
+          },
+          {
+            type: 'FTypeText',
+            label: 'Корреспондентский счёт',
+            col: 6,
+            name: 'cor_account',
+            validation: ['required', 'ks'],
+            value: '',
+            params: {
+              bik: ''
+            }
+          },
+          {
+            type: 'FTypeText',
             label: 'Генеральный директор',
             col: 12,
             name: 'general_manager',
-            validation: ['required'],
+            validation: [],
             value: ''
           },
           {
@@ -414,6 +416,17 @@ export default {
     },
     updateFiled(field, value) {
       this.formValues[field] = value;
+
+      if (field == 'bik'){
+        this.meta.meta_object_info[11].params.bik = value;
+        this.meta.meta_object_info[12].params.bik = value;
+
+        this.meta.meta_object_info[11].value = '';
+        this.meta.meta_object_info[12].value = '';
+        this.formValues.cor_account = '';
+        this.formValues.payment_account = '';
+
+      }
       console.log(field, value);
     },
     updateDocs(index_block, field, value, index) {
@@ -541,6 +554,7 @@ export default {
   },
   async created() {
     await this.fetchClientId(this.$route.params.id);
+    await this.fetchObjectsAccount(this.$route.params.id);
     await this.getDocs(this.$route.params.id);
 
     let documents = this.documents.length;
@@ -571,9 +585,9 @@ export default {
     this.meta.meta_object_info[7].value = this.client_id.inn;
     this.meta.meta_object_info[8].value = this.client_id.kpp;
     this.meta.meta_object_info[9].value = this.client_id.bik;
-    this.meta.meta_object_info[10].value = this.client_id.payment_account;
-    this.meta.meta_object_info[11].value = this.client_id.correspondent_account;
-    this.meta.meta_object_info[12].value = this.client_id.bank;
+    this.meta.meta_object_info[11].value = this.client_id.payment_account;
+    this.meta.meta_object_info[12].value = this.client_id.correspondent_account;
+    this.meta.meta_object_info[10].value = this.client_id.bank;
     this.meta.meta_object_info[13].value = this.client_id.gen_director;
     this.meta.meta_object_info[14].value = this.client_id.mail;
     this.meta.meta_object_info[15].value = this.client_id.phone;

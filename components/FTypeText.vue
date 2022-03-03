@@ -25,7 +25,7 @@ export default {
       rules: {
         required: value => !!value || 'Заполните поле',
         email: value => {
-          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Zа-яё\-0-9]+\.)+[a-zA-Zа-яё]{2,}))$/;
           return pattern.test(value) || 'Введите корректный email'
         },
         phone: value => {
@@ -47,6 +47,12 @@ export default {
         },
         bik: value => {
           return this.validateBik(value) || this.error.message
+        },
+        ks: value => {
+          return this.validateKs(value, this.params.bik) || this.error.message
+        },
+        rs: value => {
+          return this.validateRs(value, this.params.bik) || this.error.message
         },
       },
       error: {
@@ -174,7 +180,66 @@ export default {
       }
       return result;
     },
-
+    validateKs(ks, bik) {
+      let result = false;
+      if (this.validateBik(bik)) {
+        if (typeof ks === 'number') {
+          ks = ks.toString();
+        } else if (typeof ks !== 'string') {
+          ks = '';
+        }
+        if (!ks.length) {
+          this.error.message = 'К/С пуст';
+        } else if (/[^0-9]/.test(ks)) {
+          this.error.message = 'К/С может состоять только из цифр';
+        } else if (ks.length !== 20) {
+          this.error.message = 'К/С может состоять только из 20 цифр';
+        } else {
+          let bikKs = '0' + bik.toString().slice(4, 6) + ks;
+          let checksum = 0;
+          let coefficients = [7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1];
+          for (let i in coefficients) {
+            checksum += coefficients[i] * (bikKs[i] % 10);
+          }
+          if (checksum % 10 === 0) {
+            result = true;
+          } else {
+            this.error.message = 'Неправильное контрольное число';
+          }
+        }
+      }
+      return result;
+    },
+    validateRs(rs, bik) {
+      let result = false;
+      if (this.validateBik(bik)) {
+        if (typeof rs === 'number') {
+          rs = rs.toString();
+        } else if (typeof rs !== 'string') {
+          rs = '';
+        }
+        if (!rs.length) {
+          this.error.message = 'Р/С пуст';
+        } else if (/[^0-9]/.test(rs)) {
+          this.error.message = 'Р/С может состоять только из цифр';
+        } else if (rs.length !== 20) {
+          this.error.message = 'Р/С может состоять только из 20 цифр';
+        } else {
+          let bikRs = bik.toString().slice(-3) + rs;
+          let checksum = 0;
+          let coefficients = [7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1];
+          for (let i in coefficients) {
+            checksum += coefficients[i] * (bikRs[i] % 10);
+          }
+          if (checksum % 10 === 0) {
+            result = true;
+          } else {
+            this.error.message = 'Неправильное контрольное число';
+          }
+        }
+      }
+      return result;
+    }
   },
   created() {
     this.new_value = this.value;
@@ -183,6 +248,14 @@ export default {
     value: function () {
       this.new_value = this.value;
     },
+    params: {
+      handler(val){
+        if (this.name == 'cor_account' || this.name == 'payment_account'){
+          this.new_value = '';
+        }
+      },
+      deep: true
+    }
   },
 }
 </script>

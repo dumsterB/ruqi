@@ -1,5 +1,5 @@
 <template lang="pug">
-  .chat
+  .chat-page
     v-container
       v-row
         v-col
@@ -83,7 +83,7 @@ export default {
 
 @import '../../assets/scss/colors';
 
-.chat {
+.chat-page {
   border: 1px solid #E4E9EE;
   border-radius: 30px;
   padding: 32px;
