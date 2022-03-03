@@ -36,10 +36,12 @@
           .connect-methods
             .wrapper
               .call
-                img.logo( src="../../assets/img/call.svg" alt="Позвонить" )
+                a(:href="'tel:'+user.phone")
+                  img.logo( src="../../assets/img/call.svg" alt="Позвонить" )
 
               .email
-                img.logo( src="../../assets/img/email.svg" alt="Отправить письмо" )
+                a(:href="'mailto:'+user.email")
+                  img.logo( src="../../assets/img/email.svg" alt="Отправить письмо" )
 
               .chat
                 img.logo( src="../../assets/img/chat.svg" alt="Написать в чат" )
@@ -366,6 +368,12 @@ export default {
             .logo {
               width: 24px;
               height: 24px;
+            }
+
+            a{
+              display: flex;
+              align-items: center;
+              justify-content: center;
             }
 
             .call, .email, .chat {
