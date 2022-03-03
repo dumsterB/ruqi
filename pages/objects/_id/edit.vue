@@ -475,14 +475,14 @@ export default {
 
       let postBody = {
         "name": this.formValues.object,
-        "organization": this.formValues.object_client,
+        "organization": this.formValues.object_entity,
         "type": this.formValues.object_type,
         "specialization": this.formValues.object_spec,
         "description": this.formValues.object_desc,
         "region": this.formValues.object_region,
         "city": this.formValues.object_city,
         "scheme": this.formValues.object_driving_directions,
-        "account": this.formValues.object_entity,
+        "account": this.formValues.object_client,
         "managers": managers,
         "dispatchers": dispatchers,
         "contacts": contacts
@@ -682,14 +682,17 @@ export default {
     await this.addFileds(dispatchers_length, 'addResponsible', 'dispatchers');
     await this.addFileds(managers_length, 'addResponsible', 'manager');
 
-    this.meta.meta_object_info[0].params.options = this.organizations;
-    this.meta.meta_object_entity[0].params.options = this.clients;
+    this.meta.meta_object_info[0].params.options = this.clients;
+    this.meta.meta_object_entity[0].params.options = this.organizations;
+
     this.meta.meta_object_info[2].params.options = this.objectType;
     this.meta.meta_object_info[3].params.options = this.specializations;
     this.meta.meta_object_manager[0].params.options = this.managers;
     this.meta.meta_object_dispatchers[0].params.options = this.dispatchers;
 
-    this.meta.meta_object_info[0].value = this.object_id.organization.uuid;
+    this.meta.meta_object_info[0].value = this.object_id.account.uuid;
+    this.meta.meta_object_entity[0].value = this.object_id.organization.uuid;
+
     this.meta.meta_object_info[2].value = this.object_id.type.uuid;
     this.meta.meta_object_info[3].value = this.object_id.specialization.uuid;
 
@@ -699,8 +702,6 @@ export default {
     this.meta.meta_object_location[0].value = this.object_id.city;
     this.meta.meta_object_location[1].value = this.object_id.region;
     this.meta.meta_object_location[2].value = this.object_id.scheme;
-
-    this.meta.meta_object_entity[0].value = this.object_id.account.uuid;
 
 
     for (let i = 0; i < contact_length; i++) {
@@ -721,6 +722,9 @@ export default {
       Vue.set(this.formValues, f.name, f.value);
     })
     this.meta.meta_object_location.map(f => {
+      Vue.set(this.formValues, f.name, f.value);
+    })
+    this.meta.meta_object_entity.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     })
     this.meta.meta_object_contact.map(subarray => subarray.map(f => {

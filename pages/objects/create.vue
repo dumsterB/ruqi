@@ -382,14 +382,14 @@ export default {
 
       let postBody = {
         "name": this.formValues.object,
-        "organization": this.formValues.object_client,
+        "organization": this.formValues.object_entity,
         "type": this.formValues.object_type,
         "specialization": this.formValues.object_spec,
         "description": this.formValues.object_desc,
         "region": this.formValues.object_region,
         "city": this.formValues.object_city,
         "scheme": this.formValues.object_driving_directions,
-        "account": this.formValues.object_entity,
+        "account": this.formValues.object_client,
         "managers": managers,
         "dispatchers": dispatchers,
         "contacts": contacts
@@ -551,6 +551,9 @@ export default {
     this.meta.meta_object_location.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     })
+    this.meta.meta_object_entity.map(f => {
+      Vue.set(this.formValues, f.name, f.value);
+    })
     this.meta.meta_object_contact.map(subarray => subarray.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     }));
@@ -561,8 +564,8 @@ export default {
       Vue.set(this.formValues, f.name, f.value);
     })
 
-    this.meta.meta_object_info[0].params.options = this.organizations;
-    this.meta.meta_object_entity[0].params.options = this.clients;
+    this.meta.meta_object_info[0].params.options = this.clients;
+    this.meta.meta_object_entity[0].params.options = this.organizations;
     this.meta.meta_object_info[2].params.options = this.objectType;
     this.meta.meta_object_info[3].params.options = this.specializations;
     this.meta.meta_object_manager[0].params.options = this.managers;
