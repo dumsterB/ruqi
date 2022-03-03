@@ -22,7 +22,7 @@
                     .titel
                       .txt Пароль
                     .input
-                      input.item( type="text" v-model="login.password" :class="{ 'error-by-signin' : error }" )
+                      input.item( type="password" v-model="login.password" :class="{ 'error-by-signin' : error }" )
                 .actions
                   .action
                     .signin-btn( @click="handlers().signin()" )
