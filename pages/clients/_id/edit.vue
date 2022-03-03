@@ -729,6 +729,15 @@ export default {
     this.meta.meta_object_personal[10].value = this.client_id.mail;
     this.meta.meta_object_personal[11].value = this.client_id.phone;
 
+    if (this.client_id.type == 'entity'){
+      this.meta.meta_object_entity[9].params.bik = this.client_id.bik;
+      this.meta.meta_object_entity[10].params.bik = this.client_id.bik;
+    }
+    else{
+      this.meta.meta_object_personal[6].params.bik = this.client_id.bik;
+      this.meta.meta_object_personal[7].params.bik = this.client_id.bik;
+    }
+
     this.meta.meta_object_info.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     })

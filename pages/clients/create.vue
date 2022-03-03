@@ -387,6 +387,9 @@ export default {
         "gen_director": this.formValues.general_manager,
         "mail": this.formValues.object_contact_email,
         "phone": this.formValues.object_contact_phone,
+        "ogrnip": this.formValues.ogrnip,
+        "date_certificate": this.formValues.date_certificate,
+        "number_certificate": this.formValues.number_certificate,
       };
 
       return postBody;
