@@ -11,7 +11,7 @@
           :value="params.value"
           :solo="params.solo"
           :append-icon="getters().getAppendIcon( { params } )"
-          :rules="[ ...params.rules ]"
+          :rules="[ ...( params.rules || [] ) ]"
           :type="getters().getType( { params } )"
           name="input-10-1"
           :label="params.label"
@@ -67,7 +67,7 @@
               return this.show ? 'mdi-eye' : 'mdi-eye-off';
 
               default :
-              return false;
+              return '';
             }
           },
 
@@ -80,7 +80,7 @@
               return this.show ? 'text' : 'password';
 
               default :
-              return false;
+              return 'text';
             }
           },
         }
