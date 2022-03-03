@@ -15,18 +15,12 @@ export const getters = {
 export const actions = {
   async fetchClientId({commit}, requestId) {
     const client_id = await this.$axios.get('/super_manager/accounts/' + requestId, {
-      headers: {
-        "Authorization": "Bearer af2cf5b991716c8fe1d0c6bf9c7a03f6fa088887dd10921d605dad809e2df125"
-      }
     });
     commit('setRequest', client_id);
   },
 
   async getDocs({commit}, requestId) {
     const documents = await this.$axios.get('/super_manager/accounts/' + requestId + '/documents', {
-      headers: {
-        "Authorization": "Bearer af2cf5b991716c8fe1d0c6bf9c7a03f6fa088887dd10921d605dad809e2df125"
-      }
     });
     commit('setDocs', documents);
   },
@@ -36,10 +30,6 @@ export const actions = {
     await this.$axios.post('/super_manager/accounts/' + clientId + '/documents/',
       '',
       {
-        headers: {
-          "Authorization": "Bearer af2cf5b991716c8fe1d0c6bf9c7a03f6fa088887dd10921d605dad809e2df125",
-          'Content-Type': 'application/json',
-        },
         params: {"document": docName}
 
       })
@@ -63,10 +53,6 @@ export const actions = {
     await this.$axios.put('super_manager/accounts/'+clientId+'/documents/'+docId,
       '',
       {
-        headers: {
-          "Authorization": "Bearer af2cf5b991716c8fe1d0c6bf9c7a03f6fa088887dd10921d605dad809e2df125",
-          'Content-Type': 'application/json',
-        },
         params: {"document": docName}
 
       })
@@ -94,7 +80,6 @@ export const actions = {
       formData,
       {
         headers: {
-          "Authorization": "Bearer af2cf5b991716c8fe1d0c6bf9c7a03f6fa088887dd10921d605dad809e2df125",
           'Content-Type': 'multipart/form-data',
         },
       })
@@ -110,9 +95,6 @@ export const actions = {
   async removeDoc({commit, dispatch}, {clientId, docId}) {
 
     await this.$axios.delete('super_manager/accounts/'+clientId+'/documents/'+docId, {
-      headers: {
-        "Authorization": "Bearer af2cf5b991716c8fe1d0c6bf9c7a03f6fa088887dd10921d605dad809e2df125",
-      },
     })
       .then((response) => {
         console.log(response);
@@ -128,9 +110,6 @@ export const actions = {
   async removePhoto({commit, dispatch}, {clientId, docId, imageId}) {
 
     await this.$axios.delete('super_manager/accounts/'+clientId+'/documents/'+docId+'/image/'+imageId, {
-      headers: {
-        "Authorization": "Bearer af2cf5b991716c8fe1d0c6bf9c7a03f6fa088887dd10921d605dad809e2df125",
-      },
     })
       .then((response) => {
         console.log(response);

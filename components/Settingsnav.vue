@@ -22,7 +22,6 @@
       showMenu: true,
       items: [
         {title: 'Профиль', link: '/profile', img: '/img/ico_profile.svg'},
-        {title: 'Настройки', link: '/settings', img: '/img/ico_settings.svg'},
       ],
     }),
     computed: {},

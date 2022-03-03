@@ -55,7 +55,7 @@ export default {
         {
           this.timerRuqiId = setInterval(
             () => {
-              console.log(this);
+             // console.log(this);
 
               const ruqi = document.querySelector( '.ruqi' );
 
@@ -107,7 +107,7 @@ export default {
 
   mounted ()
   {
-    console.debug( 'mounted', this.helpers().isLoginPage() );
+   // console.debug( 'mounted', this.helpers().isLoginPage() );
   },
 }
 

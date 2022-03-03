@@ -59,7 +59,7 @@ export default {
   },
 
   router : {
-    middleware : [ 'check_auth' ],
+    middleware : [ 'check_auth', 'access_rights' ],
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

@@ -29,11 +29,12 @@
                   color="#D6D0FE"
                   size="32"
                 >
-                  <span class="white--text">{{ user.initials }}</span>
+                  <span class="white--text" v-if="user.firstname">{{ user.firstname.substr(0,1) }}</span>
+                  <span class="white--text" v-if="user.lastname">{{ user.lastname.substr(0,1) }}</span>
                 </v-avatar>
               </v-col>
               <v-col class="px-0">
-                <p class="user_name">{{ user.fullName }}</p>
+                <p class="user_name">{{ user.firstname }} {{ user.lastname }}</p>
                 <p class="user_mail">
                   {{ user.email }}
                 </p>
@@ -45,6 +46,8 @@
               <div class="mx-auto text-left">
                 <v-btn
                   text
+                  link
+                  to="/profile/"
                 >
                   Профиль
                 </v-btn>
@@ -105,12 +108,6 @@ import {mapActions} from "vuex";
 
 export default {
   data: () => ({
-    user: {
-      initials: 'АВ',
-      fullName: 'Антон Васильев',
-      email: 'vasilyev@mail.ru',
-    },
-
     items: [
       {
         text: 'Dashboard',
@@ -134,6 +131,9 @@ export default {
   computed:{
     notifications() {
       return this.$store.getters['notifications/notifications'];
+    },
+    user() {
+      return this.$store.getters['user/user'];
     },
   },
   methods:{

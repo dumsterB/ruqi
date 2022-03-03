@@ -39,6 +39,9 @@ export default {
         ogrn: value => {
           return this.validateOgrn(value) || this.error.message
         },
+        ogrnip: value => {
+          return this.validateOgrnip(value) || this.error.message
+        },
         inn: value => {
           return this.validateInn(value) || this.error.message
         },
@@ -95,6 +98,29 @@ export default {
       } else {
         let n13 = parseInt((parseInt(ogrn.slice(0, -1)) % 11).toString().slice(-1));
         if (n13 === parseInt(ogrn[12])) {
+          result = true;
+        } else {
+          this.error.message = 'Неправильное контрольное число';
+        }
+      }
+      return result;
+    },
+    validateOgrnip(ogrnip) {
+      let result = false;
+      if (typeof ogrnip === 'number') {
+        ogrnip = ogrnip.toString();
+      } else if (typeof ogrnip !== 'string') {
+        ogrnip = '';
+      }
+      if (!ogrnip.length) {
+        this.error.message = 'ОГРНИП пуст';
+      } else if (/[^0-9]/.test(ogrnip)) {
+        this.error.message = 'ОГРНИП может состоять только из цифр';
+      } else if (ogrnip.length !== 15) {
+        this.error.message = 'ОГРНИП может состоять только из 15 цифр';
+      } else {
+        let n15 = parseInt((parseInt(ogrnip.slice(0, -1)) % 13).toString().slice(-1));
+        if (n15 === parseInt(ogrnip[14])) {
           result = true;
         } else {
           this.error.message = 'Неправильное контрольное число';
