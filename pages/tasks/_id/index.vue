@@ -558,7 +558,7 @@ export default {
     },
 
     openTimesheet(){
-      this.$router.push('/request/'+ this.request_id.uuid+'/timesheet/');
+      this.$router.push('/tasks/'+ this.request_id.uuid+'/timesheet/');
     },
 
     changeStatus(status){
@@ -611,10 +611,10 @@ export default {
   watch: {
     activeAction: function (val) {
       if (val == 'edit'){
-        this.$router.push('/request/'+ this.$route.params.id+'/edit/');
+        this.$router.push('/tasks/'+ this.$route.params.id+'/edit/');
       }
       else if (val == 'delete'){
-        this.$router.push('/request/');
+        this.$router.push('/tasks/');
         this.removeRequest(this.$route.params.id);
       }
       else if (val == 'copy'){

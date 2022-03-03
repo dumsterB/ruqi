@@ -27,7 +27,7 @@ export default {
     items: [
       {
         title: 'Заявки',
-        link: '/request',
+        link: '/tasks',
         img: '/img/ico_app.svg',
         role: ['superManager', 'manager', 'dispatcher', 'contractor']
       },

@@ -30,7 +30,7 @@
               <div class="color-black" @click="openRequest(item.uuid)">
                 <span class="request-i" :class="{'reed': item.read}"></span>
                 {{ item.name }}
-                <a :href="'/request/'+item.task.uuid">{{ item.task.name }}</a>
+                <a :href="'/tasks/'+item.task.uuid">{{ item.task.name }}</a>
                 <div class="date-note">
                   {{ formatDate(item.created_at) }}
                 </div>
@@ -44,7 +44,7 @@
             </template>
 
             <template v-slot:item.actions="{ item }">
-              <a :href="'/request/'+item.task.uuid" class="link-note">перейти к заявке</a>
+              <a :href="'/tasks/'+item.task.uuid" class="link-note">перейти к заявке</a>
             </template>
 
           </v-data-table>

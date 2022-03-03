@@ -80,7 +80,7 @@
             <v-card>
               <v-list-item-content class="justify-start">
                 <div class="mx-auto text-left">
-                  <nuxt-link :to="'/request/'+ item.uuid +'/edit/'">
+                  <nuxt-link :to="'/tasks/'+ item.uuid +'/edit/'">
                     <span>Редактировать</span>
                   </nuxt-link>
                   <v-divider class="my-3"></v-divider>
@@ -143,7 +143,7 @@ export default {
     ...mapActions('objects', ['fetchObjects',]),
 
     openRequest(id){
-      this.$router.push('/request/'+ id);
+      this.$router.push('/tasks/'+ id);
     },
     setItemsPerPage(value){
       this.itemsPerPage = value;

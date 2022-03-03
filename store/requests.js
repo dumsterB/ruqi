@@ -37,7 +37,7 @@ export const actions = {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
         setTimeout(function() {
-          self.$router.push('/request/');
+          self.$router.push('/tasks/');
         }, 3000);
 
       })
@@ -69,7 +69,7 @@ export const actions = {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
         setTimeout(function() {
-          self.$router.push('/request/'+response.data.data+'/edit');
+          self.$router.push('/tasks/'+response.data.data+'/edit');
         }, 3000);
       })
       .catch((error) => {
@@ -117,7 +117,7 @@ export const actions = {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
         setTimeout(function() {
-          self.$router.push('/request/');
+          self.$router.push('/tasks/');
         }, 3000);
       })
       .catch((error) => {

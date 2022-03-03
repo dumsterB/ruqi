@@ -134,7 +134,7 @@
                         <v-card>
                           <v-list-item-content class="justify-start">
                             <div class="mx-auto text-left">
-                              <nuxt-link :to="'/request/'+ item.uuid +'/edit/'">
+                              <nuxt-link :to="'/tasks/'+ item.uuid +'/edit/'">
                                 <span>Редактировать</span>
                               </nuxt-link>
                             </div>

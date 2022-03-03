@@ -16,31 +16,22 @@ export const getters = {
 export const actions = {
   async fetchObjectId({commit}, requestId) {
 
-    const object_id = await this.$axios.get('/manager/objects/' + requestId, {
-      headers: {
-        "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
-      }
-    });
+    const object_id = await this.$axios.get('/objects/' + requestId, );
     commit('setRequest', object_id);
 
   },
   async fetchObjectIdRequest({commit}, requestId) {
 
-    const object_id_requests = await this.$axios.get('/objects/' + requestId + '/tasks', {
-      headers: {
-        "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
-      }
-    });
+    const object_id_requests = await this.$axios.get('/objects/' + requestId + '/tasks', );
 
     commit('setObjectIdRequests', object_id_requests);
 
   },
   async putStatus({commit, dispatch}, {requestId, status}) {
-    await this.$axios.put('/manager/objects/' + requestId + '/' + status,
+    await this.$axios.put('/objects/' + requestId + '/' + status,
       {},
       {
         headers: {
-          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
           'Content-Type': 'application/json',
         },
       })

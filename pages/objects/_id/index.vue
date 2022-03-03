@@ -204,7 +204,7 @@
                       <v-card>
                         <v-list-item-content class="justify-start">
                           <div class="mx-auto text-left">
-                            <nuxt-link :to="'/request/'+ item.uuid +'/edit/'">
+                            <nuxt-link :to="'/tasks/'+ item.uuid +'/edit/'">
                               <span>Редактировать</span>
                             </nuxt-link>
                           </div>
@@ -445,7 +445,7 @@ export default {
     ...mapActions('object_id', ['putStatus',]),
 
     openRequest(id) {
-      this.$router.push('/request/' + id);
+      this.$router.push('/tasks/' + id);
     },
     updateSearchText(value) {
       this.searchText = value;
