@@ -7,24 +7,46 @@
     .body
       .wrapper__body
         .haupt-data
-          Input.mix-input.haupt-data__input( :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.firstname, value : user.firstname }" )
-          Input.mix-input.haupt-data__input( :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.secondname, value : user.middlename }" )
-          Input.mix-input.haupt-data__input( :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.thirdname, value : user.lastname }" )
+          Input.mix-input.haupt-data__input(
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.firstname, value : user.firstname }"
+            @input_change="setters().setFirstName( { event : $event } )"
+          )
+          Input.mix-input.haupt-data__input(
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.secondname, value : user.middlename }"
+            @input_change="setters().setMiddleName( { event : $event } )"
+          )
+          Input.mix-input.haupt-data__input(
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.thirdname, value : user.lastname }"
+            @input_change="setters().setLastName( { event : $event } )"
+          )
 
         .birthday
           dateInputWithTitle.birthday__input( :title="inputTitles.birthday" )
 
         .sex
           .titel {{ inputTitles.sex }}
-          v-radio-group( v-model="row" row )
+          v-radio-group(
+            row
+            :value="user.gender"
+            @change="setters().setGender( { event : $event } )"
+          )
             v-radio( value="male" label="Мужской" color="info" )
             v-radio( value="female" label="Женский" color="info" )
         .city
-          Input.mix-input.city__input( :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.city, value : user.city }" )
+          Input.mix-input.city__input(
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.city, value : user.city }"
+            @input_change="setters().setCity( { event : $event } )"
+          )
 
         .contact-info
-          Input.mix-input.contact-info__input.phone( :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.phone, value : user.phone }" )
-          Input.mix-input.contact-info__input( :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.email, value : user.email }" )
+          Input.mix-input.contact-info__input.phone(
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.phone, value : user.settings.contact_phone }"
+            @input_change="setters().setContactPhone( { event : $event } )"
+          )
+          Input.mix-input.contact-info__input(
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.email, value : user.settings.contact_email }"
+            @input_change="setters().setContactEmail( { event : $event } )"
+          )
 
 </template>
 
@@ -47,6 +69,7 @@
     {
       return {
         hauptTitel : 'Личные данные',
+
         inputTitles : {
           firstname : 'Имя',
           secondname : 'Фамилия',
@@ -73,6 +96,8 @@
     },
 
     methods : {
+      ...mapActions( 'user', [ 'setUserData', ] ),
+
       getters ()
       {
         return {}
@@ -80,7 +105,49 @@
 
       setters ()
       {
-        return {}
+        return {
+          setFirstName : ( payload = {} ) => {
+            console.log( 'setFirstName', payload ); // DELETE log muss weg
+
+            this.setUserData( { firstname : payload.event } );
+          },
+
+          setMiddleName : ( payload = {} ) => {
+            console.log( 'setMiddleName', payload ); // DELETE log muss weg
+
+            this.setUserData( { middlename : payload.event } );
+          },
+
+          setLastName : ( payload = {} ) => {
+            console.log( 'setLastName', payload ); // DELETE log muss weg
+
+            this.setUserData( { lastname : payload.event } );
+          },
+
+          setGender : ( payload = {} ) => {
+            console.log( 'setGender', payload ); // DELETE log muss weg
+
+            this.setUserData( { gender : payload.event } );
+          },
+
+          setCity : ( payload = {} ) => {
+            console.log( 'setCity', payload ); // DELETE log muss weg
+
+            this.setUserData( { city : payload.event } );
+          },
+
+          setContactPhone : ( payload = {} ) => {
+            console.log( 'setContactPhone', payload ); // DELETE log muss weg
+
+            this.setUserData( { settings : { ...this.user.settings, contact_phone : payload.event } } );
+          },
+
+          setContactEmail : ( payload = {} ) => {
+            console.log( 'setContactEmail', payload ); // DELETE log muss weg
+
+            this.setUserData( { settings : { ...this.user.settings, contact_email : payload.event } } );
+          },
+        }
       },
 
       handlers ()

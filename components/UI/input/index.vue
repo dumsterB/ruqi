@@ -18,6 +18,7 @@
           :hint="params.hint"
           :counter="params.counter"
           @click:append="show = !show"
+          @change="handlers().onInputChange( $event )"
         )
 
 </template>
@@ -93,7 +94,11 @@
 
       handlers ()
       {
-        return {}
+        return {
+          onInputChange : ( payload = {} ) => {
+            this.$emit( 'input_change', payload );
+          },
+        }
       },
 
       helpers ()

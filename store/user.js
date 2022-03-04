@@ -1,6 +1,8 @@
 export const state = () => (
   {
-    user : {},
+    user : {
+      settings : {}
+    },
   }
 );
 
@@ -22,13 +24,13 @@ export const actions = {
   },
 
   async setUserData ( { commit }, payload )
-  {},
+  {
+    commit( 'updateUserData', payload );
+  },
 
   async uploadUserData ()
   {
-    const response = await this.$axios.put( 'user/settings' );
-
-    console.log( 'fetchUser', response );
+    return await this.$axios.put( 'user/settings' );
   },
 }
 

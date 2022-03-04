@@ -32,7 +32,10 @@
             Password
 
       .actions-block
-        backOrConfirmEdit.back-or-confirmEdit__block
+        backOrConfirmEdit.back-or-confirmEdit__block(
+          @onBackClick="handlers().onBackClick()"
+          @onConfirmClick="handlers().onConfirmClick()"
+        )
 
 </template>
 
@@ -121,6 +124,14 @@
           onTabClicked : ( payload = {} ) => {
             console.log( payload );
             this.setters().setActiveTab( { tab : payload.index } );
+          },
+
+          onBackClick : () => {
+            console.log( 'onBackClick', this.tabs.active_tab );
+          },
+
+          onConfirmClick : () => {
+            console.log( 'onConfirmClick', this.tabs.active_tab );
           },
         }
       },

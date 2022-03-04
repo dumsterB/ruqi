@@ -2,9 +2,9 @@
 
 .back-or-confirm-edit
   .actions-wrapper
-    .back-btn
+    .back-btn( @click="handlers().onBackClick()" )
       .titel {{ titles.backBtn }}
-    .confirm-edit-btn
+    .confirm-edit-btn( @click="handlers().onConfirmClick()" )
       .titel {{ titles.confirmBtn }}
 
 </template>
@@ -38,7 +38,15 @@
 
       handlers ()
       {
-        return {}
+        return {
+          onBackClick : () => {
+            this.$emit( 'onBackClick' );
+          },
+
+          onConfirmClick : () => {
+            this.$emit( 'onConfirmClick' );
+          },
+        }
       },
 
       helpers ()
