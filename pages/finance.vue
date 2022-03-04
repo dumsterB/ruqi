@@ -20,7 +20,6 @@
             :headers="headers"
             :items="finances"
             class="elevation-0"
-            item-key="uuid"
             :page.sync="page"
             :items-per-page="itemsPerPageTable"
             @page-count="pageCount = $event"
@@ -37,7 +36,7 @@
 
             <template v-slot:item.sum="{ item }">
             <div class="request-pay">
-              {{item.sum}}
+              {{item.payment}}
             </div>
           </template>
 
@@ -110,8 +109,26 @@ export default {
       this.$router.push('/clients/' + id);
     },
     filter() {
-      const newRequet = this.postBody;
+      let start_date = this.formValues.period[0],
+          end_date = this.formValues.period[1],
+          newRequet = {};
+
+      if (start_date < end_date){
+        newRequet = {
+          "start_date": start_date,
+          "end_date": end_date,
+        };
+      }
+      else{
+        newRequet = {
+          "start_date": end_date,
+          "end_date": start_date,
+        };
+      }
+
+      console.log('фильтрация ----',  newRequet);
       this.fetchFinances(newRequet);
+      this.fetchSummary(newRequet);
     },
     setItemsPerPage(value) {
       this.itemsPerPage = value;
@@ -146,14 +163,6 @@ export default {
         return 1;
       }
     },
-    postBody() {
-      let postBody = {
-        "start_date": this.formValues.period[0],
-        "end_date": this.formValues.period[1],
-      }
-      console.log(postBody);
-      return postBody;
-    }
   },
   async mounted() {
     await this.fetchFinances();
