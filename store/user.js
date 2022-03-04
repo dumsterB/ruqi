@@ -1,7 +1,8 @@
 export const state = () => (
   {
     user : {
-      settings : {}
+      settings : {},
+      visibility_sections : [],
     },
   }
 );
