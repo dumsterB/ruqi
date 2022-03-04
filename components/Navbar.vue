@@ -27,31 +27,31 @@ export default {
     items: [
       {
         title: 'Заявки',
-        link: '/request',
+        link: '/tasks',
         img: '/img/ico_app.svg',
-        role: ['super_manager', 'manager', 'dispatcher', 'contractor']
+        role: ['superManager', 'manager', 'dispatcher', 'contractor']
       },
       {
         title: 'Сотрудники',
         link: '/employees',
         img: '/img/ico_employees.svg',
-        role: ['super_manager', 'manager',]},
+        role: ['superManager', 'manager',]},
       {
         title: 'Исполнители',
         link: '/performers',
         img: '/img/ico_performers.svg',
-        role: ['super_manager', 'manager', 'dispatcher',]
+        role: ['superManager', 'manager', 'dispatcher',]
       },
       {
         title: 'Клиенты',
         link: '/clients',
         img: '/img/ico_clients.svg',
-        role: ['super_manager',]},
+        role: ['superManager',]},
       {
         title: 'Объекты',
         link: '/objects',
         img: '/img/ico_objects.svg',
-        role: ['super_manager', 'manager', 'dispatcher',]
+        role: ['superManager', 'manager', 'dispatcher',]
       },
       {
         title: 'Финансы',
@@ -62,13 +62,13 @@ export default {
         title: 'Обращения',
         link: '/appeal',
         img: '/img/ico_appeal.svg',
-        role: ['super_manager', 'manager', 'dispatcher', 'contractor']
+        role: ['superManager', 'manager', 'dispatcher', 'contractor']
       },
       {
         title: 'Уведомления',
         link: '/notification',
         img: '/img/ico_notifications.svg',
-        role: ['super_manager', 'manager', 'dispatcher', 'contractor']
+        role: ['superManager', 'manager', 'dispatcher', 'contractor']
       },
     ],
   }),
@@ -77,12 +77,7 @@ export default {
       return this.$store.getters['user/user']
     },
   },
-  methods: {
-    ...mapActions('user', ['fetchUser',]),
-  },
-  mounted() {
-    this.fetchUser();
-  }
+  methods: {},
 }
 </script>
 

@@ -68,7 +68,7 @@
 
     <v-divider></v-divider>
 
-    <v-row no-gutters class="mt-8">
+    <v-row no-gutters class="mt-8" v-if="user.type == 'superManager' || user.type == 'manager'">
       <v-col>
         <v-btn
           text
@@ -254,6 +254,9 @@ export default {
 
   },
   computed: {
+    user() {
+      return this.$store.getters['user/user']
+    },
     objects() {
       return this.$store.getters['objects/objects'];
     },

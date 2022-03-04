@@ -21,6 +21,8 @@
             <v-form ref="form_part_0" v-model="valid" lazy-validation>
               <div class="form-part">
                 <FormBuilder :meta="meta.meta_object_info" @updateFiled="updateFiled"/>
+                <FormBuilder v-if="formValues.object_type == 'entity'" :meta="meta.meta_object_entity" @updateFiled="updateFiled"/>
+                <FormBuilder v-if="formValues.object_type == 'personal'" :meta="meta.meta_object_personal" @updateFiled="updateFiled"/>
               </div>
             </v-form>
           </v-tab-item>
@@ -86,14 +88,6 @@ export default {
       meta: {
         meta_object_info: [
           {
-            type: 'FTypeText',
-            label: 'Полное наименование организации',
-            col: 12,
-            name: 'name',
-            validation: ['required'],
-            value: ''
-          },
-          {
             type: 'FTypeSelectUIID',
             label: 'Вид контрагента',
             col: 12,
@@ -122,6 +116,16 @@ export default {
             validation: 'required',
             value: ''
           },
+        ],
+        meta_object_entity: [
+          {
+            type: 'FTypeText',
+            label: 'Полное наименование организации',
+            col: 12,
+            name: 'name',
+            validation: ['required'],
+            value: ''
+          },
           {
             type: 'FTypeText',
             label: 'Юридический адрес',
@@ -135,7 +139,7 @@ export default {
             label: 'Почтовый адрес',
             col: 12,
             name: 'post_address',
-            validation: ['required'],
+            validation: [],
             value: ''
           },
           {
@@ -143,7 +147,7 @@ export default {
             label: 'ОГРН',
             col: 6,
             name: 'ogrn',
-            validation: ['required', 'ogrn'],
+            validation: ['ogrn'],
             value: ''
           },
           {
@@ -151,7 +155,7 @@ export default {
             label: 'ОКАТО',
             col: 6,
             name: 'okato',
-            validation: ['required'],
+            validation: [],
             value: ''
           },
           {
@@ -180,22 +184,6 @@ export default {
           },
           {
             type: 'FTypeText',
-            label: 'Расчетный счет',
-            col: 6,
-            name: 'payment_account',
-            validation: ['required'],
-            value: ''
-          },
-          {
-            type: 'FTypeText',
-            label: 'Корреспондентский счёт',
-            col: 6,
-            name: 'cor_account',
-            validation: ['required', 'ks'],
-            value: ''
-          },
-          {
-            type: 'FTypeText',
             label: 'Банк',
             col: 12,
             name: 'bank',
@@ -204,10 +192,32 @@ export default {
           },
           {
             type: 'FTypeText',
+            label: 'Расчетный счет',
+            col: 6,
+            name: 'payment_account',
+            validation: ['required', 'rs'],
+            value: '',
+            params: {
+              bik: ''
+            }
+          },
+          {
+            type: 'FTypeText',
+            label: 'Корреспондентский счёт',
+            col: 6,
+            name: 'cor_account',
+            validation: ['required', 'ks'],
+            value: '',
+            params: {
+              bik: ''
+            }
+          },
+          {
+            type: 'FTypeText',
             label: 'Генеральный директор',
             col: 12,
             name: 'general_manager',
-            validation: ['required'],
+            validation: [],
             value: ''
           },
           {
@@ -226,7 +236,110 @@ export default {
             validation: ['required', 'phone'],
             value: ''
           },
-
+        ],
+        meta_object_personal: [
+          {
+            type: 'FTypeText',
+            label: 'ФИО',
+            col: 12,
+            name: 'name',
+            validation: ['required'],
+            value: ''
+          },
+          {
+            type: 'FTypeText',
+            label: 'Почтовый адрес',
+            col: 12,
+            name: 'post_address',
+            validation: [],
+            value: ''
+          },
+          {
+            type: 'FTypeText',
+            label: 'ОГРНИП',
+            col: 12,
+            name: 'ogrnip',
+            validation: ['ogrnip'],
+            value: ''
+          },
+          {
+            type: 'FTypeText',
+            label: 'ИНН',
+            col: 6,
+            name: 'inn',
+            validation: ['required', 'inn'],
+            value: ''
+          },
+          {
+            type: 'FTypeText',
+            label: 'БИК',
+            col: 6,
+            name: 'bik',
+            validation: ['required', 'bik'],
+            value: ''
+          },
+          {
+            type: 'FTypeText',
+            label: 'Банк',
+            col: 12,
+            name: 'bank',
+            validation: ['required'],
+            value: ''
+          },
+          {
+            type: 'FTypeText',
+            label: 'Расчетный счет',
+            col: 6,
+            name: 'payment_account',
+            validation: ['required', 'rs'],
+            value: '',
+            params: {
+              bik: ''
+            }
+          },
+          {
+            type: 'FTypeText',
+            label: 'Корреспондентский счёт',
+            col: 6,
+            name: 'cor_account',
+            validation: ['required', 'ks'],
+            value: '',
+            params: {
+              bik: ''
+            }
+          },
+          {
+            type: 'FTypeText',
+            label: 'Номер свидетельства',
+            col: 6,
+            name: 'number_certificate',
+            validation: ['required',],
+            value: '',
+          },
+          {
+            type: 'FTypeText',
+            label: 'Дата свидетельства',
+            col: 6,
+            name: 'date_certificate',
+            validation: ['required',],
+            value: '',
+          },
+          {
+            type: 'FTypeText',
+            label: 'Электронная почта',
+            col: 12,
+            name: 'object_contact_email',
+            validation: ['required', 'email'],
+            value: ''
+          },
+          {
+            type: 'FTypeText',
+            label: 'Телефон',
+            col: 12,
+            name: 'object_contact_phone',
+            validation: ['required', 'phone'],
+            value: ''
+          },
         ],
         meta_object_doc: [],
       },
@@ -274,6 +387,9 @@ export default {
         "gen_director": this.formValues.general_manager,
         "mail": this.formValues.object_contact_email,
         "phone": this.formValues.object_contact_phone,
+        "ogrnip": this.formValues.ogrnip,
+        "date_certificate": this.formValues.date_certificate,
+        "number_certificate": this.formValues.number_certificate,
       };
 
       return postBody;
@@ -331,6 +447,26 @@ export default {
     },
     updateFiled(field, value) {
       this.formValues[field] = value;
+
+      if (field == 'bik'){
+
+        if (this.formValues.object_type == 'entity'){
+          this.meta.meta_object_entity[9].params.bik = value;
+          this.meta.meta_object_entity[10].params.bik = value;
+          this.meta.meta_object_entity[9].value = '';
+          this.meta.meta_object_entity[10].value = '';
+        }
+        else{
+          this.meta.meta_object_personal[6].params.bik = value;
+          this.meta.meta_object_personal[7].params.bik = value;
+          this.meta.meta_object_personal[6].value = '';
+          this.meta.meta_object_personal[7].value = '';
+        }
+
+        this.formValues.cor_account = '';
+        this.formValues.payment_account = '';
+
+      }
       console.log(field, value);
     },
     updateDocs(index_block, field, value, index) {
@@ -445,8 +581,14 @@ export default {
     this.meta.meta_object_info.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     })
+    this.meta.meta_object_entity.map(f => {
+      Vue.set(this.formValues, f.name, f.value);
+    })
+    this.meta.meta_object_personal.map(f => {
+      Vue.set(this.formValues, f.name, f.value);
+    })
 
-    this.meta.meta_object_info[2].params.options = this.specializations;
+    this.meta.meta_object_info[1].params.options = this.specializations;
   }
 }
 </script>

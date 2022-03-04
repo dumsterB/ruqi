@@ -11,20 +11,15 @@ export const getters = {
 
 export const actions = {
   async fetch({commit}) {
-    const requests = await this.$axios.get('/manager/tasks', {
-      headers: {
-        "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
-      }
-    });
+    const requests = await this.$axios.get('/tasks');
     commit('setRequest', requests)
   },
   async createRequest({commit, dispatch}, newRequest) {
     let self= this;
-    const requests = await this.$axios.post('/manager/tasks',
+    const requests = await this.$axios.post('/tasks',
       newRequest,
       {
         headers: {
-          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
           'Content-Type': 'application/json',
         },
 
@@ -37,7 +32,7 @@ export const actions = {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
         setTimeout(function() {
-          self.$router.push('/request/');
+          self.$router.push('/tasks/');
         }, 3000);
 
       })
@@ -52,11 +47,10 @@ export const actions = {
   },
   async copyRequest({commit, dispatch}, requestID) {
     let self= this;
-    const requests = await this.$axios.post('/manager/tasks/'+requestID+'/copy',
+    const requests = await this.$axios.post('/tasks/'+requestID+'/copy',
       '',
       {
         headers: {
-          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
           'Content-Type': 'application/json',
         },
 
@@ -69,7 +63,7 @@ export const actions = {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
         setTimeout(function() {
-          self.$router.push('/request/'+response.data.data+'/edit');
+          self.$router.push('/tasks/'+response.data.data+'/edit');
         }, 3000);
       })
       .catch((error) => {
@@ -79,11 +73,7 @@ export const actions = {
   },
   async removeRequest({commit, dispatch}, requestID) {
 
-    await this.$axios.delete('/manager/tasks/'+requestID, {
-      headers: {
-        "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
-      },
-    })
+    await this.$axios.delete('/tasks/'+requestID)
       .then((response) => {
         console.log(response);
         dispatch('fetch');
@@ -100,11 +90,10 @@ export const actions = {
   },
   async putRequest({commit, dispatch}, {uuid, body}) {
     let self= this;
-    await this.$axios.put('/manager/tasks/'+uuid,
+    await this.$axios.put('/tasks/'+uuid,
       body,
       {
         headers: {
-          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
           'Content-Type': 'application/json',
         },
 
@@ -117,7 +106,7 @@ export const actions = {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
         setTimeout(function() {
-          self.$router.push('/request/');
+          self.$router.push('/tasks/');
         }, 3000);
       })
       .catch((error) => {

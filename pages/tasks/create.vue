@@ -17,7 +17,7 @@
         lazy-validation
       >
         <v-window v-model="tab">
-          <v-tab-item >
+          <v-tab-item>
             <v-form ref="form_part_0" v-model="valid" lazy-validation>
               <div class="form-part">
                 <div class="form-part-title">
@@ -50,56 +50,57 @@
           <v-tab-item>
             <v-form ref="form_part_1" v-model="valid" lazy-validation>
               <div class="form-part min-padding">
-              <div class="form-part-title">
-                Виды работ и оплата
-              </div>
-              <div class="form-part-description">
-                Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное
-                расположение.
-              </div>
-              <v-row class="ma-0">
-                <v-col
-                  cols="12"
-                  lg="5"
-                  class="pl-0 pb-0"
-                >
-                  <div class="form-part-label">Наименование работ</div>
+                <div class="form-part-title">
+                  Виды работ и оплата
+                </div>
+                <div class="form-part-description">
+                  Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное
+                  расположение.
+                </div>
+                <v-row class="ma-0">
+                  <v-col
+                    cols="12"
+                    lg="5"
+                    class="pl-0 pb-0"
+                  >
+                    <div class="form-part-label">Наименование работ</div>
 
-                </v-col>
-                <v-col
-                  cols="12"
-                  lg="5"
-                  class="pl-0 pb-0"
-                >
-                  <div class="form-part-label">Стоимость</div>
-
-                </v-col>
-                <v-col
-                  cols="12"
-                  lg="2"
-                  class="pl-0 pb-0"
-                >
-                  <div class="form-part-label">Нужно человек</div>
-
-                </v-col>
-
-                <v-row class="d-flex w-100">
-                  <v-col cols="12" :lg="item.col"
-                         v-for="(item, index) in meta.meta_object_pay" :key="index">
-                    <div class="form-part-label" v-if="item.label">{{ item.label }}</div>
-                    <div class="d-flex w-100">
-                      <FormBuilder :meta="meta.meta_object_pay[index]" @removeItem="removeItem" @updateFiled="updateFiledinArray(index, ...arguments)"/>
-                      <a href="#" @click.prevent="removeItem(index, 'meta_object_pay')" class="remove-item">
-                        <img src="/img/ico_close.svg" alt="Удалить">
-                      </a>
-                    </div>
                   </v-col>
+                  <v-col
+                    cols="12"
+                    lg="5"
+                    class="pl-0 pb-0"
+                  >
+                    <div class="form-part-label">Стоимость</div>
+
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    lg="2"
+                    class="pl-0 pb-0"
+                  >
+                    <div class="form-part-label">Нужно человек</div>
+
+                  </v-col>
+
+                  <v-row class="d-flex w-100">
+                    <v-col cols="12" :lg="item.col"
+                           v-for="(item, index) in meta.meta_object_pay" :key="index">
+                      <div class="form-part-label" v-if="item.label">{{ item.label }}</div>
+                      <div class="d-flex w-100">
+                        <FormBuilder :meta="meta.meta_object_pay[index]" @removeItem="removeItem"
+                                     @updateFiled="updateFiledinArray(index, ...arguments)"/>
+                        <a href="#" @click.prevent="removeItem(index, 'meta_object_pay')" class="remove-item">
+                          <img src="/img/ico_close.svg" alt="Удалить">
+                        </a>
+                      </div>
+                    </v-col>
+                  </v-row>
+
+                  <a href="#" @click.prevent="addTypeWork" class="add_link">Добавить вид работ</a>
                 </v-row>
 
-                <a href="#" @click.prevent="addTypeWork" class="add_link">Добавить вид работ</a>
-              </v-row>
-
-            </div>
+              </div>
             </v-form>
           </v-tab-item>
           <v-tab-item>
@@ -107,7 +108,8 @@
               <div class="form-part form-part-contact"
                    v-for="(item, index) in meta.meta_object_contact"
                    :key="index">
-                <a v-show="index != 0" href="#" @click.prevent="removeItem(index, 'meta_object_contact')" class="remove-item">
+                <a v-show="index != 0" href="#" @click.prevent="removeItem(index, 'meta_object_contact')"
+                   class="remove-item">
                   <img src="/img/ico_close.svg" alt="Удалить">
                 </a>
                 <FormBuilder :meta="item" @updateFiled="updateFiledinArray(index, ...arguments)"/>
@@ -119,7 +121,8 @@
             <v-form ref="form_part_3" v-model="valid" lazy-validation>
               <div class="form-part">
                 <div class="form-part-label">Диспетчеры</div>
-                <FormBuilder :meta="meta.meta_object_responsible" @removeItem="removeItem" @updateFiled="updateFiledResp"/>
+                <FormBuilder :meta="meta.meta_object_responsible" @removeItem="removeItem"
+                             @updateFiled="updateFiledResp"/>
                 <a href="#" @click.prevent="addResponsible('responsible')" class="add_link">Добавить диспетчера</a>
               </div>
             </v-form>
@@ -150,6 +153,9 @@ export default {
     }
     if (store.getters['dispatchers/dispatchers'].length === 0) {
       await store.dispatch('dispatchers/fetch')
+    }
+    if (store.getters['dictionary/professions'].length === 0) {
+      await store.dispatch('dictionary/fetcProfessions')
     }
   },
   data() {
@@ -306,7 +312,7 @@ export default {
               col: 12,
               id: 'object_contact_phone',
               name: 'object_contact_phone_0',
-              validation: ['required' ,'phone'],
+              validation: ['required', 'phone'],
               parent_array: 'meta_object_contact',
               value: ''
             },
@@ -316,7 +322,7 @@ export default {
               col: 12,
               id: 'object_contact_email',
               name: 'object_contact_email_0',
-              validation: ['required' ,'email'],
+              validation: ['required', 'email'],
               parent_array: 'meta_object_contact',
               value: ''
             },
@@ -343,14 +349,19 @@ export default {
         meta_object_pay: [
           [
             {
-              type: 'FTypeText',
+              type: 'FTypeSelectUIID',
               label: '',
-              icon: '',
               col: 5,
               name: 'object_pay_title_0',
-              remove: false,
-              parent_array: 'meta_object_pay',
+              params: {
+                options: [],
+                item_text: 'name',
+                cost: [],
+              },
+              validation: 'required',
               value: '',
+              parent_array: 'meta_object_pay',
+              remove: false,
             },
             {
               type: 'FTypeText',
@@ -406,6 +417,9 @@ export default {
     dispatchers() {
       return this.$store.getters['dispatchers/dispatchers']
     },
+    professions() {
+      return this.$store.getters['dictionary/professions']
+    },
     postBody() {
       let contacts = [];
       for (let i = 0; i < this.meta.meta_object_contact.length; i++) {
@@ -424,7 +438,7 @@ export default {
       for (let i = 0; i < this.meta.meta_object_responsible.length; i++) {
         let name = this.meta.meta_object_responsible[i].name;
         dispatchers.push(
-           this.formValues[name]
+          this.formValues[name]
         )
       }
 
@@ -433,10 +447,10 @@ export default {
         let index_name = this.meta.meta_object_pay[i][0].name.substr(17, 18);
         works.push(
           {
-            "name": this.formValues['object_pay_title_'+index_name],
-            "payment": this.formValues['object_pay_salary_'+index_name],
-            "period": this.formValues['object_pay_time_'+index_name],
-            "requires_people": this.formValues['object_pay_cw_'+index_name],
+            "profession_uuid": this.formValues['object_pay_title_' + index_name],
+            "payment": this.formValues['object_pay_salary_' + index_name],
+            "period": this.formValues['object_pay_time_' + index_name],
+            "requires_people": this.formValues['object_pay_cw_' + index_name],
           }
         )
       }
@@ -465,6 +479,7 @@ export default {
     ...mapActions('specializations', ['fetchSpecializations',]),
     ...mapActions('dispatchers', ['fetchDispatchers',]),
     ...mapActions('requests', ['createRequest',]),
+    ...mapActions('dictionary', ['fetcProfessions',]),
 
     addResponsible(resp_name, isInit = false) {
       let flag = false;
@@ -556,14 +571,19 @@ export default {
       this.meta.meta_object_pay.push(
         [
           {
-            type: 'FTypeText',
+            type: 'FTypeSelectUIID',
             label: '',
-            icon: '',
             col: 5,
             name: 'object_pay_title_' + this.nameCounter,
-            remove: false,
-            parent_array: 'meta_object_pay',
+            params: {
+              options: [],
+              item_text: 'name',
+              cost: []
+            },
+            validation: 'required',
             value: '',
+            parent_array: 'meta_object_pay',
+            remove: false,
           },
           {
             type: 'FTypeText',
@@ -587,7 +607,7 @@ export default {
               ],
             },
             parent_array: 'meta_object_pay',
-            value: 'за смену',
+            value: '',
           },
           {
             type: 'FTypeText',
@@ -601,24 +621,23 @@ export default {
           },
         ],
       );
+      this.meta.meta_object_pay[this.meta.meta_object_pay.length - 1][0].params.options = this.professions;
       this.nameCounter++;
     },
     nextFromButton() {
       if (this.tab < this.tabs_list.length - 1) {
-        let formPart = 'form_part_'+ this.tab;
+        let formPart = 'form_part_' + this.tab;
         this.$refs[formPart].validate();
 
         this.$nextTick(() => {
-          if (this.valid){
-           this.tab += 1;
-          }
-          else{
+          if (this.valid) {
+            this.tab += 1;
+          } else {
             let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
             this.$vuetify.goTo(el);
           }
         });
-      }
-      else{
+      } else {
         const newRequet = JSON.stringify(this.postBody);
         console.log(newRequet);
         this.createRequest(newRequet);
@@ -646,8 +665,9 @@ export default {
     this.meta.meta_object_name[0].params.options = this.objects;
     this.meta.meta_object_info[1].params.options = this.specializations;
     this.meta.meta_object_responsible[0].params.options = this.dispatchers;
+    this.meta.meta_object_pay[0][0].params.options = this.professions;
 
-    if (this.$route.params.objectId){
+    if (this.$route.params.objectId) {
       this.meta.meta_object_name[0].value = this.$route.params.objectId;
     }
 

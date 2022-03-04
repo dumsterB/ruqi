@@ -1,10 +1,14 @@
 export const state = () => ({
   request_id_timesheet: [],
+  request_id_professions: []
 })
 
 export const getters = {
   request_id_timesheet(state) {
     return state.request_id_timesheet;
+  },
+  request_id_professions(state) {
+    return state.request_id_professions;
   },
 }
 
@@ -68,6 +72,16 @@ export const actions = {
 
 
   },
+  async fetchRequestIdProfessions({commit}, requestId) {
+
+    const request_id_professions = await this.$axios.get('/tasks/'+requestId+'/timesheet/professions/', {
+      headers: {
+        "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
+      }
+    });
+    commit('setRequestIdProfessions', request_id_professions)
+
+  },
 
 }
 
@@ -86,5 +100,8 @@ export const mutations = {
   },
   updateChangeButton(state, {id, activeStatus}) {
     state.request_id_timesheet.assigned[id].activeChangeButton = +activeStatus;
+  },
+  setRequestIdProfessions(state, request_id_professions) {
+    state.request_id_professions = request_id_professions.data.data;
   },
 }
