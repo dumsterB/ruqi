@@ -173,6 +173,12 @@
               </div>
             </template>
 
+            <template v-slot:item.position="{ item }">
+              <div class="color-black no-wrap">
+                {{ item.position.name }}
+              </div>
+            </template>
+
             <template v-slot:item.begin="{ item }">
               <div class="color-black">
                 {{ item.begin.substring(0, 5) }}
@@ -222,7 +228,8 @@
                   >
                     <template v-slot:item.position="{ item }">
                       <div>
-                        <FTypeText name="position" :value="item.position" @input="updateFiled('position', $event)"/>
+                        <FTypeSelectUIID name="position" :value="item.position.uuid" :params="positionListOption"
+                                     @input="updateFiled('position', $event)"/>
                       </div>
                     </template>
                     <template v-slot:item.zone="{ item }">
@@ -404,6 +411,12 @@ export default {
     request_id() {
       return this.$store.getters['request_id/request_id']
     },
+    positionListOption() {
+      return {
+        options: this.$store.getters['request_id_timesheet/request_id_professions'],
+        item_text: 'name',
+      }
+    },
     request_id_timesheet() {
       return this.$store.getters['request_id_timesheet/request_id_timesheet']
     },
@@ -421,6 +434,7 @@ export default {
   },
   methods: {
     ...mapActions('request_id', ['fetchRequestId',]),
+    ...mapActions('request_id_timesheet', ['fetchRequestIdProfessions',]),
     ...mapActions('request_id_timesheet', ['fetchRequestIdTimeSheet',]),
     ...mapActions('request_id_timesheet', ['fillOutAssigned',]),
     ...mapActions('request_id_timesheet', ['putRequestIdTimeSheet',]),
@@ -545,7 +559,7 @@ export default {
   async created() {
     await this.fetchRequestId(this.$route.params.id);
     await this.fetchRequestIdTimeSheet(this.$route.params.id);
-
+    await this.fetchRequestIdProfessions(this.$route.params.id);
   },
 
 

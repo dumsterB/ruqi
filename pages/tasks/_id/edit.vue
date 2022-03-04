@@ -152,6 +152,9 @@ export default {
     if (store.getters['dispatchers/dispatchers'].length === 0) {
       await store.dispatch('dispatchers/fetch')
     }
+    if (store.getters['dictionary/professions'].length === 0) {
+      await store.dispatch('dictionary/fetcProfessions')
+    }
   },
 
   data() {
@@ -340,14 +343,19 @@ export default {
         meta_object_pay: [
           [
             {
-              type: 'FTypeText',
+              type: 'FTypeSelectUIID',
               label: '',
-              icon: '',
               col: 5,
               name: 'object_pay_title_0',
-              remove: false,
-              parent_array: 'meta_object_pay',
+              params: {
+                options: [],
+                item_text: 'name',
+                cost: [],
+              },
+              validation: 'required',
               value: '',
+              parent_array: 'meta_object_pay',
+              remove: false,
             },
             {
               type: 'FTypeText',
@@ -407,6 +415,9 @@ export default {
     dispatchers() {
       return this.$store.getters['dispatchers/dispatchers']
     },
+    professions() {
+      return this.$store.getters['dictionary/professions']
+    },
     postBody() {
 
       let contacts = [];
@@ -435,7 +446,7 @@ export default {
         let index_name = this.meta.meta_object_pay[i][0].name.substr(17, 18);
         works.push(
           {
-            "name": this.formValues['object_pay_title_' + index_name],
+            "profession_uuid": this.formValues['object_pay_title_' + index_name],
             "payment": this.formValues['object_pay_salary_' + index_name],
             "period": this.formValues['object_pay_time_' + index_name],
             "requires_people": this.formValues['object_pay_cw_' + index_name],
@@ -468,6 +479,7 @@ export default {
     ...mapActions('dispatchers', ['fetchDispatchers',]),
     ...mapActions('requests', ['putRequest',]),
     ...mapActions('request_id', ['fetchRequestId',]),
+    ...mapActions('dictionary', ['fetcProfessions',]),
 
     addResponsible(resp_name, isInit = false) {
       let flag = false;
@@ -559,14 +571,19 @@ export default {
       this.meta.meta_object_pay.push(
         [
           {
-            type: 'FTypeText',
+            type: 'FTypeSelectUIID',
             label: '',
-            icon: '',
             col: 5,
             name: 'object_pay_title_' + this.nameCounter,
-            remove: false,
-            parent_array: 'meta_object_pay',
+            params: {
+              options: [],
+              item_text: 'name',
+              cost: []
+            },
+            validation: 'required',
             value: '',
+            parent_array: 'meta_object_pay',
+            remove: false,
           },
           {
             type: 'FTypeText',
@@ -604,6 +621,7 @@ export default {
           },
         ],
       );
+      this.meta.meta_object_pay[this.meta.meta_object_pay.length - 1][0].params.options = this.professions;
       this.nameCounter++;
     },
     nextFromButton() {
@@ -640,6 +658,10 @@ export default {
     updateFiledinArray(index_block, field, value, index, parent_array) {
       this.formValues[field] = value;
       this.meta[parent_array][index_block][index].value = value;
+
+      /*if (field.includes('object_pay_title')){
+        this.meta[parent_array][index_block][1].value = this.meta[parent_array][index_block][index].params.cost[0].cost;
+      }*/
       console.log(field, value);
     },
     addFileds(length, method, args) {
@@ -691,10 +713,14 @@ export default {
     this.meta.meta_object_location[2].value = this.request_id.location.scheme;
 
     for (let i = 0; i < works_length; i++) {
-      this.meta.meta_object_pay[i][0].value = this.request_id.works[i].name;
+
+      this.meta.meta_object_pay[i][0].params.options = this.professions;
+
+      this.meta.meta_object_pay[i][0].value = this.request_id.works[i].profession_uuid;
       this.meta.meta_object_pay[i][1].value = this.request_id.works[i].payment;
       this.meta.meta_object_pay[i][2].value = this.request_id.works[i].period;
       this.meta.meta_object_pay[i][3].value = this.request_id.works[i].requires_people;
+
     }
 
     for (let i = 0; i < contact_length; i++) {

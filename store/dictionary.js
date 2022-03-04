@@ -136,7 +136,7 @@ export const actions = {
   async fetcProfessions({commit}) {
 
     const professions = await this.$axios.get(
-      '/dictionary/works',
+      '/dictionary/professions',
 
       {
         headers: {
