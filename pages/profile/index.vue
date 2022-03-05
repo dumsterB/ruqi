@@ -41,6 +41,7 @@
 
 <script>
 
+  import { mapActions, mapGetters, } from 'vuex';
   import General            from "@/components/profileTabs/general";
   import PaymentDetails     from "@/components/profileTabs/paymentDetails";
   import Professions        from "@/components/profileTabs/professions";
@@ -88,6 +89,8 @@
     },
 
     methods : {
+      ...mapActions( 'user', [ 'uploadUserData', ] ),
+
       getters ()
       {
         return {}
@@ -132,6 +135,8 @@
 
           onConfirmClick : () => {
             console.log( 'onConfirmClick', this.tabs.active_tab );
+
+            this.uploadUserData();
           },
         }
       },

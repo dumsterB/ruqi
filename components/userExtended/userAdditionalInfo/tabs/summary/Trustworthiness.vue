@@ -7,15 +7,33 @@
 
     .body
       .percent
-        .value {{ `${ contractor.reliability }%` }}
+        .value( v-if="!!contractor.reliability" ) {{ `${ contractor.reliability }%` }}
+        v-skeleton-loader(
+          v-else
+          width="200"
+          height="30px"
+          type="text"
+        )
 
       .app-invitations( class="statistics-parameter" )
         .titel {{ titles.appInvitations }}
-        .value {{ contractor.invite_task }}
+        .value( v-if="!!contractor.invite_task" ) {{ contractor.invite_task }}
+        v-skeleton-loader(
+          v-else
+          width="200"
+          height="30px"
+          type="text"
+        )
 
       .absenteeism( class="statistics-parameter" )
         .titel {{ titles.absenteeism }}
-        .value {{ contractor.skip }}
+        .value( v-if="!!contractor.skip" ) {{ contractor.skip }}
+        v-skeleton-loader(
+          v-else
+          width="200"
+          height="30px"
+          type="text"
+        )
 
 </template>
 

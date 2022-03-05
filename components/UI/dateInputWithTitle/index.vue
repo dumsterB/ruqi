@@ -27,6 +27,7 @@
       v-model="date"
       no-title
       @input="updateDate"
+      @change="handlers().onDateChange( $event )"
     )
 
 </template>
@@ -62,6 +63,17 @@ export default {
       //this.$emit('input', this.date);
       this.show_date = false;
     },
+
+    handlers ()
+    {
+      return {
+        onDateChange : ( payload = {} ) => {
+          console.debug( "onDateChange", payload ); // DELETE
+
+          this.$emit( 'date_change', payload );
+        },
+      }
+    }
   },
   watch : {
     date (val)

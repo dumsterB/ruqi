@@ -7,7 +7,13 @@
 
     .body
       .rate
-        .value {{ `${ contractor.avg_price } p.` }}
+        .value( v-if="!!contractor.avg_price" ) {{ `${ contractor.avg_price } p.` }}
+        v-skeleton-loader(
+          v-else
+          width="200"
+          height="30px"
+          type="text"
+        )
 
       .histograms
         .wrapper

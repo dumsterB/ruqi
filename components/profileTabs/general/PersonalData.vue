@@ -21,7 +21,10 @@
           )
 
         .birthday
-          dateInputWithTitle.birthday__input( :title="inputTitles.birthday" )
+          dateInputWithTitle.birthday__input(
+            :title="inputTitles.birthday"
+            @date_change="setters().setBirthday( { event : $event } )"
+          )
 
         .sex
           .titel {{ inputTitles.sex }}
@@ -34,7 +37,7 @@
             v-radio( value="female" label="Женский" color="info" )
         .city
           Input.mix-input.city__input(
-            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.city, value : user.city }"
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.city, value : user.settings.city }"
             @input_change="setters().setCity( { event : $event } )"
           )
 
@@ -124,6 +127,12 @@
             this.setUserData( { lastname : payload.event } );
           },
 
+          setBirthday : ( payload = {} ) => {
+            console.log( 'setBirthday', payload ); // DELETE log muss weg
+
+            this.setUserData( { birthday : payload.event } );
+          },
+
           setGender : ( payload = {} ) => {
             console.log( 'setGender', payload ); // DELETE log muss weg
 
@@ -133,7 +142,7 @@
           setCity : ( payload = {} ) => {
             console.log( 'setCity', payload ); // DELETE log muss weg
 
-            this.setUserData( { city : payload.event } );
+            this.setUserData( { settings : { ...this.user.settings, city : payload.event } } );
           },
 
           setContactPhone : ( payload = {} ) => {

@@ -1,5 +1,5 @@
 <template lang="pug">
-  .user-main-info
+  .user-main-info.user-extended__main-info
     .wrapper
       .header
         .user
@@ -8,12 +8,18 @@
             ContractorRating( user-rating v-if="user_type === CONTRACTOR")
 
           .bio
-            .name {{ `${user.firstname} ${user.lastname}` }}
+            .name( v-if="!!user.firstname || !!user.lastname" ) {{ `${user.firstname} ${user.lastname}` }}
+            v-skeleton-loader.name(
+              v-else
+              width="200"
+              height="30px"
+              type="text"
+            )
 
-            .id( v-if="user_type === CONTRACTOR" ) {{ `ID ${user.number}` }}
+            .id( v-if="user_type === CONTRACTOR" ) ID {{ user.number }}
 
             .age-and-city( v-if="user_type === CONTRACTOR" )
-              .age 37 лет
+              .age {{ user.age }} лет
               .city Краснодар
 
             .status( v-if="user_type === EMPLOYEE" )
@@ -22,7 +28,13 @@
 
             .role( v-if="user_type === EMPLOYEE" ) {{ `${user.type}` }}
 
-            .registration-date {{ `Зарегистрирован ${getters().getRegDate( { created_at : user.created_at } )}` }}
+            .registration-date( v-if="!!user.created_at" ) {{ `Зарегистрирован ${getters().getRegDate( { created_at : user.created_at } )}` }}
+            v-skeleton-loader.registration-date(
+              v-else
+              width="200"
+              height="30px"
+              type="text"
+            )
 
           .doc-confirm-status( v-if="user_type === CONTRACTOR" )
             .confirmed( v-if="user.documents_status" )
@@ -63,17 +75,35 @@
           .parameter
             .p-name Номер телефона
 
-            .p-value {{ user.phone }}
+            .p-value( v-if="!!user.phone" ) {{ user.phone }}
+            v-skeleton-loader(
+              v-else
+              width="200"
+              height="30px"
+              type="text"
+            )
 
           .parameter
             .p-name Whatsapp
 
-            .p-value {{ user.whatsapp }}
+            .p-value( v-if="!!user.whatsapp" ) {{ user.whatsapp }}
+            v-skeleton-loader(
+              v-else
+              width="200"
+              height="30px"
+              type="text"
+            )
 
           .parameter
             .p-name Email
 
-            .p-value {{ user.email }}
+            .p-value( v-if="!!user.email" ) {{ user.email }}
+            v-skeleton-loader(
+              v-else
+              width="200"
+              height="30px"
+              type="text"
+            )
 
       .footer
         .actions-panel

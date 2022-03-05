@@ -29,9 +29,9 @@ export const actions = {
     commit( 'updateUserData', payload );
   },
 
-  async uploadUserData ()
+  async uploadUserData ( { state } )
   {
-    return await this.$axios.put( 'user/settings' );
+    return await this.$axios.put( 'user/settings', state.user );
   },
 }
 

@@ -52,6 +52,11 @@ export default {
     '@nuxtjs/vuetify',
   ],
 
+  vuetify: {
+    customVariables: ['~/assets/scss/variables.scss'],
+    treeShake: true
+  },
+
   auth : {
     redirect : {
       home : '/',
