@@ -41,7 +41,7 @@
       >
         <div v-show="selectedItems.length === 0">
           <div class="d-flex">
-            <div class="bt-table-action">
+            <div class="bt-table-action" v-if="request_id_timesheet.status != 'close'">
               <v-btn
                 height="40"
                 fab
@@ -76,7 +76,7 @@
 
         </div>
 
-        <div v-show="selectedItems.length > 0">
+        <div v-show="selectedItems.length > 0 && request_id_timesheet.status != 'close'">
           <div class="d-flex wrap-action">
             <div class="selected-items">
               Выделено: {{ selectedItems.length }} позиций
@@ -119,11 +119,11 @@
           </div>
         </div>
 
-        <v-divider
+        <v-divider v-if="request_id_timesheet.status != 'close'"
           vertical
         ></v-divider>
 
-        <div class="bt-table-action">
+        <div class="bt-table-action" v-if="request_id_timesheet.status != 'close'">
           <v-btn
             height="40"
             fab
@@ -140,7 +140,7 @@
             {{ activeSelectBtnOption.text }}
           </div>
         </div>
-        <div class="bt-table-action" v-if="user.type == 'manager'">
+        <div class="bt-table-action" v-if="user.type == 'manager' && request_id_timesheet.status != 'close'">
           <v-btn
             height="40"
             fab
@@ -226,7 +226,7 @@
               </div>
             </template>
 
-            <template v-slot:item.actions="{ item }">
+            <template v-slot:item.actions="{ item }" v-if="request_id_timesheet.status != 'close'">
               <v-btn
                 height="31"
                 @click="editItem(item)"
