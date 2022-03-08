@@ -43,7 +43,7 @@
                               :radius="avatarRounded"/>
                 </div>
               </v-col>
-              <v-col cols="2" class="d-flex justify-end">
+              <v-col cols="2" class="d-flex justify-end" v-if="user.type != 'dispatcher'">
                 <v-select
                   v-model="activeAction"
                   label="Действия"
@@ -393,6 +393,9 @@ export default {
     }
   },
   computed: {
+    user() {
+      return this.$store.getters['user/user']
+    },
     itemsPerPageTable() {
       if (this.itemsPerPage) {
         return parseInt(this.itemsPerPage, 10)

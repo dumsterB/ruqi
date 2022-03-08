@@ -152,9 +152,6 @@ export default {
     if (store.getters['dispatchers/dispatchers'].length === 0) {
       await store.dispatch('dispatchers/fetch')
     }
-    if (store.getters['dictionary/professions'].length === 0) {
-      await store.dispatch('dictionary/fetcProfessions')
-    }
   },
 
   data() {
@@ -366,6 +363,9 @@ export default {
               remove: false,
               parent_array: 'meta_object_pay',
               value: '',
+              params: {
+                readonly: true
+              },
             },
             {
               type: 'FTypeSelect',
@@ -377,6 +377,7 @@ export default {
                   'за смену',
                   'за час',
                 ],
+                readonly: true
               },
               parent_array: 'meta_object_pay',
               value: '',
@@ -416,7 +417,8 @@ export default {
       return this.$store.getters['dispatchers/dispatchers']
     },
     professions() {
-      return this.$store.getters['dictionary/professions']
+      console.log('task - professions', this.$store.getters['request_id/request_id_professions'])
+      return this.$store.getters['request_id/request_id_professions']
     },
     postBody() {
 
@@ -446,7 +448,7 @@ export default {
         let index_name = this.meta.meta_object_pay[i][0].name.substr(17, 18);
         works.push(
           {
-            "profession_uuid": this.formValues['object_pay_title_' + index_name],
+            "uuid": this.formValues['object_pay_title_' + index_name],
             "payment": this.formValues['object_pay_salary_' + index_name],
             "period": this.formValues['object_pay_time_' + index_name],
             "requires_people": this.formValues['object_pay_cw_' + index_name],
@@ -479,7 +481,7 @@ export default {
     ...mapActions('dispatchers', ['fetchDispatchers',]),
     ...mapActions('requests', ['putRequest',]),
     ...mapActions('request_id', ['fetchRequestId',]),
-    ...mapActions('dictionary', ['fetcProfessions',]),
+    ...mapActions('request_id', ['fetchRequestIdProfessions',]),
 
     addResponsible(resp_name, isInit = false) {
       let flag = false;
@@ -594,6 +596,9 @@ export default {
             remove: false,
             parent_array: 'meta_object_pay',
             value: '',
+            params: {
+              readonly: true
+            },
           },
           {
             type: 'FTypeSelect',
@@ -605,6 +610,7 @@ export default {
                 'за смену',
                 'за час',
               ],
+              readonly: true
             },
             parent_array: 'meta_object_pay',
             value: '',
@@ -646,9 +652,22 @@ export default {
     prevFromButton() {
       this.tab -= 1;
     },
-    updateFiled(field, value) {
+    async updateFiled(field, value) {
       this.formValues[field] = value;
-      console.log(value)
+      console.log(field, value)
+
+      if (field == 'object_name') {
+        await this.fetchRequestIdProfessions(value);
+        this.clearMetaObjectPay();
+      }
+    },
+    clearMetaObjectPay() {
+      this.meta.meta_object_pay.splice(1, this.meta.meta_object_pay.length - 1);
+      this.meta.meta_object_pay[0][0].params.options = this.professions;
+      this.meta.meta_object_pay[0][1].value = '';
+      this.meta.meta_object_pay[0][2].value = 'за смену';
+      this.meta.meta_object_pay[0][3].value = '';
+
     },
     updateFiledResp(field, value, index) {
       this.formValues[field] = value;
@@ -659,10 +678,18 @@ export default {
       this.formValues[field] = value;
       this.meta[parent_array][index_block][index].value = value;
 
-      /*if (field.includes('object_pay_title')){
-        this.meta[parent_array][index_block][1].value = this.meta[parent_array][index_block][index].params.cost[0].cost;
-      }*/
+      if (field.includes('object_pay_title')) {
+        let profession_params = this.professions.filter(obj => obj.uuid === value);
+        this.meta[parent_array][index_block][1].value = profession_params[0].payment;
+        this.meta[parent_array][index_block][2].value = profession_params[0].period;
+
+        this.formValues['object_pay_salary_' + index_block] = profession_params[0].payment;
+        this.formValues['object_pay_time_' + index_block] = profession_params[0].period;
+
+      }
+
       console.log(field, value);
+
     },
     addFileds(length, method, args) {
       if (length > 1) {
@@ -675,6 +702,7 @@ export default {
   async created() {
 
     await this.fetchRequestId(this.$route.params.id);
+    await this.fetchRequestIdProfessions(this.request_id.object.uuid);
 
     let works_length = this.request_id.works.length,
       contact_length = this.request_id.contacts.length,
@@ -685,6 +713,7 @@ export default {
     await this.addFileds(dispatchers_length, 'addResponsible', 'responsible');
 
     this.meta.meta_object_name[0].params.options = this.objects;
+    this.meta.meta_object_pay[0][0].params.options = this.professions;
     this.meta.meta_object_name[0].value = this.request_id.object.uuid;
 
     this.meta.meta_object_info[1].params.options = this.specializations;
@@ -716,7 +745,9 @@ export default {
 
       this.meta.meta_object_pay[i][0].params.options = this.professions;
 
-      this.meta.meta_object_pay[i][0].value = this.request_id.works[i].profession_uuid;
+      console.log(this.professions, this.request_id.works[i].uuid);
+
+      this.meta.meta_object_pay[i][0].value = this.request_id.works[i].uuid;
       this.meta.meta_object_pay[i][1].value = this.request_id.works[i].payment;
       this.meta.meta_object_pay[i][2].value = this.request_id.works[i].period;
       this.meta.meta_object_pay[i][3].value = this.request_id.works[i].requires_people;
@@ -731,7 +762,6 @@ export default {
     }
 
     for (let i = 0; i < dispatchers_length; i++) {
-      console.log(i, this.meta.meta_object_responsible[i]);
       this.meta.meta_object_responsible[i].value = this.request_id.dispatchers[i].uuid;
     }
 

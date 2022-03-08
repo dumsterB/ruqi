@@ -125,7 +125,7 @@
               </div>
             </template>
 
-            <template v-slot:item.actions="{ item }">
+            <template v-slot:item.actions="{ item }" v-if="user.type != 'dispatcher'">
               <v-menu
                 bottom
                 rounded="10"

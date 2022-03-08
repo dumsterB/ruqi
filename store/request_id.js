@@ -1,5 +1,6 @@
 export const state = () => ({
   request_id: [],
+  request_id_professions: [],
 
 })
 
@@ -7,14 +8,16 @@ export const getters = {
   request_id(state) {
     return state.request_id;
   },
-
+  request_id_professions(state) {
+    return state.request_id_professions;
+  },
 }
 
 
 export const actions = {
   async fetchRequestId({commit}, requestId) {
 
-    const request_id = await this.$axios.get('/tasks/'+requestId, {
+    const request_id = await this.$axios.get('/tasks/' + requestId, {
       headers: {
         "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
       }
@@ -22,8 +25,18 @@ export const actions = {
     commit('setRequest', request_id)
 
   },
+  async fetchRequestIdProfessions({commit}, requestId) {
+
+    const request_id_professions = await this.$axios.get('/objects/' + requestId + '/professions', {
+      headers: {
+        "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
+      }
+    });
+    commit('setRequestProfessions', request_id_professions)
+
+  },
   async putStatus({commit, dispatch}, {requestId, status}) {
-    await this.$axios.put('/tasks/'+requestId+'/'+status,
+    await this.$axios.put('/tasks/' + requestId + '/' + status,
       {},
       {
         headers: {
@@ -33,9 +46,9 @@ export const actions = {
       })
       .then((response) => {
         dispatch('fetchRequestId', requestId);
-        commit('response/setSuccess', {type: 'success', text: 'Заявка успешно обновлена', }, {root: true});
-        setTimeout(function() {
-          commit('response/removeSuccess', null, { root: true });
+        commit('response/setSuccess', {type: 'success', text: 'Заявка успешно обновлена',}, {root: true});
+        setTimeout(function () {
+          commit('response/removeSuccess', null, {root: true});
         }, 2000);
       })
       .catch((error) => {
@@ -47,6 +60,9 @@ export const actions = {
 export const mutations = {
   setRequest(state, request_id) {
     state.request_id = request_id.data.data;
+  },
+  setRequestProfessions(state, request_id_professions) {
+    state.request_id_professions = request_id_professions.data.data;
   },
 
 }

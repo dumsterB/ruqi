@@ -11,6 +11,7 @@
       filled
       @input="$emit('input', select)"
       hide-details="true"
+      :readonly="readonly"
     ></v-select>
   </div>
 </template>
@@ -22,6 +23,13 @@ export default {
     options() {
       return this.params.options
     },
+    readonly(){
+      if (this.params && this.params.readonly) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
   data() {
     return {
@@ -29,6 +37,11 @@ export default {
     }
   },
   methods: {},
+  watch: {
+    value: function () {
+      this.select = this.value;
+    },
+  },
   created () {
     if (this.value) {
       this.select = this.value;

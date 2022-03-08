@@ -66,7 +66,7 @@
               </v-icon>
               табель рабочего времени
             </v-btn>
-            <v-select
+            <v-select v-if="user.type != 'dispatcher'"
               v-model="activeAction"
               label="Действия"
               :items="selectAction"
@@ -184,7 +184,7 @@
           </v-col>
         </v-row>
 
-        <AddFormPart v-show="tab == 1" text="Добавить исполнителей" @addFormPart="addArtist"/>
+        <AddFormPart v-show="tab == 1" text="Добавить исполнителей" @addFormPart="addArtist" v-if="user.type != 'dispatcher'"/>
 
         <AddPerformers
           :addPerformersOverlay="addPerformersOverlay"
@@ -271,7 +271,7 @@
               </v-btn>
             </template>
 
-            <template v-slot:item.actions="{ item }">
+            <template v-slot:item.actions="{ item }" v-if="user.type != 'dispatcher'">
               <v-menu
                 bottom
                 rounded="10"
@@ -457,6 +457,9 @@ export default {
   },
 
   computed: {
+    user() {
+      return this.$store.getters['user/user']
+    },
     itemsPerPageTable() {
       if (this.itemsPerPage) {
         return parseInt(this.itemsPerPage, 10)

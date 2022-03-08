@@ -372,6 +372,9 @@ export default {
               remove: false,
               parent_array: 'meta_object_pay',
               value: '',
+              params: {
+                readonly: true
+              },
             },
             {
               type: 'FTypeSelect',
@@ -383,15 +386,17 @@ export default {
                   'за смену',
                   'за час',
                 ],
+                readonly: true
               },
               parent_array: 'meta_object_pay',
-              value: 'за смену',
+              value: '',
             },
             {
               type: 'FTypeText',
               label: '',
               icon: '',
               col: 2,
+              id: 'object_pay_cw_0',
               name: 'object_pay_cw_0',
               remove: false,
               parent_array: 'meta_object_pay',
@@ -418,7 +423,7 @@ export default {
       return this.$store.getters['dispatchers/dispatchers']
     },
     professions() {
-      return this.$store.getters['dictionary/professions']
+      return this.$store.getters['request_id/request_id_professions']
     },
     postBody() {
       let contacts = [];
@@ -447,7 +452,7 @@ export default {
         let index_name = this.meta.meta_object_pay[i][0].name.substr(17, 18);
         works.push(
           {
-            "profession_uuid": this.formValues['object_pay_title_' + index_name],
+            "uuid": this.formValues['object_pay_title_' + index_name],
             "payment": this.formValues['object_pay_salary_' + index_name],
             "period": this.formValues['object_pay_time_' + index_name],
             "requires_people": this.formValues['object_pay_cw_' + index_name],
@@ -480,6 +485,7 @@ export default {
     ...mapActions('dispatchers', ['fetchDispatchers',]),
     ...mapActions('requests', ['createRequest',]),
     ...mapActions('dictionary', ['fetcProfessions',]),
+    ...mapActions('request_id', ['fetchRequestIdProfessions',]),
 
     addResponsible(resp_name, isInit = false) {
       let flag = false;
@@ -594,6 +600,9 @@ export default {
             remove: false,
             parent_array: 'meta_object_pay',
             value: '',
+            params: {
+              readonly: true
+            },
           },
           {
             type: 'FTypeSelect',
@@ -605,6 +614,7 @@ export default {
                 'за смену',
                 'за час',
               ],
+              readonly: true
             },
             parent_array: 'meta_object_pay',
             value: '',
@@ -646,9 +656,22 @@ export default {
     prevFromButton() {
       this.tab -= 1;
     },
-    updateFiled(field, value) {
+    async updateFiled(field, value) {
       this.formValues[field] = value;
-      console.log(field, value);
+      console.log(field, value)
+
+      if (field == 'object_name') {
+        await this.fetchRequestIdProfessions(value);
+        this.clearMetaObjectPay();
+      }
+    },
+    clearMetaObjectPay() {
+      this.meta.meta_object_pay.splice(1, this.meta.meta_object_pay.length - 1);
+      this.meta.meta_object_pay[0][0].params.options = this.professions;
+      this.meta.meta_object_pay[0][1].value = '';
+      this.meta.meta_object_pay[0][2].value = 'за смену';
+      this.meta.meta_object_pay[0][3].value = '';
+
     },
     updateFiledResp(field, value, index) {
       this.formValues[field] = value;
@@ -657,7 +680,18 @@ export default {
     updateFiledinArray(index_block, field, value, index, parent_array) {
       this.formValues[field] = value;
       this.meta[parent_array][index_block][index].value = value;
+
+      if (field.includes('object_pay_title')) {
+        let profession_params = this.professions.filter(obj => obj.uuid === value);
+        this.meta[parent_array][index_block][1].value = profession_params[0].payment;
+        this.meta[parent_array][index_block][2].value = profession_params[0].period;
+
+        this.formValues['object_pay_salary_' + index_block] = profession_params[0].payment;
+        this.formValues['object_pay_time_' + index_block] = profession_params[0].period;
+      }
+
       console.log(field, value);
+
     },
   },
   created() {

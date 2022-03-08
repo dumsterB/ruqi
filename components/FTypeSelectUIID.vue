@@ -15,6 +15,7 @@
       hide-details="auto"
       :prepend-inner-icon="icon_code"
       :label="params.label"
+      :readonly="readonly"
     ></v-select>
   </div>
 </template>
@@ -34,6 +35,13 @@ export default {
         return this.icon;
       } else {
         return null;
+      }
+    },
+    readonly(){
+      if (this.params && this.params.readonly) {
+        return true;
+      } else {
+        return false;
       }
     },
   },

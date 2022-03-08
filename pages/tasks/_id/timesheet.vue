@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="timesheet">
     <Header :content="title" :size="title_size" :isnew="false" :isback="true"/>
     <v-row>
       <v-col cols="12">
@@ -100,7 +100,7 @@
                   :name="actionParamsComponent.name"
                   :params="actionParamsComponent.params"
                   :value="actionParamsComponent.value"
-                  :validation = "actionParamsComponent.validation"
+                  :validation="actionParamsComponent.validation"
                   @input="updateFiledAction('action_value', $event)"
                 />
               </div>
@@ -140,6 +140,23 @@
             {{ activeSelectBtnOption.text }}
           </div>
         </div>
+        <div class="bt-table-action" v-if="user.type == 'manager'">
+          <v-btn
+            height="40"
+            fab
+            @click="loadPayments"
+            color="#F6FBFF"
+            active-class="active"
+            class="check-btn"
+          >
+            <v-icon color="#0082DE">
+              mdi-sync
+            </v-icon>
+          </v-btn>
+          <div class="text">
+            загрузить ставки из объекта
+          </div>
+        </div>
 
       </v-col>
     </v-row>
@@ -149,7 +166,7 @@
         <div class="table-list-style-nospacing">
           <v-data-table
             ref="dataTable"
-            :headers="headers"
+            :headers="(user.type == 'manager') ? headersManager : headers"
             :items="request_id_timesheet.assigned"
             class="elevation-0 table-history"
             :page.sync="page"
@@ -197,6 +214,18 @@
               </div>
             </template>
 
+            <template v-slot:item.end="{ item }">
+              <div class="color-black">
+                {{ item.end.substring(0, 5) }}
+              </div>
+            </template>
+
+            <template v-slot:item.hours="{ item }">
+              <div class="color-black">
+                {{ item.hours }} ч
+              </div>
+            </template>
+
             <template v-slot:item.actions="{ item }">
               <v-btn
                 height="31"
@@ -220,7 +249,7 @@
                   lazy-validation
                 >
                   <v-data-table
-                    :headers="headers.slice(3,12)"
+                    :headers="headersRowEdit"
                     :items="[item]"
                     class="elevation-0"
                     hide-default-footer
@@ -228,19 +257,14 @@
                   >
                     <template v-slot:item.position="{ item }">
                       <div>
-                        <FTypeSelectUIID name="position" :value="item.position.uuid" :params="positionListOption"
-                                     @input="updateFiled('position', $event)"/>
+                        <FTypeSelectUIID name="position" :value="setProfessionItem(item.position.name)"
+                                         :params="positionListOptions"
+                                         @input="updateFiled('position', $event)"/>
                       </div>
                     </template>
                     <template v-slot:item.zone="{ item }">
                       <div>
                         <FTypeText name="zone" :value="item.zone" @input="updateFiled('zone', $event)"/>
-                      </div>
-                    </template>
-                    <template v-slot:item.smena="{ item }">
-                      <div>
-                        <FTypeSelect name="smena" :value="item.smena" :params="smenaListOptions"
-                                     @input="updateFiled('smena', $event)"/>
                       </div>
                     </template>
 
@@ -292,6 +316,15 @@
               </td>
             </template>
 
+            <template slot="body.append" v-if="user.type == 'manager'">
+              <tr>
+                <td colspan="8" class="total"></td>
+                <td class="total">{{ summary.hours }} ч</td>
+                <td class="total">{{ summary.payments }}</td>
+                <td class="total"></td>
+              </tr>
+            </template>
+
 
           </v-data-table>
         </div>
@@ -324,13 +357,30 @@ export default {
         {text: '№', value: 'num',},
         {text: 'фио', value: 'name'},
         {text: 'профессия', value: 'position'},
-        {text: 'участок', value: 'zone'},
-        {text: 'смена', value: 'smena'},
         {text: 'статус', value: 'status'},
-        {text: 'вид', value: 'calculation'},
         {text: 'начало', value: 'begin'},
         {text: 'конец', value: 'end'},
-        {text: 'колво', value: 'hours'},
+        {text: 'выполнено', value: 'hours'},
+        {text: '', value: 'actions', sortable: false, align: 'right'},
+      ],
+      headersManager: [
+        {text: '№', value: 'num',},
+        {text: 'фио', value: 'name'},
+        {text: 'профессия', value: 'position'},
+        {text: 'статус', value: 'status'},
+        {text: 'начало', value: 'begin'},
+        {text: 'конец', value: 'end'},
+        {text: 'Ставка руб', value: 'payment'},
+        {text: 'выполнено', value: 'hours'},
+        {text: 'сумма итого', value: 'sum_payment'},
+        {text: '', value: 'actions', sortable: false, align: 'right'},
+      ],
+      headersRowEdit: [
+        {text: 'профессия', value: 'position'},
+        {text: 'статус', value: 'status'},
+        {text: 'начало', value: 'begin'},
+        {text: 'конец', value: 'end'},
+        {text: 'выполнено', value: 'hours'},
         {text: '', value: 'actions', sortable: false, align: 'right'},
       ],
       page: 1,
@@ -360,10 +410,7 @@ export default {
       selectAction: {
         options: [
           {title: 'Изменить профессию', uuid: 'position'},
-          {title: 'Изменить участок', uuid: 'zone'},
-          {title: 'Изменить смену', uuid: 'smena'},
           {title: 'Изменить статус', uuid: 'status'},
-          {title: 'Изменить вид', uuid: 'calculation'},
           {title: 'Изменить время начала', uuid: 'begin'},
           {title: 'Изменить время конца', uuid: 'end'},
           {title: 'Изменить часы', uuid: 'hours'},
@@ -374,7 +421,7 @@ export default {
       actionParamsComponent: {
         type: '',
         name: '',
-        params: '',
+        params: {},
         value: '',
         label: '',
         validation: [],
@@ -408,12 +455,21 @@ export default {
         return 1;
       }
     },
+    user() {
+      return this.$store.getters['user/user']
+    },
     request_id() {
       return this.$store.getters['request_id/request_id']
     },
-    positionListOption() {
+    professions() {
+      return this.$store.getters['request_id_timesheet/request_id_professions']
+    },
+    summary() {
+      return this.$store.getters['request_id_timesheet/request_id_summary']
+    },
+    positionListOptions() {
       return {
-        options: this.$store.getters['request_id_timesheet/request_id_professions'],
+        options: this.professions,
         item_text: 'name',
       }
     },
@@ -434,10 +490,12 @@ export default {
   },
   methods: {
     ...mapActions('request_id', ['fetchRequestId',]),
+    ...mapActions('request_id_timesheet', ['fetchRequestIdTimeSheetSummary',]),
     ...mapActions('request_id_timesheet', ['fetchRequestIdProfessions',]),
     ...mapActions('request_id_timesheet', ['fetchRequestIdTimeSheet',]),
     ...mapActions('request_id_timesheet', ['fillOutAssigned',]),
     ...mapActions('request_id_timesheet', ['putRequestIdTimeSheet',]),
+    ...mapActions('request_id_timesheet', ['putRequestIdLoadPayments',]),
 
     ...mapMutations('request_id_timesheet', ['updateChangeButton',]),
 
@@ -453,22 +511,41 @@ export default {
     },
 
     updateFiled(field, value) {
-      this.formValues[0][field] = value;
+      if (field == 'position') {
+        let profession_params = this.professions.filter(obj => obj.uuid === value);
+        this.formValues[0][field] = {
+          uuid: value,
+          name: profession_params[0].name,
+        }
+      } else {
+        this.formValues[0][field] = value;
+      }
+      console.log(field, value);
     },
 
     updateFiledAction(field, value) {
-      this.formGroupAction[field] = value;
+      if (this.actionParamsComponent.name == 'position') {
+        let profession_params = this.professions.filter(obj => obj.uuid === value);
+        this.formGroupAction[field] = {
+          uuid: value,
+          name: profession_params[0].name,
+        }
+      } else {
+        this.formGroupAction[field] = value;
+      }
+      console.log(field, value);
+
     },
 
     updateActionSelect(field, value) {
       this.actionParamsComponent.name = value;
 
-      if (value == 'position' || value == 'zone' || value == 'hours') {
+      if (value == 'hours') {
         this.actionParamsComponent.type = 'FTypeText'
-        if ( value == 'hours'){
+        if (value == 'hours') {
           this.actionParamsComponent.validation = ['number'];
         }
-      } else if (value == 'smena' || value == 'status' || value == 'calculation') {
+      } else if (value == 'status' || value == 'position') {
         this.actionParamsComponent.type = 'FTypeSelectUIID'
         this.actionParamsComponent.params = this[value + 'ListOptions'];
         this.actionParamsComponent.params.label = 'Выберите вариант';
@@ -502,6 +579,7 @@ export default {
       }
 
       this.updateChangeButton({id: array_index, activeStatus: !current_status_change});
+      console.log(this.formValues)
     },
 
     saveItem(id) {
@@ -513,13 +591,22 @@ export default {
           delete this.formValues.activeChangeButton;
 
           const newRequet = JSON.stringify(this.formValues);
+          console.log(newRequet);
           this.putRequestIdTimeSheet({uuid: this.$route.params.id, body: newRequet});
 
           this.expanded = [];
         }
       });
     },
+    setProfessionItem(name) {
+      let profession_params = this.professions.filter(obj => obj.name === name);
+      if (profession_params.length) {
+        return profession_params[0].uuid;
+      } else {
+        return '';
+      }
 
+    },
     saveGroupItem() {
       this.$refs.form_group.validate();
 
@@ -540,6 +627,7 @@ export default {
           }
 
           const newRequet = JSON.stringify(objects);
+          console.log(newRequet);
           this.putRequestIdTimeSheet({uuid: this.$route.params.id, body: newRequet});
 
           this.selectedItems = [];
@@ -553,11 +641,15 @@ export default {
 
     setCurrentPage(value) {
       this.page = value;
+    },
+    loadPayments() {
+      this.putRequestIdLoadPayments({uuid: this.$route.params.id});
     }
 
   },
   async created() {
     await this.fetchRequestId(this.$route.params.id);
+    await this.fetchRequestIdTimeSheetSummary(this.$route.params.id);
     await this.fetchRequestIdTimeSheet(this.$route.params.id);
     await this.fetchRequestIdProfessions(this.$route.params.id);
   },
@@ -566,100 +658,98 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 @import '../../../assets/scss/colors';
 
-.wrapp-alert {
-  position: fixed;
-  width: 100%;
-  bottom: 0;
-  left: 0;
-
-  .v-alert {
-    margin: 0;
-  }
-}
-
-
-.timesheet-info {
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 1.25;
-  color: $grey;
-  padding-left: 66px;
-
-  .timesheet-info-row {
-    margin-bottom: 8px;
-
-    span {
-      color: $black;
-    }
-  }
-
-}
-
-.bt-time-sheet {
-  background: $blue;
-  color: white;
-  margin-right: 10px;
-  border: none;
-}
-
-.bt-table-action {
-  display: flex;
-  align-items: center;
-  margin-right: 24px;
-
-
-  .v-btn {
-    box-shadow: none;
-    width: 40px;
-    height: 40px;
-    margin-right: 6px;
-  }
-
-  .text {
-    font-weight: 700;
-    font-size: 14px;
-    text-transform: uppercase;
+.timesheet {
+  .timesheet-info {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.25;
     color: $grey;
+    padding-left: 66px;
+
+    .timesheet-info-row {
+      margin-bottom: 8px;
+
+      span {
+        color: $black;
+      }
+    }
+
   }
-}
 
-.bt-table-action:last-child {
-  margin-right: 0;
-}
+  .bt-time-sheet {
+    background: $blue;
+    color: white;
+    margin-right: 10px;
+    border: none;
+  }
 
-.table-filter-row {
-  .wrap-action {
-    padding: 14px 16px;
-    background: #E9F6FF;
-    border-radius: 10px;
+  .bt-table-action {
+    display: flex;
     align-items: center;
-    justify-content: space-between;
+    margin-right: 24px;
 
-    .selected-items {
+
+    .v-btn {
+      box-shadow: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 100px;
+      margin-right: 6px;
+    }
+
+    .text {
       font-weight: 700;
-      margin-right: 16px;
+      font-size: 14px;
+      text-transform: uppercase;
+      color: $grey;
     }
-
-    .v-text-field--outlined > .v-input__control > .v-input__slot {
-      border-radius: 4px;
-    }
-
-    .v-input {
-      margin-right: 16px;
-      max-width: 238px;
-    }
-
   }
 
-  .v-divider--vertical {
-    margin: 0 24px;
-    align-self: center;
-    height: 40px;
+  .bt-table-action:last-child {
+    margin-right: 0;
+  }
+
+  .table-filter-row {
+    .wrap-action {
+      padding: 14px 16px;
+      background: #E9F6FF;
+      border-radius: 10px;
+      align-items: center;
+      justify-content: space-between;
+
+      .selected-items {
+        font-weight: 700;
+        margin-right: 16px;
+      }
+
+      .v-text-field--outlined > .v-input__control > .v-input__slot {
+        border-radius: 4px;
+      }
+
+      .v-input {
+        margin-right: 16px;
+        max-width: 238px;
+      }
+
+    }
+
+    .v-divider--vertical {
+      margin: 0 24px;
+      align-self: center;
+      height: 40px;
+    }
+  }
+
+  .v-data-table__wrapper {
+    .v-data-table__wrapper {
+      max-width: 800px;
+    }
   }
 }
+
 
 </style>
