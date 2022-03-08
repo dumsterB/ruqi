@@ -735,6 +735,13 @@ export default {
         max-width: 238px;
       }
 
+      .v-text-field__details{
+        position: absolute;
+        bottom: -17px;
+        left: 0;
+        padding: 0;
+      }
+
     }
 
     .v-divider--vertical {

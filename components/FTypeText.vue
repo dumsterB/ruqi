@@ -13,7 +13,7 @@
         :class="{'number': validation && validation[0] == 'number'}"
         :readonly="readonly"
     ></v-text-field>
-    <div class="note" v-if="params">{{params.note}}</div>
+    <div class="note" v-if="params && params.note">{{params.note}}</div>
   </div>
 </template>
 
