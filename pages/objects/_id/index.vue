@@ -81,7 +81,7 @@
                 height="48"
                 outlined
                 class="btn-blue"
-                :to="{ name: 'request-create', params: { objectId: object_id.uuid }}"
+                :to="{ name: 'tasks-create', params: { objectId: object_id.uuid }}"
                 nuxt
               >
                 Создать новую заявку
