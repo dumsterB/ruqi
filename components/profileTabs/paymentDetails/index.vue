@@ -15,16 +15,31 @@
           )
         .inn-kpp-bic__group
           .inn
-            textInputWithTitle.inn__input( :title="titles.inn" )
+            Input.inn__input.mix-input(
+              :params="{ ...textInputDefaultSettings, hauptTitel : titles.inn, value : user.settings.inn }"
+              @input_change="setters().setInn( { event : $event } )"
+            )
           .kpp
-            textInputWithTitle.inn__input( :title="titles.kpp" )
+            Input.inn__input.mix-input(
+              :params="{ ...textInputDefaultSettings, hauptTitel : titles.kpp, value : user.settings.kpp }"
+              @input_change="setters().setKpp( { event : $event } )"
+            )
           .bic
-            textInputWithTitle.inn__input( :title="titles.bic" )
+            Input.inn__input.mix-input(
+              :params="{ ...textInputDefaultSettings, hauptTitel : titles.bic, value : user.settings.bik }"
+              @input_change="setters().setBic( { event : $event } )"
+            )
         .payment_correspondent-account__group
           .payment-account
-            textInputWithTitle.payment-account__input( :title="titles.paymentAccount" )
+            Input.payment-account__input.mix-input(
+              :params="{ ...textInputDefaultSettings, hauptTitel : titles.paymentAccount, value : user.settings.payment_account }"
+              @input_change="setters().setPaymentAccount( { event : $event } )"
+            )
           .correspondent-account
-            textInputWithTitle.correspondent-account__input( :title="titles.correspondentAccount" )
+            Input.correspondent-account__input.mix-input(
+              :params="{ ...textInputDefaultSettings, hauptTitel : titles.correspondentAccount, value : user.settings.correspondent_account }"
+              @input_change="setters().setCorrespondentAccount( { event : $event } )"
+            )
         .bank
           selectSingle.bank__list(
             :id="'bank__list'"
@@ -36,14 +51,15 @@
 
 <script>
 
+  import { mapActions, mapGetters, } from 'vuex';
   import selectSingle from '@/components/UI/selectSingle';
-  import textInputWithTitle from '@/components/UI/textInputWithTitle';
+  import Input from '@/components/UI/input';
 
   export default {
 
     components : {
       selectSingle,
-      textInputWithTitle,
+      Input,
     },
 
     data ()
@@ -60,10 +76,24 @@
           correspondentAccount : 'Корреспондентский счёт',
           bank : 'Банк',
         },
+
+        textInputDefaultSettings : {
+          type : 'text',
+          value : '',
+          hauptTitel : '',
+          solo : true,
+          hint : '',
+        },
       }
     },
 
+    computed : {
+      ...mapGetters( 'user', [ 'user', ] ),
+    },
+
     methods : {
+      ...mapActions( 'user', [ 'setUserData', ] ),
+
       getters ()
       {
         return {}
@@ -71,7 +101,37 @@
 
       setters ()
       {
-        return {}
+        return {
+          setInn : ( payload = {} ) => {
+            console.log( 'setInn', payload ); // DELETE log muss weg
+
+            this.setUserData( { settings : { ...this.user.settings, inn : payload.event } } );
+          },
+
+          setKpp : ( payload = {} ) => {
+            console.log( 'setKpp', payload ); // DELETE log muss weg
+
+            this.setUserData( { settings : { ...this.user.settings, kpp : payload.event } } );
+          },
+
+          setBic : ( payload = {} ) => {
+            console.log( 'setBic', payload ); // DELETE log muss weg
+
+            this.setUserData( { settings : { ...this.user.settings, bik : payload.event } } );
+          },
+
+          setPaymentAccount : ( payload = {} ) => {
+            console.log( 'setPaymentAccount', payload ); // DELETE log muss weg
+
+            this.setUserData( { settings : { ...this.user.settings, payment_account : payload.event } } );
+          },
+
+          setCorrespondentAccount : ( payload = {} ) => {
+            console.log( 'setCorrespondentAccount', payload ); // DELETE log muss weg
+
+            this.setUserData( { settings : { ...this.user.settings, correspondent_account : payload.event } } );
+          },
+        }
       },
 
       handlers ()
@@ -217,6 +277,21 @@
     .v-select__selection.v-select__selection--comma, .v-icon.notranslate.mdi
     {
       color : #000000!important;
+    }
+
+    .mix-input
+    {
+      .v-input__slot
+      {
+        margin: 0 !important;
+        box-shadow: none !important;
+
+        height: 48px;
+        background: #FFFFFF;
+        border: 1px solid #E2E4E5;
+        box-sizing: border-box;
+        border-radius: 4px;
+      }
     }
   /* MIXINS STYLES END */
 }

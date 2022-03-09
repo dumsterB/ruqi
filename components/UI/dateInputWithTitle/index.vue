@@ -13,7 +13,7 @@
   )
     template( v-slot:activator="{ on, attrs }" )
       v-text-field(
-        v-model="fullDate"
+        :value="value"
         v-bind="attrs"
         v-on="on"
         hide-details="true"
@@ -38,7 +38,12 @@ export default {
     title : {
       type : String,
       default : "",
-    }
+    },
+
+    value : {
+      type : String,
+      default : "",
+    },
   },
 
   data() {
