@@ -15,16 +15,26 @@
             li.list-punkt {{ description.punkte[ 3 ] }}
         .password-tab__password-settings
           .old-password
-            Input( :params="{ ...passInputSettings, hauptTitel : 'Старый пароль' }" )
+            Input(
+              :params="{ ...passInputSettings, hauptTitel : 'Старый пароль', rules : [], }"
+              @input_change="setters().setOldPassword( { $event } )"
+            )
           .new-password
-            Input( :params="{ ...passInputSettings, hauptTitel : 'Новый пароль' }" )
+            Input(
+              :params="{ ...passInputSettings, hauptTitel : 'Новый пароль', ref : 'newpassbych', }"
+              @input_change="setters().setNewPassword( { $event } )"
+            )
           .new-password.repeat
-            Input( :params="{ ...passInputSettings, hauptTitel : 'Повторите пароль' }" )
+            Input(
+              :params="{ ...passInputSettings, hauptTitel : 'Повторите пароль', ref : 'newpassrepbych', }"
+              @input_change="setters().setRepeatNewPassword( { $event } )"
+            )
 
 </template>
 
 <script>
 
+  import { mapActions, mapGetters } from 'vuex';
   import Input from '@/components/UI/input';
 
   export default {
@@ -55,7 +65,7 @@
           hint : '',
           rules : [
             v => Boolean( v ) || 'Пароль не может быть пустым',
-            v => v.length >= 8 || 'Не менее 8 символов',
+            v => v?.length >= 8 || 'Не менее 8 символов',
 
             v => {
               const regexp = /([0-9])/;
@@ -81,11 +91,17 @@
               return !!regexp.test( v ) || 'Пароль должен содержать хотя бы одну заглавную букву';
             },
           ],
-        }
+        },
       }
     },
 
+    computed : {
+      ...mapGetters( 'user', [ 'password', ] ),
+    },
+
     methods : {
+      ...mapActions( 'user', [ 'setPasswordStore' ] ),
+
       getters ()
       {
         return {}
@@ -93,7 +109,45 @@
 
       setters ()
       {
-        return {}
+        return {
+          setOldPassword : ( payload = {} ) => {
+            console.log( 'setOldPassword', payload ); // DELETE
+
+            this.setPasswordStore(
+              {
+                oldPass : {
+                  value : payload.$event,
+                },
+              }
+            );
+          },
+
+          setNewPassword : ( payload = {} ) => {
+            console.log( 'setNewPassword', payload ); // DELETE
+
+            this.setPasswordStore(
+              {
+                newPass : {
+                  value : payload.$event.value,
+                  isValid : payload.$event.isValid,
+                },
+              }
+            );
+          },
+
+          setRepeatNewPassword : ( payload = {} ) => {
+            console.log( 'setRepeatNewPassword', payload ); // DELETE
+
+            this.setPasswordStore(
+              {
+                RepeatNewPass : {
+                  value : payload.$event.value,
+                  isValid : payload.$event.isValid,
+                },
+              }
+            );
+          },
+        }
       },
 
       handlers ()

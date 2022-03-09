@@ -88,8 +88,12 @@
       }
     },
 
+    computed : {
+      ...mapGetters( 'user', [ 'password', ] ),
+    },
+
     methods : {
-      ...mapActions( 'user', [ 'uploadUserData', ] ),
+      ...mapActions( 'user', [ 'uploadUserData', 'changeUserPassword', ] ),
 
       getters ()
       {
@@ -134,9 +138,44 @@
           },
 
           onConfirmClick : () => {
-            console.log( 'onConfirmClick', this.tabs.active_tab );
+            console.log( 'onConfirmClick', this.tabs.active_tab ); // DELETE
 
-            this.uploadUserData();
+            switch ( this.tabs.active_tab )
+            {
+              case 6 :
+                if ( !this.password.oldPass.value )
+                {
+                  alert( 'Введите старый пароль' );
+
+                  return;
+                }
+
+                if ( !this.password.newPass.isValid )
+                {
+                  alert( 'Введите корректный новый пароль' );
+
+                  return;
+                }
+
+                if ( this.password.newPass.value !== this.password.RepeatNewPass.value )
+                {
+                  alert( 'Повторно введенный пароль не соответствует исходному варианту.' );
+
+                  return;
+                }
+
+                this.changeUserPassword(
+                  {
+                    old : this.password.oldPass.value,
+                    new : this.password.newPass.value,
+                  }
+                );
+              break;
+
+              default :
+                this.uploadUserData();
+              break;
+            }
           },
         }
       },
