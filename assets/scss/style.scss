@@ -197,6 +197,11 @@ h1.large {
     color: $blue;
   }
 
+  .theme--light.v-select.v-input--is-readonly .v-select__selections,
+  .theme--light.v-input.v-input--is-readonly input {
+    color: $grey;
+  }
+
   .theme--light.v-btn:hover::before,
   .theme--light.v-btn.v-btn--icon:hover {
     color: $blue;
@@ -589,6 +594,13 @@ h1.large {
 
             td:last-child {
               border-bottom-right-radius: 14px;
+            }
+
+            td.total{
+              background: $light_blue;
+              height: 47px;
+              color: $black;
+              font-weight: 700;
             }
           }
 

@@ -11,8 +11,9 @@
         hide-details="auto"
         :rules="validation_array"
         :class="{'number': validation && validation[0] == 'number'}"
+        :readonly="readonly"
     ></v-text-field>
-    <div class="note" v-if="params">{{params.note}}</div>
+    <div class="note" v-if="params && params.note">{{params.note}}</div>
   </div>
 </template>
 
@@ -79,6 +80,13 @@ export default {
         }
       }
       return validation_array;
+    },
+    readonly(){
+      if (this.params && this.params.readonly) {
+        return true;
+      } else {
+        return false;
+      }
     },
   },
   methods: {

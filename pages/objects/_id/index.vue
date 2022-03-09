@@ -43,7 +43,7 @@
                               :radius="avatarRounded"/>
                 </div>
               </v-col>
-              <v-col cols="2" class="d-flex justify-end">
+              <v-col cols="2" class="d-flex justify-end" v-if="user.type != 'dispatcher'">
                 <v-select
                   v-model="activeAction"
                   label="Действия"
@@ -81,7 +81,7 @@
                 height="48"
                 outlined
                 class="btn-blue"
-                :to="{ name: 'request-create', params: { objectId: object_id.uuid }}"
+                :to="{ name: 'tasks-create', params: { objectId: object_id.uuid }}"
                 nuxt
               >
                 Создать новую заявку
@@ -393,6 +393,9 @@ export default {
     }
   },
   computed: {
+    user() {
+      return this.$store.getters['user/user']
+    },
     itemsPerPageTable() {
       if (this.itemsPerPage) {
         return parseInt(this.itemsPerPage, 10)
