@@ -22,6 +22,7 @@ export const state = () => (
     },
 
     userTasks : [],
+    userTasksParams : {},
   }
 );
 
@@ -39,6 +40,11 @@ export const getters = {
   userTasks ( state )
   {
     return state.userTasks;
+  },
+
+  userTasksParams ( state )
+  {
+    return state.userTasksParams;
   },
 }
 
@@ -92,14 +98,14 @@ export const actions = {
     return await this.$axios.put( 'auth/change_password', payload );
   },
 
-  async fetchUserTasks ( { commit }, payload = {} )
+  async fetchUserTasks ( { commit, state }, payload = {} )
   {
     const response = await this.$axios.get(
       'user/my/tasks',
 
       {
         params : {
-          ...payload,
+          ...state.userTasksParams,
 
           mode : 'map',
         }
@@ -110,6 +116,11 @@ export const actions = {
 
     commit( 'updateUserTasks', response?.data?.data );
   },
+
+  async setUserTasksParams ( { commit }, payload = {} )
+  {
+    commit( 'updateUserTasksParams', payload );
+  }
 }
 
 export const mutations = {
@@ -131,9 +142,12 @@ export const mutations = {
 
   updateUserTasks ( state, userTasks )
   {
-    console.log( 'updateUserTasks', userTasks );
-
     state.userTasks = userTasks;
+  },
+
+  updateUserTasksParams ( state, userTasksParams )
+  {
+    state.userTasksParams = userTasksParams;
   },
 }
 

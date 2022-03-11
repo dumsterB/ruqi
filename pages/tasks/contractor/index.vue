@@ -4,9 +4,9 @@
 
   v-row.haupt-tabs__container
     v-tabs( v-model="tab_haupt" )
-        v-tab( @click="handlers().onTaskTypeTabClick( { type : 'active' } )" ) Активные
-        v-tab( @click="handlers().onTaskTypeTabClick( { type : 'responded' } )" ) Откликнулся
-        v-tab( @click="handlers().onTaskTypeTabClick( { type : 'completed' } )" ) Завершенные
+      v-tab( @click="handlers().onTaskTypeTabClick( { type : 'active' } )" ) Активные
+      v-tab( @click="handlers().onTaskTypeTabClick( { type : 'responded' } )" ) Откликнулся
+      v-tab( @click="handlers().onTaskTypeTabClick( { type : 'completed' } )" ) Завершенные
 
   v-row.table-filter-row
     v-col( cols="2" )
@@ -21,7 +21,7 @@
       )
 
     v-col( cols="10" class="d-flex justify-end align-center" )
-      Search( :searchText="searchText" @updateSearchText="updateSearchText" )
+      Search( :searchText="searchText" @updateSearchText="onSearchInput" )
       .map-tabs
         .map-tab.list(
           :class="{ 'active' : !tab_list_map }"
@@ -115,6 +115,7 @@
 <script>
 
   import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
+  import _ from 'lodash';
 
   export default {
     components : {},
@@ -175,7 +176,7 @@
     },
 
     methods: {
-      ...mapActions( 'user', [ 'fetchUserTasks', ] ),
+      ...mapActions( 'user', [ 'fetchUserTasks', 'setUserTasksParams', ] ),
 
       ...mapActions('objects', ['fetchObjects',]),
       ...mapActions('objects', ['fetchObjectsMap',]),
@@ -184,8 +185,7 @@
       ...mapActions('dictionary', ['fetchRegions',]),
 
       updateSearchText(value) {
-        this.searchText = value;
-        this.fetchObjects({"name": value});
+        console.log( 'updateSearchText', this );
       },
 
       filter() {
@@ -229,33 +229,22 @@
 
             switch ( payload.type ) {
               case 'active' :
-                await this.fetchUserTasks(
-                  {
-                    type : 'accepted',
-                    status : 'open',
-                  }
-                );
+                await this.setUserTasksParams( { type : 'accepted', status : 'open', } );
+                await this.fetchUserTasks();
 
                 this.userTaskStatus = 'open';
               break;
 
               case 'responded' :
-                await this.fetchUserTasks(
-                  {
-                    type : 'requested',
-                  }
-                );
+                await this.setUserTasksParams( { type : 'requested', } );
+                await this.fetchUserTasks();
 
                 this.userTaskStatus = 'open';
               break;
 
               case 'completed' :
-                await this.fetchUserTasks(
-                  {
-                    type : 'accepted',
-                    status : 'close',
-                  }
-                );
+                await this.setUserTasksParams( { type : 'accepted', status : 'close', } );
+                await this.fetchUserTasks();
 
                 this.userTaskStatus = 'close';
               break;
@@ -278,9 +267,21 @@
 
           onMapTabClick : ( payload = {} ) => {
             this.tab_list_map = payload.tab;
-          }
+          },
         }
       },
+
+      onSearchInput : _.debounce(
+        function( payload = {} ) {
+          this.setUserTasksParams( { ...this.userTasksParams, search : payload } ).then(
+            () => {
+              this.fetchUserTasks();
+            }
+          );
+        },
+
+        400
+      ),
     },
 
     computed: {
@@ -328,19 +329,15 @@
         return postBody;
       },
 
-      ...mapGetters( 'user', [ 'userTasks' ] ),
+      ...mapGetters( 'user', [ 'userTasks', 'userTasksParams', ] ),
     },
 
     async mounted() {
       await this.fetchObjects(); // DELETE
       await this.fetchObjectsMap({"type": "map"}); // DELETE
 
-      await this.fetchUserTasks(
-        {
-          type : 'accepted',
-          status : 'open',
-        }
-      );
+      await this.setUserTasksParams( { type : 'accepted', status : 'open', } );
+      await this.fetchUserTasks();
     },
   }
 
