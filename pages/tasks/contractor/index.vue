@@ -4,9 +4,9 @@
 
   v-row.haupt-tabs__container
     v-tabs( v-model="tab_haupt" )
-        v-tab Активные
-        v-tab Откликнулся
-        v-tab Завершенные
+        v-tab( @click="handlers().onTaskTypeTabClick( { type : 'active' } )" ) Активные
+        v-tab( @click="handlers().onTaskTypeTabClick( { type : 'responded' } )" ) Откликнулся
+        v-tab( @click="handlers().onTaskTypeTabClick( { type : 'completed' } )" ) Завершенные
 
   v-row.table-filter-row
     v-col( cols="3" )
@@ -25,8 +25,10 @@
       v-tabs.icon-tabs( right height="40" v-model="tab_list_map" )
         v-tab
           img( src="/img/ico_list.svg" alt="list" )
+          span Списком
         v-tab
           v-icon( size="24" color="gray" ) mdi-map-outline
+          span На карте
 
   v-window( v-model="tab_list_map" )
     v-tab-item
@@ -34,7 +36,7 @@
         v-data-table(
           v-model="selected"
           :headers="headers"
-          :items="objects"
+          :items="userTasks"
           class="elevation-0"
           item-key="uuid"
           :page.sync="page"
@@ -43,19 +45,19 @@
           hide-default-footer
         )
           template( v-slot:item.name="{ item }" )
-            div.color-black( @click="openRequest(item.uuid)" )
+            div.color-black( @click="handlers().onNameTaskClick( { uuid : item.uuid } )" )
               span.request-i {{ item.name }}
 
           template( v-slot:item.payment="{ item }" )
-            .payment
+            .payment( :class="{ close : userTaskStatus === 'close' }" )
               .wrapper
-                span.value {{ `${ 1000 } р. / смена` }}
+                span.value {{ `${ item.payment.value } р. / смена` }}
 
           template( v-slot:item.object="{ item }" )
-            .color-black {{ item.count_tasks }}
+            .color-black {{ item.object.name }}
 
           template( v-slot:item.work_begin="{ item }" )
-            div {{ item.region }}, {{ item.city }}
+            div {{ helpers().parseDate( { date : item.start_date } ) }}
 
           template( v-slot:item.actions="{ item }" )
             v-menu(
@@ -139,29 +141,31 @@
         tab_haupt : null,
         tab_list_map: null,
         coords: [45.04, 38.98],
+
+        userTaskStatus : 'open',
       }
     },
 
-    created() {
-
+    created ()
+    {
       this.sortSpecializations = this.defSort.concat(this.specializations);
       this.sortRegions = this.defSort.concat(this.regions);
     },
 
     methods: {
+      ...mapActions( 'user', [ 'fetchUserTasks', ] ),
+
       ...mapActions('objects', ['fetchObjects',]),
       ...mapActions('objects', ['fetchObjectsMap',]),
       ...mapActions('objects', ['removeRequest',]),
       ...mapActions('specializations', ['fetch',]),
       ...mapActions('dictionary', ['fetchRegions',]),
 
-      openRequest(id) {
-        this.$router.push('/objects/' + id);
-      },
       updateSearchText(value) {
         this.searchText = value;
         this.fetchObjects({"name": value});
       },
+
       filter() {
         const newRequet = this.postBody;
         if (this.tab == 0) {
@@ -170,13 +174,85 @@
           this.fetchObjectsMap(newRequet);
         }
       },
+
       setItemsPerPage(value) {
         this.itemsPerPage = value;
       },
+
       setCurrentPage(value) {
         this.page = value;
-      }
+      },
 
+      helpers ()
+      {
+        return {
+          parseDate : ( payload = {} ) => {
+            let day   = payload.date.split( 'T' )[ 0 ].split( '-' )[ 2 ];
+            let month = payload.date.split( 'T' )[ 0 ].split( '-' )[ 1 ];
+            let year  = payload.date.split( 'T' )[ 0 ].split( '-' )[ 0 ];
+            let time  = `${ payload.date.split( 'T' )[ 1 ].split( ':' )[ 0 ] }:${ payload.date.split( 'T' )[ 1 ].split( ':' )[ 1 ] }`;
+
+            return `${ day }.${ month }.${ year } ${ time }`;
+          }
+        }
+      },
+
+      handlers ()
+      {
+        return {
+          onTaskTypeTabClick : async ( payload = {} ) => {
+            console.log( 'onTaskTypeTabClick', payload ); // DELETE
+
+            switch ( payload.type ) {
+              case 'active' :
+                await this.fetchUserTasks(
+                  {
+                    type : 'accepted',
+                    status : 'open',
+                  }
+                );
+
+                this.userTaskStatus = 'open';
+              break;
+
+              case 'responded' :
+                await this.fetchUserTasks(
+                  {
+                    type : 'requested',
+                  }
+                );
+
+                this.userTaskStatus = 'open';
+              break;
+
+              case 'completed' :
+                await this.fetchUserTasks(
+                  {
+                    type : 'accepted',
+                    status : 'close',
+                  }
+                );
+
+                this.userTaskStatus = 'close';
+              break;
+
+              default:
+              break;
+            }
+          },
+
+          onNameTaskClick : ( payload = {} ) => {
+            this.$router.push(
+              {
+                name : "tasks-contractor-id",
+                params : {
+                  id : payload.uuid,
+                }
+              }
+            );
+          },
+        }
+      },
     },
 
     computed: {
@@ -222,12 +298,21 @@
         }
         console.log(postBody);
         return postBody;
-      }
+      },
+
+      ...mapGetters( 'user', [ 'userTasks' ] ),
     },
 
     async mounted() {
-      await this.fetchObjects();
-      await this.fetchObjectsMap({"type": "map"});
+      await this.fetchObjects(); // DELETE
+      await this.fetchObjectsMap({"type": "map"}); // DELETE
+
+      await this.fetchUserTasks(
+        {
+          type : 'accepted',
+          status : 'open',
+        }
+      );
     },
   }
 
@@ -260,6 +345,16 @@
     border-radius   : 6px;
     padding         : 7px 8px;
     width           : max-content;
+
+    &.close
+    {
+      background : #F2F4F5;
+
+      .value
+      {
+        color : #7A91A9 !important;
+      }
+    }
 
     .wrapper
     {

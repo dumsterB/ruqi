@@ -20,6 +20,8 @@ export const state = () => (
         isValid : false,
       },
     },
+
+    userTasks : [],
   }
 );
 
@@ -32,6 +34,11 @@ export const getters = {
   password ( state )
   {
     return state.password;
+  },
+
+  userTasks ( state )
+  {
+    return state.userTasks;
   },
 }
 
@@ -84,6 +91,23 @@ export const actions = {
 
     return await this.$axios.put( 'auth/change_password', payload );
   },
+
+  async fetchUserTasks ( { commit }, payload = {} )
+  {
+    const response = await this.$axios.get(
+      'user/my/tasks',
+
+      {
+        params : {
+          ...payload,
+        }
+      }
+    );
+
+    console.log( 'fetchUserTasks', response ); // DELETE
+
+    commit( 'updateUserTasks', response?.data?.data );
+  },
 }
 
 export const mutations = {
@@ -101,6 +125,13 @@ export const mutations = {
       ...state.password,
       ...payload,
     };
+  },
+
+  updateUserTasks ( state, userTasks )
+  {
+    console.log( 'updateUserTasks', userTasks );
+
+    state.userTasks = userTasks;
   },
 }
 
