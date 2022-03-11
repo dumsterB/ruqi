@@ -100,6 +100,8 @@ export const actions = {
       {
         params : {
           ...payload,
+
+          mode : 'map',
         }
       }
     );

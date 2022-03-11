@@ -9,7 +9,7 @@
         v-tab( @click="handlers().onTaskTypeTabClick( { type : 'completed' } )" ) Завершенные
 
   v-row.table-filter-row
-    v-col( cols="3" )
+    v-col( cols="2" )
       v-select.sort-select(
         :items="sortActive"
         v-model="active"
@@ -20,7 +20,7 @@
         @change="filter('active', active)"
       )
 
-    v-col( cols="9" class="d-flex justify-end" )
+    v-col( cols="10" class="d-flex justify-end" )
       Search( :searchText="searchText" @updateSearchText="updateSearchText" )
       v-tabs.icon-tabs( right height="40" v-model="tab_list_map" )
         v-tab
@@ -46,18 +46,18 @@
         )
           template( v-slot:item.name="{ item }" )
             div.color-black( @click="handlers().onNameTaskClick( { uuid : item.uuid } )" )
-              span.request-i {{ item.name }}
+              span.request-i {{ item.info.name }}
 
           template( v-slot:item.payment="{ item }" )
             .payment( :class="{ close : userTaskStatus === 'close' }" )
               .wrapper
-                span.value {{ `${ item.payment.value } р. / смена` }}
+                span.value {{ `${ item.info.payment.value } р. / смена` }}
 
           template( v-slot:item.object="{ item }" )
-            .color-black {{ item.object.name }}
+            .color-black {{ item.info.object.name }}
 
           template( v-slot:item.work_begin="{ item }" )
-            div {{ helpers().parseDate( { date : item.start_date } ) }}
+            div {{ helpers().parseDate( { date : item.info.start_date } ) }}
 
           template( v-slot:item.actions="{ item }" )
             v-menu(
@@ -87,7 +87,7 @@
     v-tab-item
       v-row.mt-11
         v-col( cols="12" )
-          Map( :center_coords="coords" :markers="objects_map" zoom="8" height="546" )
+          Map( :center_coords="coords" :markers="userTasks" zoom="8" height="546" )
 </template>
 
 <script>
@@ -202,6 +202,8 @@
         return {
           onTaskTypeTabClick : async ( payload = {} ) => {
             console.log( 'onTaskTypeTabClick', payload ); // DELETE
+
+            console.log( 'objects_map', this.objects_map );
 
             switch ( payload.type ) {
               case 'active' :
