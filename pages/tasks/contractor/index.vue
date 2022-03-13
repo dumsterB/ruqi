@@ -9,18 +9,19 @@
       v-tab( @click="handlers().onTaskTypeTabClick( { type : 'completed' } )" ) Завершенные
 
   v-row.table-filter-row
-    v-col( cols="2" )
+    v-col( cols="3" )
       v-select.sort-select(
         :items="sortActive"
         v-model="active"
         prefix="Порядок:"
         outlined
         hide-details="true"
-        item-text="title"
-        @change="filter('active', active)"
+        item-text="name"
+        item-value="id"
+        @change="handlers().onSortSelectChange( { $event } )"
       )
 
-    v-col( cols="10" class="d-flex justify-end align-center" )
+    v-col( cols="9" class="d-flex justify-end align-center" )
       Search( :searchText="searchText" @updateSearchText="onSearchInput" )
       .map-tabs
         .map-tab.list(
@@ -138,10 +139,20 @@
         sortSpecializations: [],
         sortRegions: [],
         sortActive: [
-          {title: 'Неделя', value: 1},
-          {title: 'Месяц', value: 4},
-          {title: 'Полгода ', value: 26},
-          {title: 'Год', value: 52},
+          {
+            id : 0,
+            name : 'Сначала ближайшие (по локации)',
+          },
+
+          {
+            id : 1,
+            name : 'Сначала дорогие (по стоимости ставки)',
+          },
+
+          {
+            id : 2,
+            name : 'Сначала ближайший старт работ (по дате старта)',
+          },
         ],
         defSort: [{name: 'Все', uuid: '0000'}],
         specialization: '',
@@ -250,6 +261,26 @@
               break;
 
               default:
+              break;
+            }
+          },
+
+          onSortSelectChange : async ( payload = {} ) => {
+            console.log( 'onSortSelectChange', payload ); // DELETE
+
+            switch ( payload.$event )
+            {
+              case 0 :
+                  await this.setUserTasksParams( { distance : 1, date : 0, } );
+                  await this.fetchUserTasks();
+              break;
+
+              case 2 :
+                await this.setUserTasksParams( { distance : 0, date : 1, } );
+                await this.fetchUserTasks();
+              break;
+
+              default :
               break;
             }
           },
