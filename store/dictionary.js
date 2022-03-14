@@ -67,20 +67,9 @@ export const actions = {
   },
 
   async fetchSpecializations(ctx) {
-    const specializations = await this.$axios.get(
-      `/dictionary/specializations`,
-
-      {
-        headers: {
-          "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68", //FIXME need refactoring ( Rasulov )
-        },
-      },
-    );
+    const specializations = await this.$axios.get( `/dictionary/specializations` );
 
     ctx.commit('setSpecializations', specializations.data.data);
-
-    console.debug('fetchSpecializations'); // FIXME // TODO es muss später entfernt werden
-    console.debug(specializations.data.data); // FIXME // TODO es muss später entfernt werden
   },
 
   async fetchClients({commit}) {
@@ -135,20 +124,12 @@ export const actions = {
 
   async fetcProfessions({commit}) {
 
-    const professions = await this.$axios.get(
-      '/dictionary/professions',
-
-      {
-        headers: {
-          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
-        }
-      }
-    );
+    const professions = await this.$axios.get( '/dictionary/professions' );
 
     console.debug('store : professions');
     console.debug(professions);
 
-    commit('setProfessions', professions.data.data);
+    commit( 'setProfessions', professions.data.data );
   },
 
   async fetcPayments({commit}) {

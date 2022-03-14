@@ -8,14 +8,19 @@
       .wrapper__body
         .container-list
           .select-list__item(
-            v-for="( option, index ) in options" :key="index"
+            v-for="( item, index ) in items" :key="index"
           )
             selectSingle(
-              :id="'select-list'"
-              :options="options"
-              :value="option"
+              :id="item.uuid"
+              :items="options"
+              :value="item.uuid"
+              @change="handlers().onSelectSingleChange( { $event } )"
             )
-            img.del-logo( src="/img/ico_close.svg" alt="Удалить" )
+            img.del-logo(
+              src="/img/ico_close.svg"
+              alt="Удалить"
+              @click="handlers().deleteItem( { uuid : item.uuid } )"
+            )
         .container-actions
           .action-add
             .titel( @click="handlers().addItem()" ) {{ action_add_title }}
@@ -74,9 +79,24 @@
       {
         return {
           addItem : ( payload = {} ) => {
-            console.debug( "addItem" );
-
             this.$emit( 'addItem' );
+          },
+
+          deleteItem : ( payload = {} ) => {
+            this.$emit( 'deleteItem', payload );
+          },
+
+          onSelectSingleChange : ( payload = {} ) => {
+            console.log( "onSelectSingleChange", payload );
+
+            this.$emit(
+              'select-list-change',
+
+              {
+                uuidOption : payload.$event.ctx,
+                uuidItem : payload.$event.id,
+              }
+            );
           },
         }
       },

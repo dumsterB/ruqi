@@ -10,15 +10,18 @@
         selectList(
           :title="titles.select_list"
           :action_add_title="titles.action_add_title"
-          :options="selectOptions"
-          :items="items"
+          :options="professions || []"
+          :items="user.professions"
           @addItem="handlers().addItem()"
-          @deleteItem="handlers().deleteItem()"
+          @deleteItem="handlers().deleteItem( { $event } )"
+          @select-list-change="handlers().selectListChange( { $event } )"
         )
 
 </template>
 
 <script>
+
+  import { mapActions, mapGetters, } from 'vuex';
 
   export default {
 
@@ -50,7 +53,15 @@
       }
     },
 
+    computed : {
+      ...mapGetters( 'user', [ 'user', ] ),
+      ...mapGetters( 'dictionary', [ 'professions', ] ),
+    },
+
     methods : {
+      ...mapActions( 'user', [ 'setUserData', ] ),
+      ...mapActions( 'dictionary', [ 'fetcProfessions', ] ),
+
       getters ()
       {
         return {}
@@ -65,10 +76,59 @@
       {
         return {
           addItem : ( payload = {} ) => {
-            this.selectOptions.push( 'rr' );
+            let haveEmptyName = this.user.professions.filter( profession => profession.name === '' ).length;
+
+            if ( !haveEmptyName )
+            {
+              this.setUserData(
+                {
+                  professions : [
+                    ...this.user.professions,
+
+                    {
+                      name : '',
+                      uuid : new Date().getTime().toString(),
+                    }
+                  ],
+                }
+              );
+            }
           },
 
-          deleteItem : ( payload = {} ) => {},
+          deleteItem : ( payload = {} ) => {
+            console.log( 'deleteItem', payload );
+
+            this.setUserData(
+              {
+                professions : this.user.professions.filter(
+                  profession => profession.uuid !== payload.$event.uuid
+                ),
+              }
+            );
+          },
+
+          selectListChange : ( payload = {} ) => {
+            console.log( 'selectListChange', payload );
+
+            this.setUserData(
+              {
+                professions : this.user.professions.map(
+                  ( profession ) => {
+                    if ( profession.uuid === payload.$event.uuidItem )
+                    {
+                      return this.professions.find(
+                        profession => profession.uuid === payload.$event.uuidOption
+                      );
+                    }
+                    else
+                    {
+                      return profession;
+                    }
+                  }
+                )
+              }
+            );
+          },
         }
       },
 
@@ -77,11 +137,18 @@
         return {}
       },
 
-      init (){},
+      async init ()
+      {
+        this.fetcProfessions()
+      },
 
       bindActions (){},
-    }
+    },
 
+    async mounted ()
+    {
+      await this.init();
+    },
   }
 
 </script>

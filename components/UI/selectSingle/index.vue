@@ -3,15 +3,18 @@
 .select-single
   .select-single_titel( v-if="title" ) {{ title }}
   v-select(
-    v-model="select"
+    :value="value"
     :id="id"
-    :items="options"
+    :items="items"
+    item-text="name"
+    item-value="uuid"
     :rules="[v => !!v || 'Выберите вариант']"
     required
     single-line
     outlined
     filled
     @input="$emit('input', select)"
+    @change="handlers().onSelectChange( { $event, id } )"
     hide-details="true"
     :item-color="'#000000'"
   )
@@ -31,7 +34,7 @@ export default {
       default : "",
     },
 
-    'options' : {
+    'items' : {
       type : Array,
       required : true,
     },
@@ -42,29 +45,40 @@ export default {
     },
   },
 
-  computed: {},
+  computed : {},
 
   data ()
   {
     return {
-      select: null,
+      selected : null,
     }
   },
 
-  methods: {},
+  methods : {
+    getters () {},
 
-  created ()
+    handlers ()
+    {
+      return {
+        onSelectChange : ( payload = {} ) => {
+          console.log( 'onSelectChange', payload);
+
+          this.$emit(
+            'change',
+
+            {
+              ctx : payload.$event,
+              id : payload.id,
+            }
+          );
+        },
+      }
+    }
+  },
+
+  mounted ()
   {
-    if ( this.value )
-    {
-      this.select = this.value;
-    }
-    else
-    {
-      this.select = this.options[ 0 ];
-    }
-
-    this.$emit( 'input', this.select );
+    console.log( 'items vv', this.items );
   },
 }
 </script>
