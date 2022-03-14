@@ -17,21 +17,13 @@ export const getters = {
 export const actions = {
   async fetchRequestId({commit}, requestId) {
 
-    const request_id = await this.$axios.get('/tasks/' + requestId, {
-      headers: {
-        "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
-      }
-    });
+    const request_id = await this.$axios.get('/tasks/' + requestId);
     commit('setRequest', request_id)
 
   },
   async fetchRequestIdProfessions({commit}, requestId) {
 
-    const request_id_professions = await this.$axios.get('/objects/' + requestId + '/professions', {
-      headers: {
-        "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
-      }
-    });
+    const request_id_professions = await this.$axios.get('/objects/' + requestId + '/professions');
     commit('setRequestProfessions', request_id_professions)
 
   },
@@ -40,7 +32,6 @@ export const actions = {
       {},
       {
         headers: {
-          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
           'Content-Type': 'application/json',
         },
       })
@@ -54,6 +45,46 @@ export const actions = {
       .catch((error) => {
         console.log(error);
       });
+  },
+  async subscribeToObject({commit, dispatch}, {requestId, objectId}) {
+    const requests = await this.$axios.post('/user/subscribe/objects',
+      objectId,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        dispatch('fetchRequestId', requestId);
+
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  },
+  async respondToTask({commit, dispatch}, {requestId}) {
+    const requests = await this.$axios.post('/user/tasks/'+requestId+'/request',
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        dispatch('fetchRequestId', requestId);
+        commit('response/setSuccess', {type: 'success', text: 'Ваш отклик принят',}, {root: true});
+        setTimeout(function () {
+          commit('response/removeSuccess', null, {root: true});
+        }, 2000);
+
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
   },
 }
 
