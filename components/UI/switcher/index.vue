@@ -60,7 +60,7 @@
       {
         return {
           onChange : () => {
-            console.debug( 'onChange switcher', this.id );
+            this.$emit( 'change', this.id );
           },
         }
       },

@@ -7,20 +7,32 @@
     .notifications__body
       .notifications__wrapper__body
         Switcher.mix-switcher__mb(
-          v-for="event in events" :key="event.uuid"
-          :id="event.uuid"
-          :stay="event.status"
-          :label="event.label"
+          :id="events.notification_new_task.uuid"
+          :stay="user.settings.notification_new_task"
+          :label="events.notification_new_task.label"
+          @change="setters().setEventSwitcherStatus( { $event } )"
+        )
+        Switcher.mix-switcher__mb(
+          :id="events.notification_new_object.uuid"
+          :stay="user.settings.notification_new_object"
+          :label="events.notification_new_object.label"
+          @change="setters().setEventSwitcherStatus( { $event } )"
+        )
+        Switcher.mix-switcher__mb(
+          :id="events.notification_low_time.uuid"
+          :stay="user.settings.notification_low_time"
+          :label="events.notification_low_time.label"
+          @change="setters().setEventSwitcherStatus( { $event } )"
         )
 
 </template>
 
 <script>
 
+  import { mapActions, mapGetters, } from 'vuex';
   import Switcher from '@/components/UI/switcher';
 
   export default {
-
     components : {
       Switcher,
     },
@@ -32,19 +44,22 @@
         switch1: true,
         switch2: false,
 
-        events : [
-          { uuid : '1', status : true, label : "Доступна новая заявка на объекте", },
-          { uuid : '2', status : true, label : "Появился новый объект в моем месте", },
-          { uuid : '3', status : false, label : "Заканчивается время набора на заявку", },
-          { uuid : '4', status : true, label : "Доступна новая заявка на объекте", },
-          { uuid : '5', status : false, label : "Появился новый объект в моем месте", },
-          { uuid : '6', status : false, label : "Заканчивается время набора на заявку", },
-        ],
+        events : {
+          notification_new_task : { uuid : 'notification_new_task', status : true, label : "Доступна новая заявка на объекте", },
+          notification_new_object : { uuid : 'notification_new_object', status : true, label : "Появился новый объект в моем месте", },
+          notification_low_time : { uuid : 'notification_low_time', status : false, label : "Заканчивается время набора на заявку", },
+        },
 
       }
     },
 
+    computed : {
+      ...mapGetters( 'user', [ 'user', ] ),
+    },
+
     methods : {
+      ...mapActions( 'user', [ 'setUserData', ] ),
+
       getters ()
       {
         return {}
@@ -52,7 +67,19 @@
 
       setters ()
       {
-        return {}
+        return {
+          setEventSwitcherStatus : ( payload = {} ) => {
+            this.setUserData(
+              {
+                settings : {
+                  ...this.user.settings,
+
+                  [ payload.$event ] : !this.user.settings[ payload.$event]
+                }
+              }
+            );
+          },
+        }
       },
 
       handlers ()
@@ -68,13 +95,6 @@
       init (){},
 
       bindActions (){},
-
-      changePlanStatus ( event )
-      {
-        let uuid = event.target.getAttribute( 'data-uuid' );
-
-        console.log( 'Der Status vom Schalter ist geändert: ' + uuid );
-      },
     }
 
   }
