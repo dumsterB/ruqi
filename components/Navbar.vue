@@ -29,7 +29,13 @@ export default {
         title: 'Заявки',
         link: '/tasks',
         img: '/img/ico_app.svg',
-        role: ['superManager', 'manager', 'dispatcher', 'contractor']
+        role: ['superManager', 'manager', 'dispatcher',]
+      },
+      {
+        title: 'Заявки',
+        link: '/tasks/contractor',
+        img: '/img/ico_app.svg',
+        role: ['contractor']
       },
       {
         title: 'Сотрудники',

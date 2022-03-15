@@ -48,6 +48,11 @@ export default {
 
   .v-rating{
     margin-right: 10px;
+    max-width: 68px;
+
+    .v-icon--link{
+      padding: 0;
+    }
   }
 
   >span{
