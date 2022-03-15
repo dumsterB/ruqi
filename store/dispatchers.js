@@ -12,7 +12,7 @@ export const actions = {
 
     const dispatchers = await this.$axios.get('/manager/dispatchers', {
       headers: {
-        "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
+        "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68" // DELETE
       }
     });
     commit('setDispatchers', dispatchers)

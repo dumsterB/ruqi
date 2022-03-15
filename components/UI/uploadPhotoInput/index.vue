@@ -39,6 +39,11 @@
         type : String,
         required : true,
       },
+
+      params : {
+        type : Object,
+        required : false,
+      },
     },
 
     data ()

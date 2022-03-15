@@ -3,6 +3,7 @@ export const state = () => (
     contractors     : [],
     contractor      : {},
     contractorTasks : [],
+    contractorActive : [],
     sortColumn      : '',
     sortOrder       : '',
 
@@ -29,6 +30,11 @@ export const mutations = {
   updateContractorTasks ( state, contractorTasks )
   {
     state.contractorTasks = contractorTasks;
+  },
+
+  updateContractorActive ( state, contractorActive )
+  {
+    state.contractorActive = contractorActive;
   },
 
   setFilterRegion ( state, region )
@@ -84,10 +90,6 @@ export const actions = {
       '/dispatcher/contractors',
 
       {
-        headers : {
-          "Authorization" : "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68", //FIXME need refactoring ( Rasulov )
-        },
-
         params  : searchParams,
       },
     );
@@ -102,36 +104,31 @@ export const actions = {
   {
     const contractor = await this.$axios.get(
       `/dispatcher/contractors/${uuid}`,
-
-      // {
-      //   headers : {
-      //     "Authorization" : "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68", //FIXME need refactoring ( Rasulov )
-      //   },
-      // },
     );
 
     ctx.commit( 'setContractor', contractor.data.data );
-
-    console.debug( 'getContractor' ); // FIXME // TODO es muss später entfernt werden
-    console.debug( contractor.data.data ); // FIXME // TODO es muss später entfernt werden
   },
 
   async getContractorTasks ( ctx, uuid )
   {
     const contractorTasks = await this.$axios.get(
       `/dispatcher/contractors/${uuid}/tasks`,
-
-      {
-        headers : {
-          "Authorization" : "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68", //FIXME need refactoring ( Rasulov )
-        },
-      },
     );
 
     ctx.commit( 'updateContractorTasks', contractorTasks.data.data );
+  },
 
-    console.debug( 'getContractorTasks' ); // FIXME // TODO es muss später entfernt werden
-    console.debug( contractorTasks.data.data ); // FIXME // TODO es muss später entfernt werden
+  async fetchContractorActive ( { commit }, payload = {} )
+  {
+    console.debug( 'fetchContractorActive' ); // DELETE
+
+    const active = await this.$axios.get(
+      `/dispatcher/contractors/${ payload.uuid }/active`,
+    );
+
+    console.debug( active.data.data ); // DELETE
+
+    commit( 'updateContractorActive', active.data.data );
   },
 
   /**
@@ -227,6 +224,11 @@ export const getters = {
   contractorTasks ( state )
   {
     return state.contractorTasks;
+  },
+
+  contractorActive ( state )
+  {
+    return state.contractorActive;
   },
 
   sortTable ( state )

@@ -7,7 +7,7 @@
     .table-list-activity
       v-data-table(
         :headers="headers"
-        :items="activities"
+        :items="activity"
         class="activity-table"
         item-key="uuid"
         :item-class="rowClass"
@@ -16,23 +16,13 @@
       )
         template( v-slot:item.date="{ item }" )
           .date-activity
-            .date {{ item.date }}
-            .time {{ item.time }}
+            .date {{ helpers().parseDate( { date : item.created_at, type : 'date' } ) }}
+            .time {{ helpers().parseDate( { date : item.created_at, type : 'time' } ) }}
 
         template( v-slot:item.name="{ item }" )
           .name-activity
             .titel {{ item.name }}
             .untertitel {{ item.id }}
-
-        template( v-slot:item.status="{ item }" )
-          .status-activity {{ item.status }}
-
-        template( v-slot:item.activity="{ item }" )
-          .activity-crt
-            .from {{ item.from }}
-            .logo
-              img.arrow-logo( src="@/assets/img/arrow-right.svg" )
-            .to {{ item.to }}
 
 </template>
 
@@ -53,12 +43,14 @@
     },
 
     computed : {
-      tasks ()
+      ...mapGetters( 'contractors', [ 'contractor', ] ),
+
+      activity ()
       {
         switch ( this.user_type )
         {
           case CONTRACTOR :
-          return this.$store.getters[ 'contractors/contractorTasks' ];
+          return this.$store.getters[ 'contractors/contractorActive' ];
 
           case EMPLOYEE :
           return this.$store.getters[ 'employee_id/employee_id_tasks' ];
@@ -75,8 +67,6 @@
         headers : [
           {text: 'date',      value: 'date', width: '16px'},
           {text: 'name',   value: 'name'},
-          {text: 'status',    value: 'status'},
-          {text: 'activity',      value: 'activity', },
         ],
 
         sort_select_items : ['по рейтингу', 'Bar', 'Fizz', 'Buzz'],
@@ -226,6 +216,8 @@
     },
 
     methods : {
+      ...mapActions( 'contractors', [ 'fetchContractorActive', ] ),
+
       getters ()
       {
         return {}
@@ -258,14 +250,25 @@
             let date = splitedPayloadDate[ 0 ].split( '-' );
             let time = splitedPayloadDate[ 1 ].split( '.' )[ 0 ].split( ':' );
 
-            let result = `${ date[ 2 ] }.${ date[ 1 ] }.${ date[ 0 ] } ${ time[ 0 ] }:${ time[ 1 ] }`;
+            if ( payload.type === 'date' )
+            {
+              return `${ date[ 2 ] }.${ date[ 1 ] }.${ date[ 0 ] }`;
+            }
 
-            return result;
+            if ( payload.type === 'time' )
+            {
+              return `${ time[ 0 ] }:${ time[ 1 ] }`;
+            }
+
+            return `${ date[ 2 ] }.${ date[ 1 ] }.${ date[ 0 ] } ${ time[ 0 ] }:${ time[ 1 ] }`;
           },
         }
       },
 
-      init (){},
+      init ()
+      {
+        this.fetchContractorActive( { uuid : this.contractor.uuid } );
+      },
 
       bindActions (){},
 
@@ -274,9 +277,13 @@
         const rowClass = 'activity-row';
 
         return rowClass;;
-      }
-    }
+      },
+    },
 
+    mounted ()
+    {
+      this.init();
+    },
   }
 
 </script>
@@ -344,7 +351,7 @@
 
     .name-activity
     {
-      width: 230px;
+      //width: 230px;
       font-style: normal;
       font-weight: 600;
 
