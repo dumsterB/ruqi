@@ -8,7 +8,7 @@
       .wrapper__body
         .profile-photo
           uploadPhotoInput( :title="inputTitles.profile_photo" :slug="slugs.profile_photo" )
-        .profile-cover
+        .profile-cover( v-if="false" )
           selectSingle.profile-cover__list(
             :id="'cover-view'"
             :options="[ 'aa', 'bb', 'cc', 'dd' ]"

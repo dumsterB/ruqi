@@ -13,7 +13,6 @@
     single-line
     outlined
     filled
-    @input="$emit('input', select)"
     @change="handlers().onSelectChange( { $event, id } )"
     hide-details="true"
     :item-color="'#000000'"

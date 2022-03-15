@@ -10,8 +10,15 @@
         .payment-type
           selectSingle.payment-type__list(
             :id="'payment-type'"
-            :options="[ 'банковская карта', 'наличные', ]"
+            :items="paymentTypeOptions"
             :title="titles.coverTitle"
+            :value="user.settings.type_payment"
+            @change="setters().onPaymentTypeSelectChange( { $event } )"
+          )
+        .bankcard-number( v-show="user.settings.type_payment === 'diekarte'" )
+          Input.bankcard-number__input.mix-input(
+            :params="{ ...textInputDefaultSettings, hauptTitel : titles.bankcard, value : user.settings.bank_card }"
+            @input_change="setters().setBankCarcNumber( { event : $event } )"
           )
         .inn-kpp-bic__group
           .inn
@@ -41,10 +48,9 @@
               @input_change="setters().setCorrespondentAccount( { event : $event } )"
             )
         .bank
-          selectSingle.bank__list(
-            :id="'bank__list'"
-            :options="[ 'Московский банк ПАО Сбербанк г. Москва', 'Sparkasse Wester Wald Sieg', ]"
-            :title="titles.bank"
+          Input.correspondent-account__input.mix-input(
+            :params="{ ...textInputDefaultSettings, hauptTitel : titles.bank, value : user.settings.bank }"
+            @input_change="setters().setBank( { event : $event } )"
           )
 
 </template>
@@ -69,6 +75,7 @@
         description : 'Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное расположение.',
         titles : {
           coverTitle : 'Тип оплаты',
+          bankcard : 'Номер карты',
           inn : 'ИНН',
           kpp : 'КПП',
           bic : 'БИК',
@@ -84,6 +91,18 @@
           solo : true,
           hint : '',
         },
+
+        paymentTypeOptions : [
+          {
+            uuid : 'diekarte',
+            name : 'банковская карта',
+          },
+
+          {
+            uuid : 'bargeld',
+            name : 'наличные',
+          },
+        ],
       }
     },
 
@@ -102,6 +121,18 @@
       setters ()
       {
         return {
+          onPaymentTypeSelectChange : ( payload = {} ) => {
+            console.log( 'onPaymentTypeSelectChange', payload ); // DELETE
+
+            this.setUserData( { settings : { ...this.user.settings, type_payment : payload.$event.ctx } } );
+          },
+
+          setBankCarcNumber : ( payload = {} ) => {
+            console.log( 'setBankCarcNumber', payload ); // DELETE log muss weg
+
+            this.setUserData( { settings : { ...this.user.settings, bank_card : payload.event } } );
+          },
+
           setInn : ( payload = {} ) => {
             console.log( 'setInn', payload ); // DELETE log muss weg
 
@@ -130,6 +161,12 @@
             console.log( 'setCorrespondentAccount', payload ); // DELETE log muss weg
 
             this.setUserData( { settings : { ...this.user.settings, correspondent_account : payload.event } } );
+          },
+
+          setBank : ( payload = {} ) => {
+            console.log( 'setBank', payload ); // DELETE log muss weg
+
+            this.setUserData( { settings : { ...this.user.settings, bank : payload.event } } );
           },
         }
       },
@@ -203,6 +240,24 @@
       margin-bottom: 24px;
 
       .payment-type__list
+      {
+        width: 416px;
+
+        fieldset
+        {
+          background: #FFFFFF;
+          border: 1px solid #E2E4E5;
+          box-sizing: border-box;
+          border-radius: 4px !important;
+        }
+      }
+    }
+
+    .bankcard-number
+    {
+      margin-bottom: 24px;
+
+      .bankcard-number__input
       {
         width: 416px;
 

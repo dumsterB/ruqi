@@ -16,6 +16,7 @@
 
 <script>
 
+  import { mapActions, mapGetters, } from 'vuex';
   import uploadPhotoInput from '@/components/UI/uploadPhotoInput';
 
   export default {
@@ -43,7 +44,13 @@
       }
     },
 
+    computed : {
+      ...mapGetters( 'userDocs', [ 'documents', ] ),
+    },
+
     methods : {
+      ...mapActions( 'userDocs', [ 'fetchDocuments', ] ),
+
       getters ()
       {
         return {}
@@ -64,11 +71,18 @@
         return {}
       },
 
-      init (){},
+      init ()
+      {
+        this.fetchDocuments();
+      },
 
       bindActions (){},
-    }
+    },
 
+    mounted ()
+    {
+      this.init();
+    },
   }
 
 </script>
