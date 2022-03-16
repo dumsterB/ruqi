@@ -20,8 +20,28 @@ export const actions = {
 
     commit( 'updateDocuments', documents.data.data );
 
-    console.debug( 'Documents:' ); // DELETE
-    console.debug( documents ); // DELETE
+    console.debug( 'Documents: ', documents ); // DELETE
+  },
+
+  async deleteDocumentMedia ( { actions, }, payload )
+  {
+    await this.$axios.delete( `user/documents/${ payload.uuidDoc }/image/${ payload.uuidMedia }` );
+  },
+
+  async uploadDocumentMedia ( { commit, }, payload )
+  {
+    await this.$axios.put(
+      `user/documents/${ payload.uuidDoc }/uploadImage`,
+
+      payload.media,
+
+      {
+        params : {
+          slug : payload.slug,
+          name_media : payload.name_media,
+        }
+      }
+    );
   },
 }
 

@@ -10,15 +10,23 @@
           uploadPhotoInput.photo-document.passport_main_spread(
             :title="photoDocuments.passport_main_spread.title"
             :slug="photoDocuments.passport_main_spread.slug"
-            :params="{ mode : !!getters().getDocumentBySlug( { slug : 'passport' } ).length, photo : getters().getDocumentBySlug( { slug : 'passport' } ),  }"
+            :params="{ photo : getters().getDocumentMediaBySlug( { slugDocument : PASSPORT, slugMedia : PASSPORT_MAIN_SPREAD, } ), }"
+            @delete_media="handlers().onDeleteMedia( { $event, slugDocument : PASSPORT, } )"
+            @photo_selected="handlers().onPhotoSelected( { $event, slugDocument : PASSPORT, slugMedia : PASSPORT_MAIN_SPREAD, } )"
           )
           uploadPhotoInput.photo-document.passport_registration_page(
             :title="photoDocuments.passport_registration_page.title"
             :slug="photoDocuments.passport_registration_page.slug"
+            :params="{ photo : getters().getDocumentMediaBySlug( { slugDocument : PASSPORT, slugMedia : PASSPORT_REGISTRATION_PAGE, } ), }"
+            @delete_media="handlers().onDeleteMedia( { $event, slugDocument : PASSPORT, } )"
+            @photo_selected="handlers().onPhotoSelected( { $event, slugDocument : PASSPORT, slugMedia : PASSPORT_REGISTRATION_PAGE, } )"
           )
           uploadPhotoInput.photo-document.photo_with_passport(
             :title="photoDocuments.photo_with_passport.title"
             :slug="photoDocuments.photo_with_passport.slug"
+            :params="{ photo : getters().getDocumentMediaBySlug( { slugDocument : PASSPORT, slugMedia : PHOTO_WITH_PASSPORT, } ), }"
+            @delete_media="handlers().onDeleteMedia( { $event, slugDocument : PASSPORT, } )"
+            @photo_selected="handlers().onPhotoSelected( { $event, slugDocument : PASSPORT, slugMedia : PHOTO_WITH_PASSPORT, } )"
           )
           Input.photo-document.photo_with_passport.mix-input(
             v-show="false"
@@ -30,6 +38,7 @@
 <script>
 
   import { mapActions, mapGetters, } from 'vuex';
+  import { PASSPORT, PASSPORT_MAIN_SPREAD, PASSPORT_REGISTRATION_PAGE, PHOTO_WITH_PASSPORT, } from '@/constants/';
   import uploadPhotoInput from '@/components/UI/uploadPhotoInput';
   import Input from '@/components/UI/input';
 
@@ -69,10 +78,30 @@
 
     computed : {
       ...mapGetters( 'userDocs', [ 'documents', ] ),
+
+      PASSPORT ()
+      {
+        return PASSPORT;
+      },
+
+      PASSPORT_MAIN_SPREAD ()
+      {
+        return PASSPORT_MAIN_SPREAD;
+      },
+
+      PASSPORT_REGISTRATION_PAGE ()
+      {
+        return PASSPORT_REGISTRATION_PAGE;
+      },
+
+      PHOTO_WITH_PASSPORT ()
+      {
+        return PHOTO_WITH_PASSPORT;
+      },
     },
 
     methods : {
-      ...mapActions( 'userDocs', [ 'fetchDocuments', ] ),
+      ...mapActions( 'userDocs', [ 'fetchDocuments', 'deleteDocumentMedia', 'uploadDocumentMedia', ] ),
 
       getters ()
       {
@@ -81,6 +110,30 @@
             console.debug( 'getDocumentBySlug', payload ); // DELETE
 
             return this.documents.filter( doc => doc.slug === payload.slug );
+          },
+
+          getDocumentMediaBySlug : ( payload = {} ) => {
+            console.debug( 'getDocumentMediaBySlug', payload ); // DELETE
+
+            let doc = this.getters().getDocumentBySlug( { slug: payload.slugDocument } );
+
+            if ( doc.length )
+            {
+              let media = doc[ 0 ].media.filter( media => media.slug === payload.slugMedia );
+
+              if ( media.length )
+              {
+                return media[ 0 ];
+              }
+              else
+              {
+                return false;
+              }
+            }
+            else
+            {
+              return false;
+            }
           },
         }
       },
@@ -92,7 +145,45 @@
 
       handlers ()
       {
-        return {}
+        return {
+          onDeleteMedia : ( payload = {} ) => {
+            let documentIndex = this.documents.findIndex(
+              doc => doc.slug === payload.slugDocument
+            );
+
+            this.deleteDocumentMedia(
+              {
+                uuidDoc : this.documents[ documentIndex ].uuid,
+                uuidMedia : payload.$event.uuid,
+              }
+            ).then(
+              () => {
+                this.fetchDocuments();
+              }
+            );
+          },
+
+          onPhotoSelected : ( payload = {} ) => {
+            let documentIndex = this.documents.findIndex(
+              doc => doc.slug === payload.slugDocument
+            );
+
+            console.log( "onPhotoSelected", payload, this.documents[ documentIndex ].uuid, payload.$event ); // DELETE
+
+            this.uploadDocumentMedia(
+              {
+                uuidDoc     : this.documents[ documentIndex ].uuid,
+                media       : payload.$event.photo,
+                name_media  : payload.$event.photo_name,
+                slug        : payload.slugMedia,
+              }
+            ).then(
+              () => {
+                this.fetchDocuments();
+              }
+            );
+          },
+        }
       },
 
       helpers ()

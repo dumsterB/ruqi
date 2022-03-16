@@ -2,7 +2,7 @@
 
 .upload-photo-input
   .upload-photo__haupt-titel {{ title }}
-  .eingabe
+  .eingabe( v-if="!helpers().hasPhoto()" )
     .upload-btn
       .logo
         img.upload_profile_photo( src="@/assets/img/upload_profile_photo.svg" )
@@ -11,7 +11,19 @@
     .upload-status
       .file-name( v-show="upload_status" ) {{ selectedFileName }}
       .file-name-default( v-show="!upload_status" ) {{ titles.upload_status_default }}
-
+  .eingabe.preview-mode(v-else)
+    .eingabe__preview
+      .preview__photo
+        .photo__img
+          img.photo__img_item(
+            :src="params.photo.preview_url"
+          )
+        .photo__name
+          .name__title {{ params.photo.name_media }}
+      .preview__actions
+        .action.delete(
+          @click="handlers().onActionDeleteClick( { uuid : params.photo.uuid } )"
+        ) {{ 'Удалить' }}
   input.picture-upload(
     type="file"
     :id="input_id"
@@ -114,32 +126,29 @@
             console.log( this.selectedFile );
 
             this.setters().setUploadStatus();
+            this.$emit(
+              'photo_selected',
 
-            // this.$axios.put(
-            //   `/dispatcher/contractors/${this.cntr_uuid}/docs/${this.doc_uuid}/uploadImage`,
+              {
+                photo : this.selectedFile,
+                photo_name : this.selectedFileName,
+              }
+            );
+          },
 
-            //   formData,
-
-            //   {
-            //     headers : {
-            //       'Content-Type'  : 'multipart/form-data'
-            //     }
-            //   }
-            // )
-            // .then(
-            //   ( response ) => {
-            //     console.log( response );
-
-            //     this.getDocuments( this.cntr_uuid );
-            //   }
-            // );
+          onActionDeleteClick : ( payload = {} ) => {
+            this.$emit( 'delete_media', payload );
           },
         }
       },
 
       helpers ()
       {
-        return {}
+        return {
+          hasPhoto : ( payload = {} ) => {
+            return Boolean( this.params?.photo );
+          },
+        }
       },
 
       init (){},
@@ -149,7 +158,7 @@
 
     mounted ()
     {
-      console.log( 'this.upload_status', this.upload_status );
+      console.log( 'this.params', this.params );
     },
 
   }
@@ -186,6 +195,72 @@
       align-content: center;
       justify-content: flex-start;
       align-items: center;
+
+      &.preview-mode
+      {
+        padding: 10px !important;
+
+        .eingabe__preview
+        {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          align-content: center;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+
+          .preview__photo
+          {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-content: center;
+            justify-content: flex-start;
+            align-items: center;
+
+            .photo__img
+            {
+              height: 30px;
+
+              .photo__img_item
+              {
+                width: 30px;
+                height: 30px;
+              }
+            }
+
+            .photo__name
+            {
+              .name__title
+              {
+                font-weight: 600;
+                font-size: 16px;
+                line-height: 28px;
+                color: #263043;
+                margin-left: 10px;
+              }
+            }
+          }
+
+          .preview__actions
+          {
+            .action
+            {
+              cursor: pointer;
+              user-select: none;
+
+              &.delete
+              {
+                font-weight: normal;
+                font-size: 16px;
+                line-height: 28px;
+                color: #EB4D3D;
+              }
+            }
+          }
+        }
+      }
     }
 
     .upload-btn

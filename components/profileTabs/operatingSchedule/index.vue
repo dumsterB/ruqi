@@ -71,6 +71,8 @@
 
 <script>
 
+  import { mapActions, mapGetters, } from 'vuex';
+
   export default {
 
     components : {},
@@ -128,7 +130,13 @@
       }
     },
 
+    computed : {
+      ...mapGetters( 'user', [ 'user', ] ),
+    },
+
     methods : {
+      ...mapActions( 'user', [ 'setUserData', ] ),
+
       getters ()
       {
         return {}
@@ -152,7 +160,7 @@
       init (){},
 
       bindActions (){},
-    }
+    },
 
   }
 
