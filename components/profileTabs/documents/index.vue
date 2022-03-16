@@ -6,7 +6,7 @@
       .documents-tab__haupt-titel {{ hauptTitel }}
     .documents-tab__body
       .documents-tab__wrapper__body
-        .photo-documents
+        .photo-documents.passport
           uploadPhotoInput.photo-document.passport_main_spread(
             :title="photoDocuments.passport_main_spread.title"
             :slug="photoDocuments.passport_main_spread.slug"
@@ -32,6 +32,9 @@
             v-show="false"
             :params="{ ...textInputDefaultSettings, hauptTitel : photoDocuments.snils.title, }"
           )
+        .additional-documents-container
+          .documents-tab__haupt-titel.additional-docs__title {{ hauptTitelAdditionalDocs }}"
+          .documents-tab__description.additional-docs__description {{ additionalDocsDescription }}
 
 </template>
 
@@ -55,6 +58,8 @@
     {
       return {
         hauptTitel : 'Фото документов',
+        hauptTitelAdditionalDocs : 'Дополнительные документы',
+        additionalDocsDescription : 'Следующий перечень документов требуется для участия в заявках по выбранных Вами профессиям:',
 
         photoDocuments : {
           passport_main_spread        : { title : 'Паспорт - основной разворот', slug  : 'passport_main_spread', },
@@ -250,6 +255,11 @@
       line-height: 16px;
       color: #7A91A9;
       margin-bottom: 24px;
+    }
+
+    .additional-docs__description
+    {
+      margin-top: 16px;
     }
 
     .photo-document

@@ -2,7 +2,9 @@
 
 .table-display-settings
   SortSelect( :items="sort_select_items" )
-  SearchLine
+  SearchLine(
+    @input="handlers().onSearchLineInput( { $event } )"
+  )
 
 </template>
 
@@ -43,7 +45,11 @@
 
       handlers ()
       {
-        return {}
+        return {
+          onSearchLineInput : ( payload = {} ) => {
+            this.$emit( 'input_search', payload.$event.target.value );
+          },
+        }
       },
 
       helpers ()

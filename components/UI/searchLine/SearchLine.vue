@@ -3,7 +3,10 @@
 .search-line
   .wrapper
     img.search-logo( src="@/assets/img/search.svg" )
-    input.search-line-item( placeholder="Найти" )
+    input.search-line-item(
+      placeholder="Найти"
+      @input="$emit( 'input', $event )"
+    )
 
 </template>
 

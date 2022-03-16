@@ -45,7 +45,7 @@
     computed : {
       emptyAttachments ()
       {
-        return this.doc.count_media - this.doc.media.length
+        return this.doc.count_media - this.doc.media.length >= 0 ? this.doc.count_media - this.doc.media.length : 0;
       },
     },
 
@@ -82,7 +82,7 @@
 
     mounted ()
     {
-      console.log( 'Doc mounted', this.doc.count_media - this.doc.media.length );
+      console.log( 'Doc mounted', this.doc.count_media, this.doc.media.length, this.doc.count_media - this.doc.media.length );
     },
 
   }

@@ -13,6 +13,8 @@ export const state = () => (
       professions     : '',
       payments        : '',
     },
+
+    searchParams : {},
   }
 )
 
@@ -71,6 +73,11 @@ export const mutations = {
   {
     state.sortOrder = sortOrder;
   },
+
+  updateSearchParams ( state, searchParams )
+  {
+    state.searchParams = searchParams;
+  },
 }
 
 export const actions = {
@@ -118,15 +125,19 @@ export const actions = {
     ctx.commit( 'updateContractorTasks', contractorTasks.data.data );
   },
 
-  async fetchContractorActive ( { commit }, payload = {} )
+  async fetchContractorActive ( { commit, state }, payload = {} )
   {
-    console.debug( 'fetchContractorActive' ); // DELETE
-
     const active = await this.$axios.get(
       `/dispatcher/contractors/${ payload.uuid }/active`,
+
+      {
+        params : {
+          ...state.searchParams,
+        }
+      }
     );
 
-    console.debug( active.data.data ); // DELETE
+    console.debug( 'fetchContractorActive', active ); // DELETE
 
     commit( 'updateContractorActive', active.data.data );
   },
@@ -208,6 +219,11 @@ export const actions = {
   {
     ctx.commit( 'updateSortOrder', sortOrder );
   },
+
+  async setSearchParams ( { commit }, payload = {} )
+  {
+    commit( 'updateSearchParams', payload );
+  }
 }
 
 export const getters = {
@@ -234,5 +250,10 @@ export const getters = {
   sortTable ( state )
   {
     return state.sortTable;
+  },
+
+  searchParams ( state )
+  {
+    return state.searchParams;
   },
 }

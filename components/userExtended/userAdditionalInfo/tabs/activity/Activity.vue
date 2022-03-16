@@ -1,7 +1,10 @@
 <template lang="pug">
 
 .activity
-  TableDisplaySettings( :sort_select_items="sort_select_items" )
+  TableDisplaySettings(
+    :sort_select_items="sort_select_items"
+    @input_search="onSearchInput( { $event } )"
+  )
 
   .table-activity
     .table-list-activity
@@ -29,7 +32,8 @@
 <script>
 
   import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
-  import { CONTRACTOR, EMPLOYEE }                           from '@/constants/';
+  import { CONTRACTOR, EMPLOYEE } from '@/constants/';
+  import _ from 'lodash';
 
   export default {
 
@@ -43,7 +47,7 @@
     },
 
     computed : {
-      ...mapGetters( 'contractors', [ 'contractor', ] ),
+      ...mapGetters( 'contractors', [ 'contractor', 'searchParams', ] ),
 
       activity ()
       {
@@ -56,7 +60,7 @@
           return this.$store.getters[ 'employee_id/employee_id_tasks' ];
 
           default :
-          return {};
+          return [];
         }
       },
     },
@@ -216,7 +220,7 @@
     },
 
     methods : {
-      ...mapActions( 'contractors', [ 'fetchContractorActive', ] ),
+      ...mapActions( 'contractors', [ 'fetchContractorActive', 'setSearchParams', ] ),
 
       getters ()
       {
@@ -267,6 +271,8 @@
 
       init ()
       {
+        console.log( 'this.contractor.uuid', this.contractor.uuid );
+
         this.fetchContractorActive( { uuid : this.contractor.uuid } );
       },
 
@@ -278,6 +284,19 @@
 
         return rowClass;;
       },
+
+      onSearchInput : _.debounce(
+        function( payload = {} ) {
+          console.log( "onSearchInput", payload ); // DELETE
+          this.setSearchParams( { ...this.searchParams, search : payload.$event } ).then(
+            () => {
+              this.fetchContractorActive( { uuid : this.contractor.uuid } );
+            }
+          );
+        },
+
+        400
+      ),
     },
 
     mounted ()
