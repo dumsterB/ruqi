@@ -41,8 +41,8 @@
                 <div class="form-part-description">
                   Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное расположение.
                 </div>
-                <div class="form-part-label">Действия</div>
-                <FormBuilder :meta="meta.meta_object_rights" @updateFiled="updateFiled"/>
+                <div class="form-part-label" v-if="this.formValues.object_role == 'manager'">Действия</div>
+                <FormBuilder :meta="meta.meta_object_rights" v-if="this.formValues.object_role == 'manager'"  @updateFiled="updateFiled"/>
 
                 <div class="form-part-label spacer">Оповещения</div>
                 <FormBuilder :meta="meta.meta_object_notification" @updateFiled="updateFiled"/>
@@ -156,7 +156,7 @@ export default {
             type: 'FTypeText',
             label: 'Email',
             col: 12,
-            name: 'object_contact_email',
+            name: 'email',
             params: {
               note: 'На данный email будет отправлена ссылка-приглашение для регистрации '
             },
@@ -284,7 +284,7 @@ export default {
         "type": this.formValues.object_role,
         "firstname": this.formValues.firstname,
         "lastname": this.formValues.lastname,
-        "email": this.formValues.object_contact_email,
+        "email": this.formValues.email,
         "phone": this.formValues.object_contact_phone,
         "objects": objects,
         "settings": {

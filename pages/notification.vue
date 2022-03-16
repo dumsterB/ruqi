@@ -24,11 +24,10 @@
             :items-per-page="itemsPerPageTable"
             @page-count="pageCount = $event"
             hide-default-footer
-            show-select
           >
             <template v-slot:item.name="{ item }">
               <div class="color-black" @click="openRequest(item.uuid)">
-                <span class="request-i" :class="{'reed': item.read}"></span>
+                <span class="request-i" :class="{'read': item.read}"></span>
                 {{ item.name }}
                 <a :href="'/tasks/'+item.task.uuid">{{ item.task.name }}</a>
                 <div class="date-note">
@@ -84,11 +83,10 @@ export default {
 
     }
   },
-  created() {
-
-  },
   methods: {
     ...mapActions('notifications', ['fetchNotifications',]),
+    ...mapActions('notifications', ['fetchReadNotifications',]),
+    ...mapActions('notifications', ['putReadNotifications',]),
 
     openRequest(id) {
       this.$router.push('/clients/' + id);
@@ -130,6 +128,9 @@ export default {
     notifications() {
       return this.$store.getters['notifications/notifications'];
     },
+    read_notifications() {
+      return this.$store.getters['notifications/read_notifications'];
+    },
     itemsPerPageTable() {
       if (this.itemsPerPage) {
         return parseInt(this.itemsPerPage, 10)
@@ -158,11 +159,14 @@ export default {
   },
   async mounted() {
     await this.fetchNotifications();
-  }
+    await this.fetchReadNotifications({read: false});
+    await this.putReadNotifications(this.read_notifications);
+
+  },
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 @import '../assets/scss/colors';
 

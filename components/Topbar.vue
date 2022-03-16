@@ -63,9 +63,11 @@
           </v-card>
         </v-menu>
         <v-badge
+          v-if="notifications_count"
           bordered
           color="error"
-          :content="notifications.length"
+          :content="notifications_count.count_notifications"
+          :value="notifications_count.count_notifications > 0"
           overlap
         >
           <v-btn
@@ -81,6 +83,7 @@
             <img src="/img/ico_bell.svg" alt="Оповещение">
           </v-btn>
         </v-badge>
+
         <v-badge
           bordered
           color="error"
@@ -129,15 +132,15 @@ export default {
     ],
   }),
   computed:{
-    notifications() {
-      return this.$store.getters['notifications/notifications'];
+    notifications_count() {
+      return this.$store.getters['notifications/notifications_count'];
     },
     user() {
       return this.$store.getters['user/user'];
     },
   },
   methods:{
-    ...mapActions('notifications', ['fetchNotifications',]),
+    ...mapActions('notifications', ['fetchNotificationsCount',]),
 
     handlers ()
     {
@@ -151,7 +154,7 @@ export default {
     },
   },
   async mounted() {
-    await this.fetchNotifications();
+    await this.fetchNotificationsCount();
   }
 }
 </script>

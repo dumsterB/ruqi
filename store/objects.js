@@ -17,9 +17,6 @@ export const actions = {
   async fetchObjects({commit}, params) {
 
     const objects = await this.$axios.get('/objects', {
-      headers: {
-        "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3"
-      },
       params: params
     });
     commit('setObjects', objects)
