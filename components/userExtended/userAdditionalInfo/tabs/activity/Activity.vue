@@ -268,7 +268,7 @@
               case EMPLOYEE :
               break;
             }
-          }
+          },
         }
       },
 

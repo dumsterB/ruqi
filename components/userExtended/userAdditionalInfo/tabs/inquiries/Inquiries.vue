@@ -1,7 +1,11 @@
 <template lang="pug">
 
 .inquiries
-  TableDisplaySettings( :sort_select_items="sort_select_items" )
+  TableDisplaySettings(
+    :sort_select_items="sort_select_items"
+    @input_search="onSearchInput( { $event } )"
+    @sort_select_change="handlers().onSortSelectChange( { $event } )"
+  )
 
   .table-inquiries
     .table-list-style
@@ -95,7 +99,37 @@
           {text: 'actions',     value: 'actions', sortable: false},
         ],
 
-        sort_select_items : ['по рейтингу', 'Bar', 'Fizz', 'Buzz'],
+        sort_select_items : [
+          {
+            uuid : 'uuid_date_up',
+            name : 'Последняя активность вверх',
+            sort : 'asc',
+            order : 'date',
+          },
+
+          {
+            uuid : 'uuid_date_down',
+            name : 'Последняя активность вниз',
+            sort : 'desc',
+            order : 'date',
+          },
+
+          {
+            uuid : 'uuid_payment_up',
+            name : 'Завершение вверх',
+            sort : 'asc',
+            order : 'end_date',
+          },
+
+          {
+            uuid : 'uuid_payment_down',
+            name : 'Завершение вниз',
+            sort : 'desc',
+            order : 'end_date',
+          },
+        ],
+
+        searchParams : {},
       }
     },
 
@@ -148,7 +182,26 @@
         const rowClass = 'inquiries-row';
 
         return rowClass;;
-      }
+      },
+
+      onSearchInput : _.debounce(
+        function( payload = {} ) {
+          console.log( "onSearchInput", payload ); // DELETE
+
+          switch ( this.user_type )
+          {
+            case CONTRACTOR :
+              this.searchParams = { ...this.searchParams, search : payload.$event, }
+              this.getContractorTasks( { uuid : this.contractor.uuid, params : this.searchParams, } );
+            break;
+
+            case EMPLOYEE :
+            break;
+          }
+        },
+
+        400
+      ),
     }
 
   }

@@ -1,7 +1,11 @@
 <template lang="pug">
 
 .applications
-  TableDisplaySettings( :sort_select_items="sort_select_items" )
+  TableDisplaySettings(
+    :sort_select_items="sort_select_items"
+    @input_search="onSearchInput( { $event } )"
+    @sort_select_change="handlers().onSortSelectChange( { $event } )"
+  )
 
   .table-applications
     .table-list-style
@@ -40,13 +44,13 @@
                   div( class="mx-auto text-left" )
                     nuxt-link( :to="'/tasks/'+ item.uuid +'/edit/'" )
                       span Редактировать
-
 </template>
 
 <script>
 
   import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
   import { CONTRACTOR, EMPLOYEE }                           from '@/constants/';
+  import _ from 'lodash';
 
   export default {
 
@@ -60,6 +64,8 @@
     },
 
     computed : {
+      ...mapGetters( 'contractors', [ 'contractor', ] ),
+
       tasks ()
       {
         switch ( this.user_type )
@@ -87,11 +93,43 @@
           {text: 'actions',   value: 'actions', sortable: false},
         ],
 
-        sort_select_items : ['по рейтингу', 'Bar', 'Fizz', 'Buzz'],
+        sort_select_items : [
+          {
+            uuid : 'uuid_date_up',
+            name : 'Дата вверх',
+            sort : 'asc',
+            order : 'created_at',
+          },
+
+          {
+            uuid : 'uuid_date_down',
+            name : 'Дата вниз',
+            sort : 'desc',
+            order : 'created_at',
+          },
+
+          {
+            uuid : 'uuid_payment_up',
+            name : 'Цена вверх',
+            sort : 'asc',
+            order : 'payment',
+          },
+
+          {
+            uuid : 'uuid_payment_down',
+            name : 'Цена вниз',
+            sort : 'desc',
+            order : 'payment',
+          },
+        ],
+
+        searchParams : {},
       }
     },
 
     methods : {
+      ...mapActions( 'contractors', [ 'getContractorTasks' ] ),
+
       getters ()
       {
         return {}
@@ -104,7 +142,24 @@
 
       handlers ()
       {
-        return {}
+        return {
+          onSortSelectChange : ( payload = {} ) => {
+            let selectedOption = this.sort_select_items.find( item => item.uuid === payload.$event );
+
+            console.log( "onSortSelectChange", payload, selectedOption ); // DELETE
+
+            switch ( this.user_type )
+            {
+              case CONTRACTOR :
+                this.searchParams = { ...this.searchParams, order : selectedOption.order, sort : selectedOption[ 'sort' ], }
+                this.getContractorTasks( { uuid : this.contractor.uuid, params : this.searchParams, } );
+              break;
+
+              case EMPLOYEE :
+              break;
+            }
+          },
+        }
       },
 
       helpers ()
@@ -140,7 +195,26 @@
         const rowClass = 'applications-row';
 
         return rowClass;;
-      }
+      },
+
+      onSearchInput : _.debounce(
+        function( payload = {} ) {
+          console.log( "onSearchInput", payload ); // DELETE
+
+          switch ( this.user_type )
+          {
+            case CONTRACTOR :
+              this.searchParams = { ...this.searchParams, search : payload.$event, }
+              this.getContractorTasks( { uuid : this.contractor.uuid, params : this.searchParams, } );
+            break;
+
+            case EMPLOYEE :
+            break;
+          }
+        },
+
+        400
+      ),
     }
 
   }

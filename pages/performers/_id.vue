@@ -42,7 +42,7 @@
       init ()
       {
         this.getContractor( this.$route.params.id );
-        this.getContractorTasks( this.$route.params.id );
+        this.getContractorTasks( { uuid : this.$route.params.id } );
         this.getDocuments( this.$route.params.id );
       },
 

@@ -116,10 +116,12 @@ export const actions = {
     ctx.commit( 'setContractor', contractor.data.data );
   },
 
-  async getContractorTasks ( ctx, uuid )
+  async getContractorTasks ( ctx, payload )
   {
+    console.debug( 'getContractorTasks', payload ); // DELETE
+
     const contractorTasks = await this.$axios.get(
-      `/dispatcher/contractors/${uuid}/tasks`,
+      `/dispatcher/contractors/${ payload.uuid }/tasks`,
     );
 
     ctx.commit( 'updateContractorTasks', contractorTasks.data.data );

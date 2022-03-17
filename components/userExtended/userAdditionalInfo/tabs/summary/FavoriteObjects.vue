@@ -156,9 +156,7 @@
       }
 
     },
-    mounted() {
-      console.log('-----------------', this.user_type);
-    }
+    mounted() {}
 
   }
 
