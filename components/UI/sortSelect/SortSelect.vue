@@ -1,7 +1,14 @@
 <template lang="pug">
 
 .sort-select
-  v-select.item( :items="items" prefix="Сортировка:" solo )
+  v-select.item(
+    :items="items"
+    item-text="name"
+    item-value="uuid"
+    @change="handlers().onSortSelectChange( { $event } )"
+    prefix="Сортировка:"
+    solo
+  )
 
 </template>
 
@@ -36,7 +43,11 @@
 
       handlers ()
       {
-        return {}
+        return {
+          onSortSelectChange : ( payload = {} ) => {
+            this.$emit( 'sort_select_change', payload.$event );
+          }
+        }
       },
 
       helpers ()

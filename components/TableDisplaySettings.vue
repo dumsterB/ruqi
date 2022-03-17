@@ -1,7 +1,10 @@
 <template lang="pug">
 
 .table-display-settings
-  SortSelect( :items="sort_select_items" )
+  SortSelect(
+    :items="sort_select_items"
+    @sort_select_change="handlers().onSortSelectChange( { $event } )"
+  )
   SearchLine(
     @input="handlers().onSearchLineInput( { $event } )"
   )
@@ -49,6 +52,10 @@
           onSearchLineInput : ( payload = {} ) => {
             this.$emit( 'input_search', payload.$event.target.value );
           },
+
+          onSortSelectChange : ( payload = {} ) => {
+            this.$emit( 'sort_select_change', payload.$event );
+          }
         }
       },
 

@@ -4,6 +4,7 @@
   TableDisplaySettings(
     :sort_select_items="sort_select_items"
     @input_search="onSearchInput( { $event } )"
+    @sort_select_change="handlers().onSortSelectChange( { $event } )"
   )
 
   .table-activity
@@ -73,7 +74,21 @@
           {text: 'name',   value: 'name'},
         ],
 
-        sort_select_items : ['по рейтингу', 'Bar', 'Fizz', 'Buzz'],
+        sort_select_items : [
+          {
+            uuid : 'uuid_date_up',
+            name : 'Дата вверх',
+            sort : 'asc',
+            order : 'created_at',
+          },
+
+          {
+            uuid : 'uuid_date_down',
+            name : 'Дата вниз',
+            sort : 'desc',
+            order : 'created_at',
+          },
+        ],
 
         activities : [
           {
@@ -234,7 +249,27 @@
 
       handlers ()
       {
-        return {}
+        return {
+          onSortSelectChange : ( payload = {} ) => {
+            let selectedOption = this.sort_select_items.find( item => item.uuid === payload.$event );
+
+            console.log( "onSortSelectChange", payload, selectedOption ); // DELETE
+
+            switch ( this.user_type )
+            {
+              case CONTRACTOR :
+                this.setSearchParams( { ...this.searchParams, order : selectedOption.order, sort : selectedOption[ 'sort' ] } ).then(
+                  () => {
+                    this.fetchContractorActive( { uuid : this.contractor.uuid } );
+                  }
+                );
+              break;
+
+              case EMPLOYEE :
+              break;
+            }
+          }
+        }
       },
 
       helpers ()
