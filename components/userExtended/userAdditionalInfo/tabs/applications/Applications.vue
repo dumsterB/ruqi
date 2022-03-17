@@ -240,18 +240,6 @@
       .color-black
       {
         position : relative;
-
-        &::before
-        {
-          content           : "";
-          position          : absolute;
-          width             : 10px;
-          height            : 10px;
-          background-color  : #19A74A;
-          border-radius     : 100%;
-          left              : -35px;
-          top               : 5px;
-        }
       }
     }
   }

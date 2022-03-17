@@ -24,7 +24,7 @@
             .time {{ helpers().parseDate( { date : item.created_at, type : 'time' } ) }}
 
         template( v-slot:item.name="{ item }" )
-          .name-activity
+          a.name-activity(:href="'/'+item.type+'s/'+item.uuid")
             .titel {{ item.name }}
             .untertitel {{ item.id }}
 
@@ -58,7 +58,7 @@
           return this.$store.getters[ 'contractors/contractorActive' ];
 
           case EMPLOYEE :
-          return this.$store.getters[ 'employee_id/employee_id_tasks' ];
+          return this.$store.getters[ 'employee_id/employee_id_active' ];
 
           default :
           return [];
@@ -70,7 +70,7 @@
     {
       return {
         headers : [
-          {text: 'date',      value: 'date', width: '16px'},
+          {text: 'date',   value: 'date', width: '16px'},
           {text: 'name',   value: 'name'},
         ],
 
@@ -90,152 +90,12 @@
           },
         ],
 
-        activities : [
-          {
-            date : '26.10.2021',
-            time : '17:01:47',
-            name : 'Требуются кладовщики на склад 5/2',
-            id   : '000023424',
-            status : 'Статус',
-            from : 'Неактивна',
-            to  : 'Активна'
-          },
-
-          {
-            date : '26.10.2021',
-            time : '17:01:47',
-            name : 'Требуются кладовщики на склад 5/2',
-            id   : '000023424',
-            status : 'Статус',
-            from : 'Неактивна',
-            to  : 'Активна'
-          },
-
-          {
-            date : '26.10.2021',
-            time : '17:01:47',
-            name : 'Требуются кладовщики на склад 5/2',
-            id   : '000023424',
-            status : 'Статус',
-            from : 'Неактивна',
-            to  : 'Активна'
-          },
-
-          {
-            date : '26.10.2021',
-            time : '17:01:47',
-            name : 'Требуются кладовщики на склад 5/2',
-            id   : '000023424',
-            status : 'Статус',
-            from : 'Неактивна',
-            to  : 'Активна'
-          },
-
-          {
-            date : '26.10.2021',
-            time : '17:01:47',
-            name : 'Требуются кладовщики на склад 5/2',
-            id   : '000023424',
-            status : 'Статус',
-            from : 'Неактивна',
-            to  : 'Активна'
-          },
-
-          {
-            date : '26.10.2021',
-            time : '17:01:47',
-            name : 'Требуются кладовщики на склад 5/2',
-            id   : '000023424',
-            status : 'Статус',
-            from : 'Неактивна',
-            to  : 'Активна'
-          },
-
-          {
-            date : '26.10.2021',
-            time : '17:01:47',
-            name : 'Требуются кладовщики на склад 5/2',
-            id   : '000023424',
-            status : 'Статус',
-            from : 'Неактивна',
-            to  : 'Активна'
-          },
-
-          {
-            date : '26.10.2021',
-            time : '17:01:47',
-            name : 'Требуются кладовщики на склад 5/2',
-            id   : '000023424',
-            status : 'Статус',
-            from : 'Неактивна',
-            to  : 'Активна'
-          },
-
-          {
-            date : '26.10.2021',
-            time : '17:01:47',
-            name : 'Требуются кладовщики на склад 5/2',
-            id   : '000023424',
-            status : 'Статус',
-            from : 'Неактивна',
-            to  : 'Активна'
-          },
-
-          {
-            date : '26.10.2021',
-            time : '17:01:47',
-            name : 'Требуются кладовщики на склад 5/2',
-            id   : '000023424',
-            status : 'Статус',
-            from : 'Неактивна',
-            to  : 'Активна'
-          },
-
-          {
-            date : '26.10.2021',
-            time : '17:01:47',
-            name : 'Требуются кладовщики на склад 5/2',
-            id   : '000023424',
-            status : 'Статус',
-            from : 'Неактивна',
-            to  : 'Активна'
-          },
-
-          {
-            date : '26.10.2021',
-            time : '17:01:47',
-            name : 'Требуются кладовщики на склад 5/2',
-            id   : '000023424',
-            status : 'Статус',
-            from : 'Неактивна',
-            to  : 'Активна'
-          },
-
-          {
-            date : '26.10.2021',
-            time : '17:01:47',
-            name : 'Требуются кладовщики на склад 5/2',
-            id   : '000023424',
-            status : 'Статус',
-            from : 'Неактивна',
-            to  : 'Активна'
-          },
-
-          {
-            date : '26.10.2021',
-            time : '17:01:47',
-            name : 'Требуются кладовщики на склад 5/2',
-            id   : '000023424',
-            status : 'Статус',
-            from : 'Неактивна',
-            to  : 'Активна'
-          },
-        ],
       }
     },
 
     methods : {
       ...mapActions( 'contractors', [ 'fetchContractorActive', 'setSearchParams', ] ),
+      ...mapActions( 'employee_id', [ 'fetchEmployeeActive', ] ),
 
       getters ()
       {
@@ -266,6 +126,8 @@
               break;
 
               case EMPLOYEE :
+                let filter = {order : selectedOption.order, sort : selectedOption[ 'sort' ]};
+                this.fetchEmployeeActive( { requestId: this.$route.params.id, params  : filter } );
               break;
             }
           },
@@ -306,9 +168,16 @@
 
       init ()
       {
-        console.log( 'this.contractor.uuid', this.contractor.uuid );
+        switch ( this.user_type )
+        {
+          case CONTRACTOR :
+            this.fetchContractorActive( { uuid : this.contractor.uuid } );
+            break;
 
-        this.fetchContractorActive( { uuid : this.contractor.uuid } );
+          case EMPLOYEE :
+            this.fetchEmployeeActive( { requestId: this.$route.params.id, params  : {} } );
+            break;
+        }
       },
 
       bindActions (){},
@@ -335,6 +204,8 @@
             break;
 
             case EMPLOYEE :
+              let search_text = {"search": payload.$event};
+              this.fetchEmployeeActive( { requestId: this.$route.params.id, params  : search_text } );
             break;
           }
         },
