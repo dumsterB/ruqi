@@ -288,11 +288,20 @@
       onSearchInput : _.debounce(
         function( payload = {} ) {
           console.log( "onSearchInput", payload ); // DELETE
-          this.setSearchParams( { ...this.searchParams, search : payload.$event } ).then(
-            () => {
-              this.fetchContractorActive( { uuid : this.contractor.uuid } );
-            }
-          );
+
+          switch ( this.user_type )
+          {
+            case CONTRACTOR :
+              this.setSearchParams( { ...this.searchParams, search : payload.$event } ).then(
+                () => {
+                  this.fetchContractorActive( { uuid : this.contractor.uuid } );
+                }
+              );
+            break;
+
+            case EMPLOYEE :
+            break;
+          }
         },
 
         400
