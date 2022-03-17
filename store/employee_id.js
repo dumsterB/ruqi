@@ -35,8 +35,11 @@ export const actions = {
     const employee_id_support = await this.$axios.get('manager/employee/' + requestId + '/support');
     commit('setEmployeeIDSupport', employee_id_support)
   },
-  async fetchEmployeeActive({commit}, requestId) {
-    const employee_id_active = await this.$axios.get('manager/employee/' + requestId + '/active');
+  async fetchEmployeeActive({commit}, {requestId, params}) {
+    const employee_id_active = await this.$axios.get('manager/employee/' + requestId + '/active',
+      {
+        params: params
+      });
     commit('setEmployeeIDActive', employee_id_active)
   },
 }

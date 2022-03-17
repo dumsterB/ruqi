@@ -28,8 +28,7 @@
             <template v-slot:item.name="{ item }">
               <div class="color-black" @click="openRequest(item.uuid)">
                 <span class="request-i" :class="{'read': item.read}"></span>
-                {{ item.name }}
-                <a :href="'/tasks/'+item.task.uuid">{{ item.task.name }}</a>
+                {{ item.description }}
                 <div class="date-note">
                   {{ formatDate(item.created_at) }}
                 </div>
@@ -43,7 +42,7 @@
             </template>
 
             <template v-slot:item.actions="{ item }">
-              <a :href="'/tasks/'+item.task.uuid" class="link-note">перейти к заявке</a>
+              <a :href="task_link +item.task.uuid" class="link-note">перейти к заявке</a>
             </template>
 
           </v-data-table>
@@ -125,6 +124,17 @@ export default {
     },
   },
   computed: {
+    user() {
+      return this.$store.getters['user/user']
+    },
+    task_link(){
+      if (this.user.type == 'contractor'){
+        return '/tasks/contractor/';
+      }
+      else{
+        return '/tasks/';
+      }
+    },
     notifications() {
       return this.$store.getters['notifications/notifications'];
     },
