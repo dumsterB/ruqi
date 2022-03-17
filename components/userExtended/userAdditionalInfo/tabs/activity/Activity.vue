@@ -126,6 +126,8 @@
               break;
 
               case EMPLOYEE :
+                let filter = {order : selectedOption.order, sort : selectedOption[ 'sort' ]};
+                this.fetchEmployeeActive( { requestId: this.$route.params.id, params  : filter } );
               break;
             }
           }
