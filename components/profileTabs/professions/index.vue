@@ -60,7 +60,6 @@
 
     methods : {
       ...mapActions( 'user', [ 'setUserData', ] ),
-      ...mapActions( 'dictionary', [ 'fetcProfessions', ] ),
 
       getters ()
       {
@@ -138,9 +137,7 @@
       },
 
       async init ()
-      {
-        this.fetcProfessions()
-      },
+      {},
 
       bindActions (){},
     },

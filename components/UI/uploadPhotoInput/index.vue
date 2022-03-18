@@ -32,7 +32,7 @@
     :ref="input_id"
     @change="handlers().uploadPicture()"
   )
-
+  .upload-photo__sub-titel {{ sub_title }}
 
 </template>
 
@@ -43,6 +43,11 @@
 
     props : {
       title : {
+        type : String,
+        default : "",
+      },
+
+      sub_title : {
         type : String,
         default : "",
       },

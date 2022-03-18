@@ -25,7 +25,7 @@
           v-tab-item
             OperatingSchedule
           v-tab-item
-            Documents
+            Documents( @go_to_professions="handlers().onGoToProfessionsClick()" )
           v-tab-item
             Notifications
           v-tab-item
@@ -94,6 +94,8 @@
 
     methods : {
       ...mapActions( 'user', [ 'uploadUserData', 'changeUserPassword', ] ),
+      ...mapActions( 'dictionary', [ 'fetcProfessions', ] ),
+      ...mapActions( 'userDocs', [ 'fetchDocuments', ] ),
 
       getters ()
       {
@@ -177,6 +179,10 @@
               break;
             }
           },
+
+          onGoToProfessionsClick : ( payload = {} ) => {
+            this.tabs.active_tab = 2;
+          }
         }
       },
 
@@ -185,11 +191,19 @@
         return {}
       },
 
-      init (){},
+      init ()
+      {
+        this.fetcProfessions();
+        this.fetchDocuments();
+      },
 
       bindActions (){},
-    }
+    },
 
+    mounted ()
+    {
+      this.init();
+    },
   }
 
 </script>

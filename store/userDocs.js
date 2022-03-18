@@ -23,6 +23,13 @@ export const actions = {
     console.debug( 'Documents: ', documents ); // DELETE
   },
 
+  async addDocument ( { commit }, payload )
+  {
+    console.debug( 'addDocument', payload ); // DELETE
+
+    return await this.$axios.post( `user/documents`, payload );
+  },
+
   async deleteDocumentMedia ( { actions, }, payload )
   {
     await this.$axios.delete( `user/documents/${ payload.uuidDoc }/image/${ payload.uuidMedia }` );
