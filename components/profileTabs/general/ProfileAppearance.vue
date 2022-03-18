@@ -7,7 +7,13 @@
     .body
       .wrapper__body
         .profile-photo
-          uploadPhotoInput( :title="inputTitles.profile_photo" :slug="slugs.profile_photo" )
+          uploadPhotoInput.profile-photo__document(
+            :title="photoDocuments.profile_photo.title"
+            :slug="photoDocuments.profile_photo.slug"
+            :params="{ photo : getters().getDocumentMediaBySlug( { slugDocument : PROFILE_PHOTO, slugMedia : PROFILE_PHOTO_MAIN, } ), }"
+            @delete_media="handlers().onDeleteMedia( { $event, slugDocument : PROFILE_PHOTO, } )"
+            @photo_selected="handlers().onPhotoSelected( { $event, slugDocument : PROFILE_PHOTO, slugMedia : PROFILE_PHOTO_MAIN, } )"
+          )
         .profile-cover( v-if="false" )
           selectSingle.profile-cover__list(
             :id="'cover-view'"
@@ -22,8 +28,10 @@
 
 <script>
 
+  import { mapActions, mapGetters, } from 'vuex';
   import uploadPhotoInput from '@/components/UI/uploadPhotoInput';
   import selectSingle from '@/components/UI/selectSingle';
+  import { PROFILE_PHOTO, PROFILE_PHOTO_MAIN } from '@/constants/';
 
   export default {
 
@@ -36,8 +44,8 @@
     {
       return {
         hauptTitel : 'Внешний вид профиля',
-        inputTitles : {
-          profile_photo : 'Фото профиля',
+        photoDocuments : {
+          profile_photo : { title : 'Фото профиля', slug : 'profile_photo' }
         },
 
         selectTitles : {
@@ -51,20 +59,152 @@
       }
     },
 
+    computed : {
+      ...mapGetters( 'userDocs', [ 'documents', ] ),
+      ...mapGetters( 'user', [ 'user', ] ),
+
+      PROFILE_PHOTO ()
+      {
+        return PROFILE_PHOTO;
+      },
+
+      PROFILE_PHOTO_MAIN ()
+      {
+        return PROFILE_PHOTO_MAIN;
+      },
+    },
+
     methods : {
+      ...mapActions( 'userDocs', [ 'fetchDocuments', 'deleteDocumentMedia', 'uploadDocumentMedia', 'addDocument', ] ),
+      ...mapActions( 'user', [ 'setUserData', ] ),
+
       getters ()
       {
-        return {}
+        return {
+          getDocumentBySlug : ( payload = {} ) => {
+            console.debug( 'getDocumentBySlug', payload ); // DELETE
+
+            return this.documents.filter( doc => doc.slug === payload.slug );
+          },
+
+          getDocumentMediaBySlug : ( payload = {} ) => {
+            console.debug( 'getDocumentMediaBySlug', payload ); // DELETE
+
+            let doc = this.getters().getDocumentBySlug( { slug: payload.slugDocument } );
+
+            if ( doc.length )
+            {
+              let media = doc[ 0 ].media.filter( media => media.slug === payload.slugMedia );
+
+              if ( media.length )
+              {
+                return media[ 0 ];
+              }
+              else
+              {
+                return false;
+              }
+            }
+            else
+            {
+              return false;
+            }
+          },
+        }
       },
 
       setters ()
       {
-        return {}
+        return {
+          setDocumentSnils : ( payload = {} ) => {
+            console.log( 'setDocumentSnils', payload ); // DELETE log muss weg
+
+            this.setUserData( { settings : { ...this.user.settings, document_snils : payload.event } } );
+          },
+
+          setDocumentInn : ( payload = {} ) => {
+            console.log( 'setDocumentInn', payload ); // DELETE log muss weg
+
+            this.setUserData( { settings : { ...this.user.settings, document_inn : payload.event } } );
+          },
+        }
       },
 
       handlers ()
       {
-        return {}
+        return {
+          onDeleteMedia : ( payload = {} ) => {
+            let documentIndex = this.documents.findIndex(
+              doc => doc.slug === payload.slugDocument
+            );
+
+            this.deleteDocumentMedia(
+              {
+                uuidDoc : this.documents[ documentIndex ].uuid,
+                uuidMedia : payload.$event.uuid,
+              }
+            ).then(
+              () => {
+                this.fetchDocuments();
+              }
+            );
+          },
+
+          onPhotoSelected : async ( payload = {} ) => {
+            let targetDocument = this.documents.find(
+              doc => doc.slug === payload.slugDocument
+            );
+
+            console.log( "onPhotoSelected", payload, targetDocument, payload.$event ); // DELETE
+
+            if ( !targetDocument )
+            {
+              console.log( 'doc not found: ', this.photoDocuments[ payload.slugDocument ] );
+
+              await this.addDocument(
+                {
+                  "document"    : this.photoDocuments[ payload.slugDocument ].title,
+                  "slug"        : this.photoDocuments[ payload.slugDocument ].slug,
+                  "count_media" : this.photoDocuments[ payload.slugDocument ].count_media,
+                }
+              ).then(
+                ( response ) => {
+                  this.uploadDocumentMedia(
+                  {
+                    uuidDoc     : response.data.data.uuid,
+                    media       : payload.$event.photo,
+                    name_media  : payload.$event.photo_name,
+                    slug        : payload.slugMedia,
+                  }
+                  ).then(
+                    () => {
+                      this.fetchDocuments();
+                    }
+                  );
+                }
+              );
+            }
+            else
+            {
+              this.uploadDocumentMedia(
+              {
+                uuidDoc     : targetDocument.uuid,
+                media       : payload.$event.photo,
+                name_media  : payload.$event.photo_name,
+                slug        : payload.slugMedia,
+              }
+              ).then(
+                () => {
+                  this.fetchDocuments();
+                }
+              );
+            }
+          },
+
+          onChooseProfessionClick : ( payload = {} ) => {
+            this.$emit( 'go_to_professions' );
+          }
+        }
       },
 
       helpers ()
@@ -76,7 +216,6 @@
 
       bindActions (){},
     }
-
   }
 
 </script>

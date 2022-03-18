@@ -14,3 +14,7 @@ export const MEDICAL_BOOK_MAIN_SPREAD = 'medical_book_main_spread';
 export const MEDICAL_BOOK_PAGE_1 = 'medical_book_page_1';
 export const MEDICAL_BOOK_PAGE_2 = 'medical_book_page_2';
 export const MEDICAL_BOOK_PAGE_3 = 'medical_book_page_3';
+
+
+export const PROFILE_PHOTO = 'profile_photo';
+export const PROFILE_PHOTO_MAIN = 'profile_photo_main';
