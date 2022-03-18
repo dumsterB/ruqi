@@ -120,7 +120,30 @@ export const actions = {
   async setUserTasksParams ( { commit }, payload = {} )
   {
     commit( 'updateUserTasksParams', payload );
-  }
+  },
+
+  async resetUserWorkTimeDaysStore ( { commit, state, }, payload = {} )
+  {
+    commit(
+      'updateUserData',
+
+      {
+        work_times : {
+          ...state.user.work_times,
+          two : false,
+          three : false,
+          individual : false,
+          monday : false,
+          tuesday : false,
+          wednesday : false,
+          thursday : false,
+          friday : false,
+          saturday : false,
+          sunday : false,
+        }
+      }
+    );
+  },
 }
 
 export const mutations = {

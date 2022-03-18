@@ -11,22 +11,25 @@
         v-checkbox.work-days(
           label="2 через 2"
           color="info"
-          value="info"
+          :input-value="user.work_times.two"
           hide-details
+          @change="setters().SetTwo( { $event } )"
         )
 
         v-checkbox.work-days(
           label="3 через 3"
           color="info"
-          value="info"
+          :input-value="user.work_times.three"
           hide-details
+          @change="setters().SetThree( { $event } )"
         )
 
         v-checkbox.work-days(
           label="индивидуальный"
           color="info"
-          value="info"
+          :input-value="user.work_times.individual"
           hide-details
+          @change="setters().SetIndividual( { $event } )"
         )
 
         .individual-days
@@ -36,33 +39,43 @@
             v-checkbox(
               :label="individualDay.day"
               color="info"
-              value="info"
+              :input-value="user.work_times[ individualDay.slug ]"
               hide-details
+              @change="setters().SetIndividualDay( { $event, day : individualDay.slug } )"
             )
 
         .dont-invite-weekends-holidays
           v-checkbox.dont-invite-weekends-holidays__item(
               :label="checkboxLabels.dontInviteWeekendsHolidays"
               color="info"
-              value="info"
+              :input-value="user.work_times.weekend"
               hide-details
+              @change="setters().SetWeekend( { $event } )"
             )
           .operating-schedule-tab__description {{ descriptions.desc2 }}
 
         .operating-schedule-time
+          .operating-schedule-time__title Время
           .time-period
             .time-from.indent-left {{ timePeriod.from }}
-            FTypeTime.time-punkt.indent-left
+            FTypeTime.time-punkt.indent-left(
+              :value="user.work_times.start_date"
+              @input="setters().SetTimeFrom( { $event } )"
+            )
 
             .time-from.indent-left {{ timePeriod.to }}
-            FTypeTime.time-punkt.indent-left
+            FTypeTime.time-punkt.indent-left(
+              :value="user.work_times.end_date"
+              @input="setters().SetTimeTo( { $event } )"
+            )
 
         .dont-invite-to-night-shifts
           v-checkbox.dont-invite-to-night-shifts__item(
               :label="checkboxLabels.dontInviteToNightShifts"
               color="info"
-              value="info"
+              :input-value="user.work_times.night_shift"
               hide-details
+              @change="setters().SetNightShift( { $event } )"
             )
           .operating-schedule-tab__description {{ descriptions.desc3 }}
 
@@ -96,30 +109,37 @@
         individualDays : [
           {
             day : 'пн',
+            slug : 'monday',
           },
 
           {
             day : 'вт',
+            slug : 'tuesday',
           },
 
           {
             day : 'ср',
+            slug : 'wednesday',
           },
 
           {
             day : 'чт',
+            slug : 'thursday',
           },
 
           {
             day : 'пт',
+            slug : 'friday',
           },
 
           {
             day : 'сб',
+            slug : 'saturday',
           },
 
           {
             day : 'вс',
+            slug : 'sunday',
           },
         ],
 
@@ -135,7 +155,7 @@
     },
 
     methods : {
-      ...mapActions( 'user', [ 'setUserData', ] ),
+      ...mapActions( 'user', [ 'setUserData', 'resetUserWorkTimeDaysStore', ] ),
 
       getters ()
       {
@@ -144,7 +164,61 @@
 
       setters ()
       {
-        return {}
+        return {
+          SetTwo : async ( payload = {} ) => {
+            this.resetUserWorkTimeDaysStore().then(
+              () => {
+                this.setUserData( { work_times : { ...this.user.work_times, two : payload.$event } } );
+              }
+            );
+          },
+
+          SetThree : async ( payload = {} ) => {
+            this.resetUserWorkTimeDaysStore().then(
+              () => {
+                this.setUserData( { work_times : { ...this.user.work_times, three : payload.$event } } );
+              }
+            );
+          },
+
+          SetIndividual : async ( payload = {} ) => {
+            this.resetUserWorkTimeDaysStore().then(
+              () => {
+                this.setUserData( { work_times : { ...this.user.work_times, individual : payload.$event } } );
+              }
+            );
+          },
+
+          SetIndividualDay : async ( payload = {} ) => {
+            console.log( "SetIndividual", payload ); // DELETE
+
+            this.resetUserWorkTimeDaysStore().then(
+              () => {
+                this.setUserData( { work_times : { ...this.user.work_times, individual : true, [ payload.day ] : payload.$event } } );
+              }
+            );
+          },
+
+          SetWeekend : async ( payload = {} ) => {
+            this.setUserData( { work_times : { ...this.user.work_times, weekend : payload.$event } } );
+          },
+
+          SetTimeFrom : async ( payload = {} ) => {
+            console.log( "SetTimeFrom", payload ); // DELETE
+
+            this.setUserData( { work_times : { ...this.user.work_times, start_date : payload.$event } } );
+          },
+
+          SetTimeTo : async ( payload = {} ) => {
+            console.log( "SetTimeTo", payload ); // DELETE
+
+            this.setUserData( { work_times : { ...this.user.work_times, end_date : payload.$event } } );
+          },
+
+          SetNightShift : async ( payload = {} ) => {
+            this.setUserData( { work_times : { ...this.user.work_times, night_shift : payload.$event } } );
+          },
+        }
       },
 
       handlers ()
@@ -252,6 +326,14 @@
     .operating-schedule-time
     {
       margin-bottom: 20px;
+
+      .operating-schedule-time__title
+      {
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 125%;
+        color: #263043;
+      }
     }
 
     .dont-invite-to-night-shifts
@@ -283,6 +365,8 @@
       align-content: center;
       justify-content: flex-start;
       align-items: center;
+
+      margin-top: 16px;
 
       .time-punkt
       {

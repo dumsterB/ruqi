@@ -67,10 +67,10 @@ export default {
     }
   },
   watch: {
-    value() {
-      this.time = this.value.substring(11, 15);
-      console.log(this.time);
-    },
+    // value() {
+    //   this.time = this.value.substring(11, 15);
+    //   console.log(this.time);
+    // },
   },
   created() {
     this.time = this.value;
