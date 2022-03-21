@@ -8,11 +8,11 @@
       .wrapper__body
         .haupt-data
           Input.mix-input.haupt-data__input(
-            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.firstname, value : user.firstname }"
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.firstname, value : user.firstname, rules : rules.firstname }"
             @input_change="setters().setFirstName( { event : $event } )"
           )
           Input.mix-input.haupt-data__input(
-            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.secondname, value : user.middlename }"
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.secondname, value : user.middlename, rules : rules.middlename }"
             @input_change="setters().setMiddleName( { event : $event } )"
           )
           Input.mix-input.haupt-data__input(
@@ -38,17 +38,17 @@
             v-radio( value="female" label="Женский" color="info" )
         .city
           Input.mix-input.city__input(
-            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.city, value : user.settings.city }"
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.city, value : user.settings.city, rules : rules.city }"
             @input_change="setters().setCity( { event : $event } )"
           )
 
         .contact-info
           Input.mix-input.contact-info__input.phone(
-            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.phone, value : user.settings.contact_phone }"
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.phone, value : user.settings.contact_phone, rules : rules.phone }"
             @input_change="setters().setContactPhone( { event : $event } )"
           )
           Input.mix-input.contact-info__input(
-            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.email, value : user.settings.contact_email }"
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.email, value : user.settings.contact_email, rules : rules.email }"
             @input_change="setters().setContactEmail( { event : $event } )"
           )
 
@@ -91,6 +91,36 @@
           hauptTitel : '',
           solo : true,
           hint : '',
+        },
+
+        rules : {
+          email : [
+            ( email ) => {
+              const regexp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Zа-яё\-0-9]+\.)+[a-zA-Zа-яё]{2,}))$/;
+
+              return !!regexp.test( email ) || 'Email введён некорректно';
+            }
+          ],
+
+          phone : [
+            value => {
+              const pattern = /^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$/;
+
+              return pattern.test( value ) || 'Телефон введён некорректно'
+            }
+          ],
+
+          city : [
+            v => v?.length || 'Данное поле является обязательным к заполненнию',
+          ],
+
+          firstname : [
+            v => v?.length || 'Данное поле является обязательным к заполненнию',
+          ],
+
+          middlename : [
+            v => v?.length || 'Данное поле является обязательным к заполненнию',
+          ],
         },
       }
     },

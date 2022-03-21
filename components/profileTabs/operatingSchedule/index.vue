@@ -192,9 +192,28 @@
           SetIndividualDay : async ( payload = {} ) => {
             console.log( "SetIndividual", payload ); // DELETE
 
+            let days = {
+              monday    : this.user.work_times.monday,
+              tuesday   : this.user.work_times.tuesday,
+              wednesday : this.user.work_times.wednesday,
+              thursday  : this.user.work_times.thursday,
+              friday    : this.user.work_times.friday,
+              saturday  : this.user.work_times.saturday,
+              sunday    : this.user.work_times.sunday,
+            }
+
             this.resetUserWorkTimeDaysStore().then(
               () => {
-                this.setUserData( { work_times : { ...this.user.work_times, individual : true, [ payload.day ] : payload.$event } } );
+                this.setUserData(
+                  {
+                    work_times : {
+                      ...this.user.work_times,
+                      individual : true,
+                      ...days,
+                      [ payload.day ] : payload.$event,
+                    }
+                  }
+                );
               }
             );
           },
