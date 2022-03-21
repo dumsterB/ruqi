@@ -51,9 +51,14 @@
       return {
         show: false,
         password: '',
+
         type : {
           pass : 'password',
         },
+
+        // error: {
+        //   message: null
+        // }
       }
     },
 

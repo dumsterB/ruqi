@@ -136,7 +136,7 @@ export default {
       }
       return result;
     },
-    validateInn(inn) {
+    validateInn ( inn ) {
       let result = false;
       if (typeof inn === 'number') {
         inn = inn.toString();

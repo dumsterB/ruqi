@@ -23,17 +23,17 @@
         .inn-kpp-bic__group
           .inn
             Input.inn__input.mix-input(
-              :params="{ ...textInputDefaultSettings, hauptTitel : titles.inn, value : user.settings.inn }"
+              :params="{ ...textInputDefaultSettings, hauptTitel : titles.inn, value : user.settings.inn, rules : rules.inn }"
               @input_change="setters().setInn( { event : $event } )"
             )
           .kpp
-            Input.inn__input.mix-input(
-              :params="{ ...textInputDefaultSettings, hauptTitel : titles.kpp, value : user.settings.kpp }"
+            Input.kpp__input.mix-input(
+              :params="{ ...textInputDefaultSettings, hauptTitel : titles.kpp, value : user.settings.kpp, rules : rules.kpp }"
               @input_change="setters().setKpp( { event : $event } )"
             )
           .bic
-            Input.inn__input.mix-input(
-              :params="{ ...textInputDefaultSettings, hauptTitel : titles.bic, value : user.settings.bik }"
+            Input.bic__input.mix-input(
+              :params="{ ...textInputDefaultSettings, hauptTitel : titles.bic, value : user.settings.bik, rules : rules.bic }"
               @input_change="setters().setBic( { event : $event } )"
             )
         .payment_correspondent-account__group
@@ -103,6 +103,153 @@
             name : 'наличные',
           },
         ],
+
+        rules : {
+          inn : [
+            ( inn ) => {
+              console.log( inn );
+
+              let result = false;
+
+              if ( typeof inn === 'number' )
+              {
+                inn = inn.toString();
+              }
+              else if ( typeof inn !== 'string' )
+              {
+                inn = '';
+              }
+
+              if ( !inn.length )
+              {
+                return 'ИНН пуст';
+              }
+              else if ( /[^0-9]/.test( inn ) )
+              {
+                return 'ИНН может состоять только из цифр';
+              }
+              else if ( [ 10, 12 ].indexOf( inn.length ) === -1 )
+              {
+                return 'ИНН может состоять только из 10 или 12 цифр';
+              }
+              else
+              {
+                let checkDigit = function ( inn, coefficients )
+                {
+                  let n = 0;
+
+                  for ( let i in coefficients )
+                  {
+                    n += coefficients[ i ] * inn[ i ];
+                  }
+
+                  return parseInt( n % 11 % 10 );
+                };
+
+                switch ( inn.length )
+                {
+                  case 10 :
+                    let n10 = checkDigit( inn, [ 2, 4, 10, 3, 5, 9, 4, 6, 8 ] );
+
+                    if ( n10 === parseInt( inn[ 9 ] ) )
+                    {
+                      result = true;
+                    }
+                  break;
+
+                  case 12:
+                    let n11 = checkDigit( inn, [ 7, 2, 4, 10, 3, 5, 9, 4, 6, 8 ] );
+                    let n12 = checkDigit( inn, [ 3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8 ] );
+
+                    if ( ( n11 === parseInt( inn[ 10 ] ) ) && ( n12 === parseInt( inn[ 11 ] ) ) )
+                    {
+                      result = true;
+                    }
+                  break;
+                }
+
+                if ( !result )
+                {
+                  return 'Неправильное контрольное число';
+                }
+              }
+
+              return result;
+            },
+          ],
+
+          kpp : [
+            ( kpp ) => {
+              let result = false;
+
+              if ( typeof kpp === 'number' )
+              {
+                kpp = kpp.toString();
+              }
+              else if ( typeof kpp !== 'string' )
+              {
+                kpp = '';
+              }
+
+              if ( !kpp.length )
+              {
+                return 'КПП пуст';
+              }
+              else if ( kpp.length !== 9 )
+              {
+                return 'КПП может состоять только из 9 знаков (цифр или заглавных букв латинского алфавита от A до Z)';
+              }
+              else if ( !/^[0-9]{4}[0-9A-Z]{2}[0-9]{3}$/.test( kpp ) )
+              {
+                return 'Неправильный формат КПП';
+              }
+              else
+              {
+                result = true;
+              }
+
+              return result;
+            },
+          ],
+
+          bic : [
+            ( bik ) => {
+              let result = false;
+
+              if ( typeof bik === 'number' )
+              {
+                bik = bik.toString();
+              }
+              else if ( typeof bik !== 'string' )
+              {
+                bik = '';
+              }
+
+              if ( !bik.length )
+              {
+                return 'БИК пуст';
+              }
+              else if ( /[^0-9]/.test( bik ) )
+              {
+                return 'БИК может состоять только из цифр';
+              }
+              else if ( bik.length !== 9 )
+              {
+                return 'БИК может состоять только из 9 цифр';
+              }
+              else
+              {
+                result = true;
+              }
+
+              return result;
+            },
+          ],
+        },
+
+        error: {
+          message: null
+        },
       }
     },
 
@@ -278,7 +425,7 @@
       flex-wrap: nowrap;
       align-content: center;
       justify-content: flex-start;
-      align-items: center;
+      align-items: flex-start;
       margin-bottom: 24px;
 
       .inn, .kpp, .bic
