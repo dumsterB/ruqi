@@ -17,6 +17,7 @@
         .photo__img
           img.photo__img_item(
             :src="params.photo.preview_url"
+            @click="handlers().onPreviewClick( { photo : params.photo } )"
           )
         .photo__name
           .name__title {{ params.photo.name_media }}
@@ -144,6 +145,12 @@
           onActionDeleteClick : ( payload = {} ) => {
             this.$emit( 'delete_media', payload );
           },
+
+          onPreviewClick : ( payload = {} ) => {
+            console.log( 'onPreviewClick', payload ); // DELETE
+
+            window.open( payload.photo.original_url, '_blank').focus();
+          },
         }
       },
 
@@ -232,6 +239,7 @@
               {
                 width: 30px;
                 height: 30px;
+                cursor: pointer;
               }
             }
 
