@@ -95,31 +95,23 @@
 
         rules : {
           email : [
-            ( email ) => {
-              const regexp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Zа-яё\-0-9]+\.)+[a-zA-Zа-яё]{2,}))$/;
-
-              return !!regexp.test( email ) || 'Email введён некорректно';
-            }
+            this.$validation.emailFormat,
           ],
 
           phone : [
-            value => {
-              const pattern = /^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$/;
-
-              return pattern.test( value ) || 'Телефон введён некорректно'
-            }
+            this.$validation.phoneFormat,
           ],
 
           city : [
-            v => v?.length || 'Данное поле является обязательным к заполненнию',
+            this.$validation.requiredField,
           ],
 
           firstname : [
-            v => v?.length || 'Данное поле является обязательным к заполненнию',
+            this.$validation.requiredField,
           ],
 
           middlename : [
-            v => v?.length || 'Данное поле является обязательным к заполненнию',
+            this.$validation.requiredField,
           ],
         },
       }
@@ -207,7 +199,8 @@
 
     mounted ()
     {
-      console.log( 'this.user', this.user);
+      console.log( 'this.user', this.user );
+      console.log( 'this.validation', this.$validation.requiredField );
     },
   }
 
