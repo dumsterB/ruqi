@@ -23,6 +23,7 @@ export const state = () => (
 
     userTasks : [],
     userTasksParams : {},
+    validation : {},
   }
 );
 
@@ -46,6 +47,11 @@ export const getters = {
   {
     return state.userTasksParams;
   },
+
+  validation ( state )
+  {
+    return state.validation;
+  },
 }
 
 export const actions = {
@@ -61,6 +67,11 @@ export const actions = {
   async setUserData ( { commit }, payload )
   {
     commit( 'updateUserData', payload );
+  },
+
+  async setUserValidation ( { commit }, payload )
+  {
+    commit( 'updateUserValidation', payload );
   },
 
   async uploadUserData ( { state } )
@@ -151,6 +162,14 @@ export const mutations = {
   {
     state.user = {
       ...state.user,
+      ...payload,
+    };
+  },
+
+  updateUserValidation ( state, payload )
+  {
+    state.validation = {
+      ...state.validation,
       ...payload,
     };
   },

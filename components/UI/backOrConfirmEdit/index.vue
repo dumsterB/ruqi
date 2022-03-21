@@ -120,6 +120,7 @@
       justify-content: center;
       align-items: center;
       padding: 16px 32px;
+      cursor: pointer;
 
       .titel
       {

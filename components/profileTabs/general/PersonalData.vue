@@ -8,15 +8,15 @@
       .wrapper__body
         .haupt-data
           Input.mix-input.haupt-data__input(
-            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.firstname, value : user.firstname, rules : rules.firstname }"
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.firstname, value : user.firstname, rules : rules.firstname, ref : 'personaldatatab_firstname', }"
             @input_change="setters().setFirstName( { event : $event } )"
           )
           Input.mix-input.haupt-data__input(
-            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.secondname, value : user.middlename, rules : rules.middlename }"
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.secondname, value : user.middlename, rules : rules.middlename, ref : 'personaldatatab_secondname', }"
             @input_change="setters().setMiddleName( { event : $event } )"
           )
           Input.mix-input.haupt-data__input(
-            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.thirdname, value : user.lastname }"
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.thirdname, value : user.lastname, ref : 'personaldatatab_thirdname', }"
             @input_change="setters().setLastName( { event : $event } )"
           )
 
@@ -118,11 +118,11 @@
     },
 
     computed : {
-      ...mapGetters( 'user', [ 'user', ] ),
+      ...mapGetters( 'user', [ 'user', 'validation', ] ),
     },
 
     methods : {
-      ...mapActions( 'user', [ 'setUserData', ] ),
+      ...mapActions( 'user', [ 'setUserData', 'setUserValidation', ] ),
 
       getters ()
       {
@@ -135,19 +135,22 @@
           setFirstName : ( payload = {} ) => {
             console.log( 'setFirstName', payload ); // DELETE log muss weg
 
-            this.setUserData( { firstname : payload.event } );
+            this.setUserData( { firstname : payload.event.value } );
+            this.setUserValidation( { firstname : payload.event.isValid } );
           },
 
           setMiddleName : ( payload = {} ) => {
             console.log( 'setMiddleName', payload ); // DELETE log muss weg
 
-            this.setUserData( { middlename : payload.event } );
+            this.setUserData( { middlename : payload.event.value } );
+            this.setUserValidation( { middlename : payload.event.isValid } );
           },
 
           setLastName : ( payload = {} ) => {
             console.log( 'setLastName', payload ); // DELETE log muss weg
 
-            this.setUserData( { lastname : payload.event } );
+            this.setUserData( { lastname : payload.event.value } );
+            this.setUserValidation( { lastname : payload.event.isValid } );
           },
 
           setBirthday : ( payload = {} ) => {
