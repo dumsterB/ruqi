@@ -17,8 +17,8 @@
           )
         .bankcard-number( v-show="user.settings.type_payment === 'diekarte'" )
           Input.bankcard-number__input.mix-input(
-            :params="{ ...textInputDefaultSettings, hauptTitel : titles.bankcard, value : user.settings.bank_card }"
-            @input_change="setters().setBankCarcNumber( { event : $event } )"
+            :params="{ ...textInputDefaultSettings, hauptTitel : titles.bankcard, value : getters().getCardNumber(), rules : rules.cardNumber }"
+            @input="setters().setBankCarcNumber( { event : $event } )"
           )
         .inn-kpp-bic__group
           .inn
@@ -39,17 +39,17 @@
         .payment_correspondent-account__group
           .payment-account
             Input.payment-account__input.mix-input(
-              :params="{ ...textInputDefaultSettings, hauptTitel : titles.paymentAccount, value : user.settings.payment_account }"
+              :params="{ ...textInputDefaultSettings, hauptTitel : titles.paymentAccount, value : user.settings.payment_account, rules : rules.paymentAccount }"
               @input_change="setters().setPaymentAccount( { event : $event } )"
             )
           .correspondent-account
             Input.correspondent-account__input.mix-input(
-              :params="{ ...textInputDefaultSettings, hauptTitel : titles.correspondentAccount, value : user.settings.correspondent_account }"
+              :params="{ ...textInputDefaultSettings, hauptTitel : titles.correspondentAccount, value : user.settings.correspondent_account, rules : rules.correspondentAccount }"
               @input_change="setters().setCorrespondentAccount( { event : $event } )"
             )
         .bank
           Input.correspondent-account__input.mix-input(
-            :params="{ ...textInputDefaultSettings, hauptTitel : titles.bank, value : user.settings.bank }"
+            :params="{ ...textInputDefaultSettings, hauptTitel : titles.bank, value : user.settings.bank, rules : rules.bank }"
             @input_change="setters().setBank( { event : $event } )"
           )
 
@@ -105,6 +105,27 @@
         ],
 
         rules : {
+          cardNumber : [
+            v => v.replaceAll( ' ', '' )?.length === 16 || 'Номер карты должен содержвать 16 цифр',
+
+            v => {
+              const regexp = /([!@#$%^&*])/;
+
+              return !regexp.test( v.replaceAll( ' ', '' ) ) || 'Номер карты не должен содержать специальные символы';
+            },
+
+            v => {
+              const regexp = /([a-zA-Z])/;
+
+              return !regexp.test( v.replaceAll( ' ', '' ) ) || 'Номер карты не должен содержать буквы';
+            },
+
+            // v => {
+            //   const regexp = /([A-Z])/;
+
+            //   return !!regexp.test( v ) || 'Номер карты не должен содержать заглавные букву';
+            // },
+          ],
           inn : [
             ( inn ) => {
               console.log( inn );
@@ -245,6 +266,115 @@
               return result;
             },
           ],
+
+          paymentAccount : [
+            ( rs ) => {
+              let result = false;
+
+              if ( this.rules.bic[ 0 ]( this.user.settings.bik ) )
+              {
+                if ( typeof rs === 'number' )
+                {
+                  rs = rs.toString();
+                }
+                else if ( typeof rs !== 'string' )
+                {
+                  rs = '';
+                }
+
+                if ( !rs.length )
+                {
+                  return 'Р/С пуст';
+                }
+                else if ( /[^0-9]/.test( rs ) )
+                {
+                  return 'Р/С может состоять только из цифр';
+                }
+                else if ( rs.length !== 20 )
+                {
+                  return 'Р/С может состоять только из 20 цифр';
+                }
+                else
+                {
+                  let bikRs = this.user.settings.bik.toString().slice( -3 ) + rs;
+                  let checksum = 0;
+                  let coefficients = [ 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1 ];
+
+                  for ( let i in coefficients )
+                  {
+                    checksum += coefficients[ i ] * ( bikRs[ i ] % 10 );
+                  }
+
+                  if ( checksum % 10 === 0 )
+                  {
+                    result = true;
+                  }
+                  else
+                  {
+                    return 'Неправильное контрольное число';
+                  }
+                }
+              }
+
+              return result;
+            }
+          ],
+
+          correspondentAccount : [
+            ( ks ) => {
+              let result = false;
+
+              if ( this.rules.bic[ 0 ]( this.user.settings.bik ) )
+              {
+                if ( typeof ks === 'number' )
+                {
+                  ks = ks.toString();
+                }
+                else if ( typeof ks !== 'string' )
+                {
+                  ks = '';
+                }
+
+                if ( !ks.length )
+                {
+                  return 'К/С пуст';
+                }
+                else if ( /[^0-9]/.test( ks ) )
+                {
+                  return 'К/С может состоять только из цифр';
+                }
+                else if ( ks.length !== 20 )
+                {
+                  return 'К/С может состоять только из 20 цифр';
+                }
+                else
+                {
+                  let bikKs = '0' + this.user.settings.bik.toString().slice( 4, 6 ) + ks;
+                  let checksum = 0;
+                  let coefficients = [ 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1 ];
+
+                  for ( let i in coefficients )
+                  {
+                    checksum += coefficients[ i ] * ( bikKs[ i ] % 10 );
+                  }
+
+                  if ( checksum % 10 === 0 )
+                  {
+                    result = true;
+                  }
+                  else
+                  {
+                    return 'Неправильное контрольное число';
+                  }
+                }
+              }
+              return result;
+            },
+          ],
+
+          bank : [
+            v => v?.length || 'Наименование банка является обязательным к заполненнию',
+          ],
         },
 
         error: {
@@ -262,7 +392,11 @@
 
       getters ()
       {
-        return {}
+        return {
+          getCardNumber : ( payload = {} ) => {
+            return this.user.settings.bank_card ? this.user.settings.bank_card.match(/.{1,4}/g).join(' ') : '';
+          }
+        }
       },
 
       setters ()
@@ -277,7 +411,7 @@
           setBankCarcNumber : ( payload = {} ) => {
             console.log( 'setBankCarcNumber', payload ); // DELETE log muss weg
 
-            this.setUserData( { settings : { ...this.user.settings, bank_card : payload.event } } );
+            this.setUserData( { settings : { ...this.user.settings, bank_card : payload.event.replaceAll( ' ', '' ) } } );
           },
 
           setInn : ( payload = {} ) => {

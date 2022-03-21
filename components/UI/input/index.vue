@@ -20,6 +20,7 @@
           :ref="params.ref"
           @click:append="show = !show"
           @change="handlers().onInputChange( $event )"
+          @input="handlers().onInput( $event )"
         )
 
 </template>
@@ -117,6 +118,24 @@
             else
             {
               this.$emit( 'input_change', payload );
+            }
+          },
+
+          onInput : ( payload = {} ) => {
+            if ( this.params.ref )
+            {
+              this.$emit(
+                'input_change',
+                {
+                  value : payload,
+
+                  isValid : this.$refs[ this.params.ref ].validate()
+                }
+              );
+            }
+            else
+            {
+              this.$emit( 'input', payload );
             }
           },
         }
