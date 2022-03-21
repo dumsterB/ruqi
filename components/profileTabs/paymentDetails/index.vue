@@ -17,39 +17,39 @@
           )
         .bankcard-number( v-show="user.settings.type_payment === 'diekarte'" )
           Input.bankcard-number__input.mix-input(
-            :params="{ ...textInputDefaultSettings, hauptTitel : titles.bankcard, value : getters().getCardNumber(), rules : rules.cardNumber }"
+            :params="{ ...textInputDefaultSettings, hauptTitel : titles.bankcard, value : getters().getCardNumber(), rules : rules.cardNumber, ref : 'paymentdettab_bankcard', }"
             @input="setters().setBankCarcNumber( { event : $event } )"
           )
         .inn-kpp-bic__group
           .inn
             Input.inn__input.mix-input(
-              :params="{ ...textInputDefaultSettings, hauptTitel : titles.inn, value : user.settings.inn, rules : rules.inn }"
+              :params="{ ...textInputDefaultSettings, hauptTitel : titles.inn, value : user.settings.inn, rules : rules.inn, ref : 'paymentdettab_inn', }"
               @input_change="setters().setInn( { event : $event } )"
             )
           .kpp
             Input.kpp__input.mix-input(
-              :params="{ ...textInputDefaultSettings, hauptTitel : titles.kpp, value : user.settings.kpp, rules : rules.kpp }"
+              :params="{ ...textInputDefaultSettings, hauptTitel : titles.kpp, value : user.settings.kpp, rules : rules.kpp, ref : 'paymentdettab_kpp', }"
               @input_change="setters().setKpp( { event : $event } )"
             )
           .bic
             Input.bic__input.mix-input(
-              :params="{ ...textInputDefaultSettings, hauptTitel : titles.bic, value : user.settings.bik, rules : rules.bic }"
+              :params="{ ...textInputDefaultSettings, hauptTitel : titles.bic, value : user.settings.bik, rules : rules.bic, ref : 'paymentdettab_bic', }"
               @input_change="setters().setBic( { event : $event } )"
             )
         .payment_correspondent-account__group
           .payment-account
             Input.payment-account__input.mix-input(
-              :params="{ ...textInputDefaultSettings, hauptTitel : titles.paymentAccount, value : user.settings.payment_account, rules : rules.paymentAccount }"
+              :params="{ ...textInputDefaultSettings, hauptTitel : titles.paymentAccount, value : user.settings.payment_account, rules : rules.paymentAccount, ref : 'paymentdettab_payment-account', }"
               @input_change="setters().setPaymentAccount( { event : $event } )"
             )
           .correspondent-account
             Input.correspondent-account__input.mix-input(
-              :params="{ ...textInputDefaultSettings, hauptTitel : titles.correspondentAccount, value : user.settings.correspondent_account, rules : rules.correspondentAccount }"
+              :params="{ ...textInputDefaultSettings, hauptTitel : titles.correspondentAccount, value : user.settings.correspondent_account, rules : rules.correspondentAccount, ref : 'paymentdettab_correspondent-account', }"
               @input_change="setters().setCorrespondentAccount( { event : $event } )"
             )
         .bank
           Input.correspondent-account__input.mix-input(
-            :params="{ ...textInputDefaultSettings, hauptTitel : titles.bank, value : user.settings.bank, rules : rules.bank }"
+            :params="{ ...textInputDefaultSettings, hauptTitel : titles.bank, value : user.settings.bank, rules : rules.bank, ref : 'paymentdettab_correspondent-account', }"
             @input_change="setters().setBank( { event : $event } )"
           )
 
@@ -140,11 +140,11 @@
     },
 
     computed : {
-      ...mapGetters( 'user', [ 'user', ] ),
+      ...mapGetters( 'user', [ 'user', 'validation', ] ), // FIXME
     },
 
     methods : {
-      ...mapActions( 'user', [ 'setUserData', ] ),
+      ...mapActions( 'user', [ 'setUserData', 'setUserValidation', ] ),
 
       getters ()
       {
@@ -167,43 +167,50 @@
           setBankCarcNumber : ( payload = {} ) => {
             console.log( 'setBankCarcNumber', payload ); // DELETE log muss weg
 
-            this.setUserData( { settings : { ...this.user.settings, bank_card : payload.event.replaceAll( ' ', '' ) } } );
+            this.setUserData( { settings : { ...this.user.settings, bank_card : payload.event.value.replaceAll( ' ', '' ) } } );
+            this.setUserValidation( { settings_bank_card : payload.event.isValid } );
           },
 
           setInn : ( payload = {} ) => {
             console.log( 'setInn', payload ); // DELETE log muss weg
 
-            this.setUserData( { settings : { ...this.user.settings, inn : payload.event } } );
+            this.setUserData( { settings : { ...this.user.settings, inn : payload.event.value } } );
+            this.setUserValidation( { settings_inn : payload.event.isValid } );
           },
 
           setKpp : ( payload = {} ) => {
             console.log( 'setKpp', payload ); // DELETE log muss weg
 
-            this.setUserData( { settings : { ...this.user.settings, kpp : payload.event } } );
+            this.setUserData( { settings : { ...this.user.settings, kpp : payload.event.value } } );
+            this.setUserValidation( { settings_kpp : payload.event.isValid } );
           },
 
           setBic : ( payload = {} ) => {
             console.log( 'setBic', payload ); // DELETE log muss weg
 
-            this.setUserData( { settings : { ...this.user.settings, bik : payload.event } } );
+            this.setUserData( { settings : { ...this.user.settings, bik : payload.event.value } } );
+            this.setUserValidation( { settings_bic : payload.event.isValid } );
           },
 
           setPaymentAccount : ( payload = {} ) => {
             console.log( 'setPaymentAccount', payload ); // DELETE log muss weg
 
-            this.setUserData( { settings : { ...this.user.settings, payment_account : payload.event } } );
+            this.setUserData( { settings : { ...this.user.settings, payment_account : payload.event.value } } );
+            this.setUserValidation( { settings_payment_account : payload.event.isValid } );
           },
 
           setCorrespondentAccount : ( payload = {} ) => {
             console.log( 'setCorrespondentAccount', payload ); // DELETE log muss weg
 
-            this.setUserData( { settings : { ...this.user.settings, correspondent_account : payload.event } } );
+            this.setUserData( { settings : { ...this.user.settings, correspondent_account : payload.event.value } } );
+            this.setUserValidation( { settings_correspondent_account : payload.event.isValid } );
           },
 
           setBank : ( payload = {} ) => {
             console.log( 'setBank', payload ); // DELETE log muss weg
 
-            this.setUserData( { settings : { ...this.user.settings, bank : payload.event } } );
+            this.setUserData( { settings : { ...this.user.settings, bank : payload.event.value } } );
+            this.setUserValidation( { settings_bank : payload.event.isValid } );
           },
         }
       },

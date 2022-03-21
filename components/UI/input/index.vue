@@ -125,7 +125,7 @@
             if ( this.params.ref )
             {
               this.$emit(
-                'input_change',
+                'input',
                 {
                   value : payload,
 

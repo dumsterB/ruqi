@@ -38,17 +38,17 @@
             v-radio( value="female" label="Женский" color="info" )
         .city
           Input.mix-input.city__input(
-            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.city, value : user.settings.city, rules : rules.city }"
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.city, value : user.settings.city, rules : rules.city, ref : 'personaldatatab_settings_city', }"
             @input_change="setters().setCity( { event : $event } )"
           )
 
         .contact-info
           Input.mix-input.contact-info__input.phone(
-            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.phone, value : user.settings.contact_phone, rules : rules.phone }"
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.phone, value : user.settings.contact_phone, rules : rules.phone, ref : 'personaldatatab_settings_contact_phone', }"
             @input_change="setters().setContactPhone( { event : $event } )"
           )
           Input.mix-input.contact-info__input(
-            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.email, value : user.settings.contact_email, rules : rules.email }"
+            :params="{ ...textInputDefaultSettings, hauptTitel : inputTitles.email, value : user.settings.contact_email, rules : rules.email, ref : 'personaldatatab_settings_contact_email', }"
             @input_change="setters().setContactEmail( { event : $event } )"
           )
 
@@ -118,7 +118,7 @@
     },
 
     computed : {
-      ...mapGetters( 'user', [ 'user', 'validation', ] ),
+      ...mapGetters( 'user', [ 'user', 'validation', ] ), // FIXME
     },
 
     methods : {
@@ -168,19 +168,22 @@
           setCity : ( payload = {} ) => {
             console.log( 'setCity', payload ); // DELETE log muss weg
 
-            this.setUserData( { settings : { ...this.user.settings, city : payload.event } } );
+            this.setUserData( { settings : { ...this.user.settings, city : payload.event.value } } );
+            this.setUserValidation( { settings_city : payload.event.isValid } );
           },
 
           setContactPhone : ( payload = {} ) => {
             console.log( 'setContactPhone', payload ); // DELETE log muss weg
 
-            this.setUserData( { settings : { ...this.user.settings, contact_phone : payload.event } } );
+            this.setUserData( { settings : { ...this.user.settings, contact_phone : payload.event.value } } );
+            this.setUserValidation( { settings_contact_phone : payload.event.isValid } );
           },
 
           setContactEmail : ( payload = {} ) => {
             console.log( 'setContactEmail', payload ); // DELETE log muss weg
 
-            this.setUserData( { settings : { ...this.user.settings, contact_email : payload.event } } );
+            this.setUserData( { settings : { ...this.user.settings, contact_email : payload.event.value } } );
+            this.setUserValidation( { settings_contact_email : payload.event.isValid } );
           },
         }
       },

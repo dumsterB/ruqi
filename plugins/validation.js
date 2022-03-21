@@ -38,7 +38,7 @@ export default ( { app, store }, inject ) => {
           return 'Номер карты не должен содержать буквы';
         }
 
-        return false;
+        return true;
       },
 
       innFormat : ( inn ) => {
