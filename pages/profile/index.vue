@@ -93,7 +93,7 @@
     },
 
     methods : {
-      ...mapActions( 'user', [ 'uploadUserData', 'changeUserPassword', ] ),
+      ...mapActions( 'user', [ 'uploadUserData', 'changeUserPassword', 'validateUserData', ] ),
       ...mapActions( 'dictionary', [ 'fetcProfessions', ] ),
       ...mapActions( 'userDocs', [ 'fetchDocuments', ] ),
 
@@ -142,42 +142,53 @@
           onConfirmClick : () => {
             console.log( 'onConfirmClick', this.tabs.active_tab ); // DELETE
 
-            switch ( this.tabs.active_tab )
-            {
-              case 6 :
-                if ( !this.password.oldPass.value )
-                {
-                  alert( 'Введите старый пароль' );
+            this.validateUserData()
+              .then( () => {
+                console.log( 'success' );
 
-                  return;
-                }
-
-                if ( !this.password.newPass.isValid )
-                {
-                  alert( 'Введите корректный новый пароль' );
-
-                  return;
-                }
-
-                if ( this.password.newPass.value !== this.password.RepeatNewPass.value )
-                {
-                  alert( 'Повторно введенный пароль не соответствует исходному варианту.' );
-
-                  return;
-                }
-
-                this.changeUserPassword(
-                  {
-                    old : this.password.oldPass.value,
-                    new : this.password.newPass.value,
-                  }
-                );
-              break;
-
-              default :
                 this.uploadUserData();
-              break;
-            }
+              } )
+              .catch( ( e ) => {
+                console.error( e.message );
+                alert( e.message );
+              } );
+
+            // switch ( this.tabs.active_tab )
+            // {
+            //   case 6 :
+            //     if ( !this.password.oldPass.value )
+            //     {
+            //       alert( 'Введите старый пароль' );
+
+            //       return;
+            //     }
+
+            //     if ( !this.password.newPass.isValid )
+            //     {
+            //       alert( 'Введите корректный новый пароль' );
+
+            //       return;
+            //     }
+
+            //     if ( this.password.newPass.value !== this.password.RepeatNewPass.value )
+            //     {
+            //       alert( 'Повторно введенный пароль не соответствует исходному варианту.' );
+
+            //       return;
+            //     }
+
+            //     this.changeUserPassword(
+            //       {
+            //         old : this.password.oldPass.value,
+            //         new : this.password.newPass.value,
+            //       }
+            //     );
+            //   break;
+
+            //   default :
+            //     this.uploadUserData();
+            //   break;
+            // }
           },
 
           onGoToProfessionsClick : ( payload = {} ) => {
