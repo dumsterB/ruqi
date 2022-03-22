@@ -144,51 +144,61 @@
 
             this.validateUserData()
               .then( () => {
-                console.log( 'success' );
+                console.log( 'success' ); // DELETE
 
-                this.uploadUserData();
+                if ( this.password.newPass.value )
+                {
+                  console.log( 'update profile password' ); // DELETE
+
+                  if ( !this.password.oldPass.value )
+                  {
+                    alert( 'Введите старый пароль' );
+
+                    return;
+                  }
+
+                  if ( !this.password.newPass.isValid )
+                  {
+                    alert( 'Введите корректный новый пароль' );
+
+                    return;
+                  }
+
+                  if ( this.password.newPass.value !== this.password.RepeatNewPass.value )
+                  {
+                    alert( 'Повторно введенный пароль не соответствует исходному варианту.' );
+
+                    return;
+                  }
+
+                  this.changeUserPassword(
+                    {
+                      old : this.password.oldPass.value,
+                      new : this.password.newPass.value,
+                    }
+                  ).then(
+                    () => {
+                      this.uploadUserData().then(
+                        () => {
+                          this.$router.push( '/' );
+                        }
+                      );
+                    }
+                  );
+                }
+                else
+                {
+                  this.uploadUserData().then(
+                    () => {
+                      this.$router.push( '/' );
+                    }
+                  );
+                }
               } )
               .catch( ( e ) => {
                 console.error( e.message );
                 alert( e.message );
               } );
-
-            // switch ( this.tabs.active_tab )
-            // {
-            //   case 6 :
-            //     if ( !this.password.oldPass.value )
-            //     {
-            //       alert( 'Введите старый пароль' );
-
-            //       return;
-            //     }
-
-            //     if ( !this.password.newPass.isValid )
-            //     {
-            //       alert( 'Введите корректный новый пароль' );
-
-            //       return;
-            //     }
-
-            //     if ( this.password.newPass.value !== this.password.RepeatNewPass.value )
-            //     {
-            //       alert( 'Повторно введенный пароль не соответствует исходному варианту.' );
-
-            //       return;
-            //     }
-
-            //     this.changeUserPassword(
-            //       {
-            //         old : this.password.oldPass.value,
-            //         new : this.password.newPass.value,
-            //       }
-            //     );
-            //   break;
-
-            //   default :
-            //     this.uploadUserData();
-            //   break;
-            // }
           },
 
           onGoToProfessionsClick : ( payload = {} ) => {
