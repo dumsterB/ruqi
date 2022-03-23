@@ -69,7 +69,7 @@
         )
           template( v-slot:item.name="{ item }" )
             div.color-black( @click="handlers().onNameTaskClick( { uuid : item.uuid } )" )
-              span.request-i {{ item.info.name }}
+              span {{ item.info.name }}
 
           template( v-slot:item.payment="{ item }" )
             .payment( :class="{ close : userTaskStatus === 'close' }" )
