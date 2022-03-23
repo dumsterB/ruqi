@@ -92,6 +92,12 @@ export const actions = {
 
     const contractorTasks = await this.$axios.get(
       `/dispatcher/contractors/${ payload.uuid }/tasks`,
+
+      {
+        params : {
+          ...payload.params,
+        }
+      }
     );
 
     ctx.commit( 'updateContractorTasks', contractorTasks.data.data );
