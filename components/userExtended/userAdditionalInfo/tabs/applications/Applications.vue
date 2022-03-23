@@ -122,19 +122,19 @@
             order : 'created_at',
           },
 
-          {
-            uuid : 'uuid_payment_up',
-            name : 'Цена по возрастанию',
-            sort : 'asc',
-            order : 'payment',
-          },
+          // {
+          //   uuid : 'uuid_payment_up',
+          //   name : 'Цена по возрастанию',
+          //   sort : 'asc',
+          //   order : 'payment',
+          // },
 
-          {
-            uuid : 'uuid_payment_down',
-            name : 'Цена по убыванию',
-            sort : 'desc',
-            order : 'payment',
-          },
+          // {
+          //   uuid : 'uuid_payment_down',
+          //   name : 'Цена по убыванию',
+          //   sort : 'desc',
+          //   order : 'payment',
+          // },
         ],
 
         searchParams : {},
