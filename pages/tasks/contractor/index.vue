@@ -74,7 +74,7 @@
           template( v-slot:item.payment="{ item }" )
             .payment( :class="{ close : userTaskStatus === 'close' }" )
               .wrapper
-                span.value {{ `${ item.info.payment.value } р. / смена` }}
+                span.value {{ `${ item.info.payment.value || '0' } р. / смена` }}
 
           template( v-slot:item.object="{ item }" )
             .color-black {{ item.info.object.name }}
@@ -364,9 +364,6 @@
     },
 
     async mounted() {
-      await this.fetchObjects(); // DELETE
-      await this.fetchObjectsMap({"type": "map"}); // DELETE
-
       await this.setUserTasksParams( { type : 'accepted', status : 'open', } );
       await this.fetchUserTasks();
     },

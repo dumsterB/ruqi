@@ -11,7 +11,7 @@
         :marker-id="item.uuid"
         :hint-content="item.properties.hintContent"
         marker-type="placemark"
-        :balloon-template="balloonTemplate(item.info, item.uuid)"
+        :balloon-template="balloonTemplate( item.info, item.uuid )"
       />
     </yandex-map>
   </div>
@@ -20,12 +20,19 @@
 
 <script>
 export default {
-  props: ['center_coords', 'markers', 'zoom', 'height' ],
+  props: [
+    'center_coords',
+    'markers',
+    'zoom',
+    'height',
+    'entity',
+  ],
   data() {
     return {}
   },
-  methods:{
-    balloonTemplate(info, uuid) {
+  methods : {
+    balloonTemplate ( info, uuid )
+    {
       return `
         <h2 class="balloon-header">${info.name}</h2>
         <p>Рейтинг: ${info.raiting}</p>
