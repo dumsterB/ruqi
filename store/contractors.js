@@ -3,6 +3,7 @@ export const state = () => (
     contractors     : [],
     contractor      : {},
     contractorTasks : [],
+    contractorInquiries : [],
     contractorActive : [],
     sortColumn      : '',
     sortOrder       : '',
@@ -32,6 +33,11 @@ export const getters = {
   contractorTasks ( state )
   {
     return state.contractorTasks;
+  },
+
+  contractorInquiries ( state )
+  {
+    return state.contractorInquiries;
   },
 
   contractorActive ( state )
@@ -101,6 +107,25 @@ export const actions = {
     );
 
     ctx.commit( 'updateContractorTasks', contractorTasks.data.data );
+  },
+
+  async getContractorInquiries ( { commit }, payload )
+  {
+    console.debug( 'getContractorInquiries', payload ); // DELETE
+
+    const contractorInquiries = await this.$axios.get(
+      `/dispatcher/contractors/${ payload.uuid }/support`,
+
+      {
+        params : {
+          ...payload.params,
+        }
+      }
+    );
+
+    console.log( 'contractorInquiries: ', contractorInquiries );
+
+    commit( 'updateContractorInquiries', contractorInquiries.data.data );
   },
 
   async fetchContractorActive ( { commit, state }, payload = {} )
@@ -218,6 +243,11 @@ export const mutations = {
   updateContractorTasks ( state, contractorTasks )
   {
     state.contractorTasks = contractorTasks;
+  },
+
+  updateContractorInquiries ( state, contractorInquiries )
+  {
+    state.contractorInquiries = contractorInquiries;
   },
 
   updateContractorActive ( state, contractorActive )

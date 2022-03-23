@@ -36,13 +36,14 @@
     },
 
     methods : {
-      ...mapActions( 'contractors', [ 'getContractor', 'getContractorTasks' ] ),
+      ...mapActions( 'contractors', [ 'getContractor', 'getContractorTasks', 'getContractorInquiries', ] ),
       ...mapActions( 'contractorDocs', [ 'getDocuments', ] ),
 
       init ()
       {
         this.getContractor( this.$route.params.id );
         this.getContractorTasks( { uuid : this.$route.params.id } );
+        this.getContractorInquiries( { uuid : this.$route.params.id } );
         this.getDocuments( this.$route.params.id );
       },
 
