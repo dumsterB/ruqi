@@ -110,7 +110,13 @@
     v-tab-item
       v-row.mt-11
         v-col( cols="12" )
-          Map( :center_coords="coords" :markers="userTasks" zoom="8" height="546" )
+          Map(
+            :center_coords="coords"
+            :markers="userTasks"
+            :entity="'contractor'"
+            zoom="8"
+            height="546"
+          )
 </template>
 
 <script>

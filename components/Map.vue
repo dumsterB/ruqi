@@ -33,12 +33,24 @@ export default {
   methods : {
     balloonTemplate ( info, uuid )
     {
-      return `
-        <h2 class="balloon-header">${info.name}</h2>
-        <p>Рейтинг: ${info.raiting}</p>
-        <p>Описание: ${info.description}</p>
-        <a href="/objects/${uuid}">Перейти</a>
-      `
+      if ( this.entity === 'contractor' )
+      {
+        return `
+          <h2 class="balloon-header">${info.name}</h2>
+          <p>Рейтинг: ${info.raiting}</p>
+          <p>Описание: ${info.description}</p>
+          <a href="/tasks/contractor/${ uuid }">Перейти</a>
+        `;
+      }
+      else
+      {
+        return `
+          <h2 class="balloon-header">${info.name}</h2>
+          <p>Рейтинг: ${info.raiting}</p>
+          <p>Описание: ${info.description}</p>
+          <a href="/objects/${ uuid }">Перейти</a>
+        `;
+      }
     }
   }
 }
