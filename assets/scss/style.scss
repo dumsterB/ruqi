@@ -596,7 +596,7 @@ h1.large {
               border-bottom-right-radius: 14px;
             }
 
-            td.total{
+            td.total {
               background: $light_blue;
               height: 47px;
               color: $black;
@@ -708,15 +708,23 @@ h1.large {
       color: inherit;
       font-weight: 600;
       margin-bottom: 24px;
+
+      &.second {
+        margin-top: 32px;
+      }
     }
 
     .form-part-label {
       font-weight: 600;
       font-size: 16px;
       margin-bottom: 16px;
+
+      &.FTypeLabel {
+        margin-bottom: 0;
+      }
     }
 
-    .form-part-label.spacer{
+    .form-part-label.spacer {
       margin-top: 32px;
     }
 
@@ -764,7 +772,7 @@ h1.large {
   .form-part-contact {
     position: relative;
 
-    >.remove-item {
+    > .remove-item {
       position: absolute;
       right: 32px;
       top: 32px;

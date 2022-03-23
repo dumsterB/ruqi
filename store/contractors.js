@@ -92,6 +92,31 @@ export const actions = {
     ctx.commit( 'setContractor', contractor.data.data );
   },
 
+  async createContractor({commit, dispatch}, newRequest) {
+    const requests = await this.$axios.post('/manager/contractor',
+      newRequest,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+
+      })
+      .catch((error) => {
+        commit('response/setSuccess', {type: 'error', text: 'Заполните обязательные поля', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 3000);
+        console.log(error);
+      });
+  },
+
   async getContractorTasks ( ctx, payload )
   {
     console.debug( 'getContractorTasks', payload ); // DELETE

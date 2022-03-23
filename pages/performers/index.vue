@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <Header :content="title" :size="title_size" :isnew="false" :isback="false"/>
+      <Header :content="title" :size="title_size" isnew="true" isnewstyle="text_btn" :isback="false"/>
       <v-tabs
         v-model="tab"
         class="form-tabs"
