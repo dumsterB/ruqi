@@ -32,7 +32,7 @@
         template( v-slot:item.payment="{ item }" )
           .payment
             .wrapper
-              span.value {{ `${ item.payment.value } р. / смена` }}
+              span.value {{ `${ item.payment.value || '0' } р. / смена` }}
 
         template( v-slot:item.object="{ item }" ) {{ item.object.name }}
 
@@ -298,6 +298,7 @@
         line-height     : 125%;
         letter-spacing  : 0.01em;
         color           : #0082DE;
+        white-space     : nowrap;
       }
     }
   }
