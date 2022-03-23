@@ -18,65 +18,35 @@ export const state = () => (
   }
 )
 
-export const mutations = {
-  setContractors ( state, contractors )
+export const getters = {
+  contractors ( state )
   {
-    state.contractors = contractors;
+    return state.contractors;
   },
 
-  setContractor ( state, contractor )
+  contractor ( state )
   {
-    state.contractor = contractor;
+    return state.contractor;
   },
 
-  updateContractorTasks ( state, contractorTasks )
+  contractorTasks ( state )
   {
-    state.contractorTasks = contractorTasks;
+    return state.contractorTasks;
   },
 
-  updateContractorActive ( state, contractorActive )
+  contractorActive ( state )
   {
-    state.contractorActive = contractorActive;
+    return state.contractorActive;
   },
 
-  setFilterRegion ( state, region )
+  sortTable ( state )
   {
-    state.filters.region = region;
+    return state.sortTable;
   },
 
-  setFilterSpecialization ( state, specialization )
+  searchParams ( state )
   {
-    state.filters.specialization = specialization;
-  },
-
-  setFilterProfessions ( state, professions )
-  {
-    state.filters.professions = professions;
-  },
-
-  setFilterPayments ( state, payments )
-  {
-    state.filters.payments = payments;
-  },
-
-  updateActiveParameter ( state, activeParameter )
-  {
-    state.sortTable.activeParameter = activeParameter;
-  },
-
-  updateSortColumn ( state, sortColumn )
-  {
-    state.sortColumn = sortColumn;
-  },
-
-  updateSortOrder ( state, sortOrder )
-  {
-    state.sortOrder = sortOrder;
-  },
-
-  updateSearchParams ( state, searchParams )
-  {
-    state.searchParams = searchParams;
+    return state.searchParams;
   },
 }
 
@@ -228,34 +198,64 @@ export const actions = {
   }
 }
 
-export const getters = {
-  contractors ( state )
+export const mutations = {
+  setContractors ( state, contractors )
   {
-    return state.contractors;
+    state.contractors = contractors;
   },
 
-  contractor ( state )
+  setContractor ( state, contractor )
   {
-    return state.contractor;
+    state.contractor = contractor;
   },
 
-  contractorTasks ( state )
+  updateContractorTasks ( state, contractorTasks )
   {
-    return state.contractorTasks;
+    state.contractorTasks = contractorTasks;
   },
 
-  contractorActive ( state )
+  updateContractorActive ( state, contractorActive )
   {
-    return state.contractorActive;
+    state.contractorActive = contractorActive;
   },
 
-  sortTable ( state )
+  setFilterRegion ( state, region )
   {
-    return state.sortTable;
+    state.filters.region = region;
   },
 
-  searchParams ( state )
+  setFilterSpecialization ( state, specialization )
   {
-    return state.searchParams;
+    state.filters.specialization = specialization;
+  },
+
+  setFilterProfessions ( state, professions )
+  {
+    state.filters.professions = professions;
+  },
+
+  setFilterPayments ( state, payments )
+  {
+    state.filters.payments = payments;
+  },
+
+  updateActiveParameter ( state, activeParameter )
+  {
+    state.sortTable.activeParameter = activeParameter;
+  },
+
+  updateSortColumn ( state, sortColumn )
+  {
+    state.sortColumn = sortColumn;
+  },
+
+  updateSortOrder ( state, sortOrder )
+  {
+    state.sortOrder = sortOrder;
+  },
+
+  updateSearchParams ( state, searchParams )
+  {
+    state.searchParams = searchParams;
   },
 }

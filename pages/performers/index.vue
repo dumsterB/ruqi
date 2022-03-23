@@ -160,7 +160,7 @@
     },
 
     methods : {
-      ...mapActions( 'contractors', [ 'getContractors', ] ),
+      ...mapActions( 'contractors', [ 'getContractors', 'resetContractor', ] ),
 
       init ()
       {
@@ -174,7 +174,11 @@
       {
         return {
           openPerformer : ( id ) => {
-            this.$router.push('/performers/'+ id);
+            this.resetContractor().then(
+              () => {
+                this.$router.push('/performers/'+ id);
+              }
+            );
           },
         }
       },
