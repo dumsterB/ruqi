@@ -25,7 +25,21 @@
             span( class="color-black" ) {{ item.name }}
 
         template( v-slot:item.payment="{ item }" )
-          .payment
+          v-tooltip(
+            v-if="!item.payment.value"
+            top
+            color="#E4F1FA"
+          )
+            template( v-slot:activator="{ on, attrs }" )
+              .payment( v-bind="attrs" v-on="on" )
+                .wrapper
+                  span.value {{ `${ item.payment.value || '0'  } р. / смена` }}
+            span.tooltip-text Табель не заполнен
+          .payment(
+            v-else
+            v-bind="attrs"
+            v-on="on"
+          )
             .wrapper
               span.value {{ `${ item.payment.value || '0'  } р. / смена` }}
 
@@ -276,6 +290,17 @@
         white-space     : nowrap;
       }
     }
+  }
+
+  .tooltip-text
+  {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 125%;
+    letter-spacing: 0.01em;
+    color: #0082DE;
+    white-space: nowrap;
   }
 /* OBJECTS STYLES END */
 
