@@ -102,28 +102,28 @@
         sort_select_items : [
           {
             uuid : 'uuid_date_up',
-            name : 'Последняя активность вверх',
+            name : 'Последняя активность по возрастанию',
             sort : 'asc',
             order : 'date',
           },
 
           {
             uuid : 'uuid_date_down',
-            name : 'Последняя активность вниз',
+            name : 'Последняя активность по убыванию',
             sort : 'desc',
             order : 'date',
           },
 
           {
             uuid : 'uuid_payment_up',
-            name : 'Завершение вверх',
+            name : 'Завершение по возрастанию',
             sort : 'asc',
             order : 'end_date',
           },
 
           {
             uuid : 'uuid_payment_down',
-            name : 'Завершение вниз',
+            name : 'Завершение по убыванию',
             sort : 'desc',
             order : 'end_date',
           },

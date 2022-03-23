@@ -96,28 +96,28 @@
         sort_select_items : [
           {
             uuid : 'uuid_date_up',
-            name : 'Дата вверх',
+            name : 'Дата по возрастанию',
             sort : 'asc',
             order : 'created_at',
           },
 
           {
             uuid : 'uuid_date_down',
-            name : 'Дата вниз',
+            name : 'Дата по убыванию',
             sort : 'desc',
             order : 'created_at',
           },
 
           {
             uuid : 'uuid_payment_up',
-            name : 'Цена вверх',
+            name : 'Цена по возрастанию',
             sort : 'asc',
             order : 'payment',
           },
 
           {
             uuid : 'uuid_payment_down',
-            name : 'Цена вниз',
+            name : 'Цена по убыванию',
             sort : 'desc',
             order : 'payment',
           },

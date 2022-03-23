@@ -77,14 +77,14 @@
         sort_select_items : [
           {
             uuid : 'uuid_date_up',
-            name : 'Дата вверх',
+            name : 'Дата по возрастанию',
             sort : 'asc',
             order : 'created_at',
           },
 
           {
             uuid : 'uuid_date_down',
-            name : 'Дата вниз',
+            name : 'Дата по убыванию',
             sort : 'desc',
             order : 'created_at',
           },
