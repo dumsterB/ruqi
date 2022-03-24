@@ -2,7 +2,10 @@
 
 .back-or-confirm-edit
   .actions-wrapper
-    .back-btn( @click="handlers().onBackClick()" )
+    .back-btn(
+      v-if="false"
+      @click="handlers().onBackClick()"
+    )
       .titel {{ titles.backBtn }}
     .confirm-edit-btn( @click="handlers().onConfirmClick()" )
       .titel {{ titles.confirmBtn }}
@@ -113,7 +116,7 @@
       height: 48px;
       background: #0082DE;
       border-radius: 8px;
-      margin-left: 16px;
+      //margin-left: 16px;
 
       display: flex;
       flex-direction: column;

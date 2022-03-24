@@ -313,7 +313,7 @@
 
             if ( !targetDocument )
             {
-              console.log( 'doc not found: ', this.photoDocuments[ payload.slugDocument ] );
+              console.log( 'doc not found: ', this.photoDocuments[ payload.slugDocument ] ); // DELETE
 
               await this.addDocument(
                 {
@@ -324,12 +324,12 @@
               ).then(
                 ( response ) => {
                   this.uploadDocumentMedia(
-                  {
-                    uuidDoc     : response.data.data.uuid,
-                    media       : payload.$event.photo,
-                    name_media  : payload.$event.photo_name,
-                    slug        : payload.slugMedia,
-                  }
+                    {
+                      uuidDoc     : response.data.data.uuid,
+                      media       : payload.$event.photo,
+                      name_media  : payload.$event.photo_name,
+                      slug        : payload.slugMedia,
+                    }
                   ).then(
                     () => {
                       this.fetchDocuments();
