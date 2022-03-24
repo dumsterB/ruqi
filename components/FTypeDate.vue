@@ -1,60 +1,60 @@
 <template>
-  <div>
-      <v-menu
-        ref="menu1"
-        v-model="menu"
-        :close-on-content-click="false"
-        transition="scale-transition"
-        offset-y
-        max-width="290px"
-        min-width="290px"
+  <div class="form-date">
+    <v-menu
+      ref="menu1"
+      v-model="menu"
+      :close-on-content-click="false"
+      transition="scale-transition"
+      offset-y
+      max-width="290px"
+      min-width="290px"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-text-field
+          v-model="fullDate"
+          :name="name"
+          prepend-icon="mdi-calendar"
+          v-bind="attrs"
+          @blur="date = parseDate(dateFormatted)"
+          v-on="on"
+          filled
+          single-line
+          outlined
+          hide-details="true"
+          readonly
+        ></v-text-field>
+      </template>
+      <v-date-picker
+        v-model="date"
+        v-show="show_date"
+        no-title
+        @input="updateDate"
+      ></v-date-picker>
+      <v-time-picker
+        v-show="show_time"
+        v-model="time"
+        full-width
+        width="290"
+        header-color="#2196F3"
       >
-        <template v-slot:activator="{ on, attrs }">
-          <v-text-field
-            v-model="fullDate"
-            :name = "name"
-            prepend-icon="mdi-calendar"
-            v-bind="attrs"
-            @blur="date = parseDate(dateFormatted)"
-            v-on="on"
-            filled
-            single-line
-            outlined
-            hide-details="true"
-            readonly
-          ></v-text-field>
-        </template>
-        <v-date-picker
-          v-model="date"
-          v-show="show_date"
-          no-title
-          @input="updateDate"
-        ></v-date-picker>
-        <v-time-picker
-          v-show="show_time"
-          v-model="time"
-          full-width
-          width="290"
-          header-color="#2196F3"
+        <v-spacer></v-spacer>
+        <v-btn
+          text
+          color="primary"
+          @click="menu = false"
         >
-          <v-spacer></v-spacer>
-          <v-btn
-            text
-            color="primary"
-            @click="menu = false"
-          >
-            Отмена
-          </v-btn>
-          <v-btn
-            text
-            color="primary"
-            @click="updateTime"
-          >
-            OK
-          </v-btn>
+          Отмена
+        </v-btn>
+        <v-btn
+          text
+          color="primary"
+          @click="updateTime"
+        >
+          OK
+        </v-btn>
 
-        </v-time-picker>
-      </v-menu>
+      </v-time-picker>
+    </v-menu>
   </div>
 </template>
 
@@ -72,24 +72,24 @@ export default {
     }
   },
   methods: {
-    formatDate (date) {
+    formatDate(date) {
       if (!date) return null
 
       const [year, month, day] = date.split('-')
       return `${day}.${month}.${year}`
     },
-    parseDate (date) {
+    parseDate(date) {
       if (!date) return null
 
       const [day, month, year] = date.split('.')
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
     },
-    updateDate(){
+    updateDate() {
       //this.$emit('input', this.date);
       this.show_date = false;
       this.show_time = true;
     },
-    updateTime(){
+    updateTime() {
       this.$emit('input', this.fullDate);
       this.show_time = false;
       this.show_date = true;
@@ -116,6 +116,18 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+
+.form-date{
+  .v-text-field--outlined {
+    align-items: center;
+
+    .v-input__prepend-outer{
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+}
+
 
 </style>

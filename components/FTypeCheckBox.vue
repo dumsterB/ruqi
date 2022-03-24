@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="params.class">
     <v-checkbox
       v-model="checkbox"
       :label="params.label"
@@ -7,6 +7,7 @@
       hide-details
       @change="$emit('input', checkbox)"
     ></v-checkbox>
+    <div class="note" v-if="params && params.note">{{ params.note }}</div>
   </div>
 </template>
 
@@ -38,6 +39,24 @@ export default {
 
 .v-input--selection-controls {
   margin-top: 0;
+}
+
+.note {
+  font-size: 14px;
+  margin-top: 12px;
+  color: $grey;
+}
+
+.style2{
+  .v-input--checkbox{
+    width: auto;
+    margin: 0 4px 0 0;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #E2E4E5;
+    border-radius: 4px;
+
+  }
 }
 
 </style>

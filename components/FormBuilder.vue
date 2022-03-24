@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12" :lg="filed.col"
              v-for="(filed, index) in meta" :key="index">
-        <div class="form-part-label" v-if="filed.label">{{ filed.label }}</div>
+        <div class="form-part-label" :class="filed.type" v-if="filed.label">{{ filed.label }}</div>
         <div class="d-flex w-100">
           <component
             :is="filed.type"
@@ -52,5 +52,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.col-lg-0.col-12 {
+  width: auto;
+  flex: 0;
+  padding-right: 0;
+}
 
 </style>

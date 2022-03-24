@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="time-group d-flex">
+    <span class="time-title" v-if="params && params.prepend">{{params.prepend}}</span>
     <v-menu
       ref="menu1"
       v-model="menu"
@@ -81,6 +82,18 @@ export default {
 
 
 <style lang="scss" scoped>
+
+.time-group{
+  align-items: center;
+
+  .time-title{
+    margin: 0 10px;
+
+    &:first-child{
+      margin-left: 0
+    }
+  }
+}
 
 .v-input {
   width: 68px;
