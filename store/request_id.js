@@ -84,7 +84,63 @@ export const actions = {
       .catch((error) => {
         console.log(error);
       });
-
+  },
+  async acceptToTask({commit, dispatch}, {requestId}) {
+    await this.$axios.put('/user/tasks/'+requestId+'/accept',
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        dispatch('fetchRequestId', requestId);
+        commit('response/setSuccess', {type: 'success', text: 'Ваш отклик принят',}, {root: true});
+        setTimeout(function () {
+          commit('response/removeSuccess', null, {root: true});
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+  async rejectToTask({commit, dispatch}, {requestId}) {
+    await this.$axios.put('/user/tasks/'+requestId+'/reject',
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        dispatch('fetchRequestId', requestId);
+        commit('response/setSuccess', {type: 'success', text: 'Вы отказались от заявки',}, {root: true});
+        setTimeout(function () {
+          commit('response/removeSuccess', null, {root: true});
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+  async cancelToTask({commit, dispatch}, {requestId}) {
+    await this.$axios.put('/user/tasks/'+requestId+'/cancel',
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        dispatch('fetchRequestId', requestId);
+        commit('response/setSuccess', {type: 'success', text: 'Вы отказались от заявки',}, {root: true});
+        setTimeout(function () {
+          commit('response/removeSuccess', null, {root: true});
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 }
 

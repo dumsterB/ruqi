@@ -9,7 +9,7 @@
           .num №{{ task_id.number }}
           .views
             v-icon(color="#7A91A9") mdi-eye-outline
-            span 159 (+10)
+            span {{ task_id.view }}
 
         .wrap-composite-details
           .pay(v-if="task_id.works && task_id.works.length") {{task_id.works[0].payment}} {{task_id.works[0].currency}} / {{task_id.works[0].period}}
@@ -22,8 +22,12 @@
           .selection-info
             .selection-title Подбор закончится через:
             .selection-time {{task_id.hours_left}} ч. {{task_id.minutes_left}} мин.
+          .selection-btns(v-if="my_status != 'rejected'")
+            v-btn.btn-blue(text height="48" outlined @click="taskAction(my_status, task_id.uuid)") {{btnText}}
+            v-btn.btn-blue(text height="48" v-if="my_status == 'invited'" outlined @click="rejectToTask({ requestId : task_id.uuid })") Отказаться
 
-          v-btn.btn-blue(text height="48" outlined @click="respondToTask({requestId: task_id.uuid})") Откликнуться
+          .selection-info(v-if="my_status == 'rejected'") Набор закрыт
+
 
         .selection.close(v-if="task_id.status == 'close'")
           v-row
@@ -134,6 +138,10 @@ export default {
     task_id() {
       return this.$store.getters['request_id/request_id'];
     },
+    my_status(){
+      console.log('status ----- ', this.task_id.my_status);
+      return this.task_id.my_status;
+    },
     mapCenter() {
       return [this.task_id.location.coordinates.lat, this.task_id.location.coordinates.lon];
     },
@@ -158,13 +166,26 @@ export default {
         listWorks.push(this.task_id.works[i].name);
       }
       return listWorks;
-    }
+    },
+    btnText() {
+      let btn_text = 'Откликнуться',
+        status = this.my_status;
+      if (status == 'requested' || status == 'accepted') {
+        btn_text = 'Отменить';
+      } else if (status == 'invited') {
+        btn_text = 'Принять';
+      }
+      return btn_text;
+    },
   },
 
   methods: {
     ...mapActions('request_id', ['fetchRequestId',]),
     ...mapActions('request_id', ['subscribeToObject',]),
     ...mapActions('request_id', ['respondToTask',]),
+    ...mapActions('request_id', ['acceptToTask',]),
+    ...mapActions('request_id', ['cancelToTask',]),
+    ...mapActions('request_id', ['rejectToTask',]),
 
     getters() {
       return {
@@ -185,7 +206,6 @@ export default {
 
           return `${splitedCreat_at[2]} ${this.helpers().parseMonth({month: splitedCreat_at[1]})} ${splitedCreat_at[0]}`;
         },
-
         getRegTime: (params = {}) => {
 
           if (!params.time) {
@@ -197,12 +217,10 @@ export default {
       }
     },
 
-    setters() {
-      return {}
-    },
-
     handlers() {
-      return {}
+      return {
+
+      }
     },
 
     helpers() {
@@ -260,11 +278,15 @@ export default {
       }
     },
 
-    init() {
-    },
-
-    bindActions() {
-    },
+    taskAction(my_status, uuid) {
+      if (my_status == 'requested' || my_status == 'accepted') {
+        this.cancelToTask({requestId: uuid});
+      } else if (my_status == 'invited') {
+        this.acceptToTask({requestId: uuid});
+      } else {
+        this.respondToTask({requestId: uuid});
+      }
+    }
   },
   async created() {
     await this.fetchRequestId(this.$route.params.id);
@@ -354,57 +376,66 @@ export default {
       }
     }
 
-    .v-btn {
-      min-width: 218px;
-      text-transform: uppercase;
+    .selection-btns {
+      display: flex;
+
+      .v-btn {
+        min-width: 218px;
+        text-transform: uppercase;
+
+        &:last-child {
+          margin-left: 32px;
+        }
+      }
     }
 
-    &.close{
 
-      .selection-info{
+    &.close {
+
+      .selection-info {
         flex-direction: column;
         align-items: flex-start;
 
-        .selection-title{
+        .selection-title {
           color: $black;
           font-size: 28px;
           font-weight: 700;
           margin-bottom: 36px;
 
-          .v-icon{
+          .v-icon {
             margin-right: 6px;
           }
         }
 
-        .selection-details{
+        .selection-details {
           display: flex;
 
-          .selection-details-title{
+          .selection-details-title {
             margin-bottom: 10px;
             margin-right: 58px;
             font-weight: 600;
           }
 
-          .selection-details-details{
+          .selection-details-details {
             font-size: 26px;
             font-weight: 700;
           }
 
-          .paid{
-            .selection-details-details{
+          .paid {
+            .selection-details-details {
               color: $green;
             }
           }
         }
       }
 
-      .selection-support{
+      .selection-support {
         height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
 
-        .v-btn{
+        .v-btn {
           margin: 0;
         }
       }
@@ -477,15 +508,15 @@ export default {
 
   }
 
-  &.close{
+  &.close {
     .wrap-composite-state,
     .cloud-tag.outline li,
-    .v-subheader{
+    .v-subheader {
       color: $grey;
     }
 
     .wrap-composite-details {
-      .pay{
+      .pay {
         color: $grey;
         background: #F6FBFF;
       }

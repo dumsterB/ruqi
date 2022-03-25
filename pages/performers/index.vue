@@ -150,7 +150,7 @@
           {text: 'Адрес', value: 'address'},
           {text: 'Средняя ставка', value: 'salary'},
           {text: 'Зарегистрирован', value: 'reg'},
-          {text: '', value: 'actions', sortable: false},
+          {text: '', value: 'actions', sortable: false, align: 'right'},
         ],
         rating: 4.5,
         temp_date: '26.06.1984',
