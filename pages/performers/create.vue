@@ -44,11 +44,13 @@
             v-form(ref="form_part_4" v-model="valid" lazy-validation)
               .form-part
                 .form-part-title Фото документов
-                FormBuilder(:meta="meta.meta_object_doc" @updateFiled="updateDocs(index, ...arguments)" @removeItem="removeItemDoc(index, false, ...arguments)")
+                FormBuilder(:meta="meta.meta_object_doc" @updateFiled="updateDocs" @removeItem="removeItemDoc")
+                FormBuilder(:meta="meta.meta_object_doc_text" @updateFiled="updateFiled")
 
                 .form-part-title.second Дополнительные документы
                 .form-part-description Следующий перечень документов требуется для участия в заявках по выбранных Вами профессиям:
-                FormBuilder(:meta="meta.meta_object_doc_add" @updateFiled="updateDocs(index, ...arguments)" @removeItem="removeItemDoc(index, false, ...arguments)")
+                FormBuilder(:meta="meta.meta_object_doc_med" @updateFiled="updateDocs" @removeItem="removeItemDoc")
+                FormBuilder(:meta="meta.meta_object_doc_driver" @updateFiled="updateDocs" @removeItem="removeItemDoc")
 
           v-tab-item
             v-form(ref="form_part_5" v-model="valid" lazy-validation)
@@ -191,7 +193,8 @@ export default {
             exist: 'exist',
             params: {
               placeholder: 'Документ не загружен',
-              uuid: null
+              uuid: null,
+              slug: 'profile_photo_main'
             },
           },
         ],
@@ -412,8 +415,7 @@ export default {
             label: 'Время',
             col: 12,
             name: 'label',
-            params: {
-            },
+            params: {},
             validation: [],
             value: '',
           },
@@ -488,12 +490,14 @@ export default {
             col: 12,
             name: 'doc_file_passport_01',
             value: null,
-            remove: false,
+            remove: true,
             parent_array: 'meta_object_doc',
             exist: 'exist',
             params: {
               placeholder: 'Документ не загружен',
-              uuid: null
+              uuid: null,
+              slug_file: 'passport_main_spread',
+              slug_doc: 'passport'
             },
           },
           {
@@ -502,28 +506,34 @@ export default {
             col: 12,
             name: 'doc_file_passport_02',
             value: null,
-            remove: false,
+            remove: true,
             parent_array: 'meta_object_doc',
             exist: 'exist',
             params: {
               placeholder: 'Документ не загружен',
-              uuid: null
+              uuid: null,
+              slug_file: 'passport_registration_page',
+              slug_doc: 'passport'
             },
           },
           {
             type: 'FTypeFile',
             label: 'Фото с паспортом',
             col: 12,
-            name: 'doc_file_passport_02',
+            name: 'doc_file_passport_03',
             value: null,
-            remove: false,
+            remove: true,
             parent_array: 'meta_object_doc',
             exist: 'exist',
             params: {
               placeholder: 'Документ не загружен',
-              uuid: null
+              uuid: null,
+              slug_file: 'photo_with_passport',
+              slug_doc: 'passport'
             },
           },
+        ],
+        meta_object_doc_text: [
           {
             type: 'FTypeText',
             label: 'СНИЛС',
@@ -541,19 +551,20 @@ export default {
             value: ''
           },
         ],
-        meta_object_doc_add: [
+        meta_object_doc_med: [
           {
             type: 'FTypeFile',
             label: 'Медицинская книжка',
             col: 12,
             name: 'doc_file_med_00',
             value: null,
-            remove: false,
-            parent_array: 'meta_object_doc_add',
+            remove: true,
+            parent_array: 'meta_object_doc_med',
             exist: 'exist',
             params: {
               placeholder: 'Документ не загружен',
-              uuid: null
+              uuid: null,
+              slug_file: 'medical_book_main_spread',
             },
           },
           {
@@ -562,12 +573,13 @@ export default {
             col: 12,
             name: 'doc_file_med_01',
             value: null,
-            remove: false,
-            parent_array: 'meta_object_doc_add',
+            remove: true,
+            parent_array: 'meta_object_doc_med',
             exist: 'exist',
             params: {
               placeholder: 'Документ не загружен',
-              uuid: null
+              uuid: null,
+              slug_file: 'medical_book_page_1',
             },
           },
           {
@@ -576,12 +588,13 @@ export default {
             col: 12,
             name: 'doc_file_med_02',
             value: null,
-            remove: false,
-            parent_array: 'meta_object_doc_add',
+            remove: true,
+            parent_array: 'meta_object_doc_med',
             exist: 'exist',
             params: {
               placeholder: 'Документ не загружен',
-              uuid: null
+              uuid: null,
+              slug_file: 'medical_book_page_2',
             },
           },
           {
@@ -590,39 +603,44 @@ export default {
             col: 12,
             name: 'doc_file_med_03',
             value: null,
-            remove: false,
-            parent_array: 'meta_object_doc_add',
+            remove: true,
+            parent_array: 'meta_object_doc_med',
             exist: 'exist',
             params: {
               placeholder: 'Документ не загружен',
-              uuid: null
+              uuid: null,
+              slug_file: 'medical_book_page_3',
             },
           },
+        ],
+        meta_object_doc_driver: [
           {
             type: 'FTypeFile',
             label: 'Права на управление штабелером - основной разворот',
             col: 12,
             name: 'doc_file_driver_license',
             value: null,
-            remove: false,
-            parent_array: 'meta_object_doc_add',
+            remove: true,
+            parent_array: 'meta_object_doc_driver',
             exist: 'exist',
             params: {
               placeholder: 'Документ не загружен',
-              uuid: null
+              uuid: null,
+              slug_file: 'stacker_driving_license',
             },
           },
         ],
+
       },
       valid: true,
       select: null,
       formHasErrors: false,
       nameCounter: 1,
-
     }
   },
   computed: {
-    ...mapGetters( 'clients', [ 'statusCreateClient', ] ),
+    ...mapGetters('contractors', ['statusCreateContractor',]),
+    ...mapGetters('contractorDocs', ['documents',]),
 
     professions() {
       return this.$store.getters['dictionary/professions']
@@ -656,12 +674,12 @@ export default {
         "phone": this.formValues.phone,
         "gender": this.formValues.gender,
         "settings": {
-          "notification_new_task": this.formValues.notification_new_task ,
+          "notification_new_task": this.formValues.notification_new_task,
           "notification_new_object": this.formValues.notification_new_object,
           "notification_low_time": this.formValues.notification_low_time,
           "city": this.formValues.city,
           "bik": this.formValues.bik,
-          "payment_account": this.formValues.payment_account ,
+          "payment_account": this.formValues.payment_account,
           "correspondent_account": this.formValues.cor_account,
           "bank": this.formValues.bank,
           "type_payment": this.formValues.object_pay_type,
@@ -698,16 +716,16 @@ export default {
     },
   },
   watch: {
-    'statusCreateClient.status': function () {
-      if (this.statusCreateClient.status){
-        this.processingDocs(this.statusCreateClient.uuid);
+    'statusCreateContractor.status': function () {
+      if (this.statusCreateContractor.status) {
+        this.processingDocs(this.statusCreateContractor.uuid);
       }
     },
   },
   methods: {
-    ...mapActions('userDocs', ['addDocument',]),
-    ...mapActions('userDocs', ['deleteDocumentMedia',]),
-    ...mapActions('userDocs', ['uploadDocumentMedia',]),
+    ...mapActions('contractorDocs', ['createDoc',]),
+    ...mapActions('contractorDocs', ['loadPhoto',]),
+    ...mapActions('contractorDocs', ['getDocuments',]),
 
     ...mapActions('contractors', ['createContractor',]),
     ...mapActions('dictionary', ['fetcProfessions',]),
@@ -737,7 +755,7 @@ export default {
     updateFiled(field, value) {
       this.formValues[field] = value;
 
-      if (field == 'bik'){
+      if (field == 'bik') {
 
         this.meta.meta_object_pay[3].params.bik = value;
         this.meta.meta_object_pay[4].params.bik = value;
@@ -755,89 +773,9 @@ export default {
       this.meta.meta_object_works[index].value = value;
       console.log(field, value);
     },
-    updateDocs(index_block, field, value, index) {
-      this.meta.meta_object_doc[index_block][index].value = value;
-
-      if (index > 0 && this.meta.meta_object_doc[index_block][index].exist == 'loaded' && this.meta.meta_object_doc[index_block][index].value) {
-        this.removeItemDoc(index, true, ...arguments);
-        this.meta.meta_object_doc[index_block][index].exist = 'new';
-      }
-
-      if (this.meta.meta_object_doc[index_block][index].exist == 'loaded'){
-        this.meta.meta_object_doc[index_block][index].exist = 'changed';
-      }
+    updateDocs(field, value, index, parent_array) {
+      this.meta[parent_array][index].value = value;
       console.log(field, value);
-    },
-    addDocumentClick(exist) {
-      let formPart = 'form_part_' + this.tab;
-      this.$refs[formPart].validate();
-
-      this.$nextTick(() => {
-        if (this.valid) {
-          this.addDocument(exist)
-        } else {
-          let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
-          this.$vuetify.goTo(el);
-        }
-      });
-
-    },
-    addDocument(exist) {
-      this.meta.meta_object_doc.push(
-        [
-          {
-            type: 'FTypeText',
-            label: 'Введите название и загрузите документ',
-            col: 12,
-            name: 'doc_title_' + this.nameCounter++,
-            validation: ['required'],
-            value: '',
-            parent_array: 'meta_object_doc',
-            exist: exist,
-            uuid: null
-          },
-          {
-            type: 'FTypeFile',
-            label: '',
-            col: 12,
-            name: 'doc_file_' + this.nameCounter++,
-            value: null,
-            remove: true,
-            parent_array: 'meta_object_doc',
-            exist: exist,
-            params: {
-              placeholder: 'Документ не загружен',
-              uuid: null
-            },
-          },
-        ]
-      );
-    },
-    addPhoto(index_document, exist) {
-      if (this.meta.meta_object_doc[index_document].length == 1
-        || this.meta.meta_object_doc[index_document][this.meta.meta_object_doc[index_document].length - 1].value
-        || this.meta.meta_object_doc[index_document][this.meta.meta_object_doc[index_document].length - 1].exist == "loaded"
-        && this.meta.meta_object_doc[index_document][this.meta.meta_object_doc[index_document].length - 1].params.placeholder != "Документ не загружен") {
-        this.meta.meta_object_doc[index_document].push(
-          {
-            type: 'FTypeFile',
-            label: '',
-            col: 12,
-            name: 'doc_file_' + this.nameCounter++,
-            value: null,
-            remove: true,
-            parent_array: 'meta_object_doc',
-            exist: exist,
-            params: {
-              placeholder: 'Документ не загружен',
-              uuid: null
-            },
-          },
-        );
-        if (this.meta.meta_object_doc[index_document][0].exist == 'loaded'){
-          this.meta.meta_object_doc[index_document][0].exist = 'changed'
-        }
-      }
     },
     removeItemProfession(index, array) {
       if (index >= 0 || this.meta[array].length > 1) {
@@ -845,27 +783,34 @@ export default {
         delete this.formValues[`${array.replace('meta_', '')}_${index}`];
       }
     },
-    removeItem(index, array) {
-      if (this.meta[array][index][0].uuid) {
-        this.removeDoc({clientId: this.client_id.uuid, docId: this.meta[array][index][0].uuid});
-      }
-      this.meta[array].splice(index, 1);
-    },
-    removeItemDoc(index_block, isChange, index, array) {
-      if (!isChange) {
-        this.meta[array][index_block].splice(index, 1);
-      }
+    removeItemDoc(index, parent_array) {
+      this.meta[parent_array][index].value = null;
     },
     processingDocs(clientId) {
-      let self = this;
-      this.meta.meta_object_doc.forEach(function (item, i) {
-        if (item[0].exist == 'new' && item[0].value) {
-          self.createDoc({clientId: clientId, docName: item[0].value, docFiles: item.slice(1)});
-          console.log('создаю документ');
-        } else if (item[0].exist == 'changed') {
-          self.changeDoc({clientId: clientId, docId: item[0].uuid, docName: item[0].value, docFiles: item.slice(1)});
-          console.log('меняю документ');
+
+      let document = [
+          {name: 'Паспорт', slug: 'passport', parent_array: 'meta_object_doc'},
+          {name: 'Медицинская книжка', slug: 'medical_book', parent_array: 'meta_object_doc_med'},
+          {name: 'Права на управление штабелером', slug: 'stacker_driving_license', parent_array: 'meta_object_doc_driver'},
+          {name: 'Фото профиля', slug: 'profile_photo', parent_array: 'meta_object_cover'},
+        ],
+        self = this;
+
+      document.forEach(function (item, i) {
+        let files = [];
+        for (let i = 0; i < self.meta[item.parent_array].length; i++) {
+          if (self.meta[item.parent_array][i].value){
+            files.push(
+              {
+                "media": self.meta[item.parent_array][i].value,
+                "name_media": self.meta[item.parent_array][i].label,
+                "slug": self.meta[item.parent_array][i].params.slug_file,
+              }
+            )
+          }
         }
+
+        self.createDoc({clientId: clientId, docName: item.name, docSlug: item.slug, docFiles: files,});
       });
     },
     addTypeWork() {

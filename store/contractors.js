@@ -16,6 +16,10 @@ export const state = () => (
     },
 
     searchParams : {},
+    statusCreateContractor: {
+      status: false,
+      uuid: null
+    }
   }
 )
 
@@ -53,6 +57,9 @@ export const getters = {
   searchParams ( state )
   {
     return state.searchParams;
+  },
+  statusCreateContractor(state) {
+    return state.statusCreateContractor;
   },
 }
 
@@ -102,6 +109,7 @@ export const actions = {
       })
       .then((response) => {
         console.log(response);
+        commit('setStatusCreateContractor', {status: true, uuid: response.data.data.uuid});
         commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
@@ -318,5 +326,11 @@ export const mutations = {
   updateSearchParams ( state, searchParams )
   {
     state.searchParams = searchParams;
+  },
+  setStatusCreateContractor(state, {status, uuid}) {
+    state.statusCreateContractor.status = status;
+    state.statusCreateContractor.uuid = uuid;
+
+    console.log('статус - ', state.statusCreateContractor);
   },
 }
