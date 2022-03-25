@@ -309,10 +309,9 @@ export default {
     ...mapActions('employee_id', ['fetchEmployee',]),
 
     nextFromButton() {
+      let formPart = 'form_part_' + this.tab;
+      this.$refs[formPart].validate();
       if (this.tab < this.tabs_list.length - 1) {
-        let formPart = 'form_part_' + this.tab;
-        this.$refs[formPart].validate();
-
         this.$nextTick(() => {
           if (this.valid) {
             this.tab += 1;
@@ -322,9 +321,16 @@ export default {
           }
         });
       } else {
-        const newRequet = JSON.stringify(this.postBody);
-        console.log(newRequet);
-        this.putRequest({uuid: this.employee_id.uuid, body: newRequet});
+        this.$nextTick(() => {
+          if (this.valid) {
+            const newRequet = JSON.stringify(this.postBody);
+            console.log(newRequet);
+            this.putRequest({uuid: this.employee_id.uuid, body: newRequet});
+          } else {
+            let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
+            this.$vuetify.goTo(el);
+          }
+        });
       }
     },
     prevFromButton() {

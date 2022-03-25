@@ -27,11 +27,21 @@ export default {
         required: value => !!value || 'Заполните поле',
         email: value => {
           const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Zа-яё\-0-9]+\.)+[a-zA-Zа-яё]{2,}))$/;
-          return pattern.test(value) || 'Введите корректный email'
+          if (value) {
+            return pattern.test(value) || 'Введите корректный email'
+          }
+          else{
+            return true;
+          }
         },
         phone: value => {
           const pattern = /^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$/;
-          return pattern.test(value) || 'Введите корректный телефон'
+          if (value){
+            return pattern.test(value) || 'Введите корректный телефон'
+          }
+          else{
+            return true;
+          }
         },
         number: value => {
           const pattern = /^\d+(?:[\.,]\d+)?$/; // /(?<=^| )\d+(\.\d+)?(?=$| )/;
