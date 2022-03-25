@@ -13,9 +13,6 @@ export const actions = {
   async fetchEmployees({commit}, params) {
 
     const employees = await this.$axios.get('/super_manager/accounts/57721e51-d7ba-492d-8579-24e9df1a1cbc/employees', {
-      headers: {
-        "Authorization": "Bearer af2cf5b991716c8fe1d0c6bf9c7a03f6fa088887dd10921d605dad809e2df125"
-      },
       params: params
     });
     commit('setEmployees', employees)
@@ -27,7 +24,6 @@ export const actions = {
       newRequest,
       {
         headers: {
-          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
           'Content-Type': 'application/json',
         },
 
@@ -58,7 +54,6 @@ export const actions = {
       body,
       {
         headers: {
-          "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
           'Content-Type': 'application/json',
         },
 
@@ -81,14 +76,10 @@ export const actions = {
 
   },
   async removeRequest({commit, dispatch}, {requestId, params}) {
+    console.log(requestId);
 
     await this.$axios.delete('/manager/employee/',
-      requestId,
-      {
-      headers: {
-        "Authorization": "Bearer eb5e61886e9a766273b4ea87ad67844c5e5ee22a8e22bffce0225151dfc5eaf3",
-      },
-    })
+      requestId)
       .then((response) => {
         console.log(response);
         dispatch('fetchEmployees', params);

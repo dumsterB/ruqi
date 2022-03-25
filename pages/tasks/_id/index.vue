@@ -184,7 +184,7 @@
           </v-col>
         </v-row>
 
-        <AddFormPart v-show="tab == 1" text="Добавить исполнителей" @addFormPart="addArtist" v-if="user.type != 'dispatcher'"/>
+        <AddFormPart v-show="tab == 1" text="Добавить исполнителей" @addFormPart="addArtist"/>
 
         <AddPerformers
           :addPerformersOverlay="addPerformersOverlay"

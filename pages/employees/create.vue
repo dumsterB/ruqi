@@ -52,7 +52,7 @@
             </v-form>
           </v-tab-item>
           <v-tab-item>
-            <v-form ref="form_part_3" v-model="valid" lazy-validation>
+            <v-form ref="form_part_2" v-model="valid" lazy-validation>
               <div class="form-part">
                 <FormBuilder :meta="meta.meta_object_contact" @updateFiled="updateFiled"/>
               </div>
@@ -291,10 +291,9 @@ export default {
     ...mapActions('employees', ['createRequest',]),
 
     nextFromButton() {
+      let formPart = 'form_part_' + this.tab;
+      this.$refs[formPart].validate();
       if (this.tab < this.tabs_list.length - 1) {
-        let formPart = 'form_part_' + this.tab;
-        this.$refs[formPart].validate();
-
         this.$nextTick(() => {
           if (this.valid) {
             this.tab += 1;
@@ -304,9 +303,14 @@ export default {
           }
         });
       } else {
-        const newRequet = JSON.stringify(this.postBody);
-        console.log(newRequet);
-        this.createRequest(newRequet);
+        if (this.valid) {
+          const newRequet = JSON.stringify(this.postBody);
+          console.log(newRequet);
+          this.createRequest(newRequet);
+        } else {
+          let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
+          this.$vuetify.goTo(el);
+        }
       }
     },
     prevFromButton() {
@@ -315,6 +319,10 @@ export default {
     updateFiled(field, value) {
       this.formValues[field] = value;
       console.log(field, value);
+      if(field == 'email' && !this.meta.meta_object_contact[1].value){
+        this.meta.meta_object_contact[1].value = value;
+        this.formValues.object_contact_email = value;
+      }
     },
     removeItem(index, array) {
       if (index >= 0 || this.meta[array].length > 1) {
