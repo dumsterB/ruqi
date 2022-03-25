@@ -324,7 +324,7 @@
               break;
 
               case 'completed' :
-                await this.setUserTasksParams( { type : 'accepted', status : 'close', } );
+                await this.setUserTasksParams( { status : 'close', } );
                 await this.fetchUserTasks();
 
                 this.userTaskStatus = 'close';
