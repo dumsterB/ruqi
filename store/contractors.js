@@ -100,6 +100,7 @@ export const actions = {
   },
 
   async createContractor({commit, dispatch}, newRequest) {
+    let self= this;
     const requests = await this.$axios.post('/manager/contractor',
       newRequest,
       {
@@ -114,6 +115,9 @@ export const actions = {
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
+        setTimeout(function() {
+          self.$router.push('/performers/');
+        }, 3000);
 
       })
       .catch((error) => {
