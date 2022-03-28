@@ -106,15 +106,20 @@
               nudge-bottom="10"
               left
             )
-              template( v-slot:activator="{ on }" )
+              template(
+                v-slot:activator="{ on }"
+              )
                 v-btn( icon v-on="on" )
                   v-icon mdi-dots-vertical
-              v-card
+              v-card(
+                v-if="getters().tableItemIndex( { status : item.my_status  } ).length"
+              )
                 v-list-item-content.justify-start
                   .mx-auto.text-left
                     .actions
                       .action(
                         v-for="( action, index ) in getters().tableItemIndex( { status : item.my_status  } )" :key="action.slug"
+                        @click="handlers().onActionClick( { action : action.slug, uuid : item.uuid } )"
                       )
                         .action-item {{ action.name }}
                         v-divider.my-3( v-if="index !== getters().tableItemIndex( { status : item.my_status  } ).length - 1" )
@@ -214,6 +219,7 @@
 
     methods: {
       ...mapActions( 'user', [ 'fetchUserTasks', 'setUserTasksParams', ] ),
+      ...mapActions( 'contractors', [ 'acceptTask', 'canceltTask', 'rejectTask', 'requestTask', ] ),
 
       ...mapActions('objects', ['fetchObjects',]),
       ...mapActions('objects', ['fetchObjectsMap',]),
@@ -368,6 +374,49 @@
 
           onMapTabClick : ( payload = {} ) => {
             this.tab_list_map = payload.tab;
+          },
+
+          onActionClick : ( payload = {} ) => {
+            console.log( 'onActionClick', payload ); // DELETE
+
+            switch ( payload.action )
+            {
+              case 'accept' :
+                this.acceptTask( { uuid : payload.uuid } )
+                  .then(
+                    () => {
+                      this.fetchUserTasks();
+                    }
+                  );
+              break;
+
+              case 'cancel' :
+                this.canceltTask( { uuid : payload.uuid } )
+                  .then(
+                    () => {
+                      this.fetchUserTasks();
+                    }
+                  );
+              break;
+
+              case 'refuse' :
+                this.rejectTask( { uuid : payload.uuid } )
+                  .then(
+                    () => {
+                      this.fetchUserTasks();
+                    }
+                  );
+              break;
+
+              case 'participate' :
+                this.requestTask( { uuid : payload.uuid } )
+                  .then(
+                    () => {
+                      this.fetchUserTasks();
+                    }
+                  );
+              break;
+            }
           },
         }
       },

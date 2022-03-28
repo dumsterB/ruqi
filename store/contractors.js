@@ -263,7 +263,35 @@ export const actions = {
   async setSearchParams ( { commit }, payload = {} )
   {
     commit( 'updateSearchParams', payload );
-  }
+  },
+
+  async acceptTask ( ctx, payload = {} )
+  {
+    console.log( 'acceptTask', payload ); // DELETE
+
+    return await this.$axios.put( `user/tasks/${ payload.uuid }/accept` );
+  },
+
+  async canceltTask ( ctx, payload = {} )
+  {
+    console.log( 'canceltTask', payload ); // DELETE
+
+    return await this.$axios.put( `user/tasks/${ payload.uuid }/cancel` );
+  },
+
+  async rejectTask ( ctx, payload = {} )
+  {
+    console.log( 'acceptTask', payload ); // DELETE
+
+    return await this.$axios.put( `user/tasks/${ payload.uuid }/reject` );
+  },
+
+  async requestTask ( ctx, payload = {} )
+  {
+    console.log( 'acceptTask', payload ); // DELETE
+
+    return await this.$axios.post( `user/tasks/${ payload.uuid }/request` );
+  },
 }
 
 export const mutations = {
