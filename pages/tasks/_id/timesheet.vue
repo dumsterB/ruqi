@@ -140,7 +140,7 @@
             {{ activeSelectBtnOption.text }}
           </div>
         </div>
-        <div class="bt-table-action" v-if="user.type == 'manager' && request_id_timesheet.status != 'close'">
+        <div class="bt-table-action" v-if="user.type != 'contractor' && request_id_timesheet.status != 'close'">
           <v-btn
             height="40"
             fab

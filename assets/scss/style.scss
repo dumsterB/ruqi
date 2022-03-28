@@ -389,8 +389,8 @@ h1.large {
         border-bottom: 1px solid $table-border-color;
         transition: box-shadow 0.2s ease-in;
         font-size: 16px;
+        white-space: nowrap;
       }
-
 
       td:first-child {
         border-radius: 14px 0 0 14px;
@@ -400,8 +400,8 @@ h1.large {
       td:last-child {
         border-radius: 0 14px 14px 0;
         border-right: 1px solid $table-border-color;
+        width: 100%;
       }
-
 
     }
 
