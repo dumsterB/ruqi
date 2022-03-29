@@ -722,7 +722,7 @@ export default {
     },
 
     addRequest() {
-      this.$router.replace('/objects/create');
+      this.$router.replace({ name: 'tasks-create', params: { objectId: this.object_id.uuid }});
     },
 
     addTypeWork() {

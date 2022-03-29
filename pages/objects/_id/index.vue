@@ -280,7 +280,7 @@
             <div class="bar-element-row color-main">{{ object_id_requests.length }} заявки активно</div>
             <div class="bar-element-row bar-element-row-top-margin bar-element-title">Основные вакансии:</div>
             <div class="bar-element-row">
-              <CloudTag :listTag="listTag"/>
+              <CloudTag :listTag="object_id_works"/>
             </div>
           </div>
         </div>
@@ -310,7 +310,6 @@ export default {
   data() {
     return {
       coords: [54, 39],
-      listTag: ['ГРУЗЧИК', 'РАЗНОРАБОЧИЙ', 'РАЗНОРАБОЧИЙ', 'КЛАДОВЩИК', 'КЛАДОВЩИК'],
       title_size: 'large',
       title_create: false,
       title_page_create: '',
@@ -411,6 +410,17 @@ export default {
     },
     object_id_contacts() {
       return this.object_id.contacts;
+    },
+    object_id_works() {
+      let works_object = this.object_id.works;
+      let works = [];
+      if (works_object){
+        for (let i = 0; i < works_object.length; i++) {
+          let name = works_object[i].name;
+          works.push(name);
+        }
+      }
+      return works;
     },
     activeSelectBtnOption() {
       switch (this.activeSelectBtn) {

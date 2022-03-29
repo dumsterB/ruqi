@@ -10,8 +10,10 @@ export const getters = {
 
 
 export const actions = {
-  async fetch({commit}) {
-    const requests = await this.$axios.get('/tasks');
+  async fetch({commit}, params) {
+    const requests = await this.$axios.get('/tasks', {
+      params: params
+    });
     commit('setRequest', requests)
   },
   async createRequest({commit, dispatch}, newRequest) {

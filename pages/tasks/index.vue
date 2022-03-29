@@ -8,13 +8,14 @@
         sm="2"
       >
         <v-select
-          :items="objects"
+          :items="sortObject"
           v-model="selectObject"
           label="Обьект"
           item-text="name"
           item-value="uuid"
           outlined
           value="0000"
+          @change="filter('object', selectObject)"
         ></v-select>
       </v-col>
     </v-row>
@@ -115,8 +116,9 @@ export default {
       title_size: 'big',
       title_create: true,
       title_page_create: 'create',
-      itemSort: ['Все', 'Активные',],
+      defSort: [{name: 'Все', uuid: '0000'}],
       selectObject: null,
+      sortObject: [],
       page: 1,
       pageCount: 0,
       itemsPerPage: 5,
@@ -125,23 +127,13 @@ export default {
       headers: [
         {text: 'Название', align: 'start', value: 'name',},
         {text: 'Оплата', value: 'pay'},
-        {
-          text: 'Объект', value: 'object',
-          filter: item => {
-            if (!this.selectObject) return true;
-            return item.uuid == this.selectObject;
-          },
-        },
+        {text: 'Объект', value: 'object',},
         {text: 'Менеджер', value: 'manager'},
         {text: 'Срок', value: 'term'},
         {text: 'Заполнение', value: 'occupation'},
         {text: '', value: 'actions', sortable: false, align: 'right'},
       ],
     }
-  },
-  created() {
-    /*this.selectObject = this.objects[0].uuid;
-    console.log(this.selectObject);*/
   },
   methods: {
     ...mapActions('requests', ['fetch',]),
@@ -157,7 +149,11 @@ export default {
     },
     setCurrentPage(value) {
       this.page = value;
-    }
+    },
+    filter() {
+      const newRequet = this.postBody;
+      this.fetch(newRequet);
+    },
   },
   computed: {
     user() {
@@ -183,11 +179,27 @@ export default {
       } else {
         return 1;
       }
+    },
+    postBody() {
+      let object = this.selectObject;
+      console.log(object);
+      if (object == '0000') {
+        object = '';
+      }
+      let postBody = {
+        "object": object,
+        "sort": "name",
+        "order": "asc",
+      }
+      console.log(postBody);
+      return postBody;
     }
   },
   async mounted() {
-    this.fetch();
-    this.fetchObjects();
+    await this.fetch();
+    await this.fetchObjects();
+
+    this.sortObject = this.defSort.concat(this.objects);
   }
 }
 </script>

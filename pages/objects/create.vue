@@ -90,7 +90,7 @@
             </v-form>
           </v-tab-item>
           <v-tab-item eager>
-            <v-form ref="form_part_1" v-model="valid" lazy-validation>
+            <v-form ref="form_part_2" v-model="valid" lazy-validation>
               <div class="form-part">
                 <div class="form-part-label">Наше юр.лицо</div>
                 <FormBuilder :meta="meta.meta_object_entity" @updateFiled="updateFiled"/>
@@ -108,7 +108,7 @@
             </v-form>
           </v-tab-item>
           <v-tab-item eager>
-            <v-form ref="form_part_2" v-model="valid" lazy-validation>
+            <v-form ref="form_part_3" v-model="valid" lazy-validation>
               <div class="form-part form-part-contact"
                    v-for="(item, index) in meta.meta_object_contact"
                    :key="index">
