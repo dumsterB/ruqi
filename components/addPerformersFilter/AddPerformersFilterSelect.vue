@@ -46,10 +46,10 @@
           <div
             class="option"
             v-for="(item, index) in items" :key="index"
-            @click="handlers().onOptionClick( { option : item.name, slug, } )"
+            @click="handlers().onOptionClick( { option : item.name || item.payment.value, slug, } )"
           >
             <div class="option_title">
-              {{ item.name }}
+              {{ item.name || item.payment.value }}
             </div>
           </div>
         </div>

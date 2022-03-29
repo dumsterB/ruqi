@@ -45,7 +45,7 @@
               class="elevation-0"
               item-key="uuid"
               hide-default-footer
-              items-per-page="-1"
+              :items-per-page="-1"
               light
               :disable-sort="true"
             >
