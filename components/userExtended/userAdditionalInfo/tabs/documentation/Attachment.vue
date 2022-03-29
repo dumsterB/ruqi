@@ -3,7 +3,10 @@
 .attachment
   .wrapper
     .attachmenti-picture
-      img.preview( :src="picture.preview_url" )
+      img.preview(
+        :src="picture.preview_url"
+        @click="handlers().onPreviewClick( { photo : picture.original_url } )"
+      )
     .attachment-info
       .pic-titel {{ picture.name }}
       .pic-description
@@ -52,7 +55,13 @@
 
       handlers ()
       {
-        return {}
+        return {
+          onPreviewClick : ( payload = {} ) => {
+            console.log( 'onPreviewClick', payload ); // DELETE
+
+            window.open( payload.photo, '_blank').focus();
+          },
+        }
       },
 
       helpers ()
@@ -192,6 +201,11 @@
   //box-shadow: 0px 6px 73px rgba(0, 0, 0, 0.07);
   border-radius: 10px 10px 0px 0px;
   padding: 24px 24px 19px 24px;
+
+  .preview
+  {
+    cursor: pointer;
+  }
 }
 
 .attachment-info
