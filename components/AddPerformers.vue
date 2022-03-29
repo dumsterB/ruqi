@@ -44,11 +44,8 @@
               :items="contractors"
               class="elevation-0"
               item-key="uuid"
-              :page.sync="page"
-              :items-per-page="itemsPerPageTable"
-              @page-count="pageCount = $event"
               hide-default-footer
-              :search="searchText"
+              items-per-page="-1"
               light
               :disable-sort="true"
             >
@@ -363,8 +360,8 @@
 
     mounted ()
     {
-      /*console.debug( 'this.getContractors()' );
-      this.getContractors();*/
+      console.debug( 'this.contractors: ', this.contractors );
+      //this.getContractors();
     },
   }
 </script>
@@ -413,6 +410,11 @@
             margin-bottom : 20px;
           }
         }
+      }
+
+      .performer-address {
+        width: 400px;
+        white-space: pre-line;
       }
     }
 

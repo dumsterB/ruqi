@@ -28,7 +28,7 @@
           sm="4"
           class="d-flex justify-end"
         >
-          <Search :searchText="searchText" @updateSearchText = "updateSearchText"/>
+          <Search :searchText="searchText" @updateSearchText = "onSearchInput( { $event } )"/>
 
         </v-col>
       </v-row>
@@ -45,7 +45,6 @@
           :items-per-page="itemsPerPage"
           @page-count="pageCount = $event"
           hide-default-footer
-          :search="searchText"
         >
           <template v-slot:item.name="{ item }"  >
             <a href="#" @click.prevent="handlers().openPerformer(item.uuid)">
@@ -166,8 +165,8 @@
       {
         this.getContractors();
 
-        console.debug( 'route' );
-        console.debug( this.$route );
+        console.debug( 'route' ); // DELETE
+        console.debug( this.$route ); // DELETE
       },
 
       handlers ()
@@ -186,7 +185,17 @@
       updateSearchText ( value )
       {
         this.searchText = value;
-      }
+      },
+
+      onSearchInput : _.debounce(
+        function( payload = {} ) {
+          console.log( "onSearchInput", payload ); // DELETE
+
+          this.getContractors( { search : this.searchText = payload.$event } );
+        },
+
+        400
+      ),
     },
 
     mounted ()

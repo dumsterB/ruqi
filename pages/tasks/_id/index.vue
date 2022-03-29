@@ -307,6 +307,7 @@
           {{ request_id.description }}
         </div>
       </v-tab-item>
+
       <v-tab-item>
         <div>
           <div class="table-list-style">
@@ -582,7 +583,8 @@ export default {
 
       this.addPerformersOverlay = true;
 
-      console.debug( 'this.getContractors()' );
+      console.debug( 'this.getContractors()' ); // DELETE
+
       this.getContractors();
     },
 

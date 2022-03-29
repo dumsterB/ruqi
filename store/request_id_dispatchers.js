@@ -23,15 +23,18 @@ export const actions = {
     });
     commit('setRequestIdDispatchers', request_id_dispatchers);
   },
-  async fetchRequestIdDispatchersSelection({commit}, {requestId}) {
-    console.log("обновил");
-    const request_id_dispatchers = await this.$axios.get('/manager/tasks/'+requestId+'/selection', {
-      headers: {
-        "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68"
-      }
-    });
+
+  async fetchRequestIdDispatchersSelection( { commit }, { requestId } )
+  {
+    console.log("обновил 22"); // DELETE
+
+    const request_id_dispatchers = await this.$axios.get( '/manager/tasks/'+requestId+'/selection' );
+
+    console.log( 'request_id_dispatchers', request_id_dispatchers ); // DELETE
+
     commit('setRequestIdDispatchers', request_id_dispatchers);
   },
+
   async fetchRequestIdDispatchersInvitations({commit}, {requestId}) {
     const request_id_dispatchers = await this.$axios.get('/manager/tasks/'+requestId+'/invitations', {
       headers: {

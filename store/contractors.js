@@ -71,6 +71,7 @@ export const actions = {
 
       sort  : ctx.state.sortColumn,
       order : ctx.state.sortOrder,
+      search : params.search,
     }
 
     console.debug( 'searchParams' );
@@ -86,8 +87,8 @@ export const actions = {
 
     ctx.commit( 'setContractors', contractors.data.data );
 
-    console.debug( 'getContractors' );
-    console.debug( contractors.data.data );
+    console.debug( 'getContractors' ); // DELETE
+    console.debug( contractors.data.data ); // DELETE
   },
 
   async getContractor ( ctx, uuid )
