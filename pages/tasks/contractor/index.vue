@@ -314,23 +314,24 @@
 
             console.log( 'objects_map', this.objects_map );
 
-            switch ( payload.type ) {
+            switch ( payload.type )
+            {
               case 'active' :
-                await this.setUserTasksParams( { type : 'accepted', status : 'open', } );
+                await this.setUserTasksParams( { ...this.userTasksParams, type : 'accepted', } );
                 await this.fetchUserTasks();
 
                 this.userTaskStatus = 'open';
               break;
 
               case 'responded' :
-                await this.setUserTasksParams( { type : 'requested', } );
+                await this.setUserTasksParams( { ...this.userTasksParams, type : 'requested', } );
                 await this.fetchUserTasks();
 
                 this.userTaskStatus = 'open';
               break;
 
               case 'completed' :
-                await this.setUserTasksParams( { status : 'close', } );
+                await this.setUserTasksParams( { ...this.userTasksParams, type : null, } );
                 await this.fetchUserTasks();
 
                 this.userTaskStatus = 'close';
@@ -347,12 +348,17 @@
             switch ( payload.$event )
             {
               case 0 :
-                  await this.setUserTasksParams( { distance : 1, date : 0, } );
-                  await this.fetchUserTasks();
+                await this.setUserTasksParams( { ...this.userTasksParams, distance : 1, date : 0, payment : 0, } ); // FIXME
+                await this.fetchUserTasks();
+              break;
+
+              case 1 :
+                await this.setUserTasksParams( { ...this.userTasksParams, distance : 0, date : 0, payment : 1, } ); // FIXME
+                await this.fetchUserTasks();
               break;
 
               case 2 :
-                await this.setUserTasksParams( { distance : 0, date : 1, } );
+                await this.setUserTasksParams( { ...this.userTasksParams, distance : 0, date : 1, payment : 0, } ); // FIXME
                 await this.fetchUserTasks();
               break;
 
@@ -488,7 +494,7 @@
     },
 
     async mounted() {
-      await this.setUserTasksParams( { type : 'accepted', status : 'open', } );
+      await this.setUserTasksParams( { ...this.userTasksParams,  type : 'accepted', } );
       await this.fetchUserTasks();
     },
   }
