@@ -117,6 +117,7 @@
 
 <script>
 
+  import _ from 'lodash';
   import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
   import UserAvatar                                         from "@/components/UserAvatar";
   import Search                                             from "@/components/Search";
