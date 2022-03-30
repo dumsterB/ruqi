@@ -64,8 +64,10 @@
           item-key="uuid"
           :page.sync="page"
           :items-per-page="itemsPerPageTable"
-          @page-count="pageCount = $event"
           hide-default-footer
+          @page-count="pageCount = $event"
+          @update:sort-by="handlers().updateSortBy( { $event } )"
+          @update:sort-desc="handlers().updateSortDesc( { $event } )"
         )
           template( v-slot:item.name="{ item }" )
             div.color-black( @click="handlers().onNameTaskClick( { uuid : item.uuid } )" )
@@ -92,10 +94,10 @@
               .wrapper
                 span.value {{ `${ item.info.payment.value || '0' } р. / смена` }}
 
-          template( v-slot:item.object="{ item }" )
+          template( v-slot:item.object_name="{ item }" )
             .color-black {{ item.info.object.name }}
 
-          template( v-slot:item.work_begin="{ item }" )
+          template( v-slot:item.start_date="{ item }" )
             div {{ helpers().parseDate( { date : item.info.start_date } ) }}
 
           template( v-slot:item.actions="{ item }" )
@@ -197,10 +199,10 @@
         avatarColor: '#EFCD4F',
         headers: [
           {text: 'Название', align: 'start', value: 'name',},
-          {text: '', align: 'start', value: 'status',},
+          {text: '', align: 'start', value: 'status', sortable: false,},
           {text: 'оплата', value: 'payment'},
-          {text: 'Объект', value: 'object'},
-          {text: 'Начало работ', value: 'work_begin'},
+          {text: 'Объект', value: 'object_name'},
+          {text: 'Начало работ', value: 'start_date'},
           {text: '', value: 'actions', sortable: false, align: 'right'},
         ],
         tab_haupt : null,
@@ -208,6 +210,11 @@
         coords: [45.04, 38.98],
 
         userTaskStatus : 'open',
+
+        tableSortParams : { // BUG sort und order müssen getauscht werden
+          sort : null,
+          order : null,
+        }
       }
     },
 
@@ -302,7 +309,7 @@
             let time  = `${ payload.date.split( 'T' )[ 1 ].split( ':' )[ 0 ] }:${ payload.date.split( 'T' )[ 1 ].split( ':' )[ 1 ] }`;
 
             return `${ day }.${ month }.${ year } ${ time }`;
-          }
+          },
         }
       },
 
@@ -318,21 +325,21 @@
             {
               case 'active' :
                 await this.setUserTasksParams( { ...this.userTasksParams, type : 'accepted', } );
-                await this.fetchUserTasks();
+                await this.fetchUserTasks( { params : this.tableSortParams } );
 
                 this.userTaskStatus = 'open';
               break;
 
               case 'responded' :
                 await this.setUserTasksParams( { ...this.userTasksParams, type : 'requested', } );
-                await this.fetchUserTasks();
+                await this.fetchUserTasks( { params : this.tableSortParams } );
 
                 this.userTaskStatus = 'open';
               break;
 
               case 'completed' :
                 await this.setUserTasksParams( { ...this.userTasksParams, type : null, } );
-                await this.fetchUserTasks();
+                await this.fetchUserTasks( { params : this.tableSortParams } );
 
                 this.userTaskStatus = 'close';
               break;
@@ -349,17 +356,17 @@
             {
               case 0 :
                 await this.setUserTasksParams( { ...this.userTasksParams, distance : 1, date : 0, payment : 0, } ); // FIXME
-                await this.fetchUserTasks();
+                await this.fetchUserTasks( { params : this.tableSortParams } );
               break;
 
               case 1 :
                 await this.setUserTasksParams( { ...this.userTasksParams, distance : 0, date : 0, payment : 1, } ); // FIXME
-                await this.fetchUserTasks();
+                await this.fetchUserTasks( { params : this.tableSortParams } );
               break;
 
               case 2 :
                 await this.setUserTasksParams( { ...this.userTasksParams, distance : 0, date : 1, payment : 0, } ); // FIXME
-                await this.fetchUserTasks();
+                await this.fetchUserTasks( { params : this.tableSortParams } );
               break;
 
               default :
@@ -391,7 +398,7 @@
                 this.acceptTask( { uuid : payload.uuid } )
                   .then(
                     () => {
-                      this.fetchUserTasks();
+                      this.fetchUserTasks(  { params : this.tableSortParams } );
                     }
                   );
               break;
@@ -400,7 +407,7 @@
                 this.canceltTask( { uuid : payload.uuid } )
                   .then(
                     () => {
-                      this.fetchUserTasks();
+                      this.fetchUserTasks(  { params : this.tableSortParams } );
                     }
                   );
               break;
@@ -409,7 +416,7 @@
                 this.rejectTask( { uuid : payload.uuid } )
                   .then(
                     () => {
-                      this.fetchUserTasks();
+                      this.fetchUserTasks(  { params : this.tableSortParams } );
                     }
                   );
               break;
@@ -418,11 +425,27 @@
                 this.requestTask( { uuid : payload.uuid } )
                   .then(
                     () => {
-                      this.fetchUserTasks();
+                      this.fetchUserTasks(  { params : this.tableSortParams } );
                     }
                   );
               break;
             }
+          },
+
+          updateSortBy : ( payload = {} ) => {
+            console.log( 'updateSortBy', payload ); // DELETE
+
+            this.tableSortParams.sort = !!payload.$event.length ? payload.$event[ 0 ] : null;
+
+            this.sortTable();
+          },
+
+          updateSortDesc : ( payload = {} ) => {
+            console.log( 'updateSortDesc', payload ); // DELETE
+
+            this.tableSortParams.order = payload.$event.length ? payload.$event[ 0 ] ? 'desc' : 'asc' : null;
+
+            this.sortTable();
           },
         }
       },
@@ -431,12 +454,22 @@
         function( payload = {} ) {
           this.setUserTasksParams( { ...this.userTasksParams, search : payload } ).then(
             () => {
-              this.fetchUserTasks();
+              this.fetchUserTasks( { params : this.tableSortParams } );
             }
           );
         },
 
         400
+      ),
+
+      sortTable : _.debounce(
+        function ( payload = {} ) {
+          console.debug( '[helper]::sortTable', payload, this.tableSortParams ); // DELETE
+
+          this.fetchUserTasks( { params : this.tableSortParams } );
+        },
+
+        200
       ),
     },
 
@@ -495,7 +528,7 @@
 
     async mounted() {
       await this.setUserTasksParams( { ...this.userTasksParams,  type : 'accepted', } );
-      await this.fetchUserTasks();
+      await this.fetchUserTasks( { params : this.tableSortParams } );
     },
   }
 

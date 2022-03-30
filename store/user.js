@@ -117,6 +117,7 @@ export const actions = {
       {
         params : {
           ...state.userTasksParams,
+          ...payload.params,
 
           mode : 'map',
         }
