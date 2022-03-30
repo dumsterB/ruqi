@@ -58,13 +58,6 @@
                 .form-part-title Уведомлять о событиях
                 FormBuilder(:meta="meta.meta_object_notification" @updateFiled="updateFiled")
 
-          v-tab-item
-            v-form(ref="form_part_3" v-model="valid" lazy-validation)
-              .form-part
-                .form-part-title Изменить пароль
-                v-btn(text height="48" outlined class="btn-blue" href="#") Cбросить пароль
-
-
           FNavigation(:indexTab="tab" :nextButtonsText="nextButtonsText" @nextFromButton="nextFromButton" @prevFromButton="prevFromButton")
 </template>
 
@@ -95,11 +88,9 @@ export default {
         'График работ',
         'Документы',
         'Уведомления',
-        'Пароль',
       ],
       tab: null,
       nextButtonsText: [
-        'Далее',
         'Далее',
         'Далее',
         'Далее',

@@ -4,15 +4,17 @@
       :coords="center_coords"
       :zoom="zoom"
     >
-      <ymap-marker
-        v-for="(item, index) in markers"
-        :key="index"
-        :coords="item.geometry.coordinates"
-        :marker-id="item.uuid"
-        :hint-content="item.properties.hintContent"
-        marker-type="placemark"
-        :balloon-template="balloonTemplate( item.info, item.uuid )"
-      />
+      <template v-for="(item, index) in markers">
+        <ymap-marker
+          v-if="item"
+          :key="item.uuid"
+          :coords="item.geometry.coordinates"
+          :marker-id="item.uuid"
+          :hint-content="item.properties.hintContent"
+          marker-type="placemark"
+          :balloon-template="balloonTemplate( item.info, item.uuid )"
+        />
+      </template>
     </yandex-map>
   </div>
 

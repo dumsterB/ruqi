@@ -694,7 +694,7 @@ export default {
 
     },
   },
-  created() {
+  async created() {
 
     this.meta.meta_object_name[0].params.options = this.objects;
     this.meta.meta_object_info[1].params.options = this.specializations;
@@ -703,6 +703,8 @@ export default {
 
     if (this.$route.params.objectId) {
       this.meta.meta_object_name[0].value = this.$route.params.objectId;
+      await this.fetchRequestIdProfessions(this.$route.params.objectId);
+      this.clearMetaObjectPay();
     }
 
     this.meta.meta_object_name.map(f => {
