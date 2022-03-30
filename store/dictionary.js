@@ -141,7 +141,7 @@ export const actions = {
     console.debug('store : payments');
     console.debug(payments);
 
-    commit('setPayments', payments.data.data);
+    commit( 'setPayments', payments.data.data );
   },
 }
 
