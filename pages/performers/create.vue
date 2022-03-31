@@ -221,7 +221,7 @@ export default {
             label: 'ИНН',
             col: 4,
             name: 'inn',
-            validation: ['required', 'inn'],
+            validation: ['inn'],
             value: ''
           },
           {
@@ -229,7 +229,7 @@ export default {
             label: 'КПП',
             col: 4,
             name: 'kpp',
-            validation: ['required', 'kpp'],
+            validation: ['kpp'],
             value: ''
           },
           {
@@ -237,7 +237,7 @@ export default {
             label: 'БИК',
             col: 4,
             name: 'bik',
-            validation: ['required', 'bik'],
+            validation: ['bik'],
             value: ''
           },
           {
@@ -245,7 +245,7 @@ export default {
             label: 'Расчетный счет',
             col: 6,
             name: 'payment_account',
-            validation: ['required', 'rs'],
+            validation: ['rs'],
             value: '',
             params: {
               bik: ''
@@ -256,7 +256,7 @@ export default {
             label: 'Корреспондентский счёт',
             col: 6,
             name: 'cor_account',
-            validation: ['required', 'ks'],
+            validation: ['ks'],
             value: '',
             params: {
               bik: ''
@@ -267,7 +267,7 @@ export default {
             label: 'Банк',
             col: 12,
             name: 'bank',
-            validation: ['required'],
+            validation: [],
             value: ''
           },
         ],

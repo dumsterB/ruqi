@@ -276,7 +276,7 @@ export default {
       }
     },
     postBody() {
-      let type;
+      let type, order = '';
       let specialization = this.specialization,
         region = this.region,
         search = this.searchText;
@@ -290,12 +290,16 @@ export default {
       if (this.tab == 1) {
         type = 'map';
       }
+      if (specialization != '' || region != ''){
+        order = "asc";
+      }
+      console.log(specialization, region, order);
       let postBody = {
         "specialization": specialization,
         "region": region,
         "active": this.active,
         "sort": "city",
-        "order": "asc",
+        "order": order,
         "type": type,
         "name": search,
       }

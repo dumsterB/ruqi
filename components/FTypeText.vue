@@ -48,25 +48,68 @@ export default {
           return pattern.test(value) || 'Введите число'
         },
         ogrn: value => {
-          return this.validateOgrn(value) || this.error.message
+          if (value) {
+            return this.validateOgrn(value) || this.error.message
+          }
+          else{
+            return true;
+          }
         },
         ogrnip: value => {
-          return this.validateOgrnip(value) || this.error.message
+          if (value) {
+            return this.validateOgrnip(value) || this.error.message
+          }
+          else{
+            return true;
+          }
+
         },
         inn: value => {
-          return this.validateInn(value) || this.error.message
+          if (value) {
+            return this.validateInn(value) || this.error.message
+          }
+          else{
+            return true;
+          }
+
+
         },
         kpp: value => {
-          return this.validateKpp(value) || this.error.message
+          if (value) {
+            return this.validateKpp(value) || this.error.message
+          }
+          else{
+            return true;
+          }
+
+
         },
         bik: value => {
-          return this.validateBik(value) || this.error.message
+          if (value) {
+            return this.validateBik(value) || this.error.message
+          }
+          else{
+            return true;
+          }
+
         },
         ks: value => {
-          return this.validateKs(value, this.params.bik) || this.error.message
+          if (value) {
+            return this.validateKs(value, this.params.bik) || this.error.message
+          }
+          else{
+            return true;
+          }
+
         },
         rs: value => {
-          return this.validateRs(value, this.params.bik) || this.error.message
+          if (value) {
+            return this.validateRs(value, this.params.bik) || this.error.message
+          }
+          else{
+            return true;
+          }
+
         },
       },
       error: {
