@@ -102,6 +102,7 @@ export const actions = {
 
   async createContractor({commit, dispatch}, newRequest) {
     let self= this;
+    commit('response/setAwait', null, { root: true });
     const requests = await this.$axios.post('/manager/contractor',
       newRequest,
       {

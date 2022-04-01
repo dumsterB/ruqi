@@ -11,6 +11,7 @@
         </v-btn>
         <v-btn
           text
+          :disabled="disabled"
           height="48"
           outlined
           :class="{'public': indexTab == nextButtonsText.length - 1}"
@@ -32,7 +33,16 @@
 export default {
   props: ['indexTab', 'nextButtonsText'],
   data() {
-    return {}
+    return {
+    }
+  },
+  computed : {
+    requestSuccess() {
+      return this.$store.getters['response/requestSuccess'];
+    },
+    disabled(){
+      return this.requestSuccess.await;
+    }
   },
   methods: {
     nextFromButton(){

@@ -111,10 +111,12 @@
 
             v-divider
 
-            .bar-element-row.subscribe(:class="{'active': task_id.subscribe}")
-              v-icon(color="#7A91A9") mdi-bell
-              span(v-if="task_id.subscribe") Вы подписаны на новые заявки объекта
-              a(@click="subscribeToObject({requestId: task_id.uuid, objectId: [task_id.object.uuid]})" v-if="!task_id.subscribe") Подписаться на новые заявки объекта
+            .bar-element-row.subscribe.d-flex(:class="{'active': task_id.subscribe}")
+              v-icon.subscribe-icon(color="#7A91A9") mdi-bell
+              .subscribe-text
+                span(v-if="task_id.subscribe") Вы подписаны на новые заявки объекта
+                a(v-if="task_id.subscribe" @click="subscribeToObject({requestId: task_id.uuid, objectId: [task_id.object.uuid]})") Отписаться
+                a(@click="subscribeToObject({requestId: task_id.uuid, objectId: [task_id.object.uuid]})" v-if="!task_id.subscribe") Подписаться на новые заявки объекта
 
 
 </template>
@@ -138,7 +140,7 @@ export default {
     task_id() {
       return this.$store.getters['request_id/request_id'];
     },
-    my_status(){
+    my_status() {
       console.log('status ----- ', this.task_id.my_status);
       return this.task_id.my_status;
     },
@@ -218,9 +220,7 @@ export default {
     },
 
     handlers() {
-      return {
-
-      }
+      return {}
     },
 
     helpers() {
@@ -496,6 +496,8 @@ export default {
 
   .subscribe {
     font-weight: 400;
+    align-items: flex-start;
+    line-height: 1;
 
     &:not(.active) {
       color: $blue;
@@ -504,6 +506,19 @@ export default {
 
     .v-icon {
       margin-right: 10px;
+    }
+
+    a {
+      display: block;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    &.active {
+
+      a {
+        margin-top: 8px;
+      }
     }
 
   }

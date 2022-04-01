@@ -58,13 +58,6 @@
                 .form-part-title Уведомлять о событиях
                 FormBuilder(:meta="meta.meta_object_notification" @updateFiled="updateFiled")
 
-          v-tab-item
-            v-form(ref="form_part_3" v-model="valid" lazy-validation)
-              .form-part
-                .form-part-title Изменить пароль
-                v-btn(text height="48" outlined class="btn-blue" href="#") Cбросить пароль
-
-
           FNavigation(:indexTab="tab" :nextButtonsText="nextButtonsText" @nextFromButton="nextFromButton" @prevFromButton="prevFromButton")
 </template>
 
@@ -95,11 +88,9 @@ export default {
         'График работ',
         'Документы',
         'Уведомления',
-        'Пароль',
       ],
       tab: null,
       nextButtonsText: [
-        'Далее',
         'Далее',
         'Далее',
         'Далее',
@@ -230,7 +221,7 @@ export default {
             label: 'ИНН',
             col: 4,
             name: 'inn',
-            validation: ['required', 'inn'],
+            validation: ['inn'],
             value: ''
           },
           {
@@ -238,7 +229,7 @@ export default {
             label: 'КПП',
             col: 4,
             name: 'kpp',
-            validation: ['required', 'kpp'],
+            validation: ['kpp'],
             value: ''
           },
           {
@@ -246,7 +237,7 @@ export default {
             label: 'БИК',
             col: 4,
             name: 'bik',
-            validation: ['required', 'bik'],
+            validation: ['bik'],
             value: ''
           },
           {
@@ -254,7 +245,7 @@ export default {
             label: 'Расчетный счет',
             col: 6,
             name: 'payment_account',
-            validation: ['required', 'rs'],
+            validation: ['rs'],
             value: '',
             params: {
               bik: ''
@@ -265,7 +256,7 @@ export default {
             label: 'Корреспондентский счёт',
             col: 6,
             name: 'cor_account',
-            validation: ['required', 'ks'],
+            validation: ['ks'],
             value: '',
             params: {
               bik: ''
@@ -276,7 +267,7 @@ export default {
             label: 'Банк',
             col: 12,
             name: 'bank',
-            validation: ['required'],
+            validation: [],
             value: ''
           },
         ],

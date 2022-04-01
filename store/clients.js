@@ -28,6 +28,7 @@ export const actions = {
 
   async createRequest({commit, dispatch}, newRequest) {
     let self = this;
+    commit('response/setAwait', null, { root: true });
     const requests = await this.$axios.post('/super_manager/accounts',
       newRequest,
       {

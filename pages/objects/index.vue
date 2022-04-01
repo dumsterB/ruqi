@@ -219,7 +219,6 @@ export default {
     }
   },
   created() {
-
     this.sortSpecializations = this.defSort.concat(this.specializations);
     this.sortRegions = this.defSort.concat(this.regions);
   },
@@ -235,7 +234,7 @@ export default {
     },
     updateSearchText(value) {
       this.searchText = value;
-      this.fetchObjects({"name": value});
+      this.filter();
     },
     filter() {
       const newRequet = this.postBody;
@@ -277,9 +276,11 @@ export default {
       }
     },
     postBody() {
-      let type;
+      let type, order = '';
       let specialization = this.specialization,
-        region = this.region;
+        region = this.region,
+        search = this.searchText;
+
       if (specialization == 'Все') {
         specialization = '';
       }
@@ -289,13 +290,18 @@ export default {
       if (this.tab == 1) {
         type = 'map';
       }
+      if (specialization != '' || region != ''){
+        order = "asc";
+      }
+      console.log(specialization, region, order);
       let postBody = {
         "specialization": specialization,
         "region": region,
         "active": this.active,
         "sort": "city",
-        "order": "asc",
-        "type": type
+        "order": order,
+        "type": type,
+        "name": search,
       }
       console.log(postBody);
       return postBody;

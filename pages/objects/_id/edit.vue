@@ -867,8 +867,8 @@ export default {
     this.meta.meta_object_info[1].value = this.object_id.name;
     this.meta.meta_object_info[4].value = this.object_id.description;
 
-    this.meta.meta_object_location[0].value = this.object_id.city;
-    this.meta.meta_object_location[1].value = this.object_id.region;
+    this.meta.meta_object_location[0].value = this.object_id.region;
+    this.meta.meta_object_location[1].value = this.object_id.city;
     this.meta.meta_object_location[2].value = this.object_id.scheme;
 
 
