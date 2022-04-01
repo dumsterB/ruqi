@@ -23,7 +23,7 @@
         .birthday
           dateInputWithTitle.birthday__input(
             :title="inputTitles.birthday"
-            :value="user.birthday.split( ' ' )[ 0 ]"
+            :value="user.birthday ? user.birthday.split( ' ' )[ 0 ] : ''"
             @date_change="setters().setBirthday( { event : $event } )"
           )
 

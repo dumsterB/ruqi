@@ -53,21 +53,21 @@
           </template>
 
           <template v-slot:item.rating="{ item }">
-            <Rating :rating="item.rating"/>
+            <Rating :rating="item.raiting"/>
           </template>
 
           <template v-slot:item.address="{ item }">
             <div class="performer-address">
-              {{ item.address.city }}, {{ item.address.street  }}
+              {{ item.address }}
             </div>
           </template>
 
           <template v-slot:item.salary="{ item }">
-            500 р. смена
+            {{ `${ item.avg_price || '0' } р. смена` }}
           </template>
 
           <template v-slot:item.reg="{ item }">
-            25.01.2021
+            {{ helpers().parseDate( { date : item.created_at, type : 'date', } ) }}
           </template>
 
           <template v-slot:item.actions="{ item }">
@@ -168,6 +168,37 @@
 
         console.debug( 'route' ); // DELETE
         console.debug( this.$route ); // DELETE
+      },
+
+      helpers ()
+      {
+        return {
+          /**
+           *
+           * @param { object } params
+           * {
+           *    date : '2021-12-23T12:59:03.000000Z'
+           * }
+           */
+          parseDate : ( payload = {} ) => {
+            let splitedPayloadDate = payload.date.split( 'T' );
+
+            let date = splitedPayloadDate[ 0 ].split( '-' );
+            let time = splitedPayloadDate[ 1 ].split( '.' )[ 0 ].split( ':' );
+
+            if ( payload.type === 'date' )
+            {
+              return `${ date[ 2 ] }.${ date[ 1 ] }.${ date[ 0 ] }`;
+            }
+
+            if ( payload.type === 'time' )
+            {
+              return `${ time[ 0 ] }:${ time[ 1 ] }`;
+            }
+
+            return `${ date[ 2 ] }.${ date[ 1 ] }.${ date[ 0 ] } ${ time[ 0 ] }:${ time[ 1 ] }`;
+          },
+        }
       },
 
       handlers ()

@@ -100,7 +100,9 @@
           template( v-slot:item.start_date="{ item }" )
             div {{ helpers().parseDate( { date : item.info.start_date } ) }}
 
-          template( v-slot:item.actions="{ item }" )
+          template(
+            v-slot:item.actions="{ item }"
+          )
             v-menu(
               bottom
               rounded="10"
@@ -111,7 +113,10 @@
               template(
                 v-slot:activator="{ on }"
               )
-                v-btn( icon v-on="on" )
+                v-btn(
+                  v-show="userTaskStatus !== 'close'"
+                  icon v-on="on"
+                )
                   v-icon mdi-dots-vertical
               v-card(
                 v-if="getters().tableItemIndex( { status : item.my_status  } ).length"
@@ -191,7 +196,6 @@
         region: '',
         active: '',
         searchText: '',
-        selectObject: null,
         page: 1,
         pageCount: 0,
         itemsPerPage: 5,

@@ -94,12 +94,12 @@
 
         paymentTypeOptions : [
           {
-            uuid : 'diekarte',
+            uuid : 'банковская карта',
             name : 'банковская карта',
           },
 
           {
-            uuid : 'bargeld',
+            uuid : 'наличные',
             name : 'наличные',
           },
         ],

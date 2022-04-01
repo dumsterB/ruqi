@@ -23,6 +23,11 @@ export default ( { app, store }, inject ) => {
         const regexp = /([!@#$%^&*])/;
         const _regexp = /([a-zA-Z])/;
 
+        if ( !v )
+        {
+          return 'Номер карты должен содержвать 16 цифр';
+        }
+
         if ( v.replaceAll( ' ', '' )?.length !== 16 )
         {
           return 'Номер карты должен содержвать 16 цифр';

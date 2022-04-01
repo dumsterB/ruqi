@@ -195,9 +195,12 @@ export const actions = {
     /* EMAIL VALIDATE END */
 
     /* BANK CARD VALIDATE START */
-    if ( !( typeof this.$validation.cardNumberFormat( state.user.settings.bank_card ) === 'boolean' ) )
+    if ( state.user.settings.type_payment === 'банковская карта' )
     {
-      throw new Error( 'Поле "Номер карты" заполнено некорректно' );
+      if ( !( typeof this.$validation.cardNumberFormat( state.user.settings.bank_card ) === 'boolean' ) )
+      {
+        throw new Error( 'Поле "Номер карты" заполнено некорректно' );
+      }
     }
     /* BANK CARD VALIDATE END */
 
