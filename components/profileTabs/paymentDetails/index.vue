@@ -15,7 +15,7 @@
             :value="user.settings.type_payment"
             @change="setters().onPaymentTypeSelectChange( { $event } )"
           )
-        .bankcard-number( v-show="user.settings.type_payment === 'diekarte'" )
+        .bankcard-number( v-show="user.settings.type_payment === 'банковская карта'" )
           Input.bankcard-number__input.mix-input(
             :params="{ ...textInputDefaultSettings, hauptTitel : titles.bankcard, value : getters().getCardNumber(), rules : rules.cardNumber, ref : 'paymentdettab_bankcard', }"
             @input="setters().setBankCarcNumber( { event : $event } )"
