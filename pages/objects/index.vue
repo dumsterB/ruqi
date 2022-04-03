@@ -173,6 +173,9 @@
 import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 
 export default {
+  meta: {
+    title: 'Объекты'
+  },
   async fetch({store}) {
     if (store.getters['specializations/specializations'].length === 0) {
       await store.dispatch('specializations/fetch')
@@ -310,6 +313,8 @@ export default {
   async mounted() {
     await this.fetchObjects();
     await this.fetchObjectsMap({"type": "map"});
+
+    console.log('$route - ', this.$route.meta);
   }
 }
 </script>

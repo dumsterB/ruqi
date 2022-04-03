@@ -504,9 +504,11 @@ export default {
     await this.fetchObjectIdRequest(this.$route.params.id);
 
     this.selectStatus = this.object_id.status;
+
+    this.$route.meta.title = this.object_id.name
   },
   async mounted() {
-
+    console.log('-----------+', this.$route.matched);
   }
 }
 </script>

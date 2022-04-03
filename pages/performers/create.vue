@@ -130,7 +130,10 @@ export default {
             col: 4,
             name: 'birthday',
             validation: 'required',
-            value: ''
+            value: '',
+            params: {
+              time: false
+            },
           },
           {
             type: 'FTypeRadio',
