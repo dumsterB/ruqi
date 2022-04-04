@@ -51,6 +51,7 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/vuetify',
+    'nuxt-route-meta',
   ],
 
   vuetify: {

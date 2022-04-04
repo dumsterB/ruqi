@@ -16,6 +16,7 @@
     "js-cookie": "^3.0.1",
     "node-sass": "^6.0.1",
     "nuxt": "^2.15.7",
+    "nuxt-route-meta": "^2.3.4",
     "vue": "^2.6.14",
     "vue-yandex-maps": "^0.11.2"
   },

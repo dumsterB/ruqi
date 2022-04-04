@@ -87,7 +87,15 @@ export default {
     updateDate() {
       //this.$emit('input', this.date);
       this.show_date = false;
-      this.show_time = true;
+
+      if (this.isTime){
+        this.show_time = true;
+      }
+      else{
+        this.$emit('input', this.fullDate);
+        this.show_date = true;
+        this.menu = false;
+      }
     },
     updateTime() {
       this.$emit('input', this.fullDate);
@@ -107,8 +115,21 @@ export default {
   },
   computed: {
     fullDate() {
-      return this.dateFormatted + ' ' + this.time;
+      if(this.isTime){
+        return this.dateFormatted + ' ' + this.time;
+      }
+      else{
+        return this.dateFormatted;
+      }
     },
+    isTime(){
+      if (this.params && this.params.time === false){
+        return false
+      }
+      else{
+        return true;
+      }
+    }
   },
   mounted() {
     this.$emit('input', this.fullDate);

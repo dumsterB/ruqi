@@ -15,7 +15,7 @@
       <div class="date" v-if="request_id.start_date">{{ request_id.start_date.substring(0, 10) }}</div>
       <div class="views">
         <v-icon color="#7A91A9">mdi-eye-outline</v-icon>
-        159 (+10)
+        {{request_id.view}}
       </div>
       <div>Объект:
         <span class="object" v-if="request_id.object">{{request_id.object.name}}</span>
