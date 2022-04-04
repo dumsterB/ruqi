@@ -64,7 +64,7 @@ export const getters = {
 }
 
 export const actions = {
-  async getContractors ( ctx, params = {} )
+  async getContractors ( ctx, params = {} ) // BUG // FIXME
   {
     let searchParams = {
       ...ctx.state.filters,
@@ -72,6 +72,8 @@ export const actions = {
       sort  : ctx.state.sortColumn,
       order : ctx.state.sortOrder,
       search : params.search,
+
+      ...params.params,
     }
 
     console.debug( 'searchParams' );

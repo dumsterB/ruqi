@@ -28,7 +28,7 @@
           sm="4"
           class="d-flex justify-end"
         >
-          <Search :searchText="searchText" @updateSearchText = "onSearchInput( { $event } )"/>
+          <Search :searchText="searchText" @updateSearchText="onSearchInput( { $event } )"/>
 
         </v-col>
       </v-row>
@@ -43,30 +43,32 @@
           item-key="id"
           :page.sync="page"
           :items-per-page="itemsPerPage"
-          @page-count="pageCount = $event"
           hide-default-footer
+          @page-count="pageCount = $event"
+          @update:sort-by="handlers().updateSortBy( { $event } )"
+          @update:sort-desc="handlers().updateSortDesc( { $event } )"
         >
-          <template v-slot:item.name="{ item }"  >
+          <template v-slot:item.lastname="{ item }"  >
             <a href="#" @click.prevent="handlers().openPerformer(item.uuid)">
               <UserAvatar :first_name="item.firstname" :last_name="item.lastname" :color="avatarColor" :radius="avatarBorderRadius" :date="temp_date"/>
             </a>
           </template>
 
-          <template v-slot:item.rating="{ item }">
+          <template v-slot:item.value="{ item }">
             <Rating :rating="item.raiting"/>
           </template>
 
-          <template v-slot:item.address="{ item }">
+          <template v-slot:item.location_address="{ item }">
             <div class="performer-address">
               {{ item.address }}
             </div>
           </template>
 
-          <template v-slot:item.salary="{ item }">
+          <template v-slot:item.avg_price="{ item }">
             {{ `${ item.avg_price || '0' } р. смена` }}
           </template>
 
-          <template v-slot:item.reg="{ item }">
+          <template v-slot:item.created_at="{ item }">
             {{ helpers().parseDate( { date : item.created_at, type : 'date', } ) }}
           </template>
 
@@ -145,17 +147,22 @@
         selected: [],
         avatarColor: '#36B368',
         headers: [
-          {text: 'ФИО', align: 'start',  value: 'name',},
-          {text: 'Рейтинг', value: 'rating'},
-          {text: 'Адрес', value: 'address'},
-          {text: 'Средняя ставка', value: 'salary'},
-          {text: 'Зарегистрирован', value: 'reg'},
+          {text: 'ФИО', align: 'start',  value: 'lastname',},
+          {text: 'Рейтинг', value: 'value'},
+          {text: 'Адрес', value: 'location_address'},
+          {text: 'Средняя ставка', value: 'avg_price', sortable: false,},
+          {text: 'Зарегистрирован', value: 'created_at'},
           {text: '', value: 'actions', sortable: false, align: 'right'},
         ],
         rating: 4.5,
         temp_date: '26.06.1984',
         avatarBorderRadius: 'rounded',
         searchText: '',
+
+        tableSortParams : { // BUG sort und order müssen getauscht werden
+          sort : null,
+          order : null,
+        }
       }
     },
 
@@ -211,6 +218,22 @@
               }
             );
           },
+
+          updateSortBy : ( payload = {} ) => {
+            console.log( 'updateSortBy', payload ); // DELETE
+
+            this.tableSortParams.sort = !!payload.$event.length ? payload.$event[ 0 ] : null;
+
+            this.sortTable();
+          },
+
+          updateSortDesc : ( payload = {} ) => {
+            console.log( 'updateSortDesc', payload ); // DELETE
+
+            this.tableSortParams.order = payload.$event.length ? payload.$event[ 0 ] ? 'desc' : 'asc' : null;
+
+            this.sortTable();
+          },
         }
       },
 
@@ -223,10 +246,20 @@
         function( payload = {} ) {
           console.log( "onSearchInput", payload ); // DELETE
 
-          this.getContractors( { search : this.searchText = payload.$event } );
+          this.getContractors( { search : this.searchText = payload.$event, params : this.tableSortParams, } );
         },
 
         400
+      ),
+
+      sortTable : _.debounce(
+        function ( payload = {} ) {
+          console.debug( '[helper]::sortTable', payload, this.tableSortParams ); // DELETE
+
+          this.getContractors( { params : this.tableSortParams, search : this.searchText, } );
+        },
+
+        200
       ),
     },
 
