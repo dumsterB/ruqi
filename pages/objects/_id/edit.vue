@@ -236,7 +236,9 @@ export default {
       await store.dispatch('dictionary/fetcProfessions')
     }
   },
-
+  meta: {
+    title: 'Редактирование объекта'
+  },
   data() {
     return {
       headers: [
@@ -625,6 +627,7 @@ export default {
     ...mapActions('dictionary', ['fetchOrganizations',]),
     ...mapActions('object_id', ['fetchObjectIdRequest',]),
     ...mapActions('dictionary', ['fetcProfessions',]),
+    ...mapMutations('breadcrumbs', ["setBreadcrumbs",]),
 
     addResponsible(resp_name, isInit = false) {
 
@@ -833,6 +836,9 @@ export default {
   async created() {
     await this.fetchObjectId(this.$route.params.id);
     await this.fetchObjectIdRequest(this.$route.params.id);
+
+    this.$route.meta.pre_title = this.object_id.name;
+    this.setBreadcrumbs(this.$route.fullPath);
 
     let contact_length = this.object_id.contacts.length,
         dispatchers_length = this.object_id.dispatchers.length,

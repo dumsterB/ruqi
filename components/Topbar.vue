@@ -1,11 +1,13 @@
 <template>
   <div class="header-wrap">
     <v-app-bar app elevation="0" height="98" color="transparent" class="header-content-crt_exd justify-end align-end d-flex">
-      <v-breadcrumbs :items="items">
+<!--      <v-breadcrumbs :items="items">
         <template v-slot:divider>
           <v-icon>mdi-checkbox-blank-circle</v-icon>
         </template>
-      </v-breadcrumbs>
+      </v-breadcrumbs>-->
+
+      <Breadcrambs/>
 
       <v-row>
         <v-menu

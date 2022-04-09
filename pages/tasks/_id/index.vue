@@ -539,6 +539,7 @@ export default {
     ...mapActions( 'contractors', [ 'getContractors', 'setFilterRegion', 'setFilterSpecialization', 'setFilterProfessions', 'setFilterPayments', ] ),
     ...mapActions('requests', ['copyRequest',]),
     ...mapActions('requests', ['removeRequest',]),
+    ...mapMutations('breadcrumbs', ["setBreadcrumbs",]),
 
     updateSearchText(value) {
       this.searchText = value;
@@ -562,7 +563,7 @@ export default {
     },
 
     openTimesheet(){
-      this.$router.push('/tasks/'+ this.request_id.uuid+'/timesheet/');
+      this.$router.push('/tasks/'+ this.request_id.uuid+'/timesheet');
     },
 
     changeStatus(status){
@@ -616,7 +617,7 @@ export default {
   watch: {
     activeAction: function (val) {
       if (val == 'edit'){
-        this.$router.push('/tasks/'+ this.$route.params.id+'/edit/');
+        this.$router.push('/tasks/'+ this.$route.params.id+'/edit');
       }
       else if (val == 'delete'){
         this.$router.push('/tasks/');
@@ -638,6 +639,9 @@ export default {
     await this.fetchRequestIdHistory({requestId: this.$route.params.id});
 
     this.selectStatus = this.request_id.status;
+
+    this.$route.meta.title = this.request_id.name;
+    this.setBreadcrumbs(this.$route.fullPath);
   },
 
   async mounted() {

@@ -123,7 +123,7 @@
 
 <script>
 
-import {mapActions} from "vuex";
+import {mapActions, mapMutations} from "vuex";
 
 export default {
 
@@ -188,6 +188,7 @@ export default {
     ...mapActions('request_id', ['acceptToTask',]),
     ...mapActions('request_id', ['cancelToTask',]),
     ...mapActions('request_id', ['rejectToTask',]),
+    ...mapMutations('breadcrumbs', ["setBreadcrumbs",]),
 
     getters() {
       return {
@@ -290,6 +291,10 @@ export default {
   },
   async created() {
     await this.fetchRequestId(this.$route.params.id);
+
+    this.$route.meta.title = this.request_id.name;
+    this.setBreadcrumbs(this.$route.fullPath);
+
   }
 
 }

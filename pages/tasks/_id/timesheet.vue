@@ -345,6 +345,9 @@ import Vue from "vue";
 import FTypeSelectUIID from "@/components/FTypeSelectUIID";
 
 export default {
+  meta: {
+    title: 'Табель учета рабочего времени'
+  },
   components: {FTypeSelectUIID, FTypeText},
   props: [],
   data() {
@@ -496,8 +499,8 @@ export default {
     ...mapActions('request_id_timesheet', ['fillOutAssigned',]),
     ...mapActions('request_id_timesheet', ['putRequestIdTimeSheet',]),
     ...mapActions('request_id_timesheet', ['putRequestIdLoadPayments',]),
-
     ...mapMutations('request_id_timesheet', ['updateChangeButton',]),
+    ...mapMutations('breadcrumbs', ["setBreadcrumbs",]),
 
     selectAll(val) {
       this.activeSelectBtn = +!this.activeSelectBtn;
@@ -652,6 +655,9 @@ export default {
     await this.fetchRequestIdTimeSheetSummary(this.$route.params.id);
     await this.fetchRequestIdTimeSheet(this.$route.params.id);
     await this.fetchRequestIdProfessions(this.$route.params.id);
+
+    this.$route.meta.pre_title = this.request_id.name;
+    this.setBreadcrumbs(this.$route.fullPath);
   },
 
 

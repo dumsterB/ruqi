@@ -36,11 +36,15 @@ export default {
     ...mapActions('employee_id', ['fetchEmployee']),
     ...mapActions('employee_id', ['fetchEmployeeTasks']),
     ...mapActions('employee_id', ['fetchEmployeeSupport']),
+    ...mapMutations('breadcrumbs', ["setBreadcrumbs",]),
 
-    init() {
-      this.fetchEmployee(this.$route.params.id);
+    async init() {
+      await this.fetchEmployee(this.$route.params.id);
       this.fetchEmployeeTasks(this.$route.params.id);
       this.fetchEmployeeSupport(this.$route.params.id);
+
+      this.$route.meta.title = this.employee_id.firstname + ' ' + this.employee_id.lastname ;
+      this.setBreadcrumbs(this.$route.fullPath);
     },
 
     handlers() {
@@ -49,7 +53,7 @@ export default {
   },
 
   mounted() {
-    this.init();
+     this.init();
   },
 }
 

@@ -125,6 +125,9 @@
   import Search                                             from "@/components/Search";
 
   export default {
+    meta: {
+      title: 'Исполнители'
+    },
     components  : { Search, UserAvatar },
 
     computed : {

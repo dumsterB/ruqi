@@ -144,6 +144,9 @@ import Vue from "vue";
 import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 
 export default {
+  meta: {
+    title: 'Создание новой заявки'
+  },
   async fetch({store}) {
     if (store.getters['objects/objects'].length === 0) {
       await store.dispatch('objects/fetchObjects')

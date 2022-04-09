@@ -204,7 +204,7 @@
                       <v-card>
                         <v-list-item-content class="justify-start">
                           <div class="mx-auto text-left">
-                            <nuxt-link :to="'/tasks/'+ item.uuid +'/edit/'">
+                            <nuxt-link :to="'/tasks/'+ item.uuid +'/edit'">
                               <span>Редактировать</span>
                             </nuxt-link>
                           </div>
@@ -456,6 +456,7 @@ export default {
     ...mapActions('object_id', ['fetchObjectId',]),
     ...mapActions('object_id', ['fetchObjectIdRequest',]),
     ...mapActions('object_id', ['putStatus',]),
+    ...mapMutations('breadcrumbs', ["setBreadcrumbs",]),
 
     openRequest(id) {
       this.$router.push('/tasks/' + id);
@@ -464,7 +465,7 @@ export default {
       this.searchText = value;
     },
     openTimesheet() {
-      this.$router.push('/objects/' + this.$route.params.id + '/timesheet/');
+      this.$router.push('/objects/' + this.$route.params.id + '/timesheet');
     },
     selectAll(val) {
       this.activeSelectBtn = +!this.activeSelectBtn;
@@ -489,7 +490,7 @@ export default {
   watch: {
     activeAction: function (val) {
       if (val == 'edit') {
-        this.$router.push('/objects/' + this.$route.params.id + '/edit/');
+        this.$router.push('/objects/' + this.$route.params.id + '/edit');
       }
       if (val == 'delete') {
 
@@ -505,10 +506,13 @@ export default {
 
     this.selectStatus = this.object_id.status;
 
-    this.$route.meta.title = this.object_id.name
+    this.$route.meta.title = this.object_id.name;
+    this.setBreadcrumbs(this.$route.fullPath);
+
   },
   async mounted() {
-    console.log('-----------+', this.$route.matched);
+
+
   }
 }
 </script>

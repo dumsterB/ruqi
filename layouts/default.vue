@@ -29,6 +29,8 @@
 
 <script>
 
+import {mapMutations} from "vuex";
+
 export default {
   name: "default",
 
@@ -47,6 +49,7 @@ export default {
 
   watch: {
     $route : {
+
       handler( to, from )
       {
         const ruqi = document.querySelector( '.ruqi' );
@@ -88,6 +91,9 @@ export default {
         //   body.classList.remove();
         // }
         // body.classList.add('page--' + to.name.toLowerCase());
+
+        this.setBreadcrumbs(this.$route.fullPath);
+
       },
 
       immediate: true,
@@ -95,6 +101,9 @@ export default {
   },
 
   methods : {
+
+    ...mapMutations('breadcrumbs', ["setBreadcrumbs",]),
+
     helpers ()
     {
       return {
@@ -108,6 +117,7 @@ export default {
   mounted ()
   {
    // console.debug( 'mounted', this.helpers().isLoginPage() );
+    this.setBreadcrumbs(this.$route.fullPath);
   },
 }
 

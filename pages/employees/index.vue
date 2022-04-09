@@ -94,7 +94,7 @@
                 <v-card>
                   <v-list-item-content class="justify-start">
                     <div class="mx-auto text-left">
-                      <nuxt-link :to="'/employees/'+ item.uuid +'/edit/'">
+                      <nuxt-link :to="'/employees/'+ item.uuid +'/edit'">
                         <span>Редактировать</span>
                       </nuxt-link>
                       <v-divider class="my-3"></v-divider>
@@ -118,6 +118,9 @@
 import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 
 export default {
+  meta: {
+    title: 'Сотрудники'
+  },
   data() {
     return {
       title: 'Сотрудники',

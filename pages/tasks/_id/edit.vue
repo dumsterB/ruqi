@@ -153,7 +153,9 @@ export default {
       await store.dispatch('dispatchers/fetch')
     }
   },
-
+  meta: {
+    title: 'Редактирование заявки'
+  },
   data() {
     return {
       formValues: {},
@@ -482,6 +484,7 @@ export default {
     ...mapActions('requests', ['putRequest',]),
     ...mapActions('request_id', ['fetchRequestId',]),
     ...mapActions('request_id', ['fetchRequestIdProfessions',]),
+    ...mapMutations('breadcrumbs', ["setBreadcrumbs",]),
 
     addResponsible(resp_name, isInit = false) {
       let flag = false;
@@ -703,6 +706,9 @@ export default {
 
     await this.fetchRequestId(this.$route.params.id);
     await this.fetchRequestIdProfessions(this.request_id.object.uuid);
+
+    this.$route.meta.pre_title = this.request_id.name;
+    this.setBreadcrumbs(this.$route.fullPath);
 
     let works_length = this.request_id.works.length,
       contact_length = this.request_id.contacts.length,

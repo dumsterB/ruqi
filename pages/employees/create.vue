@@ -80,6 +80,9 @@ export default {
       await store.dispatch('objects/fetchObjects')
     }
   },
+  meta: {
+    title: 'Создание нового сотрудника'
+  },
   data() {
     return {
       formValues: {},

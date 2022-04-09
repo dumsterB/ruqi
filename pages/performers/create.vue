@@ -68,6 +68,9 @@ import Vue from "vue";
 import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 
 export default {
+  meta: {
+    title: 'Создание нового исполнителя'
+  },
   data() {
     return {
       formValues: {},

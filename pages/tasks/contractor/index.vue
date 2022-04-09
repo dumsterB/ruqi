@@ -165,7 +165,9 @@
         await store.dispatch('dictionary/fetchRegions')
       }
     },
-
+    meta: {
+      title: 'Мои заявки'
+    },
     data ()
     {
       return {

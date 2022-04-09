@@ -141,6 +141,9 @@ export default {
       await store.dispatch('dictionary/fetchSpecializations')
     }
   },
+  meta: {
+    title: 'Редактирование клиента'
+  },
   data() {
     return {
       formValues: {},
@@ -498,6 +501,7 @@ export default {
     ...mapActions('client_id', ['removePhoto',]),
     ...mapActions('clients', ['putRequest',]),
     ...mapActions('objects', ['removeRequest',]),
+    ...mapMutations('breadcrumbs', ["setBreadcrumbs",]),
 
     async nextFromButton() {
       if (this.tab < this.tabs_list.length - 2) {
@@ -675,6 +679,10 @@ export default {
   },
   async created() {
     await this.fetchClientId(this.$route.params.id);
+
+    this.$route.meta.pre_title = this.client_id.name;
+    this.setBreadcrumbs(this.$route.fullPath);
+
     await this.fetchObjectsAccount(this.$route.params.id);
     await this.getDocs(this.$route.params.id);
 

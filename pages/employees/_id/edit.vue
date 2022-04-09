@@ -93,6 +93,9 @@ export default {
       await store.dispatch('objects/fetchObjects')
     }
   },
+  meta: {
+    title: 'Редактирование сотрудника'
+  },
   data() {
     return {
       formValues: {},
@@ -307,6 +310,7 @@ export default {
     ...mapActions('dictionary', ['fetchSpecializations',]),
     ...mapActions('employees', ['putRequest',]),
     ...mapActions('employee_id', ['fetchEmployee',]),
+    ...mapMutations('breadcrumbs', ["setBreadcrumbs",]),
 
     nextFromButton() {
       let formPart = 'form_part_' + this.tab;
@@ -391,6 +395,9 @@ export default {
 
     await this.fetchEmployee(this.$route.params.id);
     this.meta.meta_object_object[0].params.options = this.objects;
+
+    this.$route.meta.pre_title = this.employee_id.firstname + ' ' + this.employee_id.lastname;
+    this.setBreadcrumbs(this.$route.fullPath);
 
     let object_length = this.employee_id.objects.length;
     await this.addFileds(object_length, 'addObject', 'object');

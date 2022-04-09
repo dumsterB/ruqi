@@ -64,6 +64,9 @@ export default {
       await store.dispatch('dictionary/fetchSpecializations')
     }
   },
+  meta: {
+    title: 'Создание нового клиента'
+  },
   data() {
     return {
       formValues: {},

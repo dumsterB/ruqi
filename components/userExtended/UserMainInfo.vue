@@ -150,7 +150,7 @@ export default {
           return '/profile/';
 
         case EMPLOYEE :
-          return '/'+this.user_type+'s/'+this.user.uuid+'/edit/';
+          return '/'+this.user_type+'s/'+this.user.uuid+'/edit';
 
         default :
           return '/profile/';
