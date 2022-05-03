@@ -7,6 +7,7 @@
     color="transparent"
     class="header-content-crt_exd justify-end align-end d-flex"
   )
+    rqTabs
     v-row
       v-menu(
         bottom
@@ -69,8 +70,12 @@
 
 <script>
 import { mapActions } from "vuex";
+import rqTabs from '@/components/UI/rqTabs';
 
 export default {
+  components: {
+    rqTabs,
+  },
   computed: {
     notifications_count() {
       return this.$store.getters["notifications/notifications_count"];
