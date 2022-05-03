@@ -70,7 +70,7 @@
 
 <script>
 import { mapActions } from "vuex";
-import rqTabs from '@/components/UI/rqTabs';
+import rqTabs from '@/components/composite/rqTabs';
 
 export default {
   components: {
