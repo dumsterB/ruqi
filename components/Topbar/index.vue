@@ -7,22 +7,18 @@
     color="transparent"
     class="header-content-crt_exd justify-end align-end d-flex"
   )
-    rqTabs(:items="items" style="width: calc(100% - 300px);")
-      template(#item="{item}")
-        .task-tabs__item
-          .task-tabs__title {{item.name}}
-
+    topNavHub
     userMenu
 </template>
 
 <script>
 import { mapActions } from "vuex";
-import rqTabs from '@/components/composite/rqTabs';
+import topNavHub from '@/components/composite/topNavHub';
 import userMenu from '@/components/userMenu';
 
 export default {
   components: {
-    rqTabs,
+    topNavHub,
     userMenu,
   },
   computed: {
@@ -48,40 +44,7 @@ export default {
   },
 
   data() {
-    return {
-      items: [
-        {
-          uuid: '1',
-          name: '01.03 Комплектовщики ОЗОН СБП ',
-          isPinned: false,
-          isActive: true,
-        },
-        {
-          uuid: '2',
-          name: '02.03 Водители ЗАРА Ленина',
-          isPinned: true,
-          isActive: false,
-        },
-        {
-          uuid: '3',
-          name: '02.03 Водители ЗАРА Ленина',
-          isPinned: false,
-          isActive: false,
-        },
-        {
-          uuid: '4',
-          name: '02.03 Водители ЗАРА Ленина',
-          isPinned: false,
-          isActive: false,
-        },
-        {
-          uuid: '5',
-          name: '02.03 Водители ЗАРА Ленина',
-          isPinned: false,
-          isActive: false,
-        },
-      ],
-    };
+    return {};
   },
   async mounted() {
     await this.fetchNotificationsCount();
@@ -91,16 +54,7 @@ export default {
 
 <style lang="scss">
 
-.rq-topbar {
-  .task-tabs {
-    &__title {
-      max-width: 250px;
-    }
-    &__item {
-      margin-right: 10px;
-    }
-  }
-}
+.rq-topbar {}
 
 /* OBJECTS STYLES START */
 .header-content-crt_exd {
@@ -125,7 +79,5 @@ export default {
 }
 
 /* MIXINS STYLES START */
-.v-app-bar {
-  //padding: 0 24px;
-}
+.v-app-bar {}
 </style>

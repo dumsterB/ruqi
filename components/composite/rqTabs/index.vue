@@ -1,8 +1,5 @@
 <template lang="pug">
 .rq-tabs
-  .rq-tabs__main
-    .rq-tabs__title Все заявки
-
   v-tabs
     v-tab(
       v-for="item in items" :key="item.uuid"
@@ -77,11 +74,6 @@ export default {
     line-height: 125%;
     color: #000000;
     white-space: nowrap;
-  }
-  &__main {
-    box-sizing: border-box;
-    padding: 20px 24px;
-    height: 60px;
   }
   &__tab {
     display: flex;
