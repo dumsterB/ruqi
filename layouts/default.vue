@@ -31,22 +31,18 @@
 
 <script>
 import { mapMutations } from "vuex";
+import Topbar from '@/components/Topbar/index.vue';
 
 export default {
   name: "default",
-
-  data() {
-    return {
-      timerRuqiId: null,
-    };
+  components: {
+    Topbar
   },
-
   computed: {
     requestSuccess() {
       return this.$store.getters["response/requestSuccess"];
     },
   },
-
   watch: {
     $route: {
       handler(to, from) {
@@ -93,7 +89,6 @@ export default {
       immediate: true,
     },
   },
-
   methods: {
     ...mapMutations("breadcrumbs", ["setBreadcrumbs"]),
 
@@ -106,8 +101,12 @@ export default {
     },
   },
 
+  data() {
+    return {
+      timerRuqiId: null,
+    };
+  },
   mounted() {
-    // console.debug( 'mounted', this.helpers().isLoginPage() );
     this.setBreadcrumbs(this.$route.fullPath);
   },
 };
