@@ -1,6 +1,9 @@
 export const state = () => ({
   object_id: [],
-  object_id_requests: []
+  object_id_requests: [],
+  object_id_services: [],
+  object_id_vacancies: [],
+  object_id_history: [],
 })
 
 export const getters = {
@@ -9,6 +12,15 @@ export const getters = {
   },
   object_id_requests(state) {
     return state.object_id_requests;
+  },
+  object_id_services(state) {
+    return state.object_id_services;
+  },
+  object_id_vacancies(state) {
+    return state.object_id_vacancies;
+  },
+  object_id_history(state) {
+    return state.object_id_history;
   },
 }
 
@@ -23,8 +35,25 @@ export const actions = {
   async fetchObjectIdRequest({commit}, requestId) {
 
     const object_id_requests = await this.$axios.get('/objects/' + requestId + '/tasks', );
-
     commit('setObjectIdRequests', object_id_requests);
+
+  },
+  async fetchObjectIdServices({commit}, requestId) {
+
+    const object_id_services = await this.$axios.get('/objects/' + requestId + '/services', );
+    commit('setObjectIdServices', object_id_services);
+
+  },
+  async fetchObjectIdVacancies({commit}, requestId) {
+
+    const object_id_vacancies = await this.$axios.get('/objects/' + requestId + '/vacancies', );
+    commit('setObjectIdVacancies', object_id_vacancies);
+
+  },
+  async fetchObjectIdHistory({commit}, requestId) {
+
+    const object_id_history = await this.$axios.get('/objects/' + requestId + '/history', );
+    commit('setObjectIdHistory', object_id_history);
 
   },
   async putStatus({commit, dispatch}, {requestId, status}) {
@@ -54,6 +83,15 @@ export const mutations = {
   },
   setObjectIdRequests(state, object_id_requests) {
     state.object_id_requests = object_id_requests.data.data;
+  },
+  setObjectIdServices(state, object_id_services) {
+    state.object_id_services = object_id_services.data;
+  },
+  setObjectIdVacancies(state, object_id_vacancies) {
+    state.object_id_vacancies = object_id_vacancies.data;
+  },
+  setObjectIdHistory(state, object_id_history) {
+    state.object_id_history = object_id_history.data.data;
   },
 }
 
