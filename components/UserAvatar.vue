@@ -3,7 +3,7 @@
     <div class="user-avatar">
       <v-avatar
         :color="color"
-        size="32"
+        :size="iconSize"
       >
         <span class="white--text">{{ initials }}</span>
       </v-avatar>
@@ -31,70 +31,68 @@
 </template>
 
 <script>
-  import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
+import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 
-  export default {
-    props: ['first_name', 'last_name', 'color', 'radius', 'date', 'response', 'ist_detail_erlaubt', 'uuid'],
+export default {
+  props: ['first_name', 'last_name', 'color', 'radius', 'date', 'response', 'ist_detail_erlaubt', 'uuid', 'size_custom'],
 
-    data() {
-      return {}
+  data() {
+    return {}
+  },
+
+  computed: {
+    ...mapGetters('performersDetailing', ['isDialogOpen',]),
+    ...mapGetters('contractors', ['contractor',]),
+
+    firstChar() {
+      if (this.first_name && this.first_name.length > 1) {
+        return this.first_name.substr(0, 1)
+      } else {
+        return '';
+      }
     },
 
-    computed : {
-      ...mapGetters( 'performersDetailing', [ 'isDialogOpen', ] ),
-      ...mapGetters( 'contractors', [ 'contractor', ] ),
-
-      firstChar ()
-      {
-        if (this.first_name && this.first_name.length > 1) {
-          return this.first_name.substr(0, 1)
-        }
-        else{
-          return '';
-        }
-      },
-
-      secondChar ()
-      {
-        if (this.last_name && this.last_name.length > 1) {
-          return this.last_name.substr(0, 1)
-        }
-        else{
-          return '';
-        }
-      },
-
-      initials ()
-      {
-        return this.firstChar + this.secondChar;
-      },
+    secondChar() {
+      if (this.last_name && this.last_name.length > 1) {
+        return this.last_name.substr(0, 1)
+      } else {
+        return '';
+      }
     },
 
-    methods : {
-      ...mapActions( 'performersDetailing', [ 'setStateDialog', ] ),
-      ...mapActions( 'contractors', [ 'getContractor', ] ),
-
-      handlers ()
-      {
-        return {
-          onUserNameClick : ( params = {} ) => {
-            if ( this.ist_detail_erlaubt )
-            {
-              console.debug( 'onUserNameClick' );
-
-              this.setStateDialog( true );
-
-              console.debug( 'isDialogOpen after set: ' + this.isDialogOpen );
-
-              this.getContractor( this.uuid );
-            }
-          },
-        }
-      },
+    initials() {
+      return this.firstChar + this.secondChar;
     },
 
-    mounted () {},
-  }
+    iconSize() {
+      return this.size_custom ? this.size_custom :  32;
+    },
+  },
+
+  methods: {
+    ...mapActions('performersDetailing', ['setStateDialog',]),
+    ...mapActions('contractors', ['getContractor',]),
+
+    handlers() {
+      return {
+        onUserNameClick: (params = {}) => {
+          if (this.ist_detail_erlaubt) {
+            console.debug('onUserNameClick');
+
+            this.setStateDialog(true);
+
+            console.debug('isDialogOpen after set: ' + this.isDialogOpen);
+
+            this.getContractor(this.uuid);
+          }
+        },
+      }
+    },
+  },
+
+  mounted() {
+  },
+}
 
 </script>
 
@@ -107,7 +105,7 @@
   .user-avatar {
     position: relative;
     display: flex;
-    margin-right: 14px;
+    margin-right: 10px;
 
     .v-avatar {
       border-radius: 8px;
