@@ -1,5 +1,6 @@
 <template>
-  <div class="">
+  <div class="d-flex align-center text-group">
+    <span class="time-title" v-if="params && params.prepend">{{params.prepend}}</span>
     <v-text-field
         :name="name"
         single-line
@@ -347,11 +348,24 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 @import '/assets/scss/colors.scss';
 
 .ruqi {
+
+  .text-group{
+    align-items: center;
+
+    .time-title{
+      margin: 0 10px;
+
+      &:first-child{
+        margin-left: 0
+      }
+    }
+  }
+
   .v-text-field--full-width .v-input__prepend-outer,
   .v-text-field--full-width .v-input__prepend-inner,
   .v-text-field--enclosed .v-input__prepend-outer,
@@ -363,9 +377,10 @@ export default {
     max-width: 78px;
 
     .v-text-field__details {
-      padding: 0;
       position: absolute;
-      bottom: -18px;
+      bottom: -22px;
+      width: 100px;
+      padding: 0;
     }
   }
 
