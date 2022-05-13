@@ -711,13 +711,13 @@ export default {
     addVacancy() {
       this.$router.push({
         name: "objects-id-vacancy",
-        params: { ServiceId: "" },
+        params: { VacancyId: "" },
       });
     },
     editVacancy(VaсancyId) {
       this.$router.push({
         name: "objects-id-vacancy",
-        params: { VaсancyId: VaсancyId },
+        params: { VacancyId: VaсancyId },
       });
     },
     addTask() {
@@ -869,106 +869,9 @@ export default {
       min-height: 48px;
     }
   }
-}
 
-.wrap-composite-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 28px;
-
-  .composite-header-progress {
-    font-size: 24px;
-    font-weight: 900;
-    color: $blue;
-    background: #e9f6ff;
-    padding: 10px 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 15px;
-    margin: 0 20px 0 20px;
-    line-height: 1;
-    height: 51px;
-  }
-}
-
-.wrap-composite-details {
-  display: flex;
-  align-items: center;
-  font-size: 16px;
-  font-weight: 600;
-  color: $grey;
-  margin-bottom: 32px;
-
-  > div {
-    margin-right: 24px;
-  }
-
-  .object {
-    color: $black;
-    font-weight: 700;
-  }
-}
-
-.wrap-composite-state {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 11px 24px 11px 0;
-  background: white;
-  border-radius: 14px;
-  box-shadow: 0px 6px 73px rgba(0, 0, 0, 0.07);
-  border: 1px solid #e0e0e0;
-  margin-bottom: 32px;
-  font-weight: 600;
-
-  .v-text-field.v-text-field--solo:not(.v-text-field--solo-flat)
-    > .v-input__control
-    > .v-input__slot {
-    box-shadow: none;
-    background: $light_blue;
-  }
-
-  .theme--light.v-icon {
-    color: $blue;
-  }
-
-  .bt-time-sheet {
-    background: $blue;
-    color: white;
-    margin-right: 10px;
-    border: none;
-  }
-
-  .v-select {
-    max-width: 200px;
-  }
-
-  .v-select__slot {
-    height: 48px;
-  }
-
-  .v-text-field--filled > .v-input__control > .v-input__slot {
-    background: #fff;
-  }
-}
-
-.table-on-object {
-  align-items: center;
-
-  .v-icon {
-    margin-right: 5px;
-  }
-}
-
-.row.dispatchers-header {
-  margin: 20px 0 32px 0;
-  padding: 4px 0;
-
-  .header {
-    font-size: 20px;
-    color: $black;
-    font-weight: 700;
+  .card-actions{
+    margin-left: 12px;
   }
 }
 
@@ -988,25 +891,6 @@ export default {
   }
 }
 
-.bt-table-action {
-  display: flex;
-  align-items: center;
-  margin-right: 24px;
-
-  .v-btn {
-    box-shadow: none;
-    width: 40px;
-    height: 40px;
-    margin-right: 6px;
-  }
-
-  .text {
-    font-weight: 700;
-    font-size: 14px;
-    text-transform: uppercase;
-    color: $grey;
-  }
-}
 
 .request-i {
   display: inline-block;
