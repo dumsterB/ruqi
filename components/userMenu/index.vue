@@ -1,5 +1,5 @@
 <template lang="pug">
-.rq-user-menu(style="width: 300px;")
+.rq-user-menu
   v-menu(
     bottom
     min-width="280px"
@@ -91,5 +91,15 @@ export default {
   .user_mail {
     font-size: 14px;
   }
+}
+
+.rq-user-menu {
+  width: 350px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: flex-start;
+  align-items: center;
 }
 </style>
