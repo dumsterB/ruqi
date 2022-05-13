@@ -1,13 +1,17 @@
 <template>
   <div>
-    <Header :content="title" :size="title_size" :isnew="false" :isback="false"/>
-    <v-tabs
-      v-model="tab"
-      class="form-tabs"
-    >
-      <v-tab v-for="(item, index) in tabs_list"
-             :key="index"
-             @click="selectData(item.id)">
+    <Header
+      :content="title"
+      :size="title_size"
+      :isnew="false"
+      :isback="false"
+    />
+    <v-tabs v-model="tab" class="form-tabs">
+      <v-tab
+        v-for="(item, index) in tabs_list"
+        :key="index"
+        @click="selectData(item.id)"
+      >
         {{ item.title }}
       </v-tab>
     </v-tabs>
@@ -63,7 +67,12 @@
           >
             <template v-slot:item.firstname="{ item }">
               <div @click="openRequest(item.uuid)">
-                <UserAvatar :first_name="item.firstname" :last_name="item.lastname" :color="avatarColor" :radius="avatarBorderRadius"/>
+                <UserAvatar
+                  :first_name="item.firstname"
+                  :last_name="item.lastname"
+                  :color="avatarColor"
+                  :radius="avatarBorderRadius"
+                />
               </div>
             </template>
 
@@ -74,31 +83,33 @@
             </template>
 
             <template v-slot:item.efficiency="{ item }">
-              <Efficiency :efficiency="item.efficiency"/>
+              <Efficiency :efficiency="item.efficiency" />
             </template>
 
             <template v-slot:item.actions="{ item }">
-              <v-menu
-                bottom
-                rounded="10"
-                offset-y
-                nudge-bottom="10"
-                left
-              >
+              <v-menu bottom rounded="10" offset-y nudge-bottom="10" left>
                 <template v-slot:activator="{ on }">
-                  <v-btn icon
-                         v-on="on">
+                  <v-btn icon v-on="on">
                     <v-icon>mdi-dots-vertical</v-icon>
                   </v-btn>
                 </template>
                 <v-card>
                   <v-list-item-content class="justify-start">
                     <div class="mx-auto text-left">
-                      <nuxt-link :to="'/employees/'+ item.uuid +'/edit'">
+                      <nuxt-link :to="'/employees/' + item.uuid + '/edit'">
                         <span>Редактировать</span>
                       </nuxt-link>
                       <v-divider class="my-3"></v-divider>
-                      <a href="#" @click.prevent="removeRequest({requestId: [item.uuid], params: postBody})">Удалить</a>
+                      <a
+                        href="#"
+                        @click.prevent="
+                          removeRequest({
+                            requestId: [item.uuid],
+                            params: postBody,
+                          })
+                        "
+                        >Удалить</a
+                      >
                     </div>
                   </v-list-item-content>
                 </v-card>
@@ -106,69 +117,72 @@
             </template>
           </v-data-table>
         </div>
-        <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page" @setItemsPerPage="setItemsPerPage"
-                     @setCurrentPage="setCurrentPage"/>
+        <FooterTable
+          :itemsPerPage="itemsPerPage"
+          :pageCount="pageCount"
+          :page="page"
+          @setItemsPerPage="setItemsPerPage"
+          @setCurrentPage="setCurrentPage"
+        />
       </v-col>
     </v-row>
   </div>
 </template>
 
 <script>
-
-import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
+import { mapState, mapActions, mapGetters, mapMutations } from "vuex";
 
 export default {
   meta: {
-    title: 'Сотрудники'
+    title: "Сотрудники",
   },
   data() {
     return {
-      title: 'Сотрудники',
-      title_size: 'big',
+      title: "Сотрудники",
+      title_size: "big",
       title_create: false,
-      title_page_create: 'create',
+      title_page_create: "create",
       sortType: [
-        {name: 'По возрастанию', uuid: 'asc'},
-        {name: 'По убыванию', uuid: 'desc'},
+        { name: "По возрастанию", uuid: "asc" },
+        { name: "По убыванию", uuid: "desc" },
       ],
       sortFiled: [
-        {name: 'Имя', uuid: 'name'},
-        {name: 'Объекты', uuid: 'objects'},
-        {name: 'Заявки', uuid: 'tasks'},
+        { name: "Имя", uuid: "name" },
+        { name: "Объекты", uuid: "objects" },
+        { name: "Заявки", uuid: "tasks" },
       ],
       page: 1,
       pageCount: 0,
       itemsPerPage: 5,
       selected: [],
-      avatarColor: '#36B368',
+      avatarColor: "#36B368",
       headers: [
-        {text: 'Имя', align: 'start', value: 'firstname',},
-        {text: 'Телефон', value: 'phone'},
-        {text: 'объекты', value: 'objects'},
-        {text: 'заявки', value: 'tasks'},
-        {text: 'эффективность', value: 'efficiency'},
-        {text: '', value: 'actions', sortable: false, align: 'right'},
+        { text: "Имя", align: "start", value: "firstname" },
+        { text: "Телефон", value: "phone" },
+        { text: "объекты", value: "objects" },
+        { text: "заявки", value: "tasks" },
+        { text: "эффективность", value: "efficiency" },
+        { text: "", value: "actions", sortable: false, align: "right" },
       ],
       tabs_list: [
-        { title: 'Диспетчеры', id: 'dispatcher'},
-        { title: 'Менеджеры', id: 'manager'},
+        { title: "Диспетчеры", id: "dispatcher" },
+        { title: "Менеджеры", id: "manager" },
       ],
       tab: 0,
-      sortTypeValue: 'asc',
-      sortFieldValue: 'name',
-      avatarBorderRadius: 'rounded',
-      typeEmployees: 'dispatcher',
-    }
+      sortTypeValue: "asc",
+      sortFieldValue: "name",
+      avatarBorderRadius: "rounded",
+      typeEmployees: "dispatcher",
+    };
   },
-  created() {
-
-  },
+  created() {},
   methods: {
-    ...mapActions('employees', ['fetchEmployees',]),
-    ...mapActions('employees', ['removeRequest',]),
+    ...mapActions("employees", ["fetchEmployees"]),
+    ...mapActions("employees", ["removeRequest"]),
+    ...mapActions("breadcrumbs", ["initBreadcrumbs",]),
 
     openRequest(id) {
-      this.$router.push('/employees/' + id);
+      this.$router.push("/employees/" + id);
     },
     selectData(type) {
       this.typeEmployees = type;
@@ -183,41 +197,41 @@ export default {
     },
     setCurrentPage(value) {
       this.page = value;
-    }
-
+    },
   },
   computed: {
     employees() {
-      return this.$store.getters['employees/employees'];
+      return this.$store.getters["employees/employees"];
     },
     itemsPerPageTable() {
       if (this.itemsPerPage) {
-        return parseInt(this.itemsPerPage, 10)
+        return parseInt(this.itemsPerPage, 10);
       } else {
         return 1;
       }
     },
     postBody() {
       let postBody = {
-        "type": this.typeEmployees,
-      }
-      console.log(postBody)
+        type: this.typeEmployees,
+      };
+      console.log(postBody);
       return postBody;
-    }
+    },
+  },
+
+  created() {
+    this.initBreadcrumbs(this.$route.fullPath);
   },
   async mounted() {
-    await this.fetchEmployees({"type": "dispatcher"});
-  }
-}
+    await this.fetchEmployees({ type: "dispatcher" });
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
-@import '../../assets/scss/colors';
-
+@import "../../assets/scss/colors";
 
 .v-divider {
   margin: 24px 0;
 }
-
 </style>

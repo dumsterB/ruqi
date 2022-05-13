@@ -1,32 +1,38 @@
 <template lang="pug">
 .rq-tabs
-  v-tabs
+  v-tabs(show-arrows)
+    v-tab.rq-tabs__title(v-if="node", @click="onRqTabClicked({ item: node })") {{ node.name }}
     v-tab(
-      v-for="item in items" :key="item.uuid"
-      :class="['rq-tabs__tab',]"
-      active-class="rq-tabs__tab_active"
+      v-for="(item, index) in items",
+      :key="item.index",
+      v-if="!item.isNode",
+      :class="['rq-tabs__tab']",
+      active-class="rq-tabs__tab_active",
+      @click="onRqTabClicked({ item })"
     )
       .rq-tabs__tab-main
-      slot(
-        name="item"
-        :item="item"
-      )
-      .rq-tabs__tab-actions(
-        @click.stop="onActionClicked"
-      )
+        slot(name="item", :item="item")
+      .rq-tabs__tab-actions(@click.stop="onActionClicked")
         rqIcon(
-          v-if="item.isPinned"
-          name="clip" width="15" height="15" viewBox="0 0 17 17" fill="#666666"
+          v-if="item.isPinned",
+          name="clip",
+          width="15",
+          height="15",
+          viewBox="0 0 17 17",
+          fill="#666666"
         )
         rqIcon(
-          v-else
-          name="close" width="15" height="15" viewBox="0 0 12 12" fill="#666666"
-
+          v-else,
+          name="close",
+          width="15",
+          height="15",
+          viewBox="0 0 12 12",
+          fill="#666666"
         )
 </template>
 
 <script>
-import rqIcon from '@/components/UI/rqIcon';
+import rqIcon from "@/components/UI/rqIcon";
 
 export default {
   components: {
@@ -38,20 +44,32 @@ export default {
       required: true,
     },
   },
+  computed: {
+    node() {
+      const filteredItems = this.items.filter((item) => item.isNode);
+
+      return filteredItems.length ? filteredItems[0] : null;
+    },
+  },
   methods: {
     // getters
     // setters
 
     /* HANDLERS */
+    onRqTabClicked({ item }) {
+      this.$emit("onRqTabClicked", { item });
+    },
     onActionClicked() {
-      console.debug('onActionClicked');
-    }
+      console.debug("onActionClicked");
+    },
 
     // helpers
   },
 
   data() {
-    return {};
+    return {
+      rqTab: true,
+    };
   },
 };
 </script>
@@ -67,13 +85,14 @@ export default {
   box-sizing: border-box;
 
   &__title {
-    font-family: 'Source Sans Pro';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 125%;
-    color: #000000;
-    white-space: nowrap;
+    font-family: "Source Sans Pro" !important;
+    font-style: normal !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    line-height: 125% !important;
+    color: #000000 !important;
+    white-space: nowrap !important;
+    text-transform: none !important;
   }
   &__tab {
     display: flex;
@@ -87,7 +106,8 @@ export default {
     height: 60px;
     cursor: pointer;
 
-    &-main {}
+    &-main {
+    }
     &-actions {
       display: flex;
       flex-direction: row;
@@ -98,7 +118,7 @@ export default {
       cursor: pointer;
     }
     &_active {
-      background: linear-gradient(0deg, #F1F8FF, #F1F8FF), #E2ECF5;
+      background: linear-gradient(0deg, #f1f8ff, #f1f8ff), #e2ecf5;
       // border-bottom: 2px solid #0082DE;
     }
   }

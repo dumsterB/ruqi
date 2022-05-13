@@ -1,21 +1,23 @@
 export const state = () => ({
   breadcrumbs: [],
+
 })
 
 export const getters = {
-  breadcrumbs(state) {
+  BREADCRUMBS(state) {
     return state.breadcrumbs;
   },
 }
 
 
 export const actions = {
-}
+  async setBreadcrumbs({ commit }, { crumbs }) {
+    console.debug('setBreadcrumbs', crumbs);
 
-export const mutations = {
-  setBreadcrumbs(state, fullPath) {
-
-    console.log('fullPath ---- ', fullPath)
+    commit('updateBreadcrumbs', crumbs);
+  },
+  async initBreadcrumbs({ commit }, fullPath) {
+    console.debug('initBreadcrumbs', fullPath);
 
     const params_r = fullPath.startsWith('/')
       ? fullPath.substring(1).split('/')
@@ -25,7 +27,7 @@ export const mutations = {
 
     let path = '';
 
-    params_r.forEach((param, index) => {
+    await params_r.forEach((param, index) => {
       path = `${path}/${param}`;
       console.log('path ---', path)
       const match = this.$router.match(path);
@@ -38,14 +40,19 @@ export const mutations = {
         })
       }
 
-       if(match.path.includes('edit') || match.path.includes('timesheet')){
-         crumbs[index - 1].text = match.meta.pre_title;
-       }
+      if (match.path.includes('edit') || match.path.includes('timesheet')) {
+        crumbs[index - 1].text = match.meta.pre_title;
+      }
 
-    })
+    });
 
-    state.breadcrumbs = crumbs;
+    commit('updateBreadcrumbs', crumbs);
   },
+}
 
+export const mutations = {
+  updateBreadcrumbs(state, breadcrumbs) {
+    state.breadcrumbs = breadcrumbs;
+  },
 }
 

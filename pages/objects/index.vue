@@ -224,6 +224,8 @@ export default {
   created() {
     this.sortSpecializations = this.defSort.concat(this.specializations);
     this.sortRegions = this.defSort.concat(this.regions);
+
+    this.initBreadcrumbs(this.$route.fullPath);
   },
   methods: {
     ...mapActions('objects', ['fetchObjects',]),
@@ -231,6 +233,7 @@ export default {
     ...mapActions('objects', ['removeRequest',]),
     ...mapActions('specializations', ['fetch',]),
     ...mapActions('dictionary', ['fetchRegions',]),
+    ...mapActions("breadcrumbs", ["initBreadcrumbs",]),
 
     openRequest(id) {
       this.$router.push('/objects/' + id);
@@ -308,7 +311,7 @@ export default {
       }
       console.log(postBody);
       return postBody;
-    }
+    },
   },
   async mounted() {
     await this.fetchObjects();

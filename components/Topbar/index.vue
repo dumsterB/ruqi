@@ -70,6 +70,7 @@ export default {
     width: 100%;
     padding: 0;
     border-bottom: 1px solid #E0E0E0;
+    background: #FFFFFF;
 
     .row {
       margin: 0;

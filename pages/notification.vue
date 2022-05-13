@@ -1,12 +1,15 @@
 <template>
   <div>
-    <Header :content="title" :size="title_size" :isnew="false" :isback="false"/>
+    <Header
+      :content="title"
+      :size="title_size"
+      :isnew="false"
+      :isback="false"
+    />
 
     <v-row no-gutters class="table-filter-row large row-auto">
-      <v-col
-        cols="12"
-        class="d-flex">
-        <FTypeDatePeriod name='period' @updateFiled="updateFiled"/>
+      <v-col cols="12" class="d-flex">
+        <FTypeDatePeriod name="period" @updateFiled="updateFiled" />
       </v-col>
     </v-row>
 
@@ -27,7 +30,7 @@
           >
             <template v-slot:item.name="{ item }">
               <div class="color-black" @click="openRequest(item.uuid)">
-                <span class="request-i" :class="{'read': item.read}"></span>
+                <span class="request-i" :class="{ read: item.read }"></span>
                 {{ item.description }}
                 <div class="date-note">
                   {{ formatDate(item.created_at) }}
@@ -36,59 +39,65 @@
             </template>
 
             <template v-slot:item.type="{ item }">
-              <div class="type-note">
-                ДЛИННЫЙ ТИП УВЕДОМЛЕНИЯ
-              </div>
+              <div class="type-note">ДЛИННЫЙ ТИП УВЕДОМЛЕНИЯ</div>
             </template>
 
             <template v-slot:item.actions="{ item }">
-              <a :href="task_link +item.task.uuid" class="link-note">перейти к заявке</a>
+              <a :href="task_link + item.task.uuid" class="link-note"
+                >перейти к заявке</a
+              >
             </template>
-
           </v-data-table>
         </div>
-        <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page" @setItemsPerPage="setItemsPerPage"
-                     @setCurrentPage="setCurrentPage"/>
+        <FooterTable
+          :itemsPerPage="itemsPerPage"
+          :pageCount="pageCount"
+          :page="page"
+          @setItemsPerPage="setItemsPerPage"
+          @setCurrentPage="setCurrentPage"
+        />
       </v-col>
     </v-row>
   </div>
 </template>
 
 <script>
-
-import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
+import { mapState, mapActions, mapGetters, mapMutations } from "vuex";
 
 export default {
+  meta: {
+    title: 'Уведомления'
+  },
   data() {
     return {
-      title: 'Уведомления',
-      title_size: 'big',
+      title: "Уведомления",
+      title_size: "big",
       title_create: false,
-      title_page_create: 'create',
-      defSort: [{name: 'Все', uuid: '0000'}],
+      title_page_create: "create",
+      defSort: [{ name: "Все", uuid: "0000" }],
       page: 1,
       pageCount: 0,
       itemsPerPage: 10,
       selected: [],
       headers: [
-        {text: 'тема', align: 'start', value: 'name',},
-        {text: 'тип', value: 'type'},
-        {text: 'Действия', value: 'actions', sortable: false,},
+        { text: "тема", align: "start", value: "name" },
+        { text: "тип", value: "type" },
+        { text: "Действия", value: "actions", sortable: false },
       ],
       formValues: [],
       selectedItems: [],
       activeSelectBtn: 0,
       activeSelectAll: 0,
-
-    }
+    };
   },
   methods: {
-    ...mapActions('notifications', ['fetchNotifications',]),
-    ...mapActions('notifications', ['fetchReadNotifications',]),
-    ...mapActions('notifications', ['putReadNotifications',]),
+    ...mapActions("notifications", ["fetchNotifications"]),
+    ...mapActions("notifications", ["fetchReadNotifications"]),
+    ...mapActions("notifications", ["putReadNotifications"]),
+    ...mapActions("breadcrumbs", ["initBreadcrumbs",]),
 
     openRequest(id) {
-      this.$router.push('/clients/' + id);
+      this.$router.push("/clients/" + id);
     },
     filter() {
       const newRequet = this.postBody;
@@ -101,10 +110,10 @@ export default {
       this.page = value;
     },
     formatDate(date) {
-      if (!date) return null
+      if (!date) return null;
 
-      const [year, month, day] = date.substring(0, 10).split('-')
-      return `${day}.${month}.${year}`
+      const [year, month, day] = date.substring(0, 10).split("-");
+      return `${day}.${month}.${year}`;
     },
     updateFiled(field, value) {
       this.formValues[field] = value;
@@ -125,64 +134,68 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.getters['user/user']
+      return this.$store.getters["user/user"];
     },
-    task_link(){
-      if (this.user.type == 'contractor'){
-        return '/tasks/contractor/';
-      }
-      else{
-        return '/tasks/';
+    task_link() {
+      if (this.user.type == "contractor") {
+        return "/tasks/contractor/";
+      } else {
+        return "/tasks/";
       }
     },
     notifications() {
-      return this.$store.getters['notifications/notifications'];
+      return this.$store.getters["notifications/notifications"];
     },
     read_notifications() {
-      return this.$store.getters['notifications/read_notifications'];
+      return this.$store.getters["notifications/read_notifications"];
     },
     itemsPerPageTable() {
       if (this.itemsPerPage) {
-        return parseInt(this.itemsPerPage, 10)
+        return parseInt(this.itemsPerPage, 10);
       } else {
         return 1;
       }
     },
     postBody() {
       let postBody = {
-        "start_date": this.formValues.period[0],
-        "end_date": this.formValues.period[1],
-      }
+        start_date: this.formValues.period[0],
+        end_date: this.formValues.period[1],
+      };
       console.log(postBody);
       return postBody;
     },
     activeSelectBtnOption() {
       switch (this.activeSelectBtn) {
-        case 0 :
-          return {text: 'выделить все', icon: 'mdi-checkbox-blank-circle-outline'}
+        case 0:
+          return {
+            text: "выделить все",
+            icon: "mdi-checkbox-blank-circle-outline",
+          };
         case 1:
-          return {text: 'снять выделение', icon: 'mdi-check-circle-outline'}
+          return { text: "снять выделение", icon: "mdi-check-circle-outline" };
         default:
-          return {}
+          return {};
       }
     },
   },
+
+  created() {
+    this.initBreadcrumbs(this.$route.fullPath);
+  },
   async mounted() {
     await this.fetchNotifications();
-    await this.fetchReadNotifications({read: false});
+    await this.fetchReadNotifications({ read: false });
     await this.putReadNotifications(this.read_notifications);
-
   },
-}
+};
 </script>
 
 <style lang="scss">
-
-@import '../assets/scss/colors';
+@import "../assets/scss/colors";
 
 .type-note {
   display: inline-flex;
-  background: #F2F4F6;
+  background: #f2f4f6;
   color: grey;
   padding: 7px 8px;
   border-radius: 6px;
@@ -218,7 +231,7 @@ export default {
 .table-filter-row {
   .wrap-action {
     padding: 14px 16px;
-    background: #E9F6FF;
+    background: #e9f6ff;
     border-radius: 10px;
     align-items: center;
     justify-content: space-between;
@@ -243,7 +256,6 @@ export default {
     align-items: center;
     margin-right: 24px;
 
-
     .v-btn {
       box-shadow: none;
       width: 40px;
@@ -258,7 +270,5 @@ export default {
       color: $grey;
     }
   }
-
 }
-
 </style>

@@ -1,9 +1,15 @@
 <template>
   <div>
     <div class="wrap-composite-header">
-      <Header :content="request_id.name" :size="title_size" :isnew="false" :isback="true"/>
+      <Header
+        :content="request_id.name"
+        :size="title_size"
+        :isnew="false"
+        :isback="true"
+      />
       <div class="composite-header-progress" v-if="request_id.completion">
-        {{ request_id.completion.completed }} / {{ request_id.completion.total }}
+        {{ request_id.completion.completed }} /
+        {{ request_id.completion.total }}
       </div>
       <v-btn icon>
         <v-icon>mdi-dots-horizontal</v-icon>
@@ -12,13 +18,18 @@
 
     <div class="wrap-composite-details">
       <div class="num">№ 23536223</div>
-      <div class="date" v-if="request_id.start_date">{{ request_id.start_date.substring(0, 10) }}</div>
+      <div class="date" v-if="request_id.start_date">
+        {{ request_id.start_date.substring(0, 10) }}
+      </div>
       <div class="views">
         <v-icon color="#7A91A9">mdi-eye-outline</v-icon>
-        {{request_id.view}}
+        {{ request_id.view }}
       </div>
-      <div>Объект:
-        <span class="object" v-if="request_id.object">{{request_id.object.name}}</span>
+      <div>
+        Объект:
+        <span class="object" v-if="request_id.object">{{
+          request_id.object.name
+        }}</span>
       </div>
     </div>
 
@@ -50,7 +61,7 @@
               :uuid="request_id ? request_id.uuid : ''"
             />
           </v-col>
-          <v-col cols="5" class="d-flex justify-end ">
+          <v-col cols="5" class="d-flex justify-end">
             <v-btn
               text
               height="48"
@@ -58,15 +69,11 @@
               class="bt-time-sheet"
               @click="openTimesheet"
             >
-              <v-icon
-                left
-                dark
-              >
-                mdi-clipboard-text-outline
-              </v-icon>
+              <v-icon left dark> mdi-clipboard-text-outline </v-icon>
               табель рабочего времени
             </v-btn>
-            <v-select v-if="user.type != 'dispatcher'"
+            <v-select
+              v-if="user.type != 'dispatcher'"
               v-model="activeAction"
               label="Действия"
               :items="selectAction"
@@ -83,13 +90,12 @@
       </v-container>
     </div>
 
-    <v-tabs
-      v-model="tab"
-      class="form-tabs"
-    >
-      <v-tab v-for="(item, index) in tabs_list"
-             :key="index"
-             @click="selectData(index)">
+    <v-tabs v-model="tab" class="form-tabs">
+      <v-tab
+        v-for="(item, index) in tabs_list"
+        :key="index"
+        @click="selectData(index)"
+      >
         {{ item }}
       </v-tab>
     </v-tabs>
@@ -97,10 +103,7 @@
     <v-window v-model="tabContent">
       <v-tab-item>
         <v-row v-show="tab == 0" no-gutters class="table-filter-row">
-          <v-col
-            cols="12"
-            sm="2"
-          >
+          <v-col cols="12" sm="2">
             <v-select
               :items="itemSortStatus"
               label="Статус"
@@ -109,11 +112,7 @@
               hide-details="true"
             ></v-select>
           </v-col>
-          <v-col
-            cols="12"
-            sm="3"
-            class="d-flex"
-          >
+          <v-col cols="12" sm="3" class="d-flex">
             <v-checkbox
               v-model="property1"
               label="Работал на этом объекте"
@@ -121,59 +120,32 @@
             ></v-checkbox>
           </v-col>
 
-          <v-col
-            cols="12"
-            sm="7"
-            class="d-flex justify-end"
-          >
-            <Search :searchText="searchText" @updateSearchText="updateSearchText"/>
+          <v-col cols="12" sm="7" class="d-flex justify-end">
+            <Search
+              :searchText="searchText"
+              @updateSearchText="updateSearchText"
+            />
           </v-col>
         </v-row>
 
         <v-row v-show="tab == 1" no-gutters class="table-filter-row">
-          <v-col
-            cols="12"
-            sm="10"
-            class="d-flex"
-          >
+          <v-col cols="12" sm="10" class="d-flex">
             <div class="bt-table-action">
-              <v-btn
-                height="40"
-                fab
-                @click=""
-                color="#F6FBFF"
-              >
-                <v-icon color="#0082DE">
-                  mdi-check-circle-outline
-                </v-icon>
+              <v-btn height="40" fab @click="" color="#F6FBFF">
+                <v-icon color="#0082DE"> mdi-check-circle-outline </v-icon>
               </v-btn>
-              <div class="text">
-                выбрать все
-              </div>
+              <div class="text">выбрать все</div>
             </div>
 
             <div class="bt-table-action">
-              <v-btn
-                height="40"
-                fab
-                @click=""
-                color="#F6FBFF"
-              >
-                <v-icon color="#0082DE">
-                  mdi-content-save-outline
-                </v-icon>
+              <v-btn height="40" fab @click="" color="#F6FBFF">
+                <v-icon color="#0082DE"> mdi-content-save-outline </v-icon>
               </v-btn>
-              <div class="text">
-                сохранить список
-              </div>
+              <div class="text">сохранить список</div>
             </div>
           </v-col>
 
-          <v-col
-            cols="12"
-            sm="2"
-            class="d-flex justify-end"
-          >
+          <v-col cols="12" sm="2" class="d-flex justify-end">
             <v-select
               :items="itemSort"
               label="Сортировка"
@@ -184,7 +156,11 @@
           </v-col>
         </v-row>
 
-        <AddFormPart v-show="tab == 1" text="Добавить исполнителей" @addFormPart="addArtist"/>
+        <AddFormPart
+          v-show="tab == 1"
+          text="Добавить исполнителей"
+          @addFormPart="addArtist"
+        />
 
         <AddPerformers
           :addPerformersOverlay="addPerformersOverlay"
@@ -192,21 +168,14 @@
         />
 
         <v-row no-gutters class="dispatchers-header">
-          <v-col
-            cols="12"
-            sm="10"
-          >
+          <v-col cols="12" sm="10">
             <div class="header">
-              {{ request_id_dispatchers.length }} {{ request_id_dispatchers_header }}
+              {{ request_id_dispatchers.length }}
+              {{ request_id_dispatchers_header }}
             </div>
           </v-col>
 
-          <v-col
-            cols="12"
-            sm="2"
-            class="d-flex justify-end"
-
-          >
+          <v-col cols="12" sm="2" class="d-flex justify-end">
             <div v-show="tab == 2 || tab == 3">
               <v-select
                 :items="itemSort"
@@ -246,7 +215,7 @@
             </template>
 
             <template v-slot:item.rating="{ item }">
-              <Rating :rating="item.rating"/>
+              <Rating :rating="item.rating" />
             </template>
 
             <template v-slot:item.address="{ item }">
@@ -264,33 +233,46 @@
 
             <template v-slot:item.invited="{ item }">
               <v-btn icon>
-                <img src="/img/ico_mail.svg" alt="mail">
+                <img src="/img/ico_mail.svg" alt="mail" />
               </v-btn>
               <v-btn icon>
-                <img src="/img/ico_telegram.svg" alt="telegram">
+                <img src="/img/ico_telegram.svg" alt="telegram" />
               </v-btn>
             </template>
 
             <template v-slot:item.actions="{ item }">
-              <v-menu
-                bottom
-                rounded="10"
-                offset-y
-                nudge-bottom="10"
-                left
-              >
+              <v-menu bottom rounded="10" offset-y nudge-bottom="10" left>
                 <template v-slot:activator="{ on }">
-                  <v-btn icon
-                         v-on="on">
+                  <v-btn icon v-on="on">
                     <v-icon>mdi-dots-vertical</v-icon>
                   </v-btn>
                 </template>
                 <v-card class="table-action-menu">
                   <v-list-item-content class="justify-start">
                     <div class="mx-auto text-left">
-                      <a v-if="tab==0" href="#" @click.prevent="acceptRequest({task_uuid:request_id.uuid, user_uuid: item.uuid})">Принять</a>
-                      <v-divider class="my-3" v-if="tab==0"></v-divider>
-                      <a href="#" @click.prevent="rejectRequest({task_uuid:request_id.uuid, user_uuid: item.uuid, dispatchMetod: dispatchMetod})">Отклонить</a>
+                      <a
+                        v-if="tab == 0"
+                        href="#"
+                        @click.prevent="
+                          acceptRequest({
+                            task_uuid: request_id.uuid,
+                            user_uuid: item.uuid,
+                          })
+                        "
+                        >Принять</a
+                      >
+                      <v-divider class="my-3" v-if="tab == 0"></v-divider>
+                      <a
+                        href="#"
+                        @click.prevent="
+                          rejectRequest({
+                            task_uuid: request_id.uuid,
+                            user_uuid: item.uuid,
+                            dispatchMetod: dispatchMetod,
+                          })
+                        "
+                        >Отклонить</a
+                      >
                     </div>
                   </v-list-item-content>
                 </v-card>
@@ -299,7 +281,13 @@
           </v-data-table>
         </div>
 
-        <FooterTable :itemsPerPage="itemsPerPage" :pageCount="pageCount" :page="page" @setItemsPerPage="setItemsPerPage" @setCurrentPage="setCurrentPage"/>
+        <FooterTable
+          :itemsPerPage="itemsPerPage"
+          :pageCount="pageCount"
+          :page="page"
+          @setItemsPerPage="setItemsPerPage"
+          @setCurrentPage="setCurrentPage"
+        />
       </v-tab-item>
 
       <v-tab-item>
@@ -345,7 +333,6 @@
                   {{ item.description }}
                 </div>
               </template>
-
             </v-data-table>
           </div>
         </div>
@@ -357,128 +344,128 @@
 </template>
 
 <script>
-
-import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
+import { mapState, mapActions, mapGetters, mapMutations } from "vuex";
 import Rating from "~/components/Rating";
 
 export default {
-  components: {Rating},
+  components: { Rating },
   props: [],
   data() {
     return {
-      title: 'Нужны кладовщики в Леруа',
-      title_size: 'large',
+      title: "Нужны кладовщики в Леруа",
+      title_size: "large",
       title_create: false,
-      title_page_create: '',
+      title_page_create: "",
       tabs_list: [
-        'Отклики',
-        'Подбор',
-        'Приглашения',
-        'Назначенные',
-        'Описание',
-        'История изменений'
+        "Отклики",
+        "Подбор",
+        "Приглашения",
+        "Назначенные",
+        "Описание",
+        "История изменений",
       ],
       tab: null,
       selectStatus: null,
       selectStatusOptions: [
         {
-          "id": "active",
-          "title": 'Активна'
+          id: "active",
+          title: "Активна",
         },
         {
-          "id": "open",
-          "title": 'Открыта'
+          id: "open",
+          title: "Открыта",
         },
         {
-          "id": "close",
-          "title": 'Закрыта'
-        }
+          id: "close",
+          title: "Закрыта",
+        },
       ],
-      avatarColor: '#36B368',
-      avatarColorManager: '#D6D0FE',
-      avatarRounded: 'rounded',
+      avatarColor: "#36B368",
+      avatarColorManager: "#D6D0FE",
+      avatarRounded: "rounded",
       selectAction: [
         {
-          "id": "edit",
-          "title": 'Редактировать',
+          id: "edit",
+          title: "Редактировать",
         },
         {
-          "id": "copy",
-          "title": 'Копировать',
+          id: "copy",
+          title: "Копировать",
         },
         {
-          "id": "delete",
-          "title": 'Удалить'
+          id: "delete",
+          title: "Удалить",
         },
         {
-          "id": "close",
-          "title": 'Закрыть'
+          id: "close",
+          title: "Закрыть",
         },
         {
-          "id": "open",
-          "title": 'Открыть'
+          id: "open",
+          title: "Открыть",
         },
         {
-          "id": "active",
-          "title": 'Активная'
+          id: "active",
+          title: "Активная",
         },
       ],
       activeAction: null,
-      itemSortStatus: ['Все', 'Работает', 'Готов к работе', 'Неактивен'],
-      itemSort: ['По рейтингу', 'По дате'],
+      itemSortStatus: ["Все", "Работает", "Готов к работе", "Неактивен"],
+      itemSort: ["По рейтингу", "По дате"],
       page: 1,
       pageCount: 0,
       itemsPerPage: 5,
       selected: [],
       property1: true,
       property2: true,
-      searchText: '',
-      avatarBorderRadius: 'rounded',
+      searchText: "",
+      avatarBorderRadius: "rounded",
       headers: [
-        {text: 'фио', align: 'start', value: 'name',},
-        {text: 'Рейтинг', value: 'rating'},
-        {text: 'Адрес', value: 'address'},
-        {text: 'На объекте', value: 'onobject'},
-        {text: 'Приглашен', value: 'invited'},
-        {text: '', value: 'actions', sortable: false, align: 'right'},
+        { text: "фио", align: "start", value: "name" },
+        { text: "Рейтинг", value: "rating" },
+        { text: "Адрес", value: "address" },
+        { text: "На объекте", value: "onobject" },
+        { text: "Приглашен", value: "invited" },
+        { text: "", value: "actions", sortable: false, align: "right" },
       ],
       headers_history: [
-        {text: 'Дата', value: 'date',},
-        {text: 'Автор', value: 'author'},
-        {text: 'Элемент', value: 'element'},
-        {text: 'Изменение', value: 'change'},
+        { text: "Дата", value: "date" },
+        { text: "Автор", value: "author" },
+        { text: "Элемент", value: "element" },
+        { text: "Изменение", value: "change" },
       ],
 
       /* data for Overlay of adding Performers START*/
-        addPerformersOverlay  : false,
+      addPerformersOverlay: false,
       /* data for Overlay of adding Performers END*/
 
-      dispatchMetod: 'fetchRequestIdDispatchers',
-    }
+      dispatchMetod: "fetchRequestIdDispatchers",
+    };
   },
 
   computed: {
     user() {
-      return this.$store.getters['user/user']
+      return this.$store.getters["user/user"];
     },
     itemsPerPageTable() {
       if (this.itemsPerPage) {
-        return parseInt(this.itemsPerPage, 10)
+        return parseInt(this.itemsPerPage, 10);
       } else {
         return 1;
       }
     },
     request_id() {
-      return this.$store.getters['request_id/request_id'];
+      return this.$store.getters["request_id/request_id"];
     },
 
-    request_id_dispatchers ()
-    {
-      return this.$store.getters['request_id_dispatchers/request_id_dispatchers'];
+    request_id_dispatchers() {
+      return this.$store.getters[
+        "request_id_dispatchers/request_id_dispatchers"
+      ];
     },
 
     request_id_history() {
-      return this.$store.getters['request_id_dispatchers/request_id_history']
+      return this.$store.getters["request_id_dispatchers/request_id_history"];
     },
     tabContent() {
       if (this.tab < 4) {
@@ -492,141 +479,203 @@ export default {
     request_id_dispatchers_header() {
       let length = this.request_id_dispatchers.length,
         last_simbol = length.toString().slice(-1),
-        text = '';
+        text = "";
       if (this.tab == 0) {
         if (length == 1 || last_simbol == 1) {
-          text = 'кандидат';
-        } else if (length == 2 || length == 4 || last_simbol == 2 || last_simbol == 4) {
-          text = 'кандидата';
+          text = "кандидат";
+        } else if (
+          length == 2 ||
+          length == 4 ||
+          last_simbol == 2 ||
+          last_simbol == 4
+        ) {
+          text = "кандидата";
         } else {
-          text = 'кандидатов';
+          text = "кандидатов";
         }
       } else if (this.tab == 1) {
         if (length == 1 || last_simbol == 1) {
-          text = 'исполнитель';
-        } else if (length == 2 || length == 4 || last_simbol == 2 || last_simbol == 4) {
-          text = 'исполнителя';
+          text = "исполнитель";
+        } else if (
+          length == 2 ||
+          length == 4 ||
+          last_simbol == 2 ||
+          last_simbol == 4
+        ) {
+          text = "исполнителя";
         } else {
-          text = 'исполнителей';
+          text = "исполнителей";
         }
       } else if (this.tab == 2) {
         if (length == 1 || last_simbol == 1) {
-          text = 'приглашен';
+          text = "приглашен";
         } else {
-          text = 'приглашено';
+          text = "приглашено";
         }
       } else if (this.tab == 3) {
         if (length == 1 || last_simbol == 1) {
-          text = 'назначен';
+          text = "назначен";
         } else {
-          text = 'назначен';
+          text = "назначен";
         }
       }
       return text;
     },
+
+    crumbs() { // DELETE
+      const crumbs = []
+      this.$route.matched.forEach((item, i, { length }) => {
+        const crumb = {}
+        crumb.path = item.path
+        crumb.name = this.$i18n.t('route.' + (item.name || item.path))
+
+        // is last item?
+        if (i === length - 1) {
+          // is param route? .../.../:id
+          if (item.regex.keys.length > 0) {
+            crumbs.push({
+              path: item.path.replace(/\/:[^/:]*$/, ''),
+              name: this.$i18n.t('route.' + item.name.replace(/-[^-]*$/, ''))
+            })
+            crumb.path = this.$route.path
+            crumb.name = this.$i18n.t('route.' + this.$route.name, [
+              crumb.path.match(/[^/]*$/)[0]
+            ])
+          }
+          crumb.classes = 'is-active'
+        }
+
+        crumbs.push(crumb)
+      })
+
+      return crumbs
+    }
   },
 
   methods: {
-    ...mapActions('request_id', ['fetchRequestId',]),
-    ...mapActions('request_id', ['putStatus',]),
-    ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchers',]),
-    ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchersSelection',]),
-    ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchersInvitations',]),
-    ...mapActions('request_id_dispatchers', ['fetchRequestIdDispatchersaAssigned',]),
-    ...mapActions('request_id_dispatchers', ['fetchRequestIdHistory',]),
-    ...mapActions('request_id_dispatchers', ['acceptRequest',]),
-    ...mapActions('request_id_dispatchers', ['rejectRequest',]),
-    ...mapActions( 'contractors', [ 'getContractors', 'setFilterRegion', 'setFilterSpecialization', 'setFilterProfessions', 'setFilterPayments', ] ),
-    ...mapActions('requests', ['copyRequest',]),
-    ...mapActions('requests', ['removeRequest',]),
-    ...mapMutations('breadcrumbs', ["setBreadcrumbs",]),
+    ...mapActions("request_id", ["fetchRequestId"]),
+    ...mapActions("request_id", ["putStatus"]),
+    ...mapActions("request_id_dispatchers", ["fetchRequestIdDispatchers"]),
+    ...mapActions("request_id_dispatchers", [
+      "fetchRequestIdDispatchersSelection",
+    ]),
+    ...mapActions("request_id_dispatchers", [
+      "fetchRequestIdDispatchersInvitations",
+    ]),
+    ...mapActions("request_id_dispatchers", [
+      "fetchRequestIdDispatchersaAssigned",
+    ]),
+    ...mapActions("request_id_dispatchers", ["fetchRequestIdHistory"]),
+    ...mapActions("request_id_dispatchers", ["acceptRequest"]),
+    ...mapActions("request_id_dispatchers", ["rejectRequest"]),
+    ...mapActions("contractors", [
+      "getContractors",
+      "setFilterRegion",
+      "setFilterSpecialization",
+      "setFilterProfessions",
+      "setFilterPayments",
+    ]),
+    ...mapActions("requests", ["copyRequest"]),
+    ...mapActions("requests", ["removeRequest"]),
+    ...mapMutations("breadcrumbs", ["setBreadcrumbs"]),
+    ...mapActions("rqTabs", ["addRqTabsTaskNew"]),
 
     updateSearchText(value) {
       this.searchText = value;
-      this.fetchRequestIdDispatchers({requestId: this.$route.params.id, params: {"name": value}});
+      this.fetchRequestIdDispatchers({
+        requestId: this.$route.params.id,
+        params: { name: value },
+      });
     },
 
     async selectData(index) {
       if (index == 0) {
-        await this.fetchRequestIdDispatchers({requestId: this.$route.params.id});
-        this.dispatchMetod = 'fetchRequestIdDispatchers';
+        await this.fetchRequestIdDispatchers({
+          requestId: this.$route.params.id,
+        });
+        this.dispatchMetod = "fetchRequestIdDispatchers";
       } else if (index == 1) {
-        await this.fetchRequestIdDispatchersSelection({requestId: this.$route.params.id});
-        this.dispatchMetod = 'fetchRequestIdDispatchersSelection';
+        await this.fetchRequestIdDispatchersSelection({
+          requestId: this.$route.params.id,
+        });
+        this.dispatchMetod = "fetchRequestIdDispatchersSelection";
       } else if (index == 2) {
-        await this.fetchRequestIdDispatchersInvitations({requestId: this.$route.params.id});
-        this.dispatchMetod = 'fetchRequestIdDispatchersInvitations';
+        await this.fetchRequestIdDispatchersInvitations({
+          requestId: this.$route.params.id,
+        });
+        this.dispatchMetod = "fetchRequestIdDispatchersInvitations";
       } else if (index == 3) {
-        await this.fetchRequestIdDispatchersaAssigned({requestId: this.$route.params.id});
-        this.dispatchMetod = 'fetchRequestIdDispatchersaAssigned';
+        await this.fetchRequestIdDispatchersaAssigned({
+          requestId: this.$route.params.id,
+        });
+        this.dispatchMetod = "fetchRequestIdDispatchersaAssigned";
       }
     },
 
-    openTimesheet(){
-      this.$router.push('/tasks/'+ this.request_id.uuid+'/timesheet');
+    openTimesheet() {
+      this.$router.push("/tasks/" + this.request_id.uuid + "/timesheet");
     },
 
-    changeStatus(status){
-      this.putStatus({requestId: this.request_id.uuid, status: status});
+    changeStatus(status) {
+      this.putStatus({ requestId: this.request_id.uuid, status: status });
     },
 
-    setItemsPerPage(value){
+    setItemsPerPage(value) {
       this.itemsPerPage = value;
     },
 
-    setCurrentPage(value){
+    setCurrentPage(value) {
       this.page = value;
     },
 
-    addArtist ( params = {} ) // FIXME
-    {
-      console.debug( "addArtist" );
+    addArtist(
+      params = {} // FIXME
+    ) {
+      console.debug("addArtist");
 
       this.addPerformersOverlay = true;
 
-      console.debug( 'this.getContractors()' ); // DELETE
+      console.debug("this.getContractors()"); // DELETE
 
       this.getContractors();
     },
 
-    handlers ()
-    {
+    handlers() {
       return {
-        closePerformersOverlay : () => {
-          console.debug( "closePerformersOverlay" );
+        closePerformersOverlay: () => {
+          console.debug("closePerformersOverlay");
           this.addPerformersOverlay = false;
 
-          console.debug( 'this.$route.params.id' );
-          console.debug( this.$route.params.id );
+          console.debug("this.$route.params.id");
+          console.debug(this.$route.params.id);
 
-          this.fetchRequestIdDispatchersSelection( { requestId: this.$route.params.id } );
-          this.fetchRequestId( this.$route.params.id );
+          this.fetchRequestIdDispatchersSelection({
+            requestId: this.$route.params.id,
+          });
+          this.fetchRequestId(this.$route.params.id);
 
-          this.setFilterRegion( '' );
-          this.setFilterSpecialization( '' );
-          this.setFilterProfessions( '' );
-          this.setFilterPayments( '' );
-        }
-      }
+          this.setFilterRegion("");
+          this.setFilterSpecialization("");
+          this.setFilterProfessions("");
+          this.setFilterPayments("");
+        },
+      };
     },
 
-    helpers : () => {
+    helpers: () => {
       return {};
     },
   },
   watch: {
     activeAction: function (val) {
-      if (val == 'edit'){
-        this.$router.push('/tasks/'+ this.$route.params.id+'/edit');
-      }
-      else if (val == 'delete'){
-        this.$router.push('/tasks/');
+      if (val == "edit") {
+        this.$router.push("/tasks/" + this.$route.params.id + "/edit");
+      } else if (val == "delete") {
+        this.$router.push("/tasks/");
         this.removeRequest(this.$route.params.id);
-      }
-      else if (val == 'copy'){
+      } else if (val == "copy") {
         this.copyRequest(this.$route.params.id);
-      }
-      else{
+      } else {
         this.changeStatus(val);
         this.selectStatus = val;
       }
@@ -635,23 +684,25 @@ export default {
 
   async created() {
     await this.fetchRequestId(this.$route.params.id);
-    await this.fetchRequestIdDispatchers({requestId: this.$route.params.id});
-    await this.fetchRequestIdHistory({requestId: this.$route.params.id});
+    await this.fetchRequestIdDispatchers({ requestId: this.$route.params.id });
+    await this.fetchRequestIdHistory({ requestId: this.$route.params.id });
 
     this.selectStatus = this.request_id.status;
 
     this.$route.meta.title = this.request_id.name;
     this.setBreadcrumbs(this.$route.fullPath);
+
+    this.addRqTabsTaskNew({route: this.$route});
+
+    console.debug("this.$i18n", this)
   },
 
-  async mounted() {
-  }
-}
+  async mounted() {},
+};
 </script>
 
 <style lang="scss">
-
-@import '../../../assets/scss/colors';
+@import "../../../assets/scss/colors";
 
 .wrap-composite-header {
   display: flex;
@@ -662,7 +713,7 @@ export default {
     font-size: 24px;
     font-weight: 900;
     color: $blue;
-    background: #E9F6FF;
+    background: #e9f6ff;
     padding: 10px 9px;
     display: flex;
     align-items: center;
@@ -705,7 +756,9 @@ export default {
   margin-bottom: 32px;
   font-weight: 600;
 
-  .v-text-field.v-text-field--solo:not(.v-text-field--solo-flat) > .v-input__control > .v-input__slot {
+  .v-text-field.v-text-field--solo:not(.v-text-field--solo-flat)
+    > .v-input__control
+    > .v-input__slot {
     box-shadow: none;
     background: $light_blue;
   }
@@ -754,7 +807,6 @@ export default {
 }
 
 .table-history {
-
   .table-history-author {
     color: $blue;
   }
@@ -788,6 +840,5 @@ export default {
     color: $grey;
   }
 }
-
 </style>
 

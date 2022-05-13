@@ -1,55 +1,98 @@
 <template lang="pug">
 .rq-top-nav-hub
-  .rq-top-nav-hub__node
-    .rq-top-nav-hub__title {{$route.meta.title}}
+  //- .rq-top-nav-hub__node
+  //-   .rq-top-nav-hub__title {{$route.meta.title}}
   rqTabs(
-    v-show="$route.name === 'tasks'"
-    :items="items"
+    v-if="$route.name === 'tasks' || $route.name === 'tasks-id'",
+    :items="RQ_TABS_TASKS",
+    @onRqTabClicked="onRqTabClicked"
   )
-    template(#item="{item}")
+    template(#item="{ item }")
       .task-tabs__item
-        .task-tabs__title {{item.name}}
+        .task-tabs__title {{ item.name }}
+  rqBreadcrumbs(
+    v-else
+    :breadcrumbs="BREADCRUMBS"
+  )
 </template>
 
 <script>
-import rqTabs from '@/components/composite/rqTabs';
+import { mapActions, mapGetters, } from "vuex";
+import rqTabs from "@/components/composite/rqTabs";
+import rqBreadcrumbs from "@/components/UI/rqBreadcrumbs";
 
 export default {
   components: {
     rqTabs,
+    rqBreadcrumbs,
   },
-  methods: {},
+  computed: {
+    ...mapGetters('rqTabs', [
+      'RQ_TABS_TASKS',
+    ]),
+    ...mapGetters("breadcrumbs", [
+      'BREADCRUMBS',
+    ]),
+  },
+  methods: {
+
+
+    /* HANDLERS */
+    onRqTabClicked({ item }) {
+      console.debug("onRqTabClicked", item);
+
+      this.$router.push({
+        name: item.routeName,
+        params: item.params,
+      });
+    },
+  },
 
   data() {
     return {
       items: [
         {
-          uuid: '1',
-          name: '01.03 Комплектовщики ОЗОН СБП ',
+          name: "Все заявки",
+          routeName: "tasks",
+          params: {},
+          isPinned: false,
+          isActive: false,
+          isNode: true,
+        },
+        {
+          name: "Тестовая компонент копия",
+          routeName: "tasks-id",
+          params: {
+            id: "bf7ce1ef-a177-42a7-b25d-7ef00865caa8",
+          },
           isPinned: false,
           isActive: true,
         },
         {
-          uuid: '2',
-          name: '02.03 Водители ЗАРА Ленина',
+          name: "02.03 Водители ЗАРА Ленина",
+          routeName: "",
+          params: {},
           isPinned: true,
           isActive: false,
         },
         {
-          uuid: '3',
-          name: '02.03 Водители ЗАРА Ленина',
+          name: "02.03 Водители ЗАРА Ленина",
+          routeName: "",
+          params: {},
           isPinned: false,
           isActive: false,
         },
         {
-          uuid: '4',
-          name: '02.03 Водители ЗАРА Ленина',
+          name: "02.03 Водители ЗАРА Ленина",
+          routeName: "",
+          params: {},
           isPinned: false,
           isActive: false,
         },
         {
-          uuid: '5',
-          name: '02.03 Водители ЗАРА Ленина',
+          name: "02.03 Водители ЗАРА Ленина",
+          routeName: "",
+          params: {},
           isPinned: false,
           isActive: false,
         },
@@ -73,7 +116,7 @@ export default {
   width: calc(100% - 300px);
 
   &__title {
-    font-family: 'Source Sans Pro';
+    font-family: "Source Sans Pro";
     font-style: normal;
     font-weight: 600;
     font-size: 16px;
@@ -84,7 +127,8 @@ export default {
     padding: 20px 24px;
     height: 60px;
   }
-  &__node {}
+  &__node {
+  }
 
   /* OBJECTS */
   .task-tabs {

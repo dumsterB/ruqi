@@ -4,7 +4,7 @@
       <v-main>
         <v-container>
           <v-navigation-drawer
-            v-if="!helpers().isLoginPage()"
+            v-if="!isLoginPage()"
             width="98"
             color="blue"
             app
@@ -17,7 +17,7 @@
             </div>
           </v-navigation-drawer>
           <div>
-            <Topbar v-if="!helpers().isLoginPage()" />
+            <Topbar v-if="!isLoginPage()" />
             <div class="content">
               <Nuxt />
               <Alert :requestSuccess="requestSuccess" />
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapActions } from "vuex";
 import Topbar from '@/components/Topbar/index.vue';
 
 export default {
@@ -83,21 +83,20 @@ export default {
         // }
         // body.classList.add('page--' + to.name.toLowerCase());
 
-        this.setBreadcrumbs(this.$route.fullPath);
+        //this.initBreadcrumbs(this.$route.fullPath);
       },
 
       immediate: true,
     },
   },
   methods: {
-    ...mapMutations("breadcrumbs", ["setBreadcrumbs"]),
+    ...mapActions("breadcrumbs", [
+      'initBreadcrumbs',
+    ]),
 
-    helpers() {
-      return {
-        isLoginPage: () => {
-          return this.$route.name === "signin";
-        },
-      };
+    /* HELPERS */
+    isLoginPage() {
+      return this.$route.name === "signin";
     },
   },
 
@@ -107,7 +106,7 @@ export default {
     };
   },
   mounted() {
-    this.setBreadcrumbs(this.$route.fullPath);
+    //this.initBreadcrumbs(this.$route.fullPath);
   },
 };
 </script>
@@ -131,7 +130,7 @@ html {
 
   .content {
     position: relative;
-    z-index: 100;
+    z-index: 0;
   }
 }
 
