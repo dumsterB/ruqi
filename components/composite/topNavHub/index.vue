@@ -5,19 +5,18 @@
   rqTabs(
     v-if="$route.name === 'tasks' || $route.name === 'tasks-id'",
     :items="RQ_TABS_TASKS",
-    @onRqTabClicked="onRqTabClicked"
+    @onRqTabClicked="onRqTabClicked",
+    @unpinRqTab="onUnpinRqTabClicked"
+    @closeRqTab="onCloseRqTabClicked",
   )
     template(#item="{ item }")
       .task-tabs__item
         .task-tabs__title {{ item.name }}
-  rqBreadcrumbs(
-    v-else
-    :breadcrumbs="BREADCRUMBS"
-  )
+  rqBreadcrumbs(v-else, :breadcrumbs="BREADCRUMBS")
 </template>
 
 <script>
-import { mapActions, mapGetters, } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import rqTabs from "@/components/composite/rqTabs";
 import rqBreadcrumbs from "@/components/UI/rqBreadcrumbs";
 
@@ -27,15 +26,11 @@ export default {
     rqBreadcrumbs,
   },
   computed: {
-    ...mapGetters('rqTabs', [
-      'RQ_TABS_TASKS',
-    ]),
-    ...mapGetters("breadcrumbs", [
-      'BREADCRUMBS',
-    ]),
+    ...mapGetters("rqTabs", ["RQ_TABS_TASKS"]),
+    ...mapGetters("breadcrumbs", ["BREADCRUMBS"]),
   },
   methods: {
-
+    ...mapActions("rqTabs", ["closeRqTabTasks", "unPinRqTabTasks"]),
 
     /* HANDLERS */
     onRqTabClicked({ item }) {
@@ -44,6 +39,20 @@ export default {
       this.$router.push({
         name: item.routeName,
         params: item.params,
+      });
+    },
+    onCloseRqTabClicked({ item }) {
+      console.debug("onCloseRqTabClicked", item); // DELETE
+
+      this.closeRqTabTasks().then((result) => {
+        this.$router.push(result);
+      });
+    },
+    onUnpinRqTabClicked({ item }) {
+      console.debug("onUnpinRqTabClicked", item); // DELETE
+
+      this.unPinRqTabTasks({rqTabTasks: item}).then((result) => {
+        this.$router.push(result);
       });
     },
   },

@@ -14,6 +14,9 @@
       <v-btn icon>
         <v-icon>mdi-dots-horizontal</v-icon>
       </v-btn>
+
+      <v-btn v-show="rqTab && !rqTab.isPinned" elevation="2" @click="onPinTabClicked">Закрепить вкладку</v-btn>
+      <v-btn v-show="rqTab && rqTab.isPinned" elevation="2" @click="onUnpinTabClicked">Открепить вкладку</v-btn>
     </div>
 
     <div class="wrap-composite-details">
@@ -444,6 +447,20 @@ export default {
   },
 
   computed: {
+    ...mapGetters("rqTabs", [
+      'RQ_TABS_TASKS',
+    ]),
+
+    rqTab() {
+      console.debug('cmp RQ_TABS_TASKS', this.RQ_TABS_TASKS, this.$route.params); // DELETE
+
+      const RQ_TABS_TASKS_FILTERED = this.RQ_TABS_TASKS.filter(
+        (tab) => tab.params?.id === this.$route.params.id
+      );
+
+      return RQ_TABS_TASKS_FILTERED.length ? RQ_TABS_TASKS_FILTERED[0] : null;
+    },
+
     user() {
       return this.$store.getters["user/user"];
     },
@@ -457,13 +474,11 @@ export default {
     request_id() {
       return this.$store.getters["request_id/request_id"];
     },
-
     request_id_dispatchers() {
       return this.$store.getters[
         "request_id_dispatchers/request_id_dispatchers"
       ];
     },
-
     request_id_history() {
       return this.$store.getters["request_id_dispatchers/request_id_history"];
     },
@@ -521,35 +536,6 @@ export default {
       }
       return text;
     },
-
-    crumbs() { // DELETE
-      const crumbs = []
-      this.$route.matched.forEach((item, i, { length }) => {
-        const crumb = {}
-        crumb.path = item.path
-        crumb.name = this.$i18n.t('route.' + (item.name || item.path))
-
-        // is last item?
-        if (i === length - 1) {
-          // is param route? .../.../:id
-          if (item.regex.keys.length > 0) {
-            crumbs.push({
-              path: item.path.replace(/\/:[^/:]*$/, ''),
-              name: this.$i18n.t('route.' + item.name.replace(/-[^-]*$/, ''))
-            })
-            crumb.path = this.$route.path
-            crumb.name = this.$i18n.t('route.' + this.$route.name, [
-              crumb.path.match(/[^/]*$/)[0]
-            ])
-          }
-          crumb.classes = 'is-active'
-        }
-
-        crumbs.push(crumb)
-      })
-
-      return crumbs
-    }
   },
 
   methods: {
@@ -578,7 +564,20 @@ export default {
     ...mapActions("requests", ["copyRequest"]),
     ...mapActions("requests", ["removeRequest"]),
     ...mapMutations("breadcrumbs", ["setBreadcrumbs"]),
-    ...mapActions("rqTabs", ["addRqTabsTaskNew"]),
+    ...mapActions("rqTabs", [
+      'addRqTabsTaskNew',
+      'setRqTabsTaskActive',
+      'pinRqTabTasks',
+      'unPinRqTabTasks',
+    ]),
+
+    /* HANDLERS */
+    onPinTabClicked() {
+      this.pinRqTabTasks({rqTabTasks: this.rqTab});
+    },
+    onUnpinTabClicked() {
+      this.unPinRqTabTasks({rqTabTasks: this.rqTab});
+    },
 
     updateSearchText(value) {
       this.searchText = value;
@@ -692,7 +691,9 @@ export default {
     this.$route.meta.title = this.request_id.name;
     this.setBreadcrumbs(this.$route.fullPath);
 
-    this.addRqTabsTaskNew({route: this.$route});
+    this.addRqTabsTaskNew({route: this.$route}).then(
+      () => this.setRqTabsTaskActive({route: this.$route})
+    );
 
     console.debug("this.$i18n", this)
   },

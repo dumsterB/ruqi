@@ -1,6 +1,6 @@
 <template lang="pug">
 .rq-tabs
-  v-tabs(show-arrows)
+  v-tabs(v-model="activeTab", show-arrows)
     v-tab.rq-tabs__title(v-if="node", @click="onRqTabClicked({ item: node })") {{ node.name }}
     v-tab(
       v-for="(item, index) in items",
@@ -12,7 +12,7 @@
     )
       .rq-tabs__tab-main
         slot(name="item", :item="item")
-      .rq-tabs__tab-actions(@click.stop="onActionClicked")
+      .rq-tabs__tab-actions(@click.stop="onActionClicked({ item })")
         rqIcon(
           v-if="item.isPinned",
           name="clip",
@@ -45,6 +45,13 @@ export default {
     },
   },
   computed: {
+    activeTab: {
+      get() {
+        return this.items.findIndex((item) => item.isActive);
+      },
+      set() {},
+    },
+
     node() {
       const filteredItems = this.items.filter((item) => item.isNode);
 
@@ -59,8 +66,14 @@ export default {
     onRqTabClicked({ item }) {
       this.$emit("onRqTabClicked", { item });
     },
-    onActionClicked() {
-      console.debug("onActionClicked");
+    onActionClicked({ item }) {
+      console.debug("onActionClicked", item);
+
+      if (item.isPinned) {
+        this.$emit("unpinRqTab", { item });
+      } else {
+        this.$emit("closeRqTab", { item });
+      }
     },
 
     // helpers
