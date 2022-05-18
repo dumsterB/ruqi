@@ -130,7 +130,7 @@ html {
 
   .content {
     position: relative;
-    z-index: 0;
+    z-index: 50;
   }
 }
 

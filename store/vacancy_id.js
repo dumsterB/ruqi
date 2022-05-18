@@ -1,0 +1,91 @@
+export const state = () => ({
+  vacancy_id: {},
+})
+
+export const getters = {
+  vacancy_id(state) {
+    return state.vacancy_id;
+  },
+}
+
+
+export const actions = {
+  async fetchVacancyId({commit}, {objectId, VacancyId}) {
+    const vacancy_id = await this.$axios.get('/objects/' + objectId +'/vacancies/' + VacancyId);
+    commit('setVacancy', vacancy_id);
+  },
+  async createVacancy({commit, dispatch}, {newRequest, object_uuid}) {
+    let self= this;
+    console.log(newRequest, object_uuid);
+    commit('response/setAwait', null, { root: true });
+    const requests = await this.$axios.post('/objects/' + object_uuid + '/vacancies',
+      newRequest,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+
+      })
+      .then((response) => {
+        console.log(response);
+        commit('response/setSuccess', {type: 'success', text: 'Услуга успешно создана', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+        setTimeout(function() {
+          //self.$router.push('/objects/' + object_uuid + '/vacancies/'+ response.data.uuid);
+        }, 3000);
+
+      })
+      .catch((error) => {
+        commit('response/setSuccess', {type: 'error', text: 'Заполните поля формы', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 3000);
+        console.log(error);
+      });
+
+  },
+  async putVacancy({commit, dispatch}, {body, object_uuid, vacancy_uuid}) {
+    await this.$axios.put('/objects/' + object_uuid + '/vacancies/' + vacancy_uuid,
+      body,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        dispatch('fetchVacancyId');
+        commit('response/setSuccess', {type: 'success', text: 'Услуга успешно обновлена', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+
+  async removeVacancy({commit, dispatch}, {object_uuid, vacancy_uuid}) {
+
+    await this.$axios.delete('/objects/' + object_uuid + '/vacancies/'  + vacancy_uuid)
+      .then((response) => {
+        console.log(response);
+        dispatch('object_id/fetchObjectIdVacancies', object_uuid, {root: true});
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  },
+}
+
+export const mutations = {
+  setVacancy(state, vacancy_id) {
+    state.vacancy_id = vacancy_id.data.data;
+  },
+
+}
+
+

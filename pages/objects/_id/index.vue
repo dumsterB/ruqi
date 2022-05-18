@@ -106,7 +106,7 @@
                                 span Редактировать
 
                             .mx-auto.text-left.card-action
-                              a(@click.prevent="isConfirmModalService = 1")
+                              a(@click.prevent="confirmRemoveService('service', item.uuid)")
                                 v-icon mdi-close-box-outline
                                 span Удалить
 
@@ -591,7 +591,6 @@ export default {
       return this.$store.getters["object_id/object_id_requests"];
     },
     object_id_services() {
-      console.log(this.$store.getters["object_id/object_id_services"].data);
       return this.$store.getters["object_id/object_id_services"];
     },
     object_id_vacancies() {
@@ -661,6 +660,7 @@ export default {
     ...mapActions("object_id", ["fetchObjectIdVacancies"]),
     ...mapActions("object_id", ["fetchObjectIdHistory"]),
     ...mapActions("object_id", ["putStatus"]),
+    ...mapActions("service_id", ["removeService"]),
     ...mapActions("objects", ["removeRequest"]),
     ...mapActions("breadcrumbs", ["initBreadcrumbs", "setBreadcrumbs"]),
 
@@ -699,25 +699,25 @@ export default {
     addService() {
       this.$router.push({
         name: "objects-id-service",
-        params: { ServiceId: "" },
+        params: { ServiceId: "",  objectId: this.object_id.uuid },
       });
     },
     editService(ServiceId) {
       this.$router.push({
         name: "objects-id-service",
-        params: { ServiceId: ServiceId },
+        params: { ServiceId: ServiceId,  objectId: this.object_id.uuid },
       });
     },
     addVacancy() {
       this.$router.push({
         name: "objects-id-vacancy",
-        params: { VacancyId: "" },
+        params: { VacancyId: "" , objectId: this.object_id.uuid},
       });
     },
     editVacancy(VaсancyId) {
       this.$router.push({
         name: "objects-id-vacancy",
-        params: { VacancyId: VaсancyId },
+        params: { VacancyId: VaсancyId, objectId: this.object_id.uuid },
       });
     },
     addTask() {
@@ -741,7 +741,7 @@ export default {
         this.selectStatus = val;
       }
     },
-    confirmRemove(confirm) {
+    confirmRemove(confirm, uuid) {
       if (confirm) {
         console.log("удаляю");
       } else {
@@ -749,10 +749,11 @@ export default {
       }
       this.isConfirmModal = false;
     },
-    confirmRemoveService(confirm) {
+    confirmRemoveService(confirm, uuid) {
       this.isConfirmModalService = false;
+     this.removeService({object_uuid: this.object_id.uuid, service_uuid: uuid});
     },
-    confirmRemoveVacancy(confirm) {
+    confirmRemoveVacancy(confirm, uuid) {
       this.isConfirmModalVacancy = false;
     },
 
@@ -943,5 +944,10 @@ export default {
   background: whitesmoke;
   padding: 24px;
 }
+
+.object-info{
+  padding: 24px 20px;
+}
+
 </style>
 

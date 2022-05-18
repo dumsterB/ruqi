@@ -18,8 +18,12 @@ export default {
       type: Object,
       default: {},
     },
+    uuid: {
+      type: String,
+      default: '',
+    },
     isConfirmModal: {
-      type: Boolean,
+      type: [Boolean, Number],
       default: false
     },
   },
@@ -37,7 +41,7 @@ export default {
   },
   methods: {
     confirmRemove(confirm) {
-      this.$emit('confirmRemove', confirm);
+      this.$emit('confirmRemove', confirm, this.uuid);
     },
 
   },
