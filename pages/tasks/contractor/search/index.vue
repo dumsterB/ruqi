@@ -9,12 +9,12 @@
 </template>
 
 <script>
-import ContentDisplayController from '@/components/pages/tasks/executor/desktop/ContentDisplayController';
-import mContentDisplayController from '@/components/pages/tasks/executor/mobile/mContentDisplayController';
-import TasksFilter from '@/components/pages/tasks/executor/desktop/TasksFilter';
-import mTasksFilter from '@/components/pages/tasks/executor/mobile/mTasksFilter';
-import TasksList from '@/components/pages/tasks/executor/desktop/TasksList';
-import mTasksList from '@/components/pages/tasks/executor/mobile/mTasksList';
+import ContentDisplayController from '@/components/pages/tasks/executor/search/desktop/ContentDisplayController';
+import mContentDisplayController from '@/components/pages/tasks/executor/search/mobile/mContentDisplayController';
+import TasksFilter from '@/components/pages/tasks/executor/search/desktop/TasksFilter';
+import mTasksFilter from '@/components/pages/tasks/executor/search/mobile/mTasksFilter';
+import TasksList from '@/components/pages/tasks/executor/search/desktop/TasksList';
+import mTasksList from '@/components/pages/tasks/executor/search/mobile/mTasksList';
 
 export default {
   components: {
