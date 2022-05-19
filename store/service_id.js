@@ -33,7 +33,7 @@ export const actions = {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
         setTimeout(function() {
-         //self.$router.push('/objects/' + object_uuid + '/services/'+ response.data.uuid);
+         self.$router.push('/objects/' + object_uuid);
         }, 3000);
 
       })
@@ -47,6 +47,7 @@ export const actions = {
 
   },
   async putService({commit, dispatch}, {body, object_uuid, service_uuid}) {
+    let self= this;
     await this.$axios.put('/objects/' + object_uuid + '/services/' + service_uuid,
       body,
       {
@@ -61,6 +62,9 @@ export const actions = {
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
+        setTimeout(function() {
+          self.$router.push('/objects/' + object_uuid);
+        }, 3000);
       })
       .catch((error) => {
         console.log(error);

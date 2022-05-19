@@ -42,10 +42,10 @@
                       .form-rate-title Введите новое значение
                       Rate( prefix_name="new" :isNew="true" @updateFiled="updateFiled" @setRate="setRate")
 
-                    v-row.flex-column.px-5(no-gutters v-show="service_id.rates.length")
-                      .form-rate-title Следующие значения
+                    v-row.flex-column.px-5(no-gutters v-show="service_id.rates && service_id.rates.length")
+                      .form-rate-title.mb-6 Следующие значения
 
-                      div(v-if="service_id.rates.length")
+                      div(v-if="service_id.rates && service_id.rates.length")
                         div(v-for="(rate, index) in service_id.rates")
                           Rate( :prefix_name="index" :isNew="false"
                             @updateFiled="updateFiled"
@@ -117,7 +117,7 @@ export default {
               label: 'Не выбрано'
             },
             validation: 'required',
-            value: ''
+            value: 'шт'
           },
           {
             type: 'FTypeText',
@@ -358,6 +358,10 @@ export default {
       font-weight: 600;
       font-size: 20px;
     }
+  }
+
+  .object-info{
+    padding: 24px 0;
   }
 
   .object-info-container {

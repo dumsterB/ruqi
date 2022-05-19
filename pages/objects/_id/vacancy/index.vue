@@ -43,7 +43,7 @@
                       Rate( prefix_name="new" :isNew="true" @updateFiled="updateFiled" @setRate="setRate")
 
                     v-row.flex-column.px-5(no-gutters v-show="vacancy_id.rates && vacancy_id.rates.length")
-                      .form-rate-title Следующие значения
+                      .form-rate-title.mb-6 Следующие значения
 
                       div(v-if="vacancy_id.rates && vacancy_id.rates.length")
                         div(v-for="(rate, index) in vacancy_id.rates")
@@ -479,6 +479,10 @@ export default {
       font-weight: 600;
       font-size: 20px;
     }
+  }
+
+  .object-info{
+    padding: 24px 0;
   }
 
   .object-info-container {

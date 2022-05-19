@@ -6,8 +6,8 @@
         v-card-text {{ content.description }}
         v-card-actions
           v-spacer
-          v-btn.btn-blue.add.btn-confirm.btn-ok(outlined @click="confirmRemove(0)")  {{ content.text_btn_ok }}
-          v-btn.btn-grey.add.btn-confirm.btn-cancel(outlined @click="confirmRemove(1)")  {{ content.text_btn_cancel }}
+          v-btn.btn-blue.add.btn-confirm.btn-ok(outlined @click="confirmRemove(1)")  {{ content.text_btn_ok }}
+          v-btn.btn-grey.add.btn-confirm.btn-cancel(outlined @click="confirmRemove(0)")  {{ content.text_btn_cancel }}
 
 </template>
 
@@ -17,10 +17,6 @@ export default {
     content: {
       type: Object,
       default: {},
-    },
-    uuid: {
-      type: String,
-      default: '',
     },
     isConfirmModal: {
       type: [Boolean, Number],
@@ -41,7 +37,7 @@ export default {
   },
   methods: {
     confirmRemove(confirm) {
-      this.$emit('confirmRemove', confirm, this.uuid);
+      this.$emit('confirmRemove', confirm);
     },
 
   },
@@ -57,7 +53,8 @@ export default {
 
     .v-card__title {
       font-weight: 700 !important;
-      font-size: 18px !important;
+      font-size: 19px !important;
+      justify-content: center;
     }
 
     .v-card__actions {
@@ -65,15 +62,16 @@ export default {
 
       .btn-confirm {
         min-width: 100%;
-        margin: 0 0 24px 0;
-        font-weight: 600;
-        text-transform: none;
+        margin: 0 0 16px 0;
+        font-weight: 700;
         border-radius: 8px;
+        text-transform: uppercase;
+        font-size: 14px;
+        height: 42px;
 
         &.btn-grey {
-          background: #EFF1F2;
+          border: 1px solid #E0E0E0;
           color: $grey;
-          border: 0;
         }
       }
 

@@ -106,7 +106,7 @@
                                 span Редактировать
 
                             .mx-auto.text-left.card-action
-                              a(@click.prevent="confirmRemoveService('service', item.uuid)")
+                              a(@click.prevent="isConfirmModalService = 1, removedUUID = item.uuid")
                                 v-icon mdi-close-box-outline
                                 span Удалить
 
@@ -116,7 +116,7 @@
                   template(v-slot:item.rate_with_vat="{ item }")
                     .rate
                       .rate-title {{ item.rate_with_vat }}
-                      .rate-icon(v-if="item.rate_indicator")
+                      .rate-icon(v-if="item.rates && item.rates.length")
                         v-menu(
                           bottom,
                           offset-y,
@@ -130,13 +130,14 @@
                           v-card
                             v-list-item-content.justify-start
                               .rate-list.mx-auto.text-left
-                                .rate-list-item(v-for="el in item.rates")
+                                .rate-list-item(v-for="el in item.rates" :class="[el.difference == '=' ? 'current' : '']")
+                                  .rate-item-title(v-if="el.difference == '='") Текущая
                                   .rate-list-item-date {{ helpers().parseDate({ date: el.start_date, type: 'date' }) }}
                                   .rate-list-item-price(
                                     :class="[el.rate > item.rate_with_vat ? 'up' : 'down']"
                                   )
-                                    v-icon(v-if="el.rate < item.rate_with_vat") mdi-menu-down
-                                    v-icon(v-if="el.rate > item.rate_with_vat") mdi-menu-up
+                                    v-icon(v-if="el.rate < item.rate_with_vat && el.difference != '='") mdi-menu-down
+                                    v-icon(v-if="el.rate > item.rate_with_vat && el.difference != '='") mdi-menu-up
                                     span {{ el.rate }}
 
                                 .rate-list-item-edit
@@ -145,7 +146,7 @@
                                   )
                                     span Редактировать
 
-                FooterTable(
+                FooterTable.my-8(
                   :itemsPerPage="itemsPerPage",
                   :pageCount="pageCountService",
                   :page="page",
@@ -202,7 +203,7 @@
                                 span Редактировать
 
                             .mx-auto.text-left.card-action
-                              a(@click.prevent="isConfirmModalVacancy = 1")
+                              a(@click.prevent="isConfirmModalVacancy = 1, removedUUID = item.uuid")
                                 v-icon mdi-close-box-outline
                                 span Удалить
 
@@ -218,7 +219,7 @@
                   template(v-slot:item.rate_with_vat="{ item }")
                     .rate
                       .rate-title {{ item.rate_with_vat }}
-                      .rate-icon(v-if="item.rate_indicator")
+                      .rate-icon(v-if="item.rates && item.rates.length")
                         v-menu(
                           bottom,
                           offset-y,
@@ -495,7 +496,7 @@ export default {
       page: 1,
       pageCountService: 0,
       pageCount: 0,
-      itemsPerPage: 8,
+      itemsPerPage: 20,
       selectedItems: [],
       activeSelectAll: 0,
       activeSelectBtn: 0,
@@ -551,6 +552,7 @@ export default {
       isConfirmModal: false,
       isConfirmModalService: false,
       isConfirmModalVacancy: false,
+      removedUUID: '',
       confirmModalContent: {
         title: "Удалить этот объект?",
         description: "",
@@ -661,6 +663,7 @@ export default {
     ...mapActions("object_id", ["fetchObjectIdHistory"]),
     ...mapActions("object_id", ["putStatus"]),
     ...mapActions("service_id", ["removeService"]),
+    ...mapActions("vacancy_id", ["removeVacancy"]),
     ...mapActions("objects", ["removeRequest"]),
     ...mapActions("breadcrumbs", ["initBreadcrumbs", "setBreadcrumbs"]),
 
@@ -749,11 +752,16 @@ export default {
       }
       this.isConfirmModal = false;
     },
-    confirmRemoveService(confirm, uuid) {
+    confirmRemoveService(confirm) {
+      if (confirm) {
+        this.removeService({object_uuid: this.object_id.uuid, service_uuid: this.removedUUID});
+      }
       this.isConfirmModalService = false;
-     this.removeService({object_uuid: this.object_id.uuid, service_uuid: uuid});
     },
-    confirmRemoveVacancy(confirm, uuid) {
+    confirmRemoveVacancy(confirm) {
+      if (confirm) {
+        this.removeVacancy({object_uuid: this.object_id.uuid, vacancy_uuid: this.removedUUID});
+      }
       this.isConfirmModalVacancy = false;
     },
 

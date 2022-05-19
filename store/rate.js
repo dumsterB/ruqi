@@ -41,9 +41,9 @@ export const actions = {
       });
   },
 
-  async putServiceRate({commit, dispatch}, {body, object_uuid, vacancy_uuid, rate_uuid}) {
+  async putServiceRate({commit, dispatch}, {body, object_uuid, service_uuid, rate_uuid}) {
     let self= this;
-    await this.$axios.put('/objects/' + object_uuid + '/services/'  + vacancy_uuid + '/rates/' + rate_uuid,
+    await this.$axios.put('/objects/' + object_uuid + '/services/'  + service_uuid + '/rates/' + rate_uuid,
       body,
       {
         headers: {
@@ -53,10 +53,10 @@ export const actions = {
       })
       .then((response) => {
         console.log(response);
-        dispatch('vacancy_id/fetchVacancyId', {objectId: object_uuid, ServiceId: vacancy_uuid}, {root: true});
+        dispatch('service_id/fetchServiceId', {objectId: object_uuid, ServiceId: service_uuid}, {root: true});
         commit('response/setSuccess', {type: 'success', text: 'Ставка успешно обновлена', }, {root: true});
         setTimeout(function() {
-          //commit('response/removeSuccess', null, { root: true });
+          commit('response/removeSuccess', null, { root: true });
         }, 2000);
       })
       .catch((error) => {
@@ -115,7 +115,7 @@ export const actions = {
       })
       .then((response) => {
         console.log(response);
-        dispatch('service_id/fetchVacancyId', {objectId: object_uuid, ServiceId: vacancy_uuid}, {root: true});
+        dispatch('vacancy_id/fetchVacancyId', {objectId: object_uuid, VacancyId: vacancy_uuid}, {root: true});
         commit('response/setSuccess', {type: 'success', text: 'Ставка успешно обновлена', }, {root: true});
         setTimeout(function() {
           //commit('response/removeSuccess', null, { root: true });
