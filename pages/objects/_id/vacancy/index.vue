@@ -414,10 +414,10 @@ export default {
     console.log('this.$route.params.VacancyId ------ ', this.$route.params.VacancyId);
 
     await this.fetcProfessions();
-    await this.fetchObjectIdServices({requestId: this.$route.params.objectId, params: {}});
+    await this.fetchObjectIdServices({requestId: this.$route.params.objectId, params: {}, concat: false});
 
     this.meta.meta_object_vacancy[0].params.options = this.professions;
-    this.meta.meta_object_vacancy[1].params.options = this.object_id_services.data;
+    this.meta.meta_object_vacancy[1].params.options = this.object_id_services;
 
     if (this.$route.params.VacancyId) {
       await this.fetchVacancyId({objectId: this.$route.params.objectId, VacancyId: this.$route.params.VacancyId});
