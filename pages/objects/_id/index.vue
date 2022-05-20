@@ -64,7 +64,8 @@
                     v-icon mdi-plus
                     span добавить услугу
 
-                  v-icon.mx-8 mdi-filter-outline
+                  v-icon.ml-8.mr-5 mdi-filter-outline
+                  v-icon mdi-magnify
 
                 .container-object-nds
                   .nds-title ндс текущий
@@ -155,15 +156,19 @@
 
             v-tab-item(eager)
               .filter-row.d-flex.pa-5.justify-space-between
-                v-btn.btn-blue.add(
-                  text,
-                  height="48",
-                  outlined,
-                  @click="addVacancy",
-                  :disabled="isActiveAddVacancy"
-                )
-                  v-icon mdi-plus
-                  span добавить вакансию
+                .filter-row-left.d-flex
+                  v-btn.btn-blue.add(
+                    text,
+                    height="48",
+                    outlined,
+                    @click="addVacancy",
+                    :disabled="isActiveAddVacancy"
+                  )
+                    v-icon mdi-plus
+                    span добавить вакансию
+
+                  v-icon.ml-8.mr-5 mdi-filter-outline
+                  v-icon mdi-magnify
 
                 .container-object-nds
                   .nds-title ндс текущий
@@ -872,7 +877,11 @@ export default {
 
   .action-row {
     .v-select {
-      max-width: 150px;
+      max-width: 175px;
+    }
+
+    .v-text-field--enclosed .v-input__append-inner {
+      margin-top: 13px;
     }
 
     .select-status {
@@ -977,6 +986,10 @@ export default {
 
 .object-info {
   padding: 24px 20px;
+}
+
+.card-actions-menu a{
+  display: block;
 }
 
 </style>
