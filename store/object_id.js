@@ -38,10 +38,12 @@ export const actions = {
     commit('setObjectIdRequests', object_id_requests);
 
   },
-  async fetchObjectIdServices({commit}, requestId) {
+  async fetchObjectIdServices({commit}, {requestId, params, concat}) {
 
-    const object_id_services = await this.$axios.get('/objects/' + requestId + '/services', );
-    commit('setObjectIdServices', object_id_services);
+    const object_id_services = await this.$axios.get('/objects/' + requestId + '/services', {
+      params: params
+    });
+    commit('setObjectIdServices', {object_id_services: object_id_services, concat: concat});
 
   },
   async fetchObjectIdVacancies({commit}, requestId) {
@@ -84,11 +86,17 @@ export const mutations = {
   setObjectIdRequests(state, object_id_requests) {
     state.object_id_requests = object_id_requests.data.data;
   },
-  setObjectIdServices(state, object_id_services) {
-    state.object_id_services = object_id_services.data;
+  setObjectIdServices(state, {object_id_services, concat}) {
+    if(concat){
+      state.object_id_services = state.object_id_services.concat(object_id_services.data.data);
+    }
+    else{
+      state.object_id_services = state.object_id_services;
+    }
+
   },
   setObjectIdVacancies(state, object_id_vacancies) {
-    state.object_id_vacancies = object_id_vacancies.data;
+    state.object_id_vacancies = object_id_vacancies.data.data;
   },
   setObjectIdHistory(state, object_id_history) {
     state.object_id_history = object_id_history.data.data;

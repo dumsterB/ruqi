@@ -10,7 +10,7 @@
           v-model="new_rate"
           @input="updateRate"
           hide-details="auto"
-          :rules="[rules.number]")
+          :rules="[rules.number, rules.required]")
 
       .v-col(cols="4")
         .form-date
@@ -33,7 +33,8 @@
                 filled
                 outlined
                 hide-details="true"
-                readonly)
+                readonly
+                :rules="[rules.required]")
 
             v-date-picker(v-model="date" no-title @input="updateDate")
 

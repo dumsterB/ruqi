@@ -37,6 +37,7 @@ export default {
     { src: '~/plugins/ymapPlugin.js',  mode: 'client' },
     { src: '~/plugins/auth.js',  mode: 'client' },
     { src: '~/plugins/validation.js',  mode: 'client' },
+    { src: '~/plugins/vue-infinite-scroll.js',  mode: 'client', ssr: false },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

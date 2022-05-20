@@ -3,7 +3,7 @@
   .add-service
     v-row.d-flex.pa-5.align-center.action-row(no-gutters)
       v-col(cols="10")
-        .header-dialog {{ title }}
+        .header-dialog(v-if="title") {{ title }}
 
       v-col.d-flex.justify-end(cols="2")
         v-btn.btn-blue.add(text height="48" outlined @click="createServiceHandler")
@@ -37,23 +37,24 @@
             v-row(no-gutters)
               v-col(cols="12" v-if="$route.params.ServiceId")
                 .wrap-form
-                  .form-part-single.form-rate
-                    v-row.flex-column.new-rate.px-5(no-gutters v-show="isAddingRate")
-                      .form-rate-title Введите новое значение
-                      Rate( prefix_name="new" :isNew="true" @updateFiled="updateFiled" @setRate="setRate")
+                  v-form(ref="form_part_1" v-model="validRate" lazy-validation)
+                    .form-part-single.form-rate
+                      v-row.flex-column.new-rate.px-5(no-gutters v-show="isAddingRate")
+                        .form-rate-title Введите новое значение
+                        Rate( prefix_name="new" :isNew="true" @updateFiled="updateFiled" @setRate="setRate")
 
-                    v-row.flex-column.px-5(no-gutters v-show="service_id.rates && service_id.rates.length")
-                      .form-rate-title.mb-6 Следующие значения
+                  v-row.flex-column.px-5(no-gutters v-show="service_id.rates && service_id.rates.length")
+                    .form-rate-title.mb-6 Следующие значения
 
-                      div(v-if="service_id.rates && service_id.rates.length")
-                        div(v-for="(rate, index) in service_id.rates")
-                          Rate( :prefix_name="index" :isNew="false"
-                            @updateFiled="updateFiled"
-                            :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
-                            @deleteRate="deleteRate(rate.uuid)" @putRate="putRate(index, rate.uuid)")
-                          v-row
-                            v-col(cols="12")
-                              v-divider.mt-6.mb-8
+                    div(v-if="service_id.rates && service_id.rates.length")
+                      div(v-for="(rate, index) in service_id.rates")
+                        Rate( :prefix_name="index" :isNew="false"
+                          @updateFiled="updateFiled"
+                          :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
+                          @deleteRate="deleteRate(rate.uuid)" @putRate="putRate(index, rate.uuid)")
+                        v-row
+                          v-col(cols="12")
+                            v-divider.mt-6.mb-8
 
 
 </template>
@@ -71,6 +72,7 @@ export default {
   data() {
     return {
       valid: true,
+      validRate: true,
       formValues: {},
       disabled: false,
       meta: {
@@ -228,7 +230,11 @@ export default {
 
 
     closeCreateEditForm() {
-      this.$router.go(-1);
+     // this.$router.go(-1);
+      this.$router.push({
+        name: "objects-id",
+        params: { ServiceId: "",  objectId: this.$route.params.objectId, activeTab: 0 },
+      });
     },
     updateFiled(field, value) {
       this.formValues[field] = value;
@@ -265,12 +271,19 @@ export default {
       });
     },
     setRate() {
-      let object_uuid = this.$route.params.objectId,
+      let formPart = 'form_part_1',
+        object_uuid = this.$route.params.objectId,
         service_uuid = this.$route.params.ServiceId;
+      this.$refs[formPart].validate();
+      this.$nextTick(() => {
+        if (this.validRate) {
+          const newRequest = JSON.stringify(this.postRate);
+          console.log(newRequest);
+          this.createServiceRate({newRequest: newRequest, object_uuid: object_uuid, service_uuid: service_uuid});
+          this.isAddingRate = false;
+        }
+      });
 
-      const newRequest = JSON.stringify(this.postRate);
-      console.log(newRequest);
-      this.createServiceRate({newRequest: newRequest, object_uuid: object_uuid, service_uuid: service_uuid});
     },
     deleteRate(uuid) {
       let object_uuid = this.$route.params.objectId,
