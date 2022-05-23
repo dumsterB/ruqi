@@ -77,6 +77,9 @@ export const actions = {
         console.log(error);
       });
   },
+  resetObjectState ({ commit }) {
+    commit('resetObjectState');
+  },
 }
 
 export const mutations = {
@@ -101,5 +104,12 @@ export const mutations = {
   setObjectIdHistory(state, object_id_history) {
     state.object_id_history = object_id_history.data.data;
   },
+  resetObjectState(state){
+    state.object_id = [];
+    state.object_id_requests = [];
+    state.object_id_services = [];
+    state.object_id_vacancies = [];
+    state.object_id_history = [];
+  }
 }
 

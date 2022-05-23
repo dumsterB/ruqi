@@ -76,7 +76,7 @@
                   v-data-table.elevation-0(
                     :headers="headers_services",
                     :items="object_id_services",
-
+                    item-key="uuid"
                     hide-default-footer,
                     show-select,
                     :search="searchText"
@@ -179,7 +179,7 @@
                   v-data-table.elevation-0(
                     :headers="headers_vacancies",
                     :items="object_id_vacancies",
-
+                    item-key="uuid"
                     :page.sync="page",
                     :items-per-page="itemsPerPageTable",
                     hide-default-footer,
@@ -671,6 +671,7 @@ export default {
     ...mapActions("object_id", ["fetchObjectIdVacancies"]),
     ...mapActions("object_id", ["fetchObjectIdHistory"]),
     ...mapActions("object_id", ["putStatus"]),
+    ...mapActions("object_id", ["resetObjectState"]),
     ...mapActions("service_id", ["removeService"]),
     ...mapActions("vacancy_id", ["removeVacancy"]),
     ...mapActions("objects", ["removeRequest"]),
@@ -832,11 +833,15 @@ export default {
       this.tab = this.$route.params.activeTab;
     }
 
+    await this.resetObjectState();
+
     await this.fetchObjectId(this.$route.params.id);
     await this.fetchObjectIdRequest(this.$route.params.id);
     await this.fetchObjectIdServices({requestId: this.$route.params.id, params: {"page": 1}, concat: true});
     await this.fetchObjectIdVacancies(this.$route.params.id);
     await this.fetchObjectIdHistory(this.$route.params.id);
+
+    console.log('this.object_id_services --------', this.$route.params.id, this.object_id_services);
 
     this.selectStatus = this.object_id.status;
     this.$route.meta.title = this.object_id.name;
