@@ -54,18 +54,18 @@
                           :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
                           @deleteRate="deleteRate(rate.uuid)" @putRate="putRate(index, rate.uuid)")
 
-                    v-row.flex-column.px-5(no-gutters v-show="vacancy_id.rates && vacancy_id.rates.length > 1")
-                      .form-rate-title.mb-6 Следующие значения
+                  v-row.flex-column.px-5(no-gutters v-show="vacancy_id.rates && vacancy_id.rates.length > 1")
+                    .form-rate-title.mb-6 Следующие значения
 
-                      div(v-if="vacancy_id.rates && vacancy_id.rates.length > 1")
-                        div(v-for="(rate, index) in vacancy_id.rates")
-                          Rate( :prefix_name="index" :isNew="false"
-                            @updateFiled="updateFiled"
-                            :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
-                            @deleteRate="deleteRate(rate.uuid)" @putRate="putRate(index, rate.uuid)")
-                          v-row
-                            v-col(cols="12")
-                              v-divider.mt-6.mb-8
+                    div(v-if="vacancy_id.rates && vacancy_id.rates.length > 1")
+                      div(v-for="(rate, index) in vacancy_id.rates")
+                        Rate( :prefix_name="index" :isNew="false"
+                          @updateFiled="updateFiled"
+                          :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
+                          @deleteRate="deleteRate(rate.uuid)" @putRate="putRate(index, rate.uuid)")
+                        v-row
+                          v-col(cols="12")
+                            v-divider.mt-6.mb-8
 
 
 </template>
