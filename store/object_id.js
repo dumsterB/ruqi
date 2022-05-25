@@ -4,6 +4,8 @@ export const state = () => ({
   object_id_services: [],
   object_id_vacancies: [],
   object_id_history: [],
+  service_filters: [],
+  vacancy_filters: [],
 })
 
 export const getters = {
@@ -22,39 +24,47 @@ export const getters = {
   object_id_history(state) {
     return state.object_id_history;
   },
+  service_filters(state) {
+    return state.service_filters;
+  },
+  vacancy_filters(state) {
+    return state.vacancy_filters;
+  },
 }
 
 
 export const actions = {
   async fetchObjectId({commit}, requestId) {
 
-    const object_id = await this.$axios.get('/objects/' + requestId, );
+    const object_id = await this.$axios.get('/objects/' + requestId,);
     commit('setRequest', object_id);
 
   },
   async fetchObjectIdRequest({commit}, requestId) {
 
-    const object_id_requests = await this.$axios.get('/objects/' + requestId + '/tasks', );
+    const object_id_requests = await this.$axios.get('/objects/' + requestId + '/tasks',);
     commit('setObjectIdRequests', object_id_requests);
 
   },
-  async fetchObjectIdServices({commit}, {requestId, params, concat}) {
+  async fetchObjectIdServices({commit}, {requestId, params, concat, unit}) {
 
     const object_id_services = await this.$axios.get('/objects/' + requestId + '/services', {
       params: params
     });
-    commit('setObjectIdServices', {object_id_services: object_id_services, concat: concat});
+    commit('setObjectIdServices', {object_id_services: object_id_services, concat: concat, unit: unit});
 
   },
-  async fetchObjectIdVacancies({commit}, requestId) {
+  async fetchObjectIdVacancies({commit}, {requestId, params, concat, unit}) {
 
-    const object_id_vacancies = await this.$axios.get('/objects/' + requestId + '/vacancies', );
-    commit('setObjectIdVacancies', object_id_vacancies);
+    const object_id_vacancies = await this.$axios.get('/objects/' + requestId + '/vacancies',{
+      params: params
+    });
+    commit('setObjectIdVacancies', {object_id_vacancies: object_id_vacancies, concat: concat, unit: unit});
 
   },
   async fetchObjectIdHistory({commit}, requestId) {
 
-    const object_id_history = await this.$axios.get('/objects/' + requestId + '/history', );
+    const object_id_history = await this.$axios.get('/objects/' + requestId + '/history',);
     commit('setObjectIdHistory', object_id_history);
 
   },
@@ -77,7 +87,7 @@ export const actions = {
         console.log(error);
       });
   },
-  resetObjectState ({ commit }) {
+  resetObjectState({commit}) {
     commit('resetObjectState');
   },
 }
@@ -89,27 +99,38 @@ export const mutations = {
   setObjectIdRequests(state, object_id_requests) {
     state.object_id_requests = object_id_requests.data.data;
   },
-  setObjectIdServices(state, {object_id_services, concat}) {
-    if(concat){
+  setObjectIdServices(state, {object_id_services, concat, unit}) {
+    if (concat) {
       state.object_id_services = state.object_id_services.concat(object_id_services.data.data);
+    } else {
+      state.object_id_services = object_id_services.data.data;
     }
-    else{
-      state.object_id_services = state.object_id_services;
+
+    if (unit) {
+      state.service_filters = object_id_services.data.meta.filters;
     }
 
   },
-  setObjectIdVacancies(state, object_id_vacancies) {
-    state.object_id_vacancies = object_id_vacancies.data.data;
+  setObjectIdVacancies(state, {object_id_vacancies, concat, unit}) {
+    if (concat) {
+      state.object_id_vacancies = state.object_id_vacancies.concat(object_id_vacancies.data.data);
+    } else {
+      state.object_id_vacancies = object_id_vacancies.data.data;
+    }
+    if (unit) {
+      state.vacancy_filters = object_id_vacancies.data.meta.filters;
+    }
   },
   setObjectIdHistory(state, object_id_history) {
     state.object_id_history = object_id_history.data.data;
   },
-  resetObjectState(state){
+  resetObjectState(state) {
     state.object_id = [];
     state.object_id_requests = [];
     state.object_id_services = [];
     state.object_id_vacancies = [];
     state.object_id_history = [];
+    state.service_filters = [];
   }
 }
 

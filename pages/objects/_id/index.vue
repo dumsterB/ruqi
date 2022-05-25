@@ -64,8 +64,7 @@
                     v-icon mdi-plus
                     span добавить услугу
 
-                  v-icon.ml-8.mr-5 mdi-filter-outline
-                  v-icon mdi-magnify
+                  TableFilter.ml-8.mr-5(:fields="service_filters" :headers="headers_services_filter" @applyFilter="applyFilter")
 
                 .container-object-nds
                   .nds-title ндс текущий
@@ -167,8 +166,7 @@
                     v-icon mdi-plus
                     span добавить вакансию
 
-                  v-icon.ml-8.mr-5 mdi-filter-outline
-                  v-icon mdi-magnify
+                  TableFilter.ml-8.mr-5(:fields="vacancy_filters" :headers="headers_vacancies_filter" @applyFilter="applyFilter")
 
                 .container-object-nds
                   .nds-title ндс текущий
@@ -237,13 +235,14 @@
                             v-card
                               v-list-item-content.justify-start
                                 .rate-list.mx-auto.text-left
-                                  .rate-list-item(v-for="el in item.rates")
+                                  .rate-list-item(v-for="el in item.rates" :class="[el.difference == '=' ? 'current' : '']")
+                                    .rate-item-title(v-if="el.difference == '='") Текущая
                                     .rate-list-item-date {{ helpers().parseDate({ date: el.start_date, type: 'date' }) }}
                                     .rate-list-item-price(
                                       :class="[el.rate > item.rate_with_vat ? 'up' : 'down']"
                                     )
-                                      v-icon(v-if="el.rate < item.rate_with_vat") mdi-menu-down
-                                      v-icon(v-if="el.rate > item.rate_with_vat") mdi-menu-up
+                                      v-icon(v-if="el.rate < item.rate_with_vat && el.difference != '='") mdi-menu-down
+                                      v-icon(v-if="el.rate > item.rate_with_vat && el.difference != '='") mdi-menu-up
                                       span {{ el.rate }}
 
                                   .rate-list-item-edit
@@ -440,10 +439,11 @@
 <script>
 import {mapState, mapActions, mapGetters, mapMutations} from "vuex";
 import Contact from "@/components/object/Contact";
+import TableFilter from "@/components/composite/TableFilter";
 
 export default {
   props: [],
-  components: {Contact},
+  components: {Contact, TableFilter},
   data() {
     return {
       coords: [54, 39],
@@ -458,7 +458,7 @@ export default {
         "Контакты",
         "История",
       ],
-      tab: 3,
+      tab: 0,
       selectStatus: null,
       selectStatusOptions: [
         {
@@ -529,11 +529,19 @@ export default {
           class: "actions",
           align: "center",
         },
-        {text: "Описание", value: "description"},
+        {text: "Описание", value: "name"},
         {text: "Цена", value: "rate", width: "140px"},
         {text: "Цена с ндс", value: "rate_with_vat", width: "180px"},
         {text: "Норматив", value: "standart", width: "140px"},
         {text: "Юнит", value: "unit"},
+      ],
+      headers_services_filter: [
+        {field: 'name', translit: 'Имя'},
+        {field: 'description', translit: 'Описание'},
+        {field: 'standart', translit: 'Норматив'},
+        {field: 'rate', translit: 'Цена', unit: 'р.'},
+        {field: 'rate_with_vat', translit: 'Цена с ндс', unit: 'р.'},
+        {field: 'unit', translit: 'Юнит',},
       ],
       headers_vacancies: [
         {
@@ -551,9 +559,22 @@ export default {
         {text: "ставка текущая", value: "rate", width: "140px"},
         {text: "ставка плановая", value: "rate_with_vat", width: "140px"},
       ],
+      headers_vacancies_filter: [
+        {field: 'name', translit: 'Имя'},
+        {field: 'age_from', translit: 'Возраст с'},
+        {field: 'age_to', translit: 'Возраст до'},
+        {field: 'driver_license', translit: 'Права'},
+        {field: 'medical_book', translit: 'Медкнижка'},
+        {field: 'stacker_license', translit: 'Права управления штабелером'},
+        {field: 'patent', translit: 'Патент'},
+        {field: 'gender', translit: 'Пол'},
+        {field: 'rate', translit: 'Цена', unit: 'р.'},
+        {field: 'rate_with_vat', translit: 'Цена с ндс', unit: 'р.'},
+      ],
       headers_history: [
         {text: "Дата", value: "created_at", width: "120px"},
         {text: "Автор", value: "author", width: "200px"},
+        {text: "Объект", value: "object",},
         {text: "Изменение", value: "description"},
       ],
       isConfirmModal: false,
@@ -591,7 +612,7 @@ export default {
   watch: {
     options: {
       handler() {
-       // this.getDataFromApi()
+        // this.getDataFromApi()
       },
       deep: true,
     },
@@ -623,6 +644,12 @@ export default {
     },
     object_id_history() {
       return this.$store.getters["object_id/object_id_history"];
+    },
+    service_filters() {
+      return this.$store.getters["object_id/service_filters"];
+    },
+    vacancy_filters() {
+      return this.$store.getters["object_id/vacancy_filters"];
     },
     activeSelectBtnOption() {
       switch (this.activeSelectBtn) {
@@ -795,7 +822,7 @@ export default {
     },
     loadMore() {
       const params = this.fetchServiceParams;
-      this.fetchObjectIdServices({requestId: this.$route.params.id, params: params, concat: true});
+      this.fetchObjectIdServices({requestId: this.$route.params.id, params: params, concat: true, unit: false});
 
       this.fetchServiceParams.page += 1;
     },
@@ -809,13 +836,33 @@ export default {
 
       console.log(this.fetchServiceParams);
 
-      this.fetchObjectIdServices({requestId: this.$route.params.id, params: params, concat: false}).then(data => {
+      this.fetchObjectIdServices({
+        requestId: this.$route.params.id,
+        params: params,
+        concat: false,
+        unit: false
+      }).then(data => {
         this.loading = false;
         this.fetchServiceParams.page = (this.fetchServiceParams.per_page / 15).toFixed(0);
         this.fetchServiceParams.per_page = 15;
         console.log('пришел ответ')
       })
     },
+    applyFilter(filter, search) {
+      let params = {
+        "search": search,
+        "settings": {
+          "filters": filter
+        }
+      };
+      console.log('params-----', filter, params);
+      if (this.tab == 0) {
+        this.fetchObjectIdServices({requestId: this.$route.params.id, params: params, concat: false, unit: false})
+      } else if (this.tab == 1) {
+        this.fetchObjectIdVacancies({requestId: this.$route.params.id, params: params, concat: false, unit: false})
+      }
+
+    }
   },
   beforeDestroy() {
     /*console.debug(
@@ -837,8 +884,18 @@ export default {
 
     await this.fetchObjectId(this.$route.params.id);
     await this.fetchObjectIdRequest(this.$route.params.id);
-    await this.fetchObjectIdServices({requestId: this.$route.params.id, params: {"page": 1}, concat: true});
-    await this.fetchObjectIdVacancies(this.$route.params.id);
+    await this.fetchObjectIdServices({
+      requestId: this.$route.params.id,
+      params: {"page": 1},
+      concat: false,
+      unit: true
+    });
+    await this.fetchObjectIdVacancies({
+      requestId: this.$route.params.id,
+      params: {"page": 1},
+      concat: false,
+      unit: true
+    });
     await this.fetchObjectIdHistory(this.$route.params.id);
 
     console.log('this.object_id_services --------', this.$route.params.id, this.object_id_services);
@@ -993,7 +1050,7 @@ export default {
   padding: 24px 20px;
 }
 
-.card-actions-menu a{
+.card-actions-menu a {
   display: block;
 }
 
