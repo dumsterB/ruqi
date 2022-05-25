@@ -43,18 +43,31 @@
                         .form-rate-title Введите новое значение
                         Rate( prefix_name="new" :isNew="true" @updateFiled="updateFiled" @setRate="setRate")
 
-                  v-row.flex-column.px-5(no-gutters v-show="service_id.rates && service_id.rates.length")
-                    .form-rate-title.mb-6 Следующие значения
+                  v-row.flex-column.px-5.current-rate(no-gutters v-show="service_id.rates && service_id.rates.length")
+                    .form-rate-title.mb-6 Текущее значение
 
                     div(v-if="service_id.rates && service_id.rates.length")
                       div(v-for="(rate, index) in service_id.rates")
                         Rate( :prefix_name="index" :isNew="false"
+                          v-if="rate.difference == '='"
                           @updateFiled="updateFiled"
                           :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
                           @deleteRate="deleteRate(rate.uuid)" @putRate="putRate(index, rate.uuid)")
-                        v-row
-                          v-col(cols="12")
-                            v-divider.mt-6.mb-8
+
+                  v-row.flex-column.px-5(no-gutters v-show="service_id.rates && service_id.rates.length > 1")
+                    .form-rate-title.mb-6 Следующие значения
+
+                    div(v-if="service_id.rates && service_id.rates.length > 1")
+                      div(v-for="(rate, index) in service_id.rates")
+                        Rate( :prefix_name="index" :isNew="false"
+                          v-if="rate.difference != '='"
+                          @updateFiled="updateFiled"
+                          :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
+                          @deleteRate="deleteRate(rate.uuid)" @putRate="putRate(index, rate.uuid)")
+
+                          v-row
+                            v-col(cols="12")
+                              v-divider.mt-6.mb-8
 
 
 </template>
@@ -393,6 +406,11 @@ export default {
 
   .new-rate {
     background: #E5EFFF;
+    padding-bottom: 20px;
+  }
+
+  .current-rate {
+    background: #F2F4F5;
     padding-bottom: 20px;
   }
 

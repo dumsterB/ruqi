@@ -54,7 +54,10 @@ export default {
 
 <style lang="scss">
 
-.rq-topbar {}
+.rq-topbar {
+  z-index: 200;
+  position: relative;
+}
 
 /* OBJECTS STYLES START */
 .header-content-crt_exd {

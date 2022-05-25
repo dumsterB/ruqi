@@ -76,7 +76,7 @@ export const actions = {
     await this.$axios.delete('/objects/' + object_uuid + '/services/'  + service_uuid)
       .then((response) => {
         console.log(response);
-        dispatch('object_id/fetchObjectIdServices', object_uuid, {root: true});
+        dispatch('object_id/fetchObjectIdServices',  {requestId:object_uuid, params:{}, concat: false, unit: false}, {root: true});
       })
       .catch((error) => {
         console.log(error);

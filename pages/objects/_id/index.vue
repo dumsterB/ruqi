@@ -109,6 +109,9 @@
                                   v-icon mdi-close-box-outline
                                   span Удалить
 
+                    template(v-slot:item.description="{ item }")
+                      .description {{ previewText(item.description) }}
+
                     template(v-slot:item.rate="{ item }")
                       .price {{ item.rate }} p.
 
@@ -213,7 +216,7 @@
                       span {{ item.description }}
 
                     template(v-slot:item.gender="{ item }")
-                      span {{ item.gender == 'male' ? 'м' : 'ж' }}
+                      span {{ item.gender == 'male' ? 'м' : item.gender == 'female' ? 'ж' : 'все' }}
 
                     template(v-slot:item.age="{ item }")
                       span {{ item.age_from }} - {{ item.age_to }}
@@ -529,7 +532,7 @@ export default {
           class: "actions",
           align: "center",
         },
-        {text: "Описание", value: "name"},
+        {text: "Описание", value: "description", width: "200px"},
         {text: "Цена", value: "rate", width: "140px"},
         {text: "Цена с ндс", value: "rate_with_vat", width: "180px"},
         {text: "Норматив", value: "standart", width: "140px"},
@@ -553,7 +556,7 @@ export default {
           align: "center",
         },
         {text: "Вакансия", value: "name", width: "200px"},
-        {text: "Услуга", value: "service"},
+        {text: "Услуга", value: "service", width: "200px"},
         {text: "пол", value: "gender", width: "120px"},
         {text: "возраст", value: "age", width: "120px"},
         {text: "ставка текущая", value: "rate", width: "140px"},
@@ -861,7 +864,14 @@ export default {
       } else if (this.tab == 1) {
         this.fetchObjectIdVacancies({requestId: this.$route.params.id, params: params, concat: false, unit: false})
       }
-
+    },
+    previewText(value){
+      if (value && value.length > 56){
+        return value.substring(0, 56) + '...';
+      }
+      else{
+        return value;
+      }
     }
   },
   beforeDestroy() {
