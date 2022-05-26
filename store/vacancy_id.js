@@ -33,7 +33,7 @@ export const actions = {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
         setTimeout(function() {
-          //self.$router.push('/objects/' + object_uuid + '/vacancies/'+ response.data.uuid);
+          self.$router.push('/objects/' + object_uuid);
         }, 3000);
 
       })
@@ -47,6 +47,7 @@ export const actions = {
 
   },
   async putVacancy({commit, dispatch}, {body, object_uuid, vacancy_uuid}) {
+    let self= this;
     await this.$axios.put('/objects/' + object_uuid + '/vacancies/' + vacancy_uuid,
       body,
       {
@@ -61,6 +62,9 @@ export const actions = {
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
+        setTimeout(function() {
+          self.$router.push('/objects/' + object_uuid);
+        }, 3000);
       })
       .catch((error) => {
         console.log(error);
@@ -69,10 +73,10 @@ export const actions = {
 
   async removeVacancy({commit, dispatch}, {object_uuid, vacancy_uuid}) {
 
-    await this.$axios.delete('/objects/' + object_uuid + '/vacancies/'  + vacancy_uuid)
+    await this.$axios.delete('/objects/' + object_uuid + '/vacancies/' + vacancy_uuid)
       .then((response) => {
         console.log(response);
-        dispatch('object_id/fetchObjectIdVacancies', object_uuid, {root: true});
+        dispatch('object_id/fetchObjectIdVacancies', {requestId:object_uuid, params:{}, concat: false, unit: false}, {root: true});
       })
       .catch((error) => {
         console.log(error);

@@ -3,7 +3,7 @@
   .add-service
     v-row.d-flex.pa-5.align-center.action-row(no-gutters)
       v-col(cols="10")
-        .header-dialog {{ title }}
+        .header-dialog(v-if="title") {{ title }}
 
       v-col.d-flex.justify-end(cols="2")
         v-btn.btn-blue.add(text height="48" outlined @click="createVacancyHandler")
@@ -37,23 +37,35 @@
             v-row(no-gutters)
               v-col(cols="12" v-if="$route.params.VacancyId")
                 .wrap-form
-                  .form-part-single.form-rate
-                    v-row.flex-column.new-rate.px-5(no-gutters v-show="isAddingRate")
-                      .form-rate-title Введите новое значение
-                      Rate( prefix_name="new" :isNew="true" @updateFiled="updateFiled" @setRate="setRate")
+                  v-form(ref="form_part_1" v-model="validRate" lazy-validation)
+                    .form-part-single.form-rate
+                      v-row.flex-column.new-rate.px-5(no-gutters v-show="isAddingRate")
+                        .form-rate-title Введите новое значение
+                        Rate( prefix_name="new" :isNew="true" @updateFiled="updateFiled" @setRate="setRate")
 
-                    v-row.flex-column.px-5(no-gutters v-show="vacancy_id.rates && vacancy_id.rates.length")
-                      .form-rate-title Следующие значения
+                  v-row.flex-column.px-5.current-rate(no-gutters v-show="vacancy_id.rates && vacancy_id.rates.length")
+                    .form-rate-title.mb-6 Текущее значение
 
-                      div(v-if="vacancy_id.rates && vacancy_id.rates.length")
-                        div(v-for="(rate, index) in vacancy_id.rates")
-                          Rate( :prefix_name="index" :isNew="false"
-                            @updateFiled="updateFiled"
-                            :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
-                            @deleteRate="deleteRate(rate.uuid)" @putRate="putRate(index, rate.uuid)")
-                          v-row
-                            v-col(cols="12")
-                              v-divider.mt-6.mb-8
+                    div(v-if="vacancy_id.rates && vacancy_id.rates.length")
+                      div(v-for="(rate, index) in vacancy_id.rates")
+                        Rate( :prefix_name="index" :isNew="false"
+                          v-if="rate.difference == '='"
+                          @updateFiled="updateFiled"
+                          :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
+                          @deleteRate="deleteRate(rate.uuid)" @putRate="putRate(index, rate.uuid)")
+
+                  v-row.flex-column.px-5(no-gutters v-show="vacancy_id.rates && vacancy_id.rates.length > 1")
+                    .form-rate-title.mb-6 Следующие значения
+
+                    div(v-if="vacancy_id.rates && vacancy_id.rates.length > 1")
+                      div(v-for="(rate, index) in vacancy_id.rates")
+                        Rate( :prefix_name="index" :isNew="false"
+                          @updateFiled="updateFiled"
+                          :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
+                          @deleteRate="deleteRate(rate.uuid)" @putRate="putRate(index, rate.uuid)")
+                        v-row
+                          v-col(cols="12")
+                            v-divider.mt-6.mb-8
 
 
 </template>
@@ -71,6 +83,7 @@ export default {
   data() {
     return {
       valid: true,
+      validRate: true,
       formValues: {},
       disabled: false,
       meta: {
@@ -301,7 +314,7 @@ export default {
         "name": this.formValues.object_vacancy,
         "age_from": this.formValues.object_gender_start,
         "age_to": this.formValues.object_gender_end,
-        "gender": this.formValues.object_gender ,
+        "gender": this.formValues.object_gender,
         "description": this.formValues.object_desc,
         "driver_license": this.formValues.object_right,
         "medical_book": this.formValues.object_medbook,
@@ -335,7 +348,11 @@ export default {
 
 
     closeCreateEditForm() {
-      this.$router.go(-1);
+      //this.$router.go(-1);
+      this.$router.push({
+        name: "objects-id",
+        params: {ServiceId: "", objectId: this.$route.params.objectId, activeTab: 1},
+      });
     },
     updateFiled(field, value) {
       this.formValues[field] = value;
@@ -362,7 +379,7 @@ export default {
 
           if (this.$route.params.VacancyId) {
             this.putVacancy({body: newRequest, object_uuid: object_uuid, vacancy_uuid: vacancy_uuid});
-          }else{
+          } else {
             this.createVacancy({newRequest: newRequest, object_uuid: object_uuid});
           }
         } else {
@@ -372,12 +389,18 @@ export default {
       });
     },
     setRate() {
-      let object_uuid = this.$route.params.objectId,
+      let formPart = 'form_part_1',
+        object_uuid = this.$route.params.objectId,
         vacancy_uuid = this.$route.params.VacancyId;
-
-      const newRequest = JSON.stringify(this.postRate);
-      console.log(newRequest);
-      this.createVacancyRate({newRequest: newRequest, object_uuid: object_uuid, vacancy_uuid: vacancy_uuid});
+      this.$refs[formPart].validate();
+      this.$nextTick(() => {
+        if (this.validRate) {
+          const newRequest = JSON.stringify(this.postRate);
+          console.log(newRequest);
+          this.createVacancyRate({newRequest: newRequest, object_uuid: object_uuid, vacancy_uuid: vacancy_uuid});
+          this.isAddingRate = false;
+        }
+      });
     },
     deleteRate(uuid) {
       let object_uuid = this.$route.params.objectId,
@@ -402,10 +425,10 @@ export default {
     console.log('this.$route.params.VacancyId ------ ', this.$route.params.VacancyId);
 
     await this.fetcProfessions();
-    await this.fetchObjectIdServices(this.$route.params.objectId);
+    await this.fetchObjectIdServices({requestId: this.$route.params.objectId, params: {}, concat: false});
 
     this.meta.meta_object_vacancy[0].params.options = this.professions;
-    this.meta.meta_object_vacancy[1].params.options = this.object_id_services.data;
+    this.meta.meta_object_vacancy[1].params.options = this.object_id_services;
 
     if (this.$route.params.VacancyId) {
       await this.fetchVacancyId({objectId: this.$route.params.objectId, VacancyId: this.$route.params.VacancyId});
@@ -481,6 +504,10 @@ export default {
     }
   }
 
+  .object-info {
+    padding: 24px 0;
+  }
+
   .object-info-container {
     background: whitesmoke;
     padding: 24px;
@@ -497,6 +524,11 @@ export default {
 
   .new-rate {
     background: #E5EFFF;
+    padding-bottom: 20px;
+  }
+
+  .current-rate {
+    background: #F2F4F5;
     padding-bottom: 20px;
   }
 

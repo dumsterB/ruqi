@@ -10,7 +10,7 @@
           v-model="new_rate"
           @input="updateRate"
           hide-details="auto"
-          :rules="[rules.number]")
+          :rules="[rules.number, rules.required]")
 
       .v-col(cols="4")
         .form-date
@@ -33,7 +33,8 @@
                 filled
                 outlined
                 hide-details="true"
-                readonly)
+                readonly
+                :rules="[rules.required]")
 
             v-date-picker(v-model="date" no-title @input="updateDate")
 
@@ -94,10 +95,10 @@ export default {
   },
   computed: {
     rate_name() {
-      return 'object_rate_rate_'+ this.prefix_name;
+      return 'object_rate_rate_' + this.prefix_name;
     },
     date_name() {
-      return 'object_rate_date_'+ this.prefix_name;
+      return 'object_rate_date_' + this.prefix_name;
     },
     fullDate() {
       return this.dateFormatted;
@@ -170,6 +171,38 @@ export default {
 
   }
 
+
+  .v-text-field {
+    &.v-input input {
+      color: #263043;
+      font-weight: 600;
+      padding-bottom: 0;
+    }
+     &.v-input.v-input--is-readonly input {
+      color: #263043;
+      font-weight: 600;
+    }
+
+    .v-label {
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 12px;
+      color: $grey;
+
+      &.v-label--active {
+        transform: translateY(-18px) scale(1);
+      }
+    }
+
+    legend{
+      display: none;
+    }
+
+    fieldset{
+      background: #fff;
+    }
+  }
+
   .v-text-field--filled:not(.v-text-field--single-line) input {
     margin-top: 0;
   }
@@ -188,28 +221,28 @@ export default {
     }
   }
 
-  .v-icon{
+  .v-icon {
     color: $grey;
   }
 
-  a{
+  a {
     font-size: 14px;
     font-weight: 600;
     margin-right: 16px;
 
-    &:last-child{
+    &:last-child {
       margin-right: 0;
     }
 
-    &.set{
+    &.set {
       color: #9EB5C6;
     }
 
-    &.delete{
+    &.delete {
       color: #F07D7D;
     }
 
-    &.apply{
+    &.apply {
       color: #19A74A;
     }
   }
