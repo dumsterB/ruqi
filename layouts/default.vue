@@ -18,8 +18,6 @@
 import { mapActions } from "vuex";
 import Topbar from '@/components/Topbar/index.vue';
 
-import io from 'socket.io-client';
-
 export default {
   name: "default",
   components: {
