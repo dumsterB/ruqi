@@ -4,7 +4,7 @@
     <img class="img" src="@/assets/img/rocket.svg" alt="">
     <div class="information">
       <h1>Стать исполнителем</h1>
-      <h4>Ruqi.ru – сервис быстрого поиска работы на любой промежуток времени. <br> Тут рыбный текст про преимущества сервиса руки</h4>
+      <h4 class="text-grey">Ruqi.ru – сервис быстрого поиска работы на любой промежуток времени. <br> Тут рыбный текст про преимущества сервиса руки</h4>
     </div>
     <div class="actions">
       <v-btn dark elevation="0" class="btn-primary" @click="register"><span class="btn-title">зарегистрироваться</span> </v-btn>
@@ -76,5 +76,9 @@ export default {
   text-align: center;
   margin-top: 15px;
   cursor: pointer;
+}
+.text-grey{
+  color: #8692A6;
+  font-size: 14px;
 }
 </style>

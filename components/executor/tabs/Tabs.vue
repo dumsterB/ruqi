@@ -8,7 +8,7 @@
            Шаг {{item + 1}}
             <br>
            <strong class="mt-1" :class="tab.active ? '' : 'text-lightgrey'">{{tab.title}}</strong>
-            <v-progress-linear class="mt-2 " color="success" :value="tab.value"></v-progress-linear>
+            <v-progress-linear class="mt-2 mr-1 " color="success" :value="tab.value"></v-progress-linear>
           </div>
           </v-col>
         </v-row>
@@ -29,26 +29,39 @@
           </v-col>
         </v-row>
       </v-container>
-
     </div>
+    {{current_page}}
     <div class="tabs-content">
       <v-container class="tab-content">
-          <private-information @pageHandler="pageHandler"></private-information>
+          <private-information :form="form" @pageHandler="pageHandler" v-if="current_page == 0"></private-information>
+          <Sms :phone="form.phone" @pageHandler="pageHandler" v-if="current_page == 1"></Sms>
       </v-container>
     </div>
   </div>
 </template>
 
 <script>
-import PrivateInformation from "@/components/executor/tabs/PrivateInformation";
+import PrivateInformation from "./PrivateInformation";
+import Sms from './Sms'
 export default {
   components:{
-   'private-information': PrivateInformation
+   'private-information': PrivateInformation,
+    Sms
   },
   data(){
     return{
       power: 78,
-      current_page: 1,
+      current_page: 0,
+      form:{
+        name:'',
+        surname:'',
+        middle_name:'',
+        sex_options:['мужской','женский'],
+        date:'',
+        sex:'',
+        birth_date:'',
+        phone:'',
+      },
       tabs:[
         {title:'Личные данные', value:'',active:true},
         {title:'Создание пароля', value:'',active:false},
@@ -61,10 +74,14 @@ export default {
   },
   methods:{
     pageHandler(val){
-      if(val){
+      console.log(val)
+      if(val != 1){
         this.current_page = val
         this.tabs.map(ell => ell.active = false)
         this.tabs[val].active = true
+        this.$forceUpdate()
+      }else{
+        this.current_page = val
       }
       if(val == 1){
         this.tabs[0].value = 50
@@ -104,5 +121,8 @@ export default {
 }
 .mobile-linear{
   width: 40px!important;
+}
+.tabs{
+  overflow: hidden;
 }
 </style>

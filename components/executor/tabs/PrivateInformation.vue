@@ -1,6 +1,6 @@
 <template>
-<div class="private_info">
-  <v-container>
+  <div class="private_info">
+    <v-container>
       <div class="content">
       <h2>Личные данные</h2>
       <p class="text-grey">Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
@@ -121,21 +121,19 @@
 <script>
 export default {
   name: "PrivateInformation",
+  props:{
+    form:{
+      type:Object,
+      required:true,
+      default:{},
+    }
+  },
   data(){
     return{
       valid:false,
       agree:false,
       menu:'',
-      form:{
-        name:'',
-        surname:'',
-        middle_name:'',
-        sex_options:['мужской','женский'],
-        date:'',
-        sex:'',
-        birth_date:'',
-        phone:'',
-      }
+
     }
   },
   methods:{
