@@ -3,7 +3,7 @@
   <v-container>
       <div class="content">
       <h2>Личные данные</h2>
-      <p>Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
+      <p class="text-grey">Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
         <v-form ref="form_part_0" v-model="valid" lazy-validation>
           <div class="form-part">
             <div class="form-part-title">
@@ -105,10 +105,11 @@
             <p class="mt-5"> Я не могу получить код по SMS</p>
             </div>
             <p class="text-grey-checkbox">
-              Выбрав эту опцию вам будет предложено связаться с менеджером для регистрации по телефону
+              Выбрав эту опцию вам будет предложено <br>  связаться с менеджером для регистрации по телефону
             </p>
             <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
-            <v-btn dark elevation="0" class="btn-primary" @click="next('2')"><span class="btn-title">Далее</span> </v-btn>
+            <v-btn dark elevation="0" class="btn-primary" @click="next('1')"><span class="btn-title">Далее</span> </v-btn>
+            <p class="text-grey text-center">Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
           </div>
         </v-form>
       </div>
@@ -149,6 +150,7 @@ export default {
 .text-grey-checkbox{
   color: #8692A6!important;
   margin-top: -10px;
+  font-size: 14px;
 }
 .v-input__control{
   border: 1px solid lightgrey!important;
@@ -170,5 +172,9 @@ export default {
 .form-part-title{
   margin-top: -10px;
   margin-bottom: 10px;
+}
+.text-grey{
+  color: #8692A6;
+  font-size: 14px;
 }
 </style>

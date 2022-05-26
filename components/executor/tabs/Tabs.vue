@@ -1,15 +1,31 @@
 <template>
   <div class="tabs">
-    <div class="content mt-8">
+    <div class="content mt-3">
       <v-container>
-        <v-row>
+        <v-row class="desktop">
           <v-col v-for="(tab ,item) of tabs" :key="tab.title" cols="12" lg="2" md="2" xl="2">
           <div class="tab" >
            Шаг {{item + 1}}
             <br>
-           <strong class="mt-1">{{tab.title}}</strong>
-            <v-progress-linear class="mt-2 " color="success" value="0"></v-progress-linear>
+           <strong class="mt-1" :class="tab.active ? '' : 'text-lightgrey'">{{tab.title}}</strong>
+            <v-progress-linear class="mt-2 " color="success" :value="tab.value"></v-progress-linear>
           </div>
+          </v-col>
+        </v-row>
+        <v-row class="mobile">
+          <v-col v-for="(tab ,item) of tabs" :key="tab.title" v-if="tab.active"  cols="12" >
+            <div class="d-block text-center"   >
+                 Шаг {{item + 1}}
+                <br>
+                <strong class="mt-1" :class="tab.active ? '' : 'text-lightgrey'">{{tab.title}}</strong>
+            </div>
+          </v-col>
+        </v-row>
+        <v-row class="mobile">
+          <v-col v-for="(tab ,item) of tabs" :key="tab.title"  cols="2" >
+            <div class="tab d-block" >
+              <v-progress-linear class="mt-2 mobile-linear" color="success" :value="tab.value"></v-progress-linear>
+            </div>
           </v-col>
         </v-row>
       </v-container>
@@ -34,19 +50,26 @@ export default {
       power: 78,
       current_page: 1,
       tabs:[
-        {title:'Личные данные', value:''},
-        {title:'Создание пароля', value:''},
-        {title:'Соглашение ЭДО', value:''},
-        {title:'Выбор профессий', value:''},
-        {title:'Загрузка документов', value:''},
-        {title:'Платежные данные', value:''}
+        {title:'Личные данные', value:'',active:true},
+        {title:'Создание пароля', value:'',active:false},
+        {title:'Соглашение ЭДО', value:'',active:false},
+        {title:'Выбор профессий', value:'',active:false},
+        {title:'Загрузка документов', value:'',active:false},
+        {title:'Платежные данные', value:'',active:false}
       ]
     }
   },
   methods:{
     pageHandler(val){
-      this.current_page = val
-    }
+      if(val){
+        this.current_page = val
+        this.tabs.map(ell => ell.active = false)
+        this.tabs[val].active = true
+      }
+      if(val == 1){
+        this.tabs[0].value = 50
+      }
+    },
   }
 }
 </script>
@@ -60,5 +83,26 @@ export default {
 .tab-content{
   padding-left: 300px;
   padding-right: 250px;
+}
+.mobile{
+  display: none;
+}
+@media (max-width: 1000px) {
+  .tab-content{
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .desktop{
+    display: none;
+  }
+  .mobile{
+    display: flex!important;
+  }
+}
+.text-lightgrey{
+ color: #9398A1
+}
+.mobile-linear{
+  width: 40px!important;
 }
 </style>
