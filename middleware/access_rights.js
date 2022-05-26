@@ -14,6 +14,7 @@ export default function access_rights ({ route, store, redirect}){
     if(route.name != 'index'
       && route.name != 'signin'
       && route.name !== 'auth-signup-executor'
+      && route.name !== 'auth-signup-executor-registration'
       && !(user.visibility_sections.includes(route.name) || subroute)){
       redirect('/');
     }

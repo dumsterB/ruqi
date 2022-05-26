@@ -1,13 +1,13 @@
 <template>
 <div class="auth">
-  <div class="form">
+  <div class="content">
     <img class="img" src="@/assets/img/rocket.svg" alt="">
-    <div class="info">
+    <div class="information">
       <h1>Стать исполнителем</h1>
       <h4>Ruqi.ru – сервис быстрого поиска работы на любой промежуток времени. <br> Тут рыбный текст про преимущества сервиса руки</h4>
     </div>
     <div class="actions">
-      <v-btn dark elevation="0" class="btn-primary"><span class="btn-title">зарегистрироваться</span> </v-btn>
+      <v-btn dark elevation="0" class="btn-primary" @click="register"><span class="btn-title">зарегистрироваться</span> </v-btn>
       <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Войти</span> </v-btn>
       <p class="signin-text">Уже зарегистрировались? Нажимайте войти</p>
     </div>
@@ -17,7 +17,16 @@
 
 <script>
 export default {
-  name: "Auth"
+  name: "Auth",
+  data(){
+    return{
+    }
+  },
+  methods:{
+    register(){
+      this.$router.push('/auth/signup/executor/registration')
+    }
+  }
 }
 </script>
 
@@ -35,7 +44,7 @@ export default {
   justify-content: center;
   display: flex;
 }
-.info{
+.information{
   text-align: center;
 }
 .actions{

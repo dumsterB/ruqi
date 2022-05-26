@@ -7,6 +7,7 @@
   </header>
    <main>
      <auth></auth>
+     <Nuxt />
    </main>
  </div>
 </template>
