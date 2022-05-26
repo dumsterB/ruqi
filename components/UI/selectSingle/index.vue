@@ -13,7 +13,7 @@
     single-line
     outlined
     filled
-    @change="handlers().onSelectChange( { $event, id } )"
+    @change="handlers().onSelectChange({ $event, id })"
     hide-details="true"
     :item-color="'#000000'"
   )
@@ -22,52 +22,50 @@
 
 <script>
 export default {
-  props : {
-    'id' : {
-      type : String,
-      required : true,
+  props: {
+    'id': {
+      type: String,
+      required: true,
     },
 
-    'title' : {
-      type : String,
-      default : "",
+    'title': {
+      type: String,
+      default: "",
     },
 
-    'items' : {
-      type : Array,
-      required : true,
+    'items': {
+      type: Array,
+      required: true,
     },
 
-    'value' : {
-      type : String,
-      default : "",
+    'value': {
+      type: String,
+      default: "",
     },
   },
 
-  computed : {},
+  computed: {},
 
-  data ()
-  {
+  data() {
     return {
-      selected : null,
+      selected: null,
     }
   },
 
-  methods : {
-    getters () {},
+  methods: {
+    getters() { },
 
-    handlers ()
-    {
+    handlers() {
       return {
-        onSelectChange : ( payload = {} ) => {
-          console.log( 'onSelectChange', payload);
+        onSelectChange: (payload = {}) => {
+          console.log('onSelectChange', payload);
 
           this.$emit(
             'change',
 
             {
-              ctx : payload.$event,
-              id : payload.id,
+              ctx: payload.$event,
+              id: payload.id,
             }
           );
         },
@@ -75,28 +73,26 @@ export default {
     }
   },
 
-  mounted ()
-  {
-    console.log( 'items vv', this.items );
+  mounted() {
+    console.log('items vv', this.items);
   },
 }
 </script>
 
 <style lang="scss">
+.select-single {
 
-.select-single
-{
   /* OBJECTS STYLES START */
-    .select-single_titel
-    {
-      font-style: normal;
-      font-weight: 600;
-      font-size: 16px;
-      line-height: 125%;
-      color: #263043;
-      margin-bottom: 16px;
-    }
+  .select-single_titel {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 125%;
+    color: #263043;
+    margin-bottom: 16px;
+    white-space: nowrap;
+  }
+
   /* OBJECTS STYLES END */
 }
-
 </style>

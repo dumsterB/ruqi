@@ -22,7 +22,6 @@ export default {
     ]
   },
 
-
   // Customize the progress-bar color
   loading: { color: 'blue' },
 
@@ -34,9 +33,10 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    { src: '~/plugins/ymapPlugin.js',  mode: 'client' },
-    { src: '~/plugins/auth.js',  mode: 'client' },
-    { src: '~/plugins/validation.js',  mode: 'client' },
+    { src: '~/plugins/ymapPlugin.js', mode: 'client' },
+    { src: '~/plugins/auth.js', mode: 'client' },
+    { src: '~/plugins/validation.js', mode: 'client' },
+    { src: '@/plugins/socket', ssr: false, },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -59,14 +59,14 @@ export default {
     treeShake: true
   },
 
-  auth : {
-    redirect : {
-      home : '/',
+  auth: {
+    redirect: {
+      home: '/',
     },
   },
 
-  router : {
-    middleware : [ 'check_auth', 'access_rights' ],
+  router: {
+    middleware: ['check_auth', 'access_rights'],
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -75,6 +75,10 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {
-  }
+  build: {},
+
+  env: {
+    WSS_URL: process.env.WSS_URL,
+    WSS_PATH: process.env.WSS_PATH,
+  },
 }

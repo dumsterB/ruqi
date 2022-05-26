@@ -13,6 +13,7 @@ export default function access_rights ({ route, store, redirect}){
     if(route.name != 'index'
       && route.name != 'signin'
       && !(user.visibility_sections.includes(route.name) || subroute)){
+        console.debug('Access rights');
       redirect('/');
     }
   }

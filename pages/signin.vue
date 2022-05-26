@@ -1,5 +1,4 @@
 <template lang="pug">
-
 .login-page
   .wrapper
     .wrapper-x
@@ -29,13 +28,13 @@
                       .titel Войти в систему
 
             .password-forgot Забыли пароль?  Восстановить
-
 </template>
 
 <script>
 
   export default {
 
+    layout: 'empty',
     components : {},
 
     data ()
