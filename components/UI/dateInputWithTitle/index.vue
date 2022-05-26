@@ -119,6 +119,7 @@ export default {
       line-height: 125%;
       color: #263043;
       margin-bottom: 16px;
+      white-space: nowrap;
     }
   /* OBJECTS STYLES END */
 

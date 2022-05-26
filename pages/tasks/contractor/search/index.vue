@@ -1,8 +1,12 @@
 <template lang="pug">
 .rq-tasks__executor-search
   mContentDisplayController
-  TasksFilter
-  ContentDisplayController
+  h1.desktop Поиск работы
+  TasksFilter.desktop
+
+  .desktop
+    ContentDisplayController
+
   mTasksFilter
   TasksList
   mTasksList
@@ -45,6 +49,20 @@ export default {
 
 <style lang="scss">
 .rq-tasks__executor-search {
+  .desktop {
+    display: block;
+  }
+  .mobile {
+    display: none;
+  }
 
+  @media screen and (max-width: 768px) {
+    .desktop {
+      display: none;
+    }
+    .mobile {
+      display: block;
+    }
+  }
 }
 </style>

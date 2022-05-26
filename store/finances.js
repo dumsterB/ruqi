@@ -14,23 +14,22 @@ export const getters = {
 
 
 export const actions = {
-  async fetchFinances({commit}, params) {
+  async fetchFinances({ commit }, params) {
 
     const finances = await this.$axios.get('user/finances', {
       params: params
     });
-    commit('setFinances', finances)
+
+    commit('setFinances', finances);
 
   },
-  async fetchSummary({commit}, params) {
-
+  async fetchSummary({ commit }, params) {
     const summary = await this.$axios.get('user/summary', {
       params: params
     });
-    commit('setSummary', summary)
 
+    commit('setSummary', summary);
   },
-
 }
 
 export const mutations = {

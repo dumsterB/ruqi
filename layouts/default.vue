@@ -1,32 +1,17 @@
-<template>
-  <div class="ruqi">
-    <v-app app>
-      <v-main>
-        <v-container>
-          <v-navigation-drawer
-            v-if="!isLoginPage()"
-            width="98"
-            color="blue"
-            app
-          >
-            <div
-              class="wrapper-main-menu d-flex flex-column justify-space-between"
-            >
-              <Navbar />
-              <Settingsnav />
-            </div>
-          </v-navigation-drawer>
-          <div>
-            <Topbar v-if="!isLoginPage()" />
-            <div class="content">
-              <Nuxt />
-              <Alert :requestSuccess="requestSuccess" />
-            </div>
-          </div>
-        </v-container>
-      </v-main>
-    </v-app>
-  </div>
+<template lang="pug">
+.ruqi
+  v-app(app)
+    v-main
+      v-container
+        v-navigation-drawer(v-if="!isLoginPage()" width="98" color="blue" app)
+          div(class="wrapper-main-menu d-flex flex-column justify-space-between")
+            Navbar
+            Settingsnav
+        div
+          Topbar(v-if="!isLoginPage()")
+          .content
+            Nuxt
+            Alert(:requestSuccess="requestSuccess")
 </template>
 
 <script>
@@ -36,11 +21,14 @@ import Topbar from '@/components/Topbar/index.vue';
 export default {
   name: "default",
   components: {
-    Topbar
+    Topbar,
   },
   computed: {
     requestSuccess() {
       return this.$store.getters["response/requestSuccess"];
+    },
+    authorized() {
+      return this.$store.getters["user/userAuthorizationStatus"];
     },
   },
   watch: {
@@ -108,6 +96,13 @@ export default {
   mounted() {
     //this.initBreadcrumbs(this.$route.fullPath);
   },
+  async created() {
+    await this.$socket.setQuery({
+      ...this.$socket.query,
+      token: JSON.parse(localStorage.getItem('ruqi_auth_data')).token,
+    });
+    this.$socket.connect();
+  },
 };
 </script>
 
@@ -149,6 +144,7 @@ html {
     }
   }
 }
+
 /* OBJECTS STYLES END */
 
 /* MIXINS STYLES START */
@@ -160,5 +156,6 @@ html {
     background-color: #f2faff;
   }
 }
+
 /* MIXINS STYLES END */
 </style>

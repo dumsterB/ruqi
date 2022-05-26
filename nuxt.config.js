@@ -22,7 +22,6 @@ export default {
     ]
   },
 
-
   // Customize the progress-bar color
   loading: { color: 'blue' },
 
@@ -39,6 +38,7 @@ export default {
     { src: '~/plugins/validation.js',  mode: 'client' },
     { src: '~/plugins/vuetify.js',  mode: 'client' },
     { src: '~/plugins/vue-infinite-scroll.js',  mode: 'client', ssr: false },
+    { src: '~/plugins/socket', ssr: false, },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -61,14 +61,14 @@ export default {
     treeShake: true
   },
 
-  auth : {
-    redirect : {
-      home : '/',
+  auth: {
+    redirect: {
+      home: '/',
     },
   },
 
-  router : {
-    middleware : [ 'check_auth', 'access_rights' ],
+  router: {
+    middleware: ['check_auth', 'access_rights'],
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -77,6 +77,10 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {
-  }
+  build: {},
+
+  env: {
+    WSS_URL: process.env.WSS_URL,
+    WSS_PATH: process.env.WSS_PATH,
+  },
 }
