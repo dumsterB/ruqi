@@ -95,11 +95,17 @@ export const actions = {
 
   },
   async removeRequest({commit, dispatch}, requestID) {
-
+    let self= this;
     await this.$axios.delete('/objects/'+requestID)
       .then((response) => {
-        console.log(response);
         dispatch('fetchObjects');
+        commit('response/setSuccess', {type: 'success', text: 'Объект удален', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+        setTimeout(function() {
+          self.$router.push('/objects/');
+        }, 3000);
 
       })
       .catch((error) => {

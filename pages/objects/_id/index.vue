@@ -716,6 +716,7 @@ export default {
     ...mapActions("vacancy_id", ["removeVacancy"]),
     ...mapActions("objects", ["removeRequest"]),
     ...mapActions("breadcrumbs", ["initBreadcrumbs", "setBreadcrumbs"]),
+    ...mapActions('objects', ['removeRequest',]),
 
     openRequest(id) {
       this.$router.push("/tasks/" + id);
@@ -793,11 +794,9 @@ export default {
         this.tab = 5;
       }
     },
-    confirmRemove(confirm, uuid) {
+    confirmRemove(confirm) {
       if (confirm) {
-        console.log("удаляю");
-      } else {
-        console.log("отмена");
+        this.removeRequest(this.object_id.uuid);
       }
       this.isConfirmModal = false;
     },
@@ -821,10 +820,13 @@ export default {
       }
     },
     loadMore() {
+      this.fetchServiceParams.page += 1;
+      this.fetchServiceParams.sort = this.options.sortBy[0];
+      this.fetchServiceParams.order = this.options.sortDesc[0] ? 'asc' : 'desc';
+
       const params = this.fetchServiceParams;
       this.fetchObjectIdServices({requestId: this.$route.params.id, params: params, concat: true, unit: false});
 
-      this.fetchServiceParams.page += 1;
     },
     getDataFromApi(fetchParams, watcherParams, action) {
       this.loading = true;
