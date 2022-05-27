@@ -35,6 +35,7 @@
           <private-information @checkboxHandler="checkboxHandler" :agree="agree" :form="form" @pageHandler="pageHandler" v-if="current_page == 0"></private-information>
           <Sms :agree="agree" :email="form.email" :phone="form.phone" @pageHandler="pageHandler" v-if="current_page == 1"></Sms>
           <create-password :password="password"  @pageHandler="pageHandler"  v-if="current_page == 2" ></create-password>
+        <electronic-document  @pageHandler="pageHandler" v-if="current_page == 3"></electronic-document>
       </v-container>
     </div>
   </div>
@@ -44,11 +45,13 @@
 import PrivateInformation from "./PrivateInformation";
 import Sms from './Sms'
 import CreatePassword from "@/components/pages/executor/tabs/CreatePassword";
+import ElectronicDocument from "@/components/pages/executor/tabs/ElectronicDocument";
 export default {
   components:{
      'private-information': PrivateInformation,
       Sms,
-     'create-password':CreatePassword
+     'create-password':CreatePassword,
+     'electronic-document':ElectronicDocument
   },
   data(){
     return{
