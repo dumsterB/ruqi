@@ -64,7 +64,7 @@
                     v-icon mdi-plus
                     span добавить услугу
 
-                  TableFilter.ml-8(:fields="service_filters" :headers="headers_services_filter" @applyFilter="applyFilter('fetchServiceParams', 'options', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
+                  TableFilter.ml-8(v-if="service_filters.length" :fields="service_filters" :headers="headers_services_filter" @applyFilter="applyFilter('fetchServiceParams', 'options', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
 
                 .filter-row-right
                   .container-object-nds
@@ -170,7 +170,7 @@
                     v-icon mdi-plus
                     span добавить вакансию
 
-                  TableFilter.ml-8.mr-5(:fields="vacancy_filters" :headers="headers_vacancies_filter" @applyFilter="applyFilter('fetchVacancyParams', 'headerOptionsVacancy', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
+                  TableFilter.ml-8.mr-5(v-if="vacancy_filters.length" :fields="vacancy_filters" :headers="headers_vacancies_filter" @applyFilter="applyFilter('fetchVacancyParams', 'headerOptionsVacancy', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
 
                 .filter-row-right
                   .container-object-nds
@@ -696,25 +696,6 @@ export default {
           return {};
       }
     },
-    mapCenter() {
-      return [this.object_id.lat, this.object_id.lon];
-    },
-    mapMarker() {
-      return [
-        {
-          geometry: {
-            type: "Point",
-            coordinates: [this.object_id.lat, this.object_id.lon],
-          },
-          properties: {
-            hintContent: this.object_id.name,
-          },
-          uuid: this.object_id.uuid,
-          info: this.object_id.description,
-        },
-      ];
-    },
-
     isActiveAddVacancy() {
       if (this.object_id_services && this.object_id_services.length) {
         return false;
@@ -810,9 +791,6 @@ export default {
         this.isConfirmModal = true;
       } else if (val == "history") {
         this.tab = 5;
-      } else if (val == "history") {
-        this.changeStatus(val);
-        this.selectStatus = val;
       }
     },
     confirmRemove(confirm, uuid) {
@@ -946,8 +924,6 @@ export default {
       unit: true
     });
     await this.fetchObjectIdHistory(this.$route.params.id);
-
-    console.log('this.object_id_services --------', this.$route.params.id, this.object_id_services);
 
     this.selectStatus = this.object_id.status;
     this.$route.meta.title = this.object_id.name;

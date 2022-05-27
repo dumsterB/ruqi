@@ -376,7 +376,8 @@ export default {
           const newRequest = JSON.stringify(this.postBody);
           console.log(newRequest);
 
-          this.createVacancy({newRequest: newRequest, object_uuid: this.object_uuid});
+          this.putVacancy({body: newRequest, object_uuid: this.object_uuid, vacancy_uuid: this.vacancy_uuid});
+
         } else {
           let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
           this.$vuetify.goTo(el);
@@ -391,7 +392,11 @@ export default {
         if (this.validRate) {
           const newRequest = JSON.stringify(this.postRate);
           console.log(newRequest);
-          this.createVacancyRate({newRequest: newRequest, object_uuid: this.object_uuid, vacancy_uuid: this.vacancy_uuid});
+          this.createVacancyRate({
+            newRequest: newRequest,
+            object_uuid: this.object_uuid,
+            vacancy_uuid: this.vacancy_uuid
+          });
           this.isAddingRate = false;
         }
       });
@@ -401,13 +406,18 @@ export default {
     },
     putRate(index, uuid) {
       let putRate = {
-          "rate": this.formValues['object_rate_rate_' + index],
-          "start_date": this.formValues['object_rate_date_' + index],
-        };
+        "rate": this.formValues['object_rate_rate_' + index],
+        "start_date": this.formValues['object_rate_date_' + index],
+      };
 
       const newRequet = JSON.stringify(putRate);
       console.log(newRequet);
-      this.putVacancyRate({body: newRequet, object_uuid: this.object_uuid, vacancy_uuid: this.vacancy_uuid, rate_uuid: uuid});
+      this.putVacancyRate({
+        body: newRequet,
+        object_uuid: this.object_uuid,
+        vacancy_uuid: this.vacancy_uuid,
+        rate_uuid: uuid
+      });
     }
   },
   async created() {

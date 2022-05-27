@@ -9,7 +9,7 @@
       v-model="isOpened"
     )
       template(v-slot:activator="{ on }")
-        v-btn(icon, v-on="on")
+        v-btn.filter-btn(icon, v-on="on" :class="{ active: isApplyFilter }")
           v-icon(color="#7A91A9") mdi-filter-outline
 
       v-card
@@ -85,28 +85,28 @@ export default {
       panel: [],
       filter: [],
       searchText: '',
+      isApplyFilter: false,
     }
   },
   computed: {
     selected_fields(){
       let filters = [];
-      for (let i = 0; i < this.fields.length; i++) {
-        if(this.fields[i].type != 'string' && this.fields[i].type != 'text' && this.fields[i].type != 'boolean'){
-          filters.push(this.fields[i]);
+      for (let i = 0; i < this.filter.length; i++) {
+        if(this.filter[i].type != 'string' && this.filter[i].type != 'text' && this.filter[i].type != 'boolean'){
+          filters.push(this.filter[i]);
         }
       }
       return filters;
     },
     check_fields(){
       let filters = [];
-      for (let i = 0; i < this.fields.length; i++) {
-        if(this.fields[i].type == 'boolean'){
-          filters.push(this.fields[i]);
+      for (let i = 0; i < this.filter.length; i++) {
+        if(this.filter[i].type == 'boolean'){
+          filters.push(this.filter[i]);
         }
       }
       return filters;
     },
-
   },
   methods: {
     nameComponent(type) {
@@ -140,7 +140,7 @@ export default {
       console.log('field, value, index ---- ', field, value, index, this.selected_fields);
     },
     applyFilter() {
-      console.log('this.filter-----', this.filter)
+
       const sentFilter = [];
       for (let i = 0; i < this.selected_fields.length; i++) {
         if(this.selected_fields[i].value){
@@ -148,7 +148,13 @@ export default {
         }
       }
       this.$emit('applyFilter', sentFilter, this.searchText);
+
       this.isOpened = false;
+
+      if(sentFilter.length){
+        this.isApplyFilter = true;
+      }
+
     },
     clearFields() {
       this.$refs.form.reset();
@@ -156,6 +162,9 @@ export default {
       for (let i = 0; i < this.filter.length; i++) {
         this.filter[i].value = null;
       }
+      this.$emit('applyFilter', [], this.searchText);
+      this.hideFilter();
+      this.isApplyFilter = false;
     },
     hideFilter() {
       this.isOpened = false;
@@ -174,21 +183,17 @@ export default {
       this.applyFilter();
     },
   },
-  mounted() {
-
-   // console.log('this.filters ------=============----', this.filters);
-
-  },
-  watch: {
-    fields: function () {
-      for (let i = 0; i < this.fields.length; i++) {
-        this.filter[i] = {
+  async created() {
+    for (let i = 0; i < this.fields.length; i++) {
+      this.filter.push(
+        {
           "type": this.fields[i].type,
           "field": this.fields[i].field,
-          "value": null
+          "value": null,
+          "options": this.fields[i].options,
         }
-      }
-    },
+      )
+    }
   },
 }
 </script>
@@ -199,6 +204,12 @@ export default {
 
 .ruqi-table-filter {
   flex: 1;
+
+  .filter-btn {
+    &.active {
+      background: #e2ecf5;
+    }
+  }
 
 }
 

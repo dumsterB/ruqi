@@ -51,7 +51,6 @@ export default {
           }
         },
       },
-
     }
   },
   computed: {},
@@ -75,8 +74,6 @@ export default {
           }
         ]
       }
-
-      console.log(value);
 
       this.$emit('input', value);
     }

@@ -8,8 +8,8 @@
       v-model="value"
       @input="$emit('input', value)"
       hide-details="auto"
-      :class="{'number': params.type_value == 'integer'}"
-      :rules="[params.type_value == 'integer' ? rules.number : '']"
+      :class="{'number': params.type == 'integer'}"
+      :rules="[params.type == 'integer' ? rules.number : '']"
     )
 
 </template>
