@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap-search">
+  <div class="wrap-search-filter">
     <v-text-field
       v-model="newSearchText"
       prepend-inner-icon="mdi-magnify"
@@ -8,6 +8,10 @@
       outlined
       @input="$emit('updateSearchText', newSearchText)"
       hide-details="true"
+      full-width
+      @blur="$emit('blurSearch')"
+      @focus="$emit('focusSearch')"
+      clearable
     ></v-text-field>
   </div>
 
@@ -29,12 +33,19 @@ export default {
 @import '/assets/scss/colors.scss';
 
 .ruqi {
-  .wrap-search {
+  .wrap-search-filter {
+    flex: 1;
+
     .v-input {
-      max-width: 264px;
 
       fieldset {
-        border-radius: 50px;
+        border: none;
+        border-radius: 30px;
+      }
+
+      .v-input__slot {
+        border-radius: 30px;
+
       }
 
       .v-label {
@@ -43,13 +54,35 @@ export default {
         align-items: center;
         height: 100%;
       }
+
+      &:not(.v-input--is-focused ){
+        .v-input__slot {
+
+          .v-input__icon--clear {
+            display: none;
+          }
+        }
+      }
+
+      &.v-input--is-focused {
+        .v-input__slot {
+          background: #F1F1F1;
+        }
+
+      }
     }
+
     .v-text-field--full-width .v-input__prepend-outer,
     .v-text-field--full-width .v-input__prepend-inner,
     .v-text-field--enclosed .v-input__prepend-outer,
     .v-text-field--enclosed .v-input__prepend-inner {
       margin-top: 10px;
     }
+
+    .v-icon {
+      color: #7A91A9;
+    }
+
   }
 }
 

@@ -3,7 +3,7 @@
   .add-service
     v-row.d-flex.pa-5.align-center.action-row(no-gutters)
       v-col(cols="10")
-        .header-dialog Добавить услугу
+        .header-dialog(v-if="title") {{ title }}
 
       v-col.d-flex.justify-end(cols="2")
         v-btn.btn-blue.add(text height="48" outlined @click="createServiceHandler")
@@ -25,19 +25,67 @@
                       FormBuilder(:meta="meta.meta_object_service" @updateFiled="updateFiled")
                       v-btn.btn-blue.mt-6(text :disabled="disabled" height="48" outlined  @click="createServiceHandler") {{ submitBtnText }}
 
+            v-row.object-info-row-rate
+              v-col(cols="12")
+                .wrap-form
+                  v-divider.my-8
+                  .form-part-title Ставки
+                  a.add-field.my-8(@click.prevent="isAddingRate = true")
+                    v-icon(color="#0082DE" size="24") mdi-plus-circle
+                    span Добавить плановое значение
+
+            v-row(no-gutters)
+              v-col(cols="12")
+                .wrap-form
+                  v-form(ref="form_part_1" v-model="validRate" lazy-validation)
+                    .form-part-single.form-rate
+                      v-row.flex-column.new-rate.px-5(no-gutters v-show="isAddingRate")
+                        .form-rate-title Введите новое значение
+                        Rate( prefix_name="new" :isNew="true" @updateFiled="updateFiled" @setRate="setRate")
+
+                  v-row.flex-column.px-5.current-rate(no-gutters v-show="service_id.rates && service_id.rates.length")
+                    .form-rate-title.mb-6 Текущее значение
+
+                    div(v-if="service_id.rates && service_id.rates.length")
+                      div(v-for="(rate, index) in service_id.rates")
+                        Rate( :prefix_name="index" :isNew="false"
+                          v-if="rate.difference == '='"
+                          @updateFiled="updateFiled"
+                          :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
+                          @deleteRate="deleteRate(rate.uuid)" @putRate="putRate(index, rate.uuid)")
+
+                  v-row.flex-column.px-5(no-gutters v-show="service_id.rates && service_id.rates.length > 1")
+                    .form-rate-title.mb-6 Следующие значения
+
+                    div(v-if="service_id.rates && service_id.rates.length > 1")
+                      div(v-for="(rate, index) in service_id.rates")
+                        Rate( :prefix_name="index" :isNew="false"
+                          v-if="rate.difference != '='"
+                          @updateFiled="updateFiled"
+                          :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
+                          @deleteRate="deleteRate(rate.uuid)" @putRate="putRate(index, rate.uuid)")
+
+                        v-row( v-if="rate.difference != '='")
+                          v-col(cols="12")
+                            v-divider.mt-6.mb-8
+
+
 </template>
 
 <script>
 import Vue from "vue";
+import Rate from "@/components/composite/Rate";
 import {mapActions} from "vuex";
 
 export default {
   meta: {
-    title: "Добавить услугу",
+    title: "Услуга",
   },
+  components: {Rate},
   data() {
     return {
       valid: true,
+      validRate: true,
       formValues: {},
       disabled: false,
       meta: {
@@ -135,6 +183,8 @@ export default {
           ],
         ],
       },
+      rates: [],
+      isAddingRate: false
     }
   },
   computed: {
@@ -144,8 +194,17 @@ export default {
     service_id() {
       return this.$store.getters['service_id/service_id'];
     },
+    object_uuid() {
+      return this.$route.path.substr(9, 36);
+    },
+    service_uuid() {
+      return this.$route.params.id;
+    },
+    title() {
+      return 'Карточка услуги: ' + this.service_id.name;
+    },
     submitBtnText() {
-      return 'создать услугу'
+      return 'сохранить изменения';
     },
     postBody() {
       let postBody = {
@@ -161,6 +220,14 @@ export default {
       console.log(postBody);
       return postBody;
     },
+    postRate() {
+      let postRate = {
+        "rate": this.formValues.object_rate_rate_new,
+        "start_date": this.formValues.object_rate_date_new,
+      };
+      console.log(postRate);
+      return postRate;
+    },
 
   },
   methods: {
@@ -168,39 +235,83 @@ export default {
     ...mapActions('service_id', ['createService',]),
     ...mapActions('service_id', ['putService',]),
     ...mapActions('service_id', ['fetchServiceId',]),
+    ...mapActions('rate', ['createServiceRate',]),
+    ...mapActions('rate', ['putServiceRate',]),
+    ...mapActions('rate', ['removeServiceRate',]),
 
 
     closeCreateEditForm() {
-     // this.$router.go(-1);
-      this.$router.push({
-        name: "objects-id",
-        params: { ServiceId: "",  objectId: this.$route.params.objectId, activeTab: 0 },
-      });
+      this.$router.go(-1);
     },
     updateFiled(field, value) {
       this.formValues[field] = value;
       console.log(field, value);
     },
+    updateFiledinArray(index_block, field, value, index, parent_array) {
+      this.formValues[field] = value;
+      this.meta[parent_array][index_block][index].value = value;
+    },
+    removeItem(index, array) {
+      if (index != 0 || this.meta[array].length > 1) {
+        this.meta[array].splice(index, 1);
+      }
+    },
     createServiceHandler() {
-      let formPart = 'form_part_0',
-        object_uuid = this.$route.params.objectId;
+      let formPart = 'form_part_0';
 
       this.$refs[formPart].validate();
 
       this.$nextTick(() => {
         if (this.valid) {
           const newRequest = JSON.stringify(this.postBody);
-          this.createService({newRequest: newRequest, object_uuid: object_uuid});
+          console.log(newRequest);
+          this.putService({body: newRequest, object_uuid: this.object_uuid, service_uuid: this.service_uuid});
+        } else {
+          let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
+          this.$vuetify.goTo(el);
         }
       });
     },
+    setRate() {
+      let formPart = 'form_part_1';
+      this.$refs[formPart].validate();
+      this.$nextTick(() => {
+        if (this.validRate) {
+          const newRequest = JSON.stringify(this.postRate);
+          console.log(newRequest);
+          this.createServiceRate({newRequest: newRequest, object_uuid: this.object_uuid, service_uuid: this.service_uuid});
+          this.isAddingRate = false;
+        }
+      });
+
+    },
+    deleteRate(uuid) {
+      this.removeServiceRate({object_uuid: this.object_uuid, service_uuid: this.service_uuid, rate_uuid: uuid});
+    },
+    putRate(index, uuid) {
+      let putRate = {
+          "rate": this.formValues['object_rate_rate_' + index],
+          "start_date": this.formValues['object_rate_date_' + index],
+        };
+
+      const newRequet = JSON.stringify(putRate);
+      console.log(newRequet);
+      this.putServiceRate({body: newRequet, object_uuid: this.object_uuid, service_uuid: this.service_uuid, rate_uuid: uuid});
+    }
   },
   async created() {
 
     await this.fetch();
     this.meta.meta_object_service[0].params.options = this.specializations;
+    await this.fetchServiceId({objectId: this.object_uuid, ServiceId: this.service_uuid});
 
-    this.$route.meta.title = 'Добавить услугу';
+    this.meta.meta_object_service[0].value = this.service_id.specialization.uuid;
+    this.meta.meta_object_service[1].value = this.service_id.name;
+    this.meta.meta_object_service[2].value = this.service_id.description;
+    this.meta.meta_object_service[3].value = this.service_id.unit;
+    this.meta.meta_object_service[4].value = this.service_id.standart;
+
+    this.$route.meta.title = 'Карточка услуги: ' + this.service_id.name;
 
     this.meta.meta_object_service.map(f => {
       Vue.set(this.formValues, f.name, f.value);
@@ -218,7 +329,7 @@ export default {
 
 @import '/assets/scss/colors.scss';
 
-.ruqi.page--objects-id-service {
+.ruqi.page--objects-id-service-id {
   padding: 0;
   background: #F5F5F5;
 
@@ -251,7 +362,7 @@ export default {
     }
   }
 
-  .object-info{
+  .object-info {
     padding: 24px 0;
   }
 
@@ -264,6 +375,20 @@ export default {
     }
   }
 
+  .form-rate-title {
+    font-weight: 600;
+    margin: 16px 0;
+  }
+
+  .new-rate {
+    background: #E5EFFF;
+    padding-bottom: 20px;
+  }
+
+  .current-rate {
+    background: #F2F4F5;
+    padding-bottom: 20px;
+  }
 
 }
 

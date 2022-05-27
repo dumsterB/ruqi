@@ -1,18 +1,15 @@
-<template>
-  <div class="wrap-period">
-    <div class="period-title">Период:</div>
-    <v-menu
-      ref="menu1"
+<template lang="pug">
+  .ruqi-table-filter-date-period
+    v-menu(ref="menu1"
       v-model="menu"
       :close-on-content-click="false"
       transition="scale-transition"
       offset-y
       max-width="290px"
-      min-width="290px"
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <v-text-field
-          v-model="dateRangeText"
+      min-width="290px")
+
+      template(v-slot:activator="{ on, attrs }")
+        v-text-field(v-model="dateRangeText"
           name="name"
           prepend-icon="mdi-calendar"
           v-bind="attrs"
@@ -21,33 +18,16 @@
           single-line
           outlined
           hide-details="true"
-          readonly
-        ></v-text-field>
-      </template>
-      <v-date-picker
-        v-model="dates"
-        no-title
-        range
-      >
-        <v-spacer></v-spacer>
-        <v-btn
-          text
-          color="primary"
-          @click="menu = false"
-        >
-          Отмена
-        </v-btn>
-        <v-btn
-          text
-          color="primary"
-          @click="updateDate"
-        >
-          OK
-        </v-btn>
+          readonly)
 
-      </v-date-picker>
-    </v-menu>
-  </div>
+      v-date-picker(v-model="dates"
+        no-title
+        range)
+
+        v-spacer
+        v-btn(text color="primary" @click="menu = false") Отмена
+        v-btn( text color="primary" @click="updateDate") ОК
+
 </template>
 
 <script>
@@ -87,6 +67,13 @@ export default {
     updateDate() {
       this.menu = false;
       this.$emit('updateFiled', this.name, this.dates);
+
+      let value = {
+        "from": '',
+        "to": ''
+      }
+
+      this.$emit('input', value);
     },
   },
   watch: {

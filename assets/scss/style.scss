@@ -445,6 +445,38 @@ h1.large {
   .table-filter-row.large {
     min-height: 75px;
   }
+
+
+  .filter-row {
+
+    .v-input__control {
+      transition: 0.4s ease-out;
+
+      .v-input__slot {
+        min-height: 36px;
+
+        .v-input__prepend-inner {
+          margin-top: 6px;
+        }
+
+        .v-input__append-inner {
+          margin-top: 6px;
+        }
+      }
+    }
+
+    &.search-is-focus {
+      .filter-row-right {
+        display: none;
+      }
+
+      .filter-row-left {
+        flex: 1;
+      }
+    }
+
+  }
+
 }
 
 
@@ -1028,7 +1060,7 @@ h1.large {
         color: #666;
         background: #fff;
         font-weight: 600;
-        margin: 16px 0;
+        margin: 0;
 
         thead {
 
@@ -1231,6 +1263,12 @@ h1.large {
     color: $blue !important;
     border-color: $blue !important;
     background: #fff !Important;
+  }
+
+  .v-data-table__progress {
+    .primary {
+      background: $blue !Important;
+    }
   }
 
   .v-pagination__item,

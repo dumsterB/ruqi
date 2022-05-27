@@ -6,6 +6,7 @@ export const state = () => ({
   object_id_history: [],
   service_filters: [],
   vacancy_filters: [],
+  task_filters: [],
 })
 
 export const getters = {
@@ -30,6 +31,9 @@ export const getters = {
   vacancy_filters(state) {
     return state.vacancy_filters;
   },
+  task_filters(state) {
+    return state.task_filters;
+  },
 }
 
 
@@ -40,10 +44,10 @@ export const actions = {
     commit('setRequest', object_id);
 
   },
-  async fetchObjectIdRequest({commit}, requestId) {
+  async fetchObjectIdRequest({commit}, {requestId, params, concat, unit}) {
 
     const object_id_requests = await this.$axios.get('/objects/' + requestId + '/tasks',);
-    commit('setObjectIdRequests', object_id_requests);
+    commit('setObjectIdRequests',  {object_id_requests: object_id_requests, concat: concat, unit: unit});
 
   },
   async fetchObjectIdServices({commit}, {requestId, params, concat, unit}) {
@@ -96,8 +100,15 @@ export const mutations = {
   setRequest(state, object_id) {
     state.object_id = object_id.data.data;
   },
-  setObjectIdRequests(state, object_id_requests) {
-    state.object_id_requests = object_id_requests.data.data;
+  setObjectIdRequests(state, {object_id_requests, concat, unit}) {
+    if (concat) {
+      state.object_id_requests = state.object_id_requests.concat(object_id_requests.data.data);
+    } else {
+      state.object_id_requests = object_id_requests.data.data;
+    }
+    if (unit) {
+      //state.task_filters = object_id_requests.data.meta.filters;
+    }
   },
   setObjectIdServices(state, {object_id_services, concat, unit}) {
     if (concat) {
@@ -131,6 +142,8 @@ export const mutations = {
     state.object_id_vacancies = [];
     state.object_id_history = [];
     state.service_filters = [];
+    state.vacancy_filters = [];
+    state.task_filters = [];
   }
 }
 

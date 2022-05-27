@@ -34,7 +34,9 @@ export default {
 
 .ruqi-table-filter-list{
 
-
+  .v-input--selection-controls{
+    margin-top: 10px;
+  }
 }
 
 </style>

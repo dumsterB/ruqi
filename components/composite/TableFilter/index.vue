@@ -10,7 +10,7 @@
     )
       template(v-slot:activator="{ on }")
         v-btn(icon, v-on="on")
-          v-icon mdi-filter-outline
+          v-icon(color="#7A91A9") mdi-filter-outline
 
       v-card
         v-list-item-content.pa-0.elevation-0
@@ -24,11 +24,23 @@
             .filter-content
               v-form(ref="form" v-model="valid" lazy-validation)
                 v-expansion-panels(accordion multiple v-model="panel")
-                  v-expansion-panel(v-for="( item, index ) in fields" :key="index")
+                  v-expansion-panel(v-for="( item, index ) in selected_fields" :key="index")
                     v-expansion-panel-header {{ fieldHeader(item.field) }}
                     v-expansion-panel-content
                       component(
-                        :is="nameComponent(item.type_value)"
+                        :is="nameComponent(item.type)"
+                        :name="item.field + '_' + index"
+                        :params="item"
+                        :label = "fieldHeader(item.field)"
+                        @input="updateFiled(item.field , $event, index)"
+                      )
+
+                  v-expansion-panel(v-if="check_fields.length>0")
+                    v-expansion-panel-header Ограничения
+                    v-expansion-panel-content
+                      component(
+                        v-for="( item, index ) in check_fields" :key="index"
+                        :is="nameComponent(item.type)"
                         :name="item.field + '_' + index"
                         :params="item"
                         :label = "fieldHeader(item.field)"
@@ -41,7 +53,7 @@
               v-btn.btn-blue.add.ml-4(text height="48" outlined @click="applyFilter")
                 span применить
 
-    Search(:searchText="searchText" @updateSearchText="updateSearchText")
+    Search(:searchText="searchText" @updateSearchText="updateSearchText" @blurSearch="$emit('blurSearch')" @focusSearch="$emit('focusSearch')")
 
 
 </template>
@@ -76,17 +88,35 @@ export default {
     }
   },
   computed: {
+    selected_fields(){
+      let filters = [];
+      for (let i = 0; i < this.fields.length; i++) {
+        if(this.fields[i].type != 'string' && this.fields[i].type != 'text' && this.fields[i].type != 'boolean'){
+          filters.push(this.fields[i]);
+        }
+      }
+      return filters;
+    },
+    check_fields(){
+      let filters = [];
+      for (let i = 0; i < this.fields.length; i++) {
+        if(this.fields[i].type == 'boolean'){
+          filters.push(this.fields[i]);
+        }
+      }
+      return filters;
+    },
 
   },
   methods: {
-    nameComponent(type_value) {
-      if (type_value == 'list') {
+    nameComponent(type) {
+      if (type == 'list') {
         return 'Flist';
-      } else if (type_value == 'range') {
+      } else if (type == 'range' || type == 'range_composit') {
         return 'Frange';
-      } else if (type_value == 'boolean') {
+      } else if (type == 'boolean') {
         return 'Fboolean';
-      } else if (type_value == 'string' || type_value == 'text' || type_value == 'integer') {
+      } else if (type == 'string' || type == 'text' || type == 'integer') {
         return 'Fstring';
       }
     },
@@ -99,21 +129,22 @@ export default {
         translit_header = header[0].translit;
       }
 
-      if (header[0].unit) {
+      if (header[0] && header[0].unit) {
         translit_header = translit_header + ' ' + header[0].unit;
       }
 
       return translit_header;
     },
     updateFiled(field, value, index) {
-      this.filter[index].value = value;
+      this.selected_fields[index].value = value;
+      console.log('field, value, index ---- ', field, value, index, this.selected_fields);
     },
     applyFilter() {
-      //console.log('this.filter-----', this.filter)
+      console.log('this.filter-----', this.filter)
       const sentFilter = [];
-      for (let i = 0; i < this.filter.length; i++) {
-        if(this.filter[i].value){
-          sentFilter.push(this.filter[i]);
+      for (let i = 0; i < this.selected_fields.length; i++) {
+        if(this.selected_fields[i].value){
+          sentFilter.push(this.selected_fields[i]);
         }
       }
       this.$emit('applyFilter', sentFilter, this.searchText);
@@ -145,12 +176,14 @@ export default {
   },
   mounted() {
 
+   // console.log('this.filters ------=============----', this.filters);
+
   },
   watch: {
     fields: function () {
       for (let i = 0; i < this.fields.length; i++) {
         this.filter[i] = {
-          "type": this.fields[i].type_value,
+          "type": this.fields[i].type,
           "field": this.fields[i].field,
           "value": null
         }
@@ -165,13 +198,7 @@ export default {
 @import '/assets/scss/colors.scss';
 
 .ruqi-table-filter {
-  max-width: 392px;
-
-  .wrap-search{
-    fieldset{
-      border: none !important;
-    }
-  }
+  flex: 1;
 
 }
 

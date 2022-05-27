@@ -57,27 +57,10 @@ export default {
   computed: {},
   methods: {
     updateFiled() {
-      let value;
-      if (this.params.type == 'range') {
-        value = {
-          "from": this.value_from,
-          "to": this.value_to
-        }
-      } else if (this.params.type == 'range_composit') {
-        value = [
-          {
-            "field": "age_from",
-            "value": this.value_from,
-          },
-          {
-            "field": "age_to",
-            "value": this.value_to
-          }
-        ]
+      const value = {
+        "from": this.value_from,
+        "to": this.value_to
       }
-
-      console.log(value);
-
       this.$emit('input', value);
     }
   },

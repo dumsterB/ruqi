@@ -3,7 +3,7 @@
   .add-service
     v-row.d-flex.pa-5.align-center.action-row(no-gutters)
       v-col(cols="10")
-        .header-dialog Добавить вакансию
+        .header-dialog(v-if="title") {{ title }}
 
       v-col.d-flex.justify-end(cols="2")
         v-btn.btn-blue.add(text height="48" outlined @click="createVacancyHandler")
@@ -25,20 +25,66 @@
                       FormBuilder(:meta="meta.meta_object_vacancy" @updateFiled="updateFiled")
                       v-btn.btn-blue.mt-6(text :disabled="disabled" height="48" outlined  @click="createVacancyHandler") {{ submitBtnText }}
 
+            v-row.object-info-row-rate
+              v-col(cols="12")
+                .wrap-form
+                  v-divider.my-8
+                  .form-part-title Ставки
+                  a.add-field.my-8(@click.prevent="isAddingRate = true")
+                    v-icon(color="#0082DE" size="24") mdi-plus-circle
+                    span Добавить плановое значение
+
+            v-row(no-gutters)
+              v-col(cols="12")
+                .wrap-form
+                  v-form(ref="form_part_1" v-model="validRate" lazy-validation)
+                    .form-part-single.form-rate
+                      v-row.flex-column.new-rate.px-5(no-gutters v-show="isAddingRate")
+                        .form-rate-title Введите новое значение
+                        Rate( prefix_name="new" :isNew="true" @updateFiled="updateFiled" @setRate="setRate")
+
+                  v-row.flex-column.px-5.current-rate(no-gutters v-show="vacancy_id.rates && vacancy_id.rates.length")
+                    .form-rate-title.mb-6 Текущее значение
+
+                    div(v-if="vacancy_id.rates && vacancy_id.rates.length")
+                      div(v-for="(rate, index) in vacancy_id.rates")
+                        Rate( :prefix_name="index" :isNew="false"
+                          v-if="rate.difference == '='"
+                          @updateFiled="updateFiled"
+                          :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
+                          @deleteRate="deleteRate(rate.uuid)" @putRate="putRate(index, rate.uuid)")
+
+                  v-row.flex-column.px-5(no-gutters v-show="vacancy_id.rates && vacancy_id.rates.length > 1")
+                    .form-rate-title.mb-6 Следующие значения
+
+                    div(v-if="vacancy_id.rates && vacancy_id.rates.length > 1")
+                      div(v-for="(rate, index) in vacancy_id.rates")
+                        Rate( :prefix_name="index" :isNew="false"
+                          @updateFiled="updateFiled"
+                          :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
+                          @deleteRate="deleteRate(rate.uuid)" @putRate="putRate(index, rate.uuid)")
+
+                        v-row( v-if="rate.difference != '='")
+                          v-col(cols="12")
+                            v-divider.mt-6.mb-8
+
 
 </template>
 
 <script>
 import Vue from "vue";
+import Rate from "@/components/composite/Rate";
 import {mapActions} from "vuex";
 
 export default {
   meta: {
-    title: "Создать вакансию",
+    title: "Вакансия",
   },
+  components: {Rate},
   data() {
     return {
       valid: true,
+      validRate: true,
       formValues: {},
       disabled: false,
       meta: {
@@ -230,6 +276,8 @@ export default {
           ],
         ],
       },
+      rates: [],
+      isAddingRate: false
     }
   },
   computed: {
@@ -248,8 +296,11 @@ export default {
     vacancy_uuid() {
       return this.$route.params.id;
     },
+    title() {
+      return 'Карточка вакансии: ' + this.vacancy_id.name;
+    },
     submitBtnText() {
-      return 'создать вакансию'
+      return 'сохранить изменения';
     },
     postBody() {
       let postBody = {
@@ -273,6 +324,15 @@ export default {
       console.log(postBody);
       return postBody;
     },
+    postRate() {
+      let postRate = {
+        "rate": this.formValues.object_rate_rate_new,
+        "start_date": this.formValues.object_rate_date_new,
+      };
+      console.log(postRate);
+      return postRate;
+    },
+
   },
   methods: {
     ...mapActions('dictionary', ['fetcProfessions',]),
@@ -281,8 +341,13 @@ export default {
     ...mapActions('vacancy_id', ['createVacancy',]),
     ...mapActions('vacancy_id', ['putVacancy',]),
     ...mapActions('vacancy_id', ['fetchVacancyId',]),
+    ...mapActions('rate', ['createVacancyRate',]),
+    ...mapActions('rate', ['putVacancyRate',]),
+    ...mapActions('rate', ['removeVacancyRate',]),
+
 
     closeCreateEditForm() {
+      //this.$router.go(-1);
       this.$router.push({
         name: "objects-id",
         params: {ServiceId: "", objectId: this.object_uuid, activeTab: 1},
@@ -291,6 +356,10 @@ export default {
     updateFiled(field, value) {
       this.formValues[field] = value;
       console.log(field, value);
+    },
+    updateFiledinArray(index_block, field, value, index, parent_array) {
+      this.formValues[field] = value;
+      this.meta[parent_array][index_block][index].value = value;
     },
     removeItem(index, array) {
       if (index != 0 || this.meta[array].length > 1) {
@@ -306,6 +375,7 @@ export default {
         if (this.valid) {
           const newRequest = JSON.stringify(this.postBody);
           console.log(newRequest);
+
           this.createVacancy({newRequest: newRequest, object_uuid: this.object_uuid});
         } else {
           let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
@@ -313,16 +383,58 @@ export default {
         }
       });
     },
+    setRate() {
+      let formPart = 'form_part_1';
+      this.$refs[formPart].validate();
+
+      this.$nextTick(() => {
+        if (this.validRate) {
+          const newRequest = JSON.stringify(this.postRate);
+          console.log(newRequest);
+          this.createVacancyRate({newRequest: newRequest, object_uuid: this.object_uuid, vacancy_uuid: this.vacancy_uuid});
+          this.isAddingRate = false;
+        }
+      });
+    },
+    deleteRate(uuid) {
+      this.removeVacancyRate({object_uuid: this.object_uuid, vacancy_uuid: this.vacancy_uuid, rate_uuid: uuid});
+    },
+    putRate(index, uuid) {
+      let putRate = {
+          "rate": this.formValues['object_rate_rate_' + index],
+          "start_date": this.formValues['object_rate_date_' + index],
+        };
+
+      const newRequet = JSON.stringify(putRate);
+      console.log(newRequet);
+      this.putVacancyRate({body: newRequet, object_uuid: this.object_uuid, vacancy_uuid: this.vacancy_uuid, rate_uuid: uuid});
+    }
   },
   async created() {
 
     await this.fetcProfessions();
-    await this.fetchObjectIdServices({requestId: this.$route.params.objectId, params: {}, concat: false});
+    await this.fetchObjectIdServices({requestId: this.object_uuid, params: {}, concat: false, unit: true});
 
     this.meta.meta_object_vacancy[0].params.options = this.professions;
     this.meta.meta_object_vacancy[1].params.options = this.object_id_services;
 
-    this.$route.meta.title = 'Добавить вакансию';
+    await this.fetchVacancyId({objectId: this.object_uuid, VacancyId: this.vacancy_uuid});
+    this.meta.meta_object_vacancy[0].value = this.vacancy_id.profession.uuid;
+    this.meta.meta_object_vacancy[1].value = this.vacancy_id.service.uuid;
+
+    this.meta.meta_object_vacancy[2].value = this.vacancy_id.name;
+    this.meta.meta_object_vacancy[4].value = this.vacancy_id.age_from;
+    this.meta.meta_object_vacancy[5].value = this.vacancy_id.age_to;
+    this.meta.meta_object_vacancy[6].value = this.vacancy_id.gender;
+
+    this.meta.meta_object_vacancy[7].value = this.vacancy_id.driver_license;
+    this.meta.meta_object_vacancy[8].value = this.vacancy_id.medical_book;
+    this.meta.meta_object_vacancy[9].value = this.vacancy_id.stacker_license;
+    this.meta.meta_object_vacancy[10].value = this.vacancy_id.patent;
+
+    this.meta.meta_object_vacancy[11].value = this.vacancy_id.description;
+
+    this.$route.meta.title = 'Карточка вакансии: ' + this.vacancy_id.name;
 
     this.meta.meta_object_vacancy.map(f => {
       Vue.set(this.formValues, f.name, f.value);
@@ -340,13 +452,14 @@ export default {
 
 @import '/assets/scss/colors.scss';
 
-.ruqi.page--objects-id-vacancy {
+.ruqi.page--objects-id-vacancy-id {
   padding: 0;
   background: #F5F5F5;
 
   .theme--light.v-application {
     background: #F5F5F5;
   }
+
 
   .inner-object-page {
     > .container {
@@ -359,6 +472,7 @@ export default {
       padding: 0;
     }
   }
+
 }
 
 .add-service {

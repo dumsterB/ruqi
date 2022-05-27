@@ -1,9 +1,9 @@
 <template lang="pug">
   .inner-object-page
     v-container
-      v-row.d-flex.pa-5.action-row(no-gutters)
+      v-row.d-flex.pa-4.action-row.align-center(no-gutters)
         v-col(cols="10")
-          v-tabs.form-tabs-minify(v-model="tab", hide-slider, height="36")
+          v-tabs.form-tabs-minify.mt-1(v-model="tab", hide-slider, height="36")
             v-tab(v-for="(item, index) in tabs_list", :key="index") {{ item }}
 
         v-col.d-flex.justify-end(cols="2")
@@ -53,7 +53,7 @@
         v-col(cols="12")
           v-window(v-model="tab")
             v-tab-item(eager)
-              .filter-row.d-flex.pa-5.justify-space-between
+              .filter-row.d-flex.pa-5.justify-space-between(:class="{ 'search-is-focus': isSearchFocus }")
                 .filter-row-left.d-flex
                   v-btn.btn-blue.add(
                     text,
@@ -64,22 +64,23 @@
                     v-icon mdi-plus
                     span добавить услугу
 
-                  TableFilter.ml-8.mr-5(:fields="service_filters" :headers="headers_services_filter" @applyFilter="applyFilter")
+                  TableFilter.ml-8(:fields="service_filters" :headers="headers_services_filter" @applyFilter="applyFilter('fetchServiceParams', 'options', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
 
-                .container-object-nds
-                  .nds-title ндс текущий
-                  .nds-value {{ object_id.vat }}%
+                .filter-row-right
+                  .container-object-nds
+                    .nds-title ндс текущий
+                    .nds-value {{ object_id.vat }}%
 
               .table-row(v-infinite-scroll="loadMore")
                 .table-list-style-minify
                   v-data-table.elevation-0(
                     :headers="headers_services",
                     :items="object_id_services",
-                    item-key="uuid"
+
                     hide-default-footer,
                     show-select,
-                    :search="searchText"
                     disable-pagination
+                    :options.sync="options"
 
                   )
                     template(v-slot:item.actions="{ item }")
@@ -134,7 +135,7 @@
                                 .rate-list.mx-auto.text-left
                                   .rate-list-item(v-for="el in item.rates" :class="[el.difference == '=' ? 'current' : '']")
                                     .rate-item-title(v-if="el.difference == '='") Текущая
-                                    .rate-list-item-date {{ helpers().parseDate({ date: el.start_date, type: 'date' }) }}
+                                    .rate-list-item-date {{ parseDate({ date: el.start_date, type: 'date' }) }}
                                     .rate-list-item-price(
                                       :class="[el.rate > item.rate_with_vat ? 'up' : 'down']"
                                     )
@@ -157,7 +158,7 @@
                   )
 
             v-tab-item(eager)
-              .filter-row.d-flex.pa-5.justify-space-between
+              .filter-row.d-flex.pa-5.justify-space-between(:class="{ 'search-is-focus': isSearchFocus }")
                 .filter-row-left.d-flex
                   v-btn.btn-blue.add(
                     text,
@@ -169,23 +170,22 @@
                     v-icon mdi-plus
                     span добавить вакансию
 
-                  TableFilter.ml-8.mr-5(:fields="vacancy_filters" :headers="headers_vacancies_filter" @applyFilter="applyFilter")
+                  TableFilter.ml-8.mr-5(:fields="vacancy_filters" :headers="headers_vacancies_filter" @applyFilter="applyFilter('fetchVacancyParams', 'headerOptionsVacancy', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
 
-                .container-object-nds
-                  .nds-title ндс текущий
-                  .nds-value {{ object_id.vat }}%
+                .filter-row-right
+                  .container-object-nds
+                    .nds-title ндс текущий
+                    .nds-value {{ object_id.vat }}%
 
               .table-row
                 .table-list-style-minify
                   v-data-table.elevation-0(
                     :headers="headers_vacancies",
                     :items="object_id_vacancies",
-                    item-key="uuid"
-                    :page.sync="page",
-                    :items-per-page="itemsPerPageTable",
                     hide-default-footer,
                     show-select,
-                    :search="searchText"
+                    disable-pagination
+                    :options.sync="headerOptionsVacancy"
                   )
                     template(v-slot:item.actions="{ item }")
                       .d-flex.justify-end.card-actions
@@ -213,7 +213,7 @@
                                   span Удалить
 
                     template(v-slot:item.service="{ item }")
-                      span {{ item.description }}
+                      span {{ previewText(item.service.name) }}
 
                     template(v-slot:item.gender="{ item }")
                       span {{ item.gender == 'male' ? 'м' : item.gender == 'female' ? 'ж' : 'все' }}
@@ -240,7 +240,7 @@
                                 .rate-list.mx-auto.text-left
                                   .rate-list-item(v-for="el in item.rates" :class="[el.difference == '=' ? 'current' : '']")
                                     .rate-item-title(v-if="el.difference == '='") Текущая
-                                    .rate-list-item-date {{ helpers().parseDate({ date: el.start_date, type: 'date' }) }}
+                                    .rate-list-item-date {{ parseDate({ date: el.start_date, type: 'date' }) }}
                                     .rate-list-item-price(
                                       :class="[el.rate > item.rate_with_vat ? 'up' : 'down']"
                                     )
@@ -252,10 +252,15 @@
                                     a(@click.prevent="editVacancy(item.uuid)") Редактировать
 
             v-tab-item(eager)
-              .filter-row.d-flex.pa-5.justify-space-between
-                v-btn.btn-blue.add(text, height="48", outlined, @click="addTask")
-                  v-icon mdi-plus
-                  span новая заявка
+              .filter-row.d-flex.pa-5.justify-space-between(:class="{ 'search-is-focus': isSearchFocus }")
+                .filter-row-left.d-flex
+                  v-btn.btn-blue.add(text, height="48", outlined, @click="addTask")
+                    v-icon mdi-plus
+                    span новая заявка
+
+                  TableFilter.ml-8.mr-5(:fields="task_filters" :headers="headers_tasks_filter" @applyFilter="applyFilter('fetchTaskParams', 'headerOptionsTask', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
+
+
 
               .table-row
                 .table-list-style.minify-header
@@ -264,13 +269,10 @@
                   v-data-table.elevation-0(
                     :headers="headers",
                     :items="object_id_requests",
-                    item-key="table_1",
-                    :page.sync="page",
-                    :items-per-page="itemsPerPageTable",
-                    @page-count="pageCount = $event",
                     hide-default-footer,
                     show-select,
-                    :search="searchText"
+                    disable-pagination
+                    :options.sync="headerOptionsTask"
                   )
                     template(v-slot:item.actions="{ item }")
                       .d-flex.justify-end.card-actions
@@ -301,7 +303,7 @@
                       span.request-pay {{ item.payment.value }} {{ item.payment.current }} / {{ item.payment.period }}
 
                     template(v-slot:item.date="{ item }")
-                      div(v-if="item.end_date") {{ helpers().parseDate({ date: item.end_date.substr(0, 10), type: 'date' }) }}
+                      div(v-if="item.end_date") {{ parseDate({ date: item.end_date.substr(0, 10), type: 'date' }) }}
 
                     template(v-slot:item.completion="{ item }")
                       Occupationbar(
@@ -408,7 +410,7 @@
                   )
                     template(v-slot:item.created_at="{ item }")
                       .table-history-date
-                        div(v-if="item.created_at") {{ helpers().parseDate({ date: item.created_at.substr(0, 10), type: 'date' }) }}
+                        div(v-if="item.created_at") {{ parseDate({ date: item.created_at.substr(0, 10), type: 'date' }) }}
                         div {{ item.created_at.substring(11, 19) }}
 
                     template(v-slot:item.author="{ item }")
@@ -523,6 +525,9 @@ export default {
         {text: "Набор до", value: "date", width: "132px"},
         {text: "Наполнение", value: "completion", width: "152px"},
       ],
+      headers_tasks_filter: [
+
+      ],
       headers_services: [
         {
           text: "",
@@ -539,12 +544,11 @@ export default {
         {text: "Юнит", value: "unit"},
       ],
       headers_services_filter: [
-        {field: 'name', translit: 'Имя'},
-        {field: 'description', translit: 'Описание'},
         {field: 'standart', translit: 'Норматив'},
         {field: 'rate', translit: 'Цена', unit: 'р.'},
         {field: 'rate_with_vat', translit: 'Цена с ндс', unit: 'р.'},
         {field: 'unit', translit: 'Юнит',},
+        {field: 'age', translit: 'Возраст',},
       ],
       headers_vacancies: [
         {
@@ -563,16 +567,14 @@ export default {
         {text: "ставка плановая", value: "rate_with_vat", width: "140px"},
       ],
       headers_vacancies_filter: [
-        {field: 'name', translit: 'Имя'},
-        {field: 'age_from', translit: 'Возраст с'},
-        {field: 'age_to', translit: 'Возраст до'},
         {field: 'driver_license', translit: 'Права'},
         {field: 'medical_book', translit: 'Медкнижка'},
         {field: 'stacker_license', translit: 'Права управления штабелером'},
         {field: 'patent', translit: 'Патент'},
+        {field: 'rate', translit: 'Ставка текущая', unit: 'р.'},
+        {field: 'rate_with_vat', translit: 'Ставка плановая', unit: 'р.'},
         {field: 'gender', translit: 'Пол'},
-        {field: 'rate', translit: 'Цена', unit: 'р.'},
-        {field: 'rate_with_vat', translit: 'Цена с ндс', unit: 'р.'},
+        {field: 'age', translit: 'Возраст'},
       ],
       headers_history: [
         {text: "Дата", value: "created_at", width: "120px"},
@@ -603,22 +605,46 @@ export default {
         text_btn_cancel: "Отмена",
       },
       fetchServiceParams: {
-        "page": 2,
+        "page": 1,
+        "per_page": 15
+      },
+      fetchVacancyParams: {
+        "page": 1,
+        "per_page": 15
+      },
+      fetchTaskParams: {
+        "page": 1,
         "per_page": 15
       },
       totalDesserts: 0,
       desserts: [],
       loading: true,
       options: {},
+      headerOptionsVacancy: {},
+      headerOptionsTask: {},
+      isSearchFocus: false,
     };
   },
   watch: {
     options: {
       handler() {
-        // this.getDataFromApi()
+        this.getDataFromApi('fetchServiceParams', 'options', 'fetchObjectIdServices');
       },
       deep: true,
     },
+    headerOptionsVacancy: {
+      handler() {
+        this.getDataFromApi('fetchVacancyParams', 'headerOptionsVacancy', 'fetchObjectIdVacancies');
+      },
+      deep: true,
+    },
+    headerOptionsTask: {
+      handler() {
+        this.getDataFromApi('fetchTaskParams', 'headerOptionsTask', 'fetchObjectIdRequest');
+      },
+      deep: true,
+    },
+
   },
   computed: {
     ...mapGetters("breadcrumbs", ["BREADCRUMBS"]),
@@ -653,6 +679,9 @@ export default {
     },
     vacancy_filters() {
       return this.$store.getters["object_id/vacancy_filters"];
+    },
+    task_filters() {
+      return this.$store.getters["object_id/task_filters"];
     },
     activeSelectBtnOption() {
       switch (this.activeSelectBtn) {
@@ -746,10 +775,11 @@ export default {
       });
     },
     editService(ServiceId) {
-      this.$router.push({
-        name: "objects-id-service",
+      /*this.$router.push({
+        name: "objects-id-service-id",
         params: {ServiceId: ServiceId, objectId: this.object_id.uuid},
-      });
+      });*/
+      this.$router.push('/objects/' + this.object_id.uuid + '/service/' + ServiceId);
     },
     addVacancy() {
       this.$router.push({
@@ -758,10 +788,11 @@ export default {
       });
     },
     editVacancy(VaсancyId) {
-      this.$router.push({
+      /*this.$router.push({
         name: "objects-id-vacancy",
         params: {VacancyId: VaсancyId, objectId: this.object_id.uuid},
-      });
+      });*/
+      this.$router.push('/objects/' + this.object_id.uuid + '/vacancy/' + VaсancyId);
     },
     addTask() {
       this.$router.push({
@@ -804,24 +835,12 @@ export default {
       }
       this.isConfirmModalVacancy = false;
     },
+    parseDate: (payload = {}) => {
+      let date = payload.date.split("-");
 
-    helpers() {
-      return {
-        /**
-         *
-         * @param { object } params
-         * {
-         *    date : '2021-12-23T12:59:03.000000Z'
-         * }
-         */
-        parseDate: (payload = {}) => {
-          let date = payload.date.split("-");
-
-          if (payload.type === "date") {
-            return `${date[2]}.${date[1]}.${date[0]}`;
-          }
-        },
-      };
+      if (payload.type === "date") {
+        return `${date[2]}.${date[1]}.${date[0]}`;
+      }
     },
     loadMore() {
       const params = this.fetchServiceParams;
@@ -829,32 +848,38 @@ export default {
 
       this.fetchServiceParams.page += 1;
     },
-    getDataFromApi() {
+    getDataFromApi(fetchParams, watcherParams, action) {
       this.loading = true;
-      const params = this.fetchServiceParams;
-      this.fetchServiceParams.sort = this.options.sortBy[0];
-      this.fetchServiceParams.per_page = +this.fetchServiceParams.page * +this.fetchServiceParams.per_page;
-      this.fetchServiceParams.page = 1;
-      this.fetchServiceParams.order = this.options.sortDesc[0] ? 'asc' : 'desc';
 
-      console.log(this.fetchServiceParams);
+      const params = {
+        "settings": {
+          "value": this[fetchParams].value ,
+          "sort":  this[watcherParams].sortBy[0],
+          "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
+          "filters": this[fetchParams].filters,
+        }
+      };
 
-      this.fetchObjectIdServices({
+      this[action]({
         requestId: this.$route.params.id,
         params: params,
         concat: false,
         unit: false
       }).then(data => {
         this.loading = false;
-        this.fetchServiceParams.page = (this.fetchServiceParams.per_page / 15).toFixed(0);
-        this.fetchServiceParams.per_page = 15;
+        this[fetchParams].page = 1;
         console.log('пришел ответ')
       })
     },
-    applyFilter(filter, search) {
+    applyFilter(fetchParams, watcherParams, filter, search) {
+      this[fetchParams].value = search;
+      this[fetchParams].filters = filter;
+
       let params = {
-        "search": search,
         "settings": {
+          "value": search,
+          "sort":  this[watcherParams].sortBy[0],
+          "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": filter
         }
       };
@@ -863,7 +888,10 @@ export default {
         this.fetchObjectIdServices({requestId: this.$route.params.id, params: params, concat: false, unit: false})
       } else if (this.tab == 1) {
         this.fetchObjectIdVacancies({requestId: this.$route.params.id, params: params, concat: false, unit: false})
+      }else if (this.tab == 2) {
+        this.fetchObjectIdRequest({requestId: this.$route.params.id, params: params, concat: false, unit: false})
       }
+
     },
     previewText(value){
       if (value && value.length > 56){
@@ -872,6 +900,12 @@ export default {
       else{
         return value;
       }
+    },
+    focusSearch() {
+      this.isSearchFocus = 1;
+    },
+    blurSearch(){
+      this.isSearchFocus = 0;
     }
   },
   beforeDestroy() {
@@ -893,7 +927,12 @@ export default {
     await this.resetObjectState();
 
     await this.fetchObjectId(this.$route.params.id);
-    await this.fetchObjectIdRequest(this.$route.params.id);
+    await this.fetchObjectIdRequest({
+      requestId: this.$route.params.id,
+      params: {"page": 1},
+      concat: false,
+      unit: true
+    });
     await this.fetchObjectIdServices({
       requestId: this.$route.params.id,
       params: {"page": 1},
