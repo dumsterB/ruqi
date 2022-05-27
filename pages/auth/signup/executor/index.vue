@@ -7,13 +7,12 @@
   </header>
    <main>
      <auth></auth>
-     <Nuxt />
    </main>
  </div>
 </template>
 
 <script>
-import auth from '@/components/executor/auth/Auth'
+import auth from '@/components/pages/executor/auth/Auth'
 export default {
 layout:'empty',
  components:{

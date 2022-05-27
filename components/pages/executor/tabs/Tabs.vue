@@ -30,11 +30,10 @@
         </v-row>
       </v-container>
     </div>
-    {{current_page}}
     <div class="tabs-content">
       <v-container class="tab-content">
-          <private-information :form="form" @pageHandler="pageHandler" v-if="current_page == 0"></private-information>
-          <Sms :phone="form.phone" @pageHandler="pageHandler" v-if="current_page == 1"></Sms>
+          <private-information @checkboxHandler="checkboxHandler" :agree="agree" :form="form" @pageHandler="pageHandler" v-if="current_page == 0"></private-information>
+          <Sms :agree="agree" :email="form.email" :phone="form.phone" @pageHandler="pageHandler" v-if="current_page == 1"></Sms>
       </v-container>
     </div>
   </div>
@@ -61,6 +60,7 @@ export default {
         sex:'',
         birth_date:'',
         phone:'',
+        email:'',
       },
       tabs:[
         {title:'Личные данные', value:'',active:true},
@@ -69,7 +69,8 @@ export default {
         {title:'Выбор профессий', value:'',active:false},
         {title:'Загрузка документов', value:'',active:false},
         {title:'Платежные данные', value:'',active:false}
-      ]
+      ],
+      agree:false,
     }
   },
   methods:{
@@ -87,6 +88,9 @@ export default {
         this.tabs[0].value = 50
       }
     },
+    checkboxHandler(val){
+      this.agree=val
+    }
   }
 }
 </script>

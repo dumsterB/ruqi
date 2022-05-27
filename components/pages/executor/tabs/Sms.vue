@@ -1,8 +1,14 @@
 <template>
   <div class="sms">
     <v-container>
-      <h2>Введите код из sms</h2>
-      <p>Мы выслали SMS с кодом на номер {{phone}}</p>
+      <div v-if="agree===false">
+        <h2>Введите код из sms</h2>
+        <p>Мы выслали SMS с кодом на номер {{phone}}</p>
+      </div>
+      <div v-else>
+        <h2>Введите код из email</h2>
+        <p>Мы выслали SMS с кодом на почту  {{email}}</p>
+      </div>
       <div class="code mt-10">
         <input id="first" class="inputStyle" placeholder="-" v-model="code[0]" type="text"/>
         <input id="second" class="inputStyle" placeholder="-" v-model="code[1]" type="text"/>
@@ -26,6 +32,13 @@ export default {
   props:{
     phone:{
       required:true
+    },
+    email:{
+      required:true
+    },
+    agree:{
+      type:Boolean,
+      required:true,
     }
   },
   data(){
@@ -35,12 +48,12 @@ export default {
       codeId:['first','second','third','forth','fifth'],
       interval:0,
       timerEnabled: true,
-      timerCount: 10
+      timerCount: 10,
     }
   },
   methods:{
     smsHandler(){
-      this.timerEnabled=true
+      this.timerEnabled = true
       this.timerCount = 10
     },
     next(){
@@ -49,7 +62,6 @@ export default {
   },
   watch:{
     code:function(newValue,oldValue){
-      console.log('newValue.length'+newValue.length)
       let tempValue=''
       for(let i=0;i<newValue.length;i++){
         if(i==5){
@@ -61,7 +73,6 @@ export default {
         }
       }
       this.smsCode=tempValue
-      console.log('smsCode '+this.smsCode)
       let m=tempValue.split("")
       let location=0
       for(let i=0;i<newValue.length;i++){
@@ -72,7 +83,6 @@ export default {
           newValue[i]=''
         }
       }
-      // console.log(this.codeId[i])
       if(location<1){
         location=1
       }else if(location>5){

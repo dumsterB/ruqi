@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import tabs from "@/components/executor/tabs/Tabs";
+import tabs from "@/components/pages/executor/tabs/Tabs";
 export default {
   layout: "empty",
   components:{
