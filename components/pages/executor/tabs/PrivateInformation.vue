@@ -5,7 +5,6 @@
       <h2>Личные данные</h2>
       <p class="text-grey">Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
         <v-form ref="form_part_0" v-model="valid" lazy-validation>
-          <div class="form-part">
             <div class="form-part">
               Имя
               <v-text-field
@@ -17,7 +16,6 @@
               ></v-text-field>
             </div>
 
-          </div>
             <div class="form-part">
               Фамилия
               <v-text-field
@@ -130,7 +128,7 @@
               Выбрав эту опцию вам будет предложено <br>  связаться с менеджером для регистрации по телефону
             </p>
             <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
-            <v-btn dark elevation="0" class="btn-primary" @click="next('1')"><span class="btn-title">Далее</span> </v-btn>
+            <v-btn dark elevation="0" class="btn-primary" @click="next(1)"><span class="btn-title">Далее</span> </v-btn>
             <p class="text-grey text-center">Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
           </div>
         </v-form>

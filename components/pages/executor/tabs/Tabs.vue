@@ -34,6 +34,7 @@
       <v-container class="tab-content">
           <private-information @checkboxHandler="checkboxHandler" :agree="agree" :form="form" @pageHandler="pageHandler" v-if="current_page == 0"></private-information>
           <Sms :agree="agree" :email="form.email" :phone="form.phone" @pageHandler="pageHandler" v-if="current_page == 1"></Sms>
+          <create-password :password="password"  @pageHandler="pageHandler"  v-if="current_page == 2" ></create-password>
       </v-container>
     </div>
   </div>
@@ -42,10 +43,12 @@
 <script>
 import PrivateInformation from "./PrivateInformation";
 import Sms from './Sms'
+import CreatePassword from "@/components/pages/executor/tabs/CreatePassword";
 export default {
   components:{
-   'private-information': PrivateInformation,
-    Sms
+     'private-information': PrivateInformation,
+      Sms,
+     'create-password':CreatePassword
   },
   data(){
     return{
@@ -71,21 +74,26 @@ export default {
         {title:'Платежные данные', value:'',active:false}
       ],
       agree:false,
+      password: '',
     }
   },
   methods:{
-    pageHandler(val){
-      console.log(val)
-      if(val != 1){
+    pageHandler(val){  // refactor later
+      if(val == 1){
         this.current_page = val
         this.tabs.map(ell => ell.active = false)
-        this.tabs[val].active = true
-        this.$forceUpdate()
+        this.tabs[val - 1].active = true
+        this.tabs[0].value = 50
+      }else if(val == 2){
+        this.current_page = val
+        this.tabs.map(ell => ell.active = false)
+        this.tabs[val - 1].active = true
+        this.tabs[0].value = 100
       }else{
         this.current_page = val
-      }
-      if(val == 1){
-        this.tabs[0].value = 50
+        this.tabs.map(ell => ell.active = false)
+        this.tabs[val - 2].active = true
+        this.tabs[val - 2].value = 100
       }
     },
     checkboxHandler(val){

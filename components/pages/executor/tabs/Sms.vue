@@ -20,7 +20,7 @@
       <v-btn elevation="0" class="mt-10" @click="smsHandler" v-if="!timerEnabled">Выслать код заново</v-btn>
       <div class="mt-10">
         <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
-        <v-btn dark elevation="0" class="btn-primary" @click="next('2')"><span class="btn-title">Далее</span> </v-btn>
+        <v-btn dark elevation="0" class="btn-primary" @click="next(2)"><span class="btn-title">Далее</span> </v-btn>
       </div>
     </v-container>
   </div>
@@ -56,8 +56,8 @@ export default {
       this.timerEnabled = true
       this.timerCount = 10
     },
-    next(){
-      this.$emit('pageHandler',1)
+    next(val){
+      this.$emit('pageHandler',val)
     }
   },
   watch:{
