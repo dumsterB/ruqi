@@ -95,7 +95,7 @@ export default {
       }else{
         this.current_page = val
         this.tabs.map(ell => ell.active = false)
-        this.tabs[val - 2].active = true
+        this.tabs[val - 1].active = true
         this.tabs[val - 2].value = 100
       }
     },
