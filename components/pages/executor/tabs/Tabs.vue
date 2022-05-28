@@ -36,6 +36,7 @@
           <Sms :agree="agree" :email="form.email" :phone="form.phone" @pageHandler="pageHandler" v-if="current_page == 1"></Sms>
           <create-password :password="password"  @pageHandler="pageHandler"  v-if="current_page == 2" ></create-password>
         <electronic-document  @pageHandler="pageHandler" v-if="current_page == 3"></electronic-document>
+        <position-selector  @pageHandler="pageHandler" v-if="current_page == 4"></position-selector>
       </v-container>
     </div>
   </div>
@@ -46,12 +47,14 @@ import PrivateInformation from "./PrivateInformation";
 import Sms from './Sms'
 import CreatePassword from "@/components/pages/executor/tabs/CreatePassword";
 import ElectronicDocument from "@/components/pages/executor/tabs/ElectronicDocument";
+import PositionSelector from "@/components/pages/executor/tabs/PositionSelector";
 export default {
   components:{
      'private-information': PrivateInformation,
       Sms,
      'create-password':CreatePassword,
-     'electronic-document':ElectronicDocument
+     'electronic-document':ElectronicDocument,
+      'position-selector' : PositionSelector
   },
   data(){
     return{
