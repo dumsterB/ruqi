@@ -33,10 +33,11 @@
     <div class="tabs-content">
       <v-container class="tab-content">
           <private-information @checkboxHandler="checkboxHandler" :agree="agree" :form="form" @pageHandler="pageHandler" v-if="current_page == 0"></private-information>
-          <Sms :agree="agree" :email="form.email" :phone="form.phone" @pageHandler="pageHandler" v-if="current_page == 1"></Sms>
+          <sms :agree="agree" :email="form.email" :phone="form.phone" @pageHandler="pageHandler" v-if="current_page == 1"></sms>
           <create-password :password="password"  @pageHandler="pageHandler"  v-if="current_page == 2" ></create-password>
-        <electronic-document  @pageHandler="pageHandler" v-if="current_page == 3"></electronic-document>
-        <position-selector  @pageHandler="pageHandler" v-if="current_page == 4"></position-selector>
+          <electronic-document  @pageHandler="pageHandler" v-if="current_page == 3"></electronic-document>
+          <position-selector  @pageHandler="pageHandler" v-if="current_page == 4"></position-selector>
+          <upload-document  @pageHandler="pageHandler" v-if="current_page == 5"></upload-document>
       </v-container>
     </div>
   </div>
@@ -48,13 +49,15 @@ import Sms from './Sms'
 import CreatePassword from "@/components/pages/executor/tabs/CreatePassword";
 import ElectronicDocument from "@/components/pages/executor/tabs/ElectronicDocument";
 import PositionSelector from "@/components/pages/executor/tabs/PositionSelector";
+import UploadDocument from "@/components/pages/executor/tabs/UploadDocument";
 export default {
   components:{
      'private-information': PrivateInformation,
-      Sms,
+     'sms': Sms,
      'create-password':CreatePassword,
      'electronic-document':ElectronicDocument,
-      'position-selector' : PositionSelector
+     'position-selector' : PositionSelector,
+     'upload-document':UploadDocument
   },
   data(){
     return{
@@ -87,17 +90,14 @@ export default {
     pageHandler(val){  // refactor later
       if(val == 1){
         this.current_page = val
-        this.tabs.map(ell => ell.active = false)
         this.tabs[val - 1].active = true
         this.tabs[0].value = 50
       }else if(val == 2){
         this.current_page = val
-        this.tabs.map(ell => ell.active = false)
         this.tabs[val - 1].active = true
         this.tabs[0].value = 100
       }else{
         this.current_page = val
-        this.tabs.map(ell => ell.active = false)
         this.tabs[val - 1].active = true
         this.tabs[val - 2].value = 100
       }

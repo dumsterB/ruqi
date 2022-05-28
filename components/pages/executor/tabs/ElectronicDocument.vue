@@ -69,14 +69,6 @@ export default {
   height: 100%;
   padding: 20px;
 }
-.primary-text{
-  color: #0082DE;
-  font-size: 15px;
-  margin-left: 5px;
-}
-.btn-title{
-  text-transform: uppercase;
-}
 .btn-primary{
   background: #0082DE!important;
   border-radius: 8px;
@@ -92,4 +84,13 @@ export default {
   border: 1px solid lightgrey;
   margin-top: 15px;
 }
+.primary-text{
+  color: #0082DE;
+  font-size: 15px;
+  margin-left: 5px;
+}
+.btn-title{
+  text-transform: uppercase;
+}
+
 </style>
