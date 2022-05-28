@@ -8,7 +8,7 @@
     <p class="mt-2">Система ruqi.ru использует электроный документооборот, это эффективный способ подписывать документы и быстро получать оплату. Мы бесплатно храним ваши документы на нескольких серверах,которые надежно защищены от взлома.</p>
     <div>
       <v-row class="mt-8">
-        <v-col cols="6">
+        <v-col  md="6" lg="6" lx="6" cols="12" sm="12" xs="12">
           <div>
             <img src="@/assets/img/schedule.svg" alt="">
             <br>
@@ -16,7 +16,7 @@
             <p>Система ruqi.ru использует электроный документооборот, это эффективный способ подписывать.</p>
           </div>
         </v-col>
-        <v-col cols="6">
+        <v-col md="6" lg="6" lx="6" cols="12"  sm="12" xs="12">
           <div>
             <img src="@/assets/img/wallet.svg" alt="">
             <br>
@@ -24,7 +24,7 @@
             <p>Система ruqi.ru использует электроный документооборот, это эффективный способ подписывать.</p>
           </div>
         </v-col>
-        <v-col cols="6">
+        <v-col md="6" lg="6" lx="6" cols="12"  sm="12" xs="12">
           <div>
             <img src="@/assets/img/payment.svg" alt="">
             <br>
@@ -40,7 +40,7 @@
       <div class="d-flex">
         <img src="@/assets/img/file_pdf.svg" alt=""> <span class="primary-text">Cоглашение на обмен персональными данными и документами посредством ЭЦП</span>
       </div>
-      <v-btn dark elevation="0" class="btn-primary" @click="next(3)"><span class="btn-title">принимаю условия</span> </v-btn>
+      <v-btn dark elevation="0" class="btn-primary" @click="next(4)"><span class="btn-title">принимаю условия</span> </v-btn>
       <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
     </div>
   </v-container>
@@ -49,7 +49,12 @@
 
 <script>
 export default {
-  name: "ElectronicDocument"
+  name: "ElectronicDocument",
+  methods:{
+    next(value){
+      this.$emit('pageHandler',value)
+    }
+  }
 }
 </script>
 
