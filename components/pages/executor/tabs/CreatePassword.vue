@@ -44,6 +44,11 @@ export default {
     password:{
     }
   },
+  data(){
+    return{
+      valid:false
+    }
+  },
   methods:{
     next(val){
     this.$emit('pageHandler',val)

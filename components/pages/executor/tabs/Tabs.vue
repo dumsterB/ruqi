@@ -1,4 +1,5 @@
 <template>
+  <div>
   <div class="tabs">
     <div class="content mt-3">
       <v-container>
@@ -32,15 +33,18 @@
     </div>
     <div class="tabs-content">
       <v-container class="tab-content">
-          <private-information @checkboxHandler="checkboxHandler" :agree="agree" :form="form" @pageHandler="pageHandler" v-if="current_page == 0"></private-information>
-          <sms :agree="agree" :email="form.email" :phone="form.phone" @pageHandler="pageHandler" v-if="current_page == 1"></sms>
-          <create-password :password="password"  @pageHandler="pageHandler"  v-if="current_page == 2" ></create-password>
-          <electronic-document  @pageHandler="pageHandler" v-if="current_page == 3"></electronic-document>
-          <position-selector  @pageHandler="pageHandler" v-if="current_page == 4"></position-selector>
-          <upload-document  @pageHandler="pageHandler" v-if="current_page == 5"></upload-document>
-          <payment-information @pageHandler="pageHandler" v-if="current_page == 6"></payment-information>
+          <private-information @checkboxHandler="checkboxHandler" :agree="agree" :form="form" @pageHandler="pageHandler" v-if="current_page === 0"></private-information>
+          <sms :agree="agree" :email="form.email" :phone="form.phone" @pageHandler="pageHandler" v-if="current_page === 1"></sms>
+          <create-password :password="password"  @pageHandler="pageHandler"  v-if="current_page === 2" ></create-password>
+          <electronic-document  @pageHandler="pageHandler" v-if="current_page === 3"></electronic-document>
+          <position-selector  @pageHandler="pageHandler" v-if="current_page === 4"></position-selector>
+          <upload-document  @pageHandler="pageHandler" v-if="current_page === 5"></upload-document>
+          <payment-information @pageHandler="pageHandler" v-if="current_page === 6"></payment-information>
+         <finish v-if="current_page === 7"></finish>
       </v-container>
     </div>
+  </div>
+
   </div>
 </template>
 
@@ -52,7 +56,10 @@ import ElectronicDocument from "@/components/pages/executor/tabs/ElectronicDocum
 import PositionSelector from "@/components/pages/executor/tabs/PositionSelector";
 import UploadDocument from "@/components/pages/executor/tabs/UploadDocument";
 import paymentInformation from "@/components/pages/executor/tabs/PaymentInformation";
+import Finish from '@/components/pages/executor/tabs/Finish'
+
 export default {
+  props:{},
   components:{
      'private-information': PrivateInformation,
      'sms': Sms,
@@ -60,12 +67,13 @@ export default {
      'electronic-document':ElectronicDocument,
      'position-selector' : PositionSelector,
      'upload-document':UploadDocument,
-      'payment-information':paymentInformation
+     'payment-information':paymentInformation,
+     'finish': Finish
   },
   data(){
     return{
       power: 78,
-      current_page: 0,
+      current_page:0,
       form:{
         name:'',
         surname:'',

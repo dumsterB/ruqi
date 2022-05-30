@@ -74,14 +74,19 @@
     </div>
     <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
     <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Заполнить позже</span> </v-btn>
-    <v-btn dark elevation="0" class="btn-primary" @click="next(6)"><span class="btn-title">Далее</span> </v-btn>
+    <v-btn dark elevation="0" class="btn-primary" @click="next(7)"><span class="btn-title">Далее</span> </v-btn>
   </v-container>
 </div>
 </template>
 
 <script>
 export default {
-  name: "PaymentInformation"
+  name: "PaymentInformation",
+  methods:{
+    next(val){
+      this.$emit('pageHandler', val)
+    }
+  }
 }
 </script>
 
