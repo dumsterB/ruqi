@@ -39,7 +39,7 @@
                 .wrap-form
                   v-form(ref="form_part_1" v-model="validRate" lazy-validation)
                     .form-part-single.form-rate
-                      v-row.flex-column.new-rate.px-5(no-gutters v-show="isAddingRate")
+                      v-row.flex-column.new-rate.px-5(no-gutters v-if="isAddingRate")
                         .form-rate-title Введите новое значение
                         Rate( prefix_name="new" :isNew="true" @updateFiled="updateFiled" @setRate="setRate")
 
@@ -52,7 +52,7 @@
                           v-if="rate.difference == '='"
                           @updateFiled="updateFiled"
                           :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
-                          @deleteRate="deleteRate(rate.uuid)" @putRate="putRate(index, rate.uuid)")
+                          @deleteRate="isConfirmModalRate= 1, removedUUID = rate.uuid" @putRate="putRate(index, rate.uuid)")
 
                   v-row.flex-column.px-5(no-gutters v-show="service_id.rates && service_id.rates.length > 1")
                     .form-rate-title.mb-6 Следующие значения
@@ -63,11 +63,17 @@
                           v-if="rate.difference != '='"
                           @updateFiled="updateFiled"
                           :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
-                          @deleteRate="deleteRate(rate.uuid)" @putRate="putRate(index, rate.uuid)")
+                          @deleteRate="isConfirmModalRate= 1, removedUUID = rate.uuid" @putRate="putRate(index, rate.uuid)")
 
                         v-row( v-if="rate.difference != '='")
                           v-col(cols="12")
                             v-divider.mt-6.mb-8
+
+    Confirm(
+      :isConfirmModal="isConfirmModalRate",
+      :content="confirmModalRate",
+      @confirmRemove="deleteRate"
+    )
 
 
 </template>
@@ -184,7 +190,15 @@ export default {
         ],
       },
       rates: [],
-      isAddingRate: false
+      isAddingRate: false,
+      isConfirmModalRate: false,
+      confirmModalRate: {
+        title: "Удалить ставку?",
+        description: "",
+        text_btn_ok: "Удалить",
+        text_btn_cancel: "Отмена",
+      },
+      removedUUID: '',
     }
   },
   computed: {
@@ -285,8 +299,11 @@ export default {
       });
 
     },
-    deleteRate(uuid) {
-      this.removeServiceRate({object_uuid: this.object_uuid, service_uuid: this.service_uuid, rate_uuid: uuid});
+    deleteRate(confirm) {
+      if (confirm) {
+        this.removeServiceRate({object_uuid: this.object_uuid, service_uuid: this.service_uuid, rate_uuid: this.removedUUID});
+      }
+      this.isConfirmModalRate = false;
     },
     putRate(index, uuid) {
       let putRate = {

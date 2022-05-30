@@ -174,7 +174,7 @@ export default {
      // this.$router.go(-1);
       this.$router.push({
         name: "objects-id",
-        params: { ServiceId: "",  objectId: this.$route.params.objectId, activeTab: 0 },
+        params: { id: this.object_uuid, ServiceId: "",  objectId: this.$route.params.objectId, activeTab: 0 },
       });
     },
     updateFiled(field, value) {
