@@ -1,24 +1,23 @@
 <template lang="pug">
 .rq-tasks__executor-search
-  mContentDisplayController
-  h1.desktop Поиск работы
-  TasksFilter.desktop
+  .mobile
+    mContentDisplayController
+    mTasksFilter
 
   .desktop
+    h1 Поиск работы
+    TasksFilter
     ContentDisplayController
 
-  mTasksFilter
   TasksList
-  mTasksList
 </template>
 
 <script>
-import ContentDisplayController from '@/components/pages/tasks/executor/search/desktop/ContentDisplayController';
-import mContentDisplayController from '@/components/pages/tasks/executor/search/mobile/mContentDisplayController';
-import TasksFilter from '@/components/pages/tasks/executor/search/desktop/TasksFilter';
-import mTasksFilter from '@/components/pages/tasks/executor/search/mobile/mTasksFilter';
-import TasksList from '@/components/pages/tasks/executor/search/desktop/TasksList';
-import mTasksList from '@/components/pages/tasks/executor/search/mobile/mTasksList';
+import ContentDisplayController from '@/components/pages/tasks/executor/search/ContentDisplayController/desktop';
+import mContentDisplayController from '@/components/pages/tasks/executor/search/ContentDisplayController/mobile';
+import TasksFilter from '@/components/pages/tasks/executor/search/TasksFilter/desktop';
+import mTasksFilter from '@/components/pages/tasks/executor/search/TasksFilter/mobile';
+import TasksList from '@/components/UI/TableWithSeparatedRows';
 
 export default {
   components: {
@@ -27,7 +26,6 @@ export default {
     TasksFilter,
     mTasksFilter,
     TasksList,
-    mTasksList,
   },
   props: {},
   computed: {},
@@ -51,6 +49,7 @@ export default {
 .rq-tasks__executor-search {
   .desktop {
     display: block;
+    max-width: 1272px;
   }
   .mobile {
     display: none;

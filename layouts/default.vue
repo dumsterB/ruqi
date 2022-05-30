@@ -23,6 +23,13 @@ export default {
   components: {
     Topbar,
   },
+
+  data() {
+    return {
+      timerRuqiId: null,
+    };
+  },
+
   computed: {
     requestSuccess() {
       return this.$store.getters["response/requestSuccess"];
@@ -31,6 +38,7 @@ export default {
       return this.$store.getters["user/userAuthorizationStatus"];
     },
   },
+
   watch: {
     $route: {
       handler(to, from) {
@@ -77,6 +85,7 @@ export default {
       immediate: true,
     },
   },
+
   methods: {
     ...mapActions("breadcrumbs", [
       'initBreadcrumbs',
@@ -88,20 +97,16 @@ export default {
     },
   },
 
-  data() {
-    return {
-      timerRuqiId: null,
-    };
-  },
-  mounted() {
-    //this.initBreadcrumbs(this.$route.fullPath);
-  },
   async created() {
     await this.$socket.setQuery({
       ...this.$socket.query,
       token: JSON.parse(localStorage.getItem('ruqi_auth_data')).token,
     });
     this.$socket.connect();
+  },
+
+  mounted() {
+    //this.initBreadcrumbs(this.$route.fullPath);
   },
 };
 </script>
