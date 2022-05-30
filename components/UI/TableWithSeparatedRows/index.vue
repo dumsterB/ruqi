@@ -2,7 +2,10 @@
 <template lang="pug">
 .rq-twsr
   TableDesktop.rq-twsr__desktop
-  TableMobile.rq-twsr__mobile
+    slot(name="desktop")
+
+  //- TableMobile.rq-twsr__mobile
+  //-   slot(name="mobile")
 </template>
 
 <script>
