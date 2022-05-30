@@ -105,9 +105,8 @@
                 <br>
                 <div class="logo-zone mt-3">
                   <div @dragover="dragover" @dragleave="dragleave" @drop="drop">
-                    <input type="file"   @change="readFile" hidden ref="input" style="height: 300px"  id="logo-zone-input" class="logo-zone-input" />
+                    <input type="file"   @change="readFile" hidden ref="input"  id="logo-zone-input" class="logo-zone-input" />
                   </div>
-                  <button  @click="selectFile()" style="color: #263043;font-weight: 700"  pill>Перетащите сюда файл</button>
                 </div>
               </button>
             </div>
@@ -128,6 +127,8 @@
       <h3><strong> Фото паспорта разворот прописка (стр. 3-4)</strong></h3>
       <p class="mt-3">На фотографии должны быть отчетливо видны серия, номер, основные данные, фотография. В поле зрения не должны попадать пальцы и посторонние предметы.</p>
     </div>
+    <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
+    <v-btn dark elevation="0" class="btn-primary" @click="next(6)"><span class="btn-title">Далее</span> </v-btn>
   </v-container>
 </div>
 </template>
@@ -142,6 +143,18 @@ export default {
     }
   },
   methods:{
+    next(val){
+      this.$emit('pageHandler',val)
+    },
+    onChange() {
+      this.filelist = [...this.$refs.file.files];
+    },
+    remove(i) {
+      this.filelist.splice(i, 1);
+    },
+    dragover(event) {
+      event.preventDefault();
+    },
     selectFile() {
       let fileInputElement = this.$refs.input;
       fileInputElement.click();
@@ -161,13 +174,6 @@ export default {
       reader.onerror = function() {
         console.log(reader.error);
       };
-    },
-    remove(i) {
-      this.filelist.splice(i, 1);
-    },
-    dragover(event) {
-      event.preventDefault();
-      // Add some visual fluff to show the user can drop its files
     },
     dragleave(event) {
       // Clean up
@@ -211,5 +217,19 @@ export default {
   color: #9398A1;
   margin-top: 10px;
   font-weight: 700;
+}
+.btn-primary{
+  background: #0082DE!important;
+  border-radius: 8px;
+  height: 45px!important;
+  width: 100%;
+  margin-top: 15px;
+}
+.btn-secondary{
+  background: white!important;
+  border-radius: 8px;
+  height: 45px!important;
+  width: 100%;
+  border: 1px solid lightgrey;
 }
 </style>

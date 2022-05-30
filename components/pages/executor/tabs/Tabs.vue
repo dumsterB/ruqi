@@ -13,7 +13,7 @@
           </v-col>
         </v-row>
         <v-row class="mobile">
-          <v-col v-for="(tab ,item) of tabs" :key="tab.title" v-if="tab.active"  cols="12" >
+          <v-col v-for="(tab ,item) of tabs" :key="tab.title" v-if="tab.mobile"  cols="12" >
             <div class="d-block text-center"   >
                  Шаг {{item + 1}}
                 <br>
@@ -38,6 +38,7 @@
           <electronic-document  @pageHandler="pageHandler" v-if="current_page == 3"></electronic-document>
           <position-selector  @pageHandler="pageHandler" v-if="current_page == 4"></position-selector>
           <upload-document  @pageHandler="pageHandler" v-if="current_page == 5"></upload-document>
+          <payment-information @pageHandler="pageHandler" v-if="current_page == 6"></payment-information>
       </v-container>
     </div>
   </div>
@@ -50,6 +51,7 @@ import CreatePassword from "@/components/pages/executor/tabs/CreatePassword";
 import ElectronicDocument from "@/components/pages/executor/tabs/ElectronicDocument";
 import PositionSelector from "@/components/pages/executor/tabs/PositionSelector";
 import UploadDocument from "@/components/pages/executor/tabs/UploadDocument";
+import paymentInformation from "@/components/pages/executor/tabs/PaymentInformation";
 export default {
   components:{
      'private-information': PrivateInformation,
@@ -57,7 +59,8 @@ export default {
      'create-password':CreatePassword,
      'electronic-document':ElectronicDocument,
      'position-selector' : PositionSelector,
-     'upload-document':UploadDocument
+     'upload-document':UploadDocument,
+      'payment-information':paymentInformation
   },
   data(){
     return{
@@ -75,12 +78,12 @@ export default {
         email:'',
       },
       tabs:[
-        {title:'Личные данные', value:'',active:true},
-        {title:'Создание пароля', value:'',active:false},
-        {title:'Соглашение ЭДО', value:'',active:false},
-        {title:'Выбор профессий', value:'',active:false},
-        {title:'Загрузка документов', value:'',active:false},
-        {title:'Платежные данные', value:'',active:false}
+        {title:'Личные данные', value:'',active:true, mobile:true},
+        {title:'Создание пароля', value:'',active:false, mobile:false},
+        {title:'Соглашение ЭДО', value:'',active:false, mobile:false},
+        {title:'Выбор профессий', value:'',active:false, mobile:false},
+        {title:'Загрузка документов', value:'',active:false, mobile:false},
+        {title:'Платежные данные', value:'',active:false, mobile:false}
       ],
       agree:false,
       password: '',
@@ -90,14 +93,20 @@ export default {
     pageHandler(val){  // refactor later
       if(val == 1){
         this.current_page = val
+        this.tabs.map(ell => {ell.mobile = false})
         this.tabs[val - 1].active = true
+        this.tabs[val - 1].mobile = true
         this.tabs[0].value = 50
       }else if(val == 2){
         this.current_page = val
+        this.tabs.map(ell => {ell.mobile = false})
+        this.tabs[val - 1].mobile = true
         this.tabs[val - 1].active = true
         this.tabs[0].value = 100
       }else{
         this.current_page = val
+        this.tabs.map(ell => {ell.mobile = false})
+        this.tabs[val - 1].mobile = true
         this.tabs[val - 1].active = true
         this.tabs[val - 2].value = 100
       }
@@ -112,8 +121,8 @@ export default {
 <style scoped>
 .tab{
   width: 180px;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 5px;
+  margin-right: 8px;
 }
 .tab-content{
   padding-left: 300px;
