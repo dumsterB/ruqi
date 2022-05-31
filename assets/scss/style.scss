@@ -1150,6 +1150,10 @@ h1.large {
               display: flex;
               align-items: center;
 
+              .rate-title{
+                min-width: 50px;
+              }
+
 
             }
           }
