@@ -19,6 +19,7 @@ export const state = () => ({
     },
   },
   userTasks: [],
+  searchTasks: [],
   userTasksParams: {},
   validation: {},
   userAuthorizationStatus: null,
@@ -34,6 +35,9 @@ export const getters = {
   userTasks(state) {
     return state.userTasks;
   },
+  searchTasks(state) {
+    return state.searchTasks;
+  },
   userTasksParams(state) {
     return state.userTasksParams;
   },
@@ -46,47 +50,13 @@ export const getters = {
 }
 
 export const actions = {
+  /* FETCHERS */
   async fetchUser({ commit }) {
     const response = await this.$axios.get('user/my');
 
     console.log('fetchUser', response);
 
     commit('updateUserData', response?.data?.data);
-  },
-  async setUserData({ commit }, payload) {
-    commit('updateUserData', payload);
-  },
-  async setUserValidation({ commit }, payload) {
-    commit('updateUserValidation', payload);
-  },
-  async uploadUserData({ state }) {
-    return await this.$axios.put('user/settings', state.user);
-  },
-  async setPasswordStore({ commit }, payload) {
-    commit('updatePasswordStore', payload);
-  },
-  async changeUserPassword({ commit }, payload) {
-    commit(
-      'updatePasswordStore',
-
-      {
-        oldPass: {
-          value: null,
-        },
-
-        newPass: {
-          value: null,
-          isValid: false,
-        },
-
-        RepeatNewPass: {
-          value: null,
-          isValid: false,
-        },
-      },
-    );
-
-    return await this.$axios.put('auth/change_password', payload);
   },
   async fetchUserTasks({ commit, state }, payload = {}) {
     const response = await this.$axios.get(
@@ -105,6 +75,18 @@ export const actions = {
     console.log('fetchUserTasks', response); // DELETE
 
     commit('updateUserTasks', response?.data?.data);
+  },
+  async fetchSearchTasks({ commit }) { },
+
+  /* SETTERS */
+  async setUserData({ commit }, payload) {
+    commit('updateUserData', payload);
+  },
+  async setUserValidation({ commit }, payload) {
+    commit('updateUserValidation', payload);
+  },
+  async setPasswordStore({ commit }, payload) {
+    commit('updatePasswordStore', payload);
   },
   async setUserTasksParams({ commit }, payload = {}) {
     commit('updateUserTasksParams', payload);
@@ -129,6 +111,37 @@ export const actions = {
         }
       }
     );
+  },
+  async setUserAuthorizationStatus({ commit, }, { status, }) {
+    commit('updateUserAuthorizationStatus', { status });
+  },
+
+  /* OTHER ACTIONS */
+  async uploadUserData({ state }) {
+    return await this.$axios.put('user/settings', state.user);
+  },
+  async changeUserPassword({ commit }, payload) {
+    commit(
+      'updatePasswordStore',
+
+      {
+        oldPass: {
+          value: null,
+        },
+
+        newPass: {
+          value: null,
+          isValid: false,
+        },
+
+        RepeatNewPass: {
+          value: null,
+          isValid: false,
+        },
+      },
+    );
+
+    return await this.$axios.put('auth/change_password', payload);
   },
   async validateUserData({ state }, payload = {}) {
     /* FIRST NAME VALIDATE START */
@@ -219,9 +232,6 @@ export const actions = {
     }
     /* DOCUMENT INN END */
   },
-  async setUserAuthorizationStatus({commit,}, {status,}) {
-    commit('updateUserAuthorizationStatus', {status});
-  },
 }
 
 export const mutations = {
@@ -249,7 +259,7 @@ export const mutations = {
   updateUserTasksParams(state, userTasksParams) {
     state.userTasksParams = userTasksParams;
   },
-  updateUserAuthorizationStatus(state, {status,}) {
+  updateUserAuthorizationStatus(state, { status, }) {
     state.userAuthorizationStatus = status;
   },
 }
