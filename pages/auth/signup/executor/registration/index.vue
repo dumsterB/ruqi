@@ -16,7 +16,11 @@ import tabs from "@/components/pages/executor/tabs/Tabs";
 export default {
   layout: "empty",
   components:{
-    tabs
+    tabs,
+  },
+  data(){
+    return{
+    }
   }
 }
 </script>

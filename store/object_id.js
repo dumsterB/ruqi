@@ -66,10 +66,12 @@ export const actions = {
     commit('setObjectIdVacancies', {object_id_vacancies: object_id_vacancies, concat: concat, unit: unit});
 
   },
-  async fetchObjectIdHistory({commit}, requestId) {
+  async fetchObjectIdHistory({commit}, {requestId, params, concat}) {
 
-    const object_id_history = await this.$axios.get('/objects/' + requestId + '/history',);
-    commit('setObjectIdHistory', object_id_history);
+    const object_id_history = await this.$axios.get('/objects/' + requestId + '/history',{
+      params: params
+    });
+    commit('setObjectIdHistory', {object_id_history: object_id_history, concat: concat,} );
 
   },
   async putStatus({commit, dispatch}, {requestId, status}) {
@@ -132,8 +134,13 @@ export const mutations = {
       state.vacancy_filters = object_id_vacancies.data.meta.filters;
     }
   },
-  setObjectIdHistory(state, object_id_history) {
+  setObjectIdHistory(state,  {object_id_history, concat}) {
     state.object_id_history = object_id_history.data.data;
+    if (concat) {
+      state.object_id_history = state.object_id_history.concat(object_id_history.data.data);
+    } else {
+      state.object_id_history = object_id_history.data.data;
+    }
   },
   resetObjectState(state) {
     state.object_id = [];

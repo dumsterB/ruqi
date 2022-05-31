@@ -1,4 +1,5 @@
 <template>
+  <div>
   <div class="tabs">
     <div class="content mt-3">
       <v-container>
@@ -13,7 +14,7 @@
           </v-col>
         </v-row>
         <v-row class="mobile">
-          <v-col v-for="(tab ,item) of tabs" :key="tab.title" v-if="tab.active"  cols="12" >
+          <v-col v-for="(tab ,item) of tabs" :key="tab.title" v-if="tab.mobile"  cols="12" >
             <div class="d-block text-center"   >
                  Шаг {{item + 1}}
                 <br>
@@ -32,14 +33,18 @@
     </div>
     <div class="tabs-content">
       <v-container class="tab-content">
-          <private-information @checkboxHandler="checkboxHandler" :agree="agree" :form="form" @pageHandler="pageHandler" v-if="current_page == 0"></private-information>
-          <sms :agree="agree" :email="form.email" :phone="form.phone" @pageHandler="pageHandler" v-if="current_page == 1"></sms>
-          <create-password :password="password"  @pageHandler="pageHandler"  v-if="current_page == 2" ></create-password>
-          <electronic-document  @pageHandler="pageHandler" v-if="current_page == 3"></electronic-document>
-          <position-selector  @pageHandler="pageHandler" v-if="current_page == 4"></position-selector>
-          <upload-document  @pageHandler="pageHandler" v-if="current_page == 5"></upload-document>
+          <private-information @checkboxHandler="checkboxHandler" :agree="agree" :form="form" @pageHandler="pageHandler" v-if="current_page === 0"></private-information>
+          <sms :agree="agree" :email="form.email" :phone="form.phone" @pageHandler="pageHandler" v-if="current_page === 1"></sms>
+          <create-password :password="password"  @pageHandler="pageHandler"  v-if="current_page === 2" ></create-password>
+          <electronic-document  @pageHandler="pageHandler" v-if="current_page === 3"></electronic-document>
+          <position-selector  @pageHandler="pageHandler" v-if="current_page === 4"></position-selector>
+          <upload-document  @pageHandler="pageHandler" v-if="current_page === 5"></upload-document>
+          <payment-information @pageHandler="pageHandler" v-if="current_page === 6"></payment-information>
+         <finish v-if="current_page === 7"></finish>
       </v-container>
     </div>
+  </div>
+
   </div>
 </template>
 
@@ -50,19 +55,25 @@ import CreatePassword from "@/components/pages/executor/tabs/CreatePassword";
 import ElectronicDocument from "@/components/pages/executor/tabs/ElectronicDocument";
 import PositionSelector from "@/components/pages/executor/tabs/PositionSelector";
 import UploadDocument from "@/components/pages/executor/tabs/UploadDocument";
+import paymentInformation from "@/components/pages/executor/tabs/PaymentInformation";
+import Finish from '@/components/pages/executor/tabs/Finish'
+
 export default {
+  props:{},
   components:{
      'private-information': PrivateInformation,
      'sms': Sms,
      'create-password':CreatePassword,
      'electronic-document':ElectronicDocument,
      'position-selector' : PositionSelector,
-     'upload-document':UploadDocument
+     'upload-document':UploadDocument,
+     'payment-information':paymentInformation,
+     'finish': Finish
   },
   data(){
     return{
       power: 78,
-      current_page: 0,
+      current_page:0,
       form:{
         name:'',
         surname:'',
@@ -75,12 +86,12 @@ export default {
         email:'',
       },
       tabs:[
-        {title:'Личные данные', value:'',active:true},
-        {title:'Создание пароля', value:'',active:false},
-        {title:'Соглашение ЭДО', value:'',active:false},
-        {title:'Выбор профессий', value:'',active:false},
-        {title:'Загрузка документов', value:'',active:false},
-        {title:'Платежные данные', value:'',active:false}
+        {title:'Личные данные', value:'',active:true, mobile:true},
+        {title:'Создание пароля', value:'',active:false, mobile:false},
+        {title:'Соглашение ЭДО', value:'',active:false, mobile:false},
+        {title:'Выбор профессий', value:'',active:false, mobile:false},
+        {title:'Загрузка документов', value:'',active:false, mobile:false},
+        {title:'Платежные данные', value:'',active:false, mobile:false}
       ],
       agree:false,
       password: '',
@@ -90,14 +101,20 @@ export default {
     pageHandler(val){  // refactor later
       if(val == 1){
         this.current_page = val
+        this.tabs.map(ell => {ell.mobile = false})
         this.tabs[val - 1].active = true
+        this.tabs[val - 1].mobile = true
         this.tabs[0].value = 50
       }else if(val == 2){
         this.current_page = val
+        this.tabs.map(ell => {ell.mobile = false})
+        this.tabs[val - 1].mobile = true
         this.tabs[val - 1].active = true
         this.tabs[0].value = 100
       }else{
         this.current_page = val
+        this.tabs.map(ell => {ell.mobile = false})
+        this.tabs[val - 1].mobile = true
         this.tabs[val - 1].active = true
         this.tabs[val - 2].value = 100
       }
@@ -112,8 +129,8 @@ export default {
 <style scoped>
 .tab{
   width: 180px;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 5px;
+  margin-right: 8px;
 }
 .tab-content{
   padding-left: 300px;

@@ -58,7 +58,7 @@ export default {
           },
           {
             type: 'FTypeSelectUIID',
-            label: 'Связанная услуга',
+            label: 'Услуга',
             col: 12,
             name: 'object_service',
             params: {
@@ -285,7 +285,7 @@ export default {
     closeCreateEditForm() {
       this.$router.push({
         name: "objects-id",
-        params: {ServiceId: "", objectId: this.object_uuid, activeTab: 1},
+        params: {id: this.object_uuid, ServiceId: "", objectId: this.object_uuid, activeTab: 1},
       });
     },
     updateFiled(field, value) {

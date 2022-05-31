@@ -25,14 +25,25 @@
     <div class="access-content mt-10">
       <div class="d-flex" style="margin-top: -25px">
         <img  src="@/assets/img/attention.svg" alt="">
-        <p class="ml-2 mt-8"> Некоторые из выбранных Вами профессий требуют загрузки дополнительных документов для подтверждения:</p>
+        <p class="ml-2 small-text mt-8"> Некоторые из выбранных Вами профессий требуют загрузки дополнительных документов для подтверждения:</p>
       </div>
-      <div class="d-flex">
-        <strong>Водитель электроштабелера </strong> <span class="primary-text"> требуются права для управления</span>
+      <div class="desktop">
+        <div class="d-flex">
+          <strong class="small-text">Водитель электроштабелера </strong> <span  style="margin-top: -2px" class="primary-text ml-3"> требуются права для управления</span>
+        </div>
+        <div class="d-flex">
+          <strong class="small-text">Кладовщик </strong> <span style="margin-top: -2px" class="primary-text ml-3 "> требуются медицинская книжка</span>
+        </div>
       </div>
-      <div class="d-flex">
-        <strong>Кладовщик </strong> <span class="primary-text"> требуются медицинская книжка</span>
+      <div class="mobile">
+        <div >
+          <strong class="small-text">Водитель электроштабелера </strong> <br> <span class="primary-text"> требуются права для управления</span>
+        </div>
+        <div >
+          <strong class="small-text">Кладовщик </strong> <br> <span class="primary-text"> требуются медицинская книжка</span>
+        </div>
       </div>
+
       <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
       <v-btn dark elevation="0" class="btn-primary" @click="next(5)"><span class="btn-title">Далее</span> </v-btn>
     </div>
@@ -92,6 +103,19 @@ export default {
 }
 .primary-text{
   color: #0082DE;
-  margin-left: 10px;
+}
+.small-text{
+  font-size: 14px;
+}
+.mobile{
+  display: none;
+}
+@media (max-width: 1000px) {
+  .desktop{
+    display: none;
+  }
+  .mobile{
+    display: block;
+  }
 }
 </style>

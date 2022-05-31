@@ -149,14 +149,11 @@ export default {
     },
     agree:{
       type:Boolean,
-      required:true,
-      default:false
     }
   },
   data(){
     return{
       valid:false,
-      agree:false,
       menu:'',
       switcher:false
     }

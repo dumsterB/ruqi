@@ -7,6 +7,7 @@
       content-class="filters-menu"
       :close-on-content-click="false"
       v-model="isOpened"
+      z-index="500"
     )
       template(v-slot:activator="{ on }")
         v-btn.filter-btn(icon, v-on="on" :class="{ active: isApplyFilter }")
@@ -143,7 +144,7 @@ export default {
 
       const sentFilter = [];
       for (let i = 0; i < this.selected_fields.length; i++) {
-        if(this.selected_fields[i].value){
+        if(this.selected_fields[i].value && this.selected_fields[i].value.length){
           sentFilter.push(this.selected_fields[i]);
         }
       }

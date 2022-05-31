@@ -177,7 +177,7 @@
                     .nds-title ндс текущий
                     .nds-value {{ object_id.vat }}%
 
-              .table-row
+              .table-row(v-infinite-scroll="loadMore")
                 .table-list-style-minify
                   v-data-table.elevation-0(
                     :headers="headers_vacancies",
@@ -262,7 +262,7 @@
 
 
 
-              .table-row
+              .table-row(v-infinite-scroll="loadMore")
                 .table-list-style.minify-header
                   .minify-header-substrate
 
@@ -396,7 +396,7 @@
                           )
 
             v-tab-item(eager)
-              .table-row
+              .table-row(v-infinite-scroll="loadMore")
                 .table-list-style-nospacing.px-6
                   .minify-header-substrate
 
@@ -525,9 +525,7 @@ export default {
         {text: "Набор до", value: "date", width: "132px"},
         {text: "Наполнение", value: "completion", width: "152px"},
       ],
-      headers_tasks_filter: [
-
-      ],
+      headers_tasks_filter: [],
       headers_services: [
         {
           text: "",
@@ -616,13 +614,20 @@ export default {
         "page": 1,
         "per_page": 15
       },
+      fetchHistoryParams: {
+        "page": 1,
+        "per_page": 10
+      },
       totalDesserts: 0,
       desserts: [],
       loading: true,
       options: {},
       headerOptionsVacancy: {},
       headerOptionsTask: {},
+      headerOptionsHistory: {},
       isSearchFocus: false,
+      limit: 1,
+      busy: false
     };
   },
   watch: {
@@ -819,13 +824,38 @@ export default {
         return `${date[2]}.${date[1]}.${date[0]}`;
       }
     },
-    loadMore() {
-      this.fetchServiceParams.page += 1;
-      this.fetchServiceParams.sort = this.options.sortBy[0];
-      this.fetchServiceParams.order = this.options.sortDesc[0] ? 'asc' : 'desc';
+    async loadMore() {
 
-      const params = this.fetchServiceParams;
-      this.fetchObjectIdServices({requestId: this.$route.params.id, params: params, concat: true, unit: false});
+      let fetchParams = 'fetchServiceParams',
+          sortOptions = 'options',
+          action = 'fetchObjectIdServices';
+
+      if (this.tab == 1) {
+        fetchParams = 'fetchVacancyParams';
+        sortOptions = 'headerOptionsVacancy';
+        action = 'fetchObjectIdVacancies';
+      } else if (this.tab == 2) {
+        fetchParams = 'fetchTaskParams';
+        sortOptions = 'headerOptionsTask';
+        action = 'fetchObjectIdRequest';
+      }
+      else if (this.tab == 5) {
+        fetchParams = 'fetchHistoryParams';
+        sortOptions = 'headerOptionsHistory';
+        action = 'fetchObjectIdHistory';
+      }
+
+      this[fetchParams].page += 1;
+      this[fetchParams].sort = this[sortOptions].sortBy[0];
+      this[fetchParams].order = this[sortOptions].sortDesc[0] ? 'asc' : 'desc';
+
+      const params = this[fetchParams];
+
+      this.busy = true;
+
+      await this[action]({requestId: this.$route.params.id, params: params, concat: true, unit: false});
+
+      this.busy = false;
 
     },
     getDataFromApi(fetchParams, watcherParams, action) {
@@ -833,8 +863,8 @@ export default {
 
       const params = {
         "settings": {
-          "value": this[fetchParams].value ,
-          "sort":  this[watcherParams].sortBy[0],
+          "value": this[fetchParams].value,
+          "sort": this[watcherParams].sortBy[0],
           "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": this[fetchParams].filters,
         }
@@ -858,7 +888,7 @@ export default {
       let params = {
         "settings": {
           "value": search,
-          "sort":  this[watcherParams].sortBy[0],
+          "sort": this[watcherParams].sortBy[0],
           "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": filter
         }
@@ -868,23 +898,22 @@ export default {
         this.fetchObjectIdServices({requestId: this.$route.params.id, params: params, concat: false, unit: false})
       } else if (this.tab == 1) {
         this.fetchObjectIdVacancies({requestId: this.$route.params.id, params: params, concat: false, unit: false})
-      }else if (this.tab == 2) {
+      } else if (this.tab == 2) {
         this.fetchObjectIdRequest({requestId: this.$route.params.id, params: params, concat: false, unit: false})
       }
 
     },
-    previewText(value){
-      if (value && value.length > 56){
+    previewText(value) {
+      if (value && value.length > 56) {
         return value.substring(0, 56) + '...';
-      }
-      else{
+      } else {
         return value;
       }
     },
     focusSearch() {
       this.isSearchFocus = 1;
     },
-    blurSearch(){
+    blurSearch() {
       this.isSearchFocus = 0;
     }
   },
@@ -925,7 +954,11 @@ export default {
       concat: false,
       unit: true
     });
-    await this.fetchObjectIdHistory(this.$route.params.id);
+    await this.fetchObjectIdHistory({
+      requestId: this.$route.params.id,
+      params: this.fetchHistoryParams,
+      concat: false,
+    });
 
     this.selectStatus = this.object_id.status;
     this.$route.meta.title = this.object_id.name;
