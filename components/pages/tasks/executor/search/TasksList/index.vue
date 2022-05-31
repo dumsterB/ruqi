@@ -7,19 +7,19 @@
         :class="['testld-item']"
       )
         div(data-index="0")
-          div {{ task.name }}
+          div {{ task.info.name }}
 
         div(data-index="1")
-          div {{ task.name }}
+          div {{ task.my_status_name }}
 
         div(data-index="2")
-          div {{ task.payment.value }}
+          div {{ task.info.payment.value }}
 
         div(data-index="3")
-          div {{ task.name }}
+          div {{ task.info.description }}
 
         div(data-index="4")
-          div {{ task.name }}
+          div {{ task.info.name }}
 
         div(data-index="5")
           v-menu(
@@ -68,8 +68,10 @@ export default {
   data() {
     return {}
   },
-  created() { },
-  mounted() { },
+  created() {},
+  mounted() {
+    console.debug('mounted TasksList', this.tasks);
+  },
 }
 </script>
 

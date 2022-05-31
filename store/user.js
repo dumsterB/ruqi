@@ -76,7 +76,29 @@ export const actions = {
 
     commit('updateUserTasks', response?.data?.data);
   },
-  async fetchSearchTasks({ commit }) { },
+  async fetchSearchTasks({ commit }) {
+    console.debug('fetchSearchTasks'); // DELETE
+
+    try {
+      const response = await this.$axios.get(
+        'user/tasks/search',
+        {
+          params: {
+            mode: 'map',
+          }
+        }
+      );
+
+      console.debug('fetchSearchTasks[response]', response); // DELETE
+
+      commit('updateSearchTasks', response?.data?.data);
+
+      return response;
+    }
+    catch (e) {
+      return e;
+    }
+  },
 
   /* SETTERS */
   async setUserData({ commit }, payload) {
@@ -255,6 +277,9 @@ export const mutations = {
   },
   updateUserTasks(state, userTasks) {
     state.userTasks = userTasks;
+  },
+  updateSearchTasks(state, searchTasks) {
+    state.searchTasks = searchTasks;
   },
   updateUserTasksParams(state, userTasksParams) {
     state.userTasksParams = userTasksParams;
