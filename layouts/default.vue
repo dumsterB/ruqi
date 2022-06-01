@@ -14,19 +14,24 @@
             Settingsnav
         div
           Topbar
+
           .content
             Nuxt
             Alert(:requestSuccess="requestSuccess")
+
+          Bottombar
 </template>
 
 <script>
 import { mapActions } from "vuex";
 import Topbar from '@/components/Topbar/index.vue';
+import Bottombar from '@/components/Navigation/mobile/Bottombar';
 
 export default {
   name: "default",
   components: {
     Topbar,
+    Bottombar,
   },
 
   data() {
