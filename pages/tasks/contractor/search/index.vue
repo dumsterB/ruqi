@@ -1,15 +1,17 @@
 <template lang="pug">
 .rq-tasks__executor-search
   .mobile
-    mContentDisplayController
+    .mobile__header
+      mContentDisplayController
+
     mTasksFilter
 
   .desktop
     h1 Поиск работы
     TasksFilter
-    ContentDisplayController
+    ContentDisplayController.desktop__content-display-ctrl
 
-  TasksList(:tasks="searchTasks")
+  TasksList.search__task-list(:tasks="searchTasks")
 </template>
 
 <script>
@@ -39,7 +41,7 @@ export default {
 
   watch: {},
   methods: {
-    ...mapActions( 'user', [
+    ...mapActions('user', [
       'fetchSearchTasks',
     ]),
 
@@ -61,10 +63,24 @@ export default {
   .desktop {
     display: block;
     max-width: 1272px;
+
+    &__content-display-ctrl {
+      margin-top: 32px;
+    }
   }
 
   .mobile {
     display: none;
+
+    &__header {
+      background: #0082DE;
+    }
+  }
+
+  .search {
+    &__task-list {
+      margin-top: 24px;
+    }
   }
 
   @media screen and (max-width: 768px) {
