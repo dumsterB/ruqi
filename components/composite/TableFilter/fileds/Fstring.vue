@@ -5,8 +5,8 @@
       single-line
       outlined
       filled
-      v-model="value"
-      @input="$emit('input', value)"
+      v-model="new_value"
+      @input="$emit('input', new_value)"
       hide-details="auto"
       :class="{'number': params.type == 'integer'}"
       :rules="[params.type == 'integer' ? rules.number : '']"
@@ -25,6 +25,7 @@ export default {
   data() {
     return {
       value: '',
+      new_value: '',
       rules: {
         number: value => {
           const pattern = /^\d+(?:[\.,]\d+)?$/; // /(?<=^| )\d+(\.\d+)?(?=$| )/;
@@ -35,6 +36,17 @@ export default {
           }
         },
       },
+    }
+  },
+  created() {
+    this.new_value = this.params.value;
+  },
+  watch: {
+    params: {
+      handler(val){
+        this.new_value = this.params.value;
+      },
+      deep: true
     }
   },
 }
