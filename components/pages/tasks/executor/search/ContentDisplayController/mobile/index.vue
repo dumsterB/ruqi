@@ -5,47 +5,68 @@
     active-class="executor-mcdc__tabs-item_active"
     height="43px"
   )
-    v-tab Списком
-    v-tab На карте
+    v-tab.executor-mcdc__tabs-item
+      v-icon.executor-mcdc__tabs-item-icon mdi-format-list-bulleted
+      span Списком
+
+    v-tab.executor-mcdc__tabs-item
+      v-icon.executor-mcdc__tabs-item-icon mdi-map-outline
+      span На карте
 </template>
 
 <script>
-  export default {
-    components: {},
-    props: {},
-    computed: {},
-    watch: {},
-    methods: {
-      /* GETTERS */
-      /* SETTERS */
-      /* HANDLERS */
-      /* HELPERS */
-    },
+export default {
+  components: {},
+  props: {},
+  computed: {},
+  watch: {},
+  methods: {
+    /* GETTERS */
+    /* SETTERS */
+    /* HANDLERS */
+    /* HELPERS */
+  },
 
-    data() {
-      return {}
-    },
-    created() {},
-    mounted() {},
+  data() {
+    return {}
+  },
+  created() { },
+  mounted() { },
 }
 </script>
 
 <style lang="scss">
 .executor-mcdc {
-  &__tabs{
+  &__tabs {
     width: max-content;
     background: #349BE4;
     border-radius: 40px;
 
     &-item {
+      color: #FFFFFF !important;
+
+      &-icon {
+        color: #FFFFFF !important;
+        background: transparent !important;
+      }
+
       &_active {
         background: #FFFFFF;
         border-radius: 40px;
+        color: #0082DE !important;
+
+        .executor-mcdc__tabs-item-icon {
+          color: #0082DE !important;
+        }
       }
     }
 
     .v-tabs-bar {
       border: 0 !important;
+    }
+    .v-tab {
+      padding: 12px 50px !important;
+      text-transform: none !important;
     }
   }
 }
