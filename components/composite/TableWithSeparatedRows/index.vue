@@ -24,8 +24,8 @@ export default {
   data() {
     return {}
   },
-  created() {},
-  mounted() {},
+  created() { },
+  mounted() { },
 }
 </script>
 
@@ -50,6 +50,10 @@ export default {
 
       &:first-child {
         margin-top: 0;
+      }
+
+      @media screen and (max-width: 370px) {
+        width: 315px;
       }
     }
   }

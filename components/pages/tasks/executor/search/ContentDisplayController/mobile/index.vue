@@ -7,11 +7,11 @@
   )
     v-tab.executor-mcdc__tabs-item
       v-icon.executor-mcdc__tabs-item-icon mdi-format-list-bulleted
-      span Списком
+      span.executor-mcdc__tabs-item-title Списком
 
     v-tab.executor-mcdc__tabs-item
       v-icon.executor-mcdc__tabs-item-icon mdi-map-outline
-      span На карте
+      span.executor-mcdc__tabs-item-title На карте
 </template>
 
 <script>
@@ -50,6 +50,10 @@ export default {
         background: transparent !important;
       }
 
+      &-title {
+        white-space: nowrap;
+      }
+
       &_active {
         background: #FFFFFF;
         border-radius: 40px;
@@ -59,6 +63,10 @@ export default {
           color: #0082DE !important;
         }
       }
+
+      @media screen and (min-width: 370px) {
+        width: 172px;
+      }
     }
 
     .v-tabs-bar {
@@ -67,6 +75,16 @@ export default {
     .v-tab {
       padding: 12px 50px !important;
       text-transform: none !important;
+
+      @media screen and (max-width: 425px) {
+        padding: 12px 40px !important;
+      }
+      @media screen and (max-width: 385px) {
+        padding: 12px 35px !important;
+      }
+      @media screen and (max-width: 370px) {
+        padding: 12px 30px !important;
+      }
     }
   }
 }

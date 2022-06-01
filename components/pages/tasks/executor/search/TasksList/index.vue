@@ -137,7 +137,8 @@ export default {
 
   &__mobile {
     &-title {
-      width: 280px;
+      max-width: 280px;
+      min-width: 150px;
       white-space: normal;
       font-family: 'Source Sans Pro';
       font-style: normal;
@@ -146,15 +147,14 @@ export default {
       line-height: 125%;
 
       &-object {
-        font-family: 'Source Sans Pro';
-        font-style: normal;
-        font-weight: 600;
+        max-width: 280px;
+        min-width: 150px;
         font-size: 14px;
         line-height: 125%;
       }
       &-payment {
-        font-family: 'Source Sans Pro';
-        font-style: normal;
+        max-width: 280px;
+        min-width: 150px;
         font-weight: 700;
         font-size: 16px;
         line-height: 125%;
@@ -162,9 +162,8 @@ export default {
         color: #263043;
       }
       &-text {
-        font-family: 'Source Sans Pro';
-        font-style: normal;
-        font-weight: 600;
+        max-width: 280px;
+        min-width: 150px;
         font-size: 14px;
         line-height: 125%;
         color: #666666;
