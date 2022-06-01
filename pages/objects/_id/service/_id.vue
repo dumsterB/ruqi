@@ -234,14 +234,6 @@ export default {
       console.log(postBody);
       return postBody;
     },
-    postRate() {
-      let postRate = {
-        "rate": this.formValues.object_rate_rate_new,
-        "start_date": this.formValues.object_rate_date_new,
-      };
-      console.log(postRate);
-      return postRate;
-    },
 
   },
   methods: {
@@ -291,7 +283,10 @@ export default {
       this.$refs[formPart].validate();
       this.$nextTick(() => {
         if (this.validRate) {
-          const newRequest = JSON.stringify(this.postRate);
+          const newRequest = {
+            "rate": this.formValues['object_rate_rate_new'],
+            "start_date": this.formValues['object_rate_date_new'],
+          };
           console.log(newRequest);
           this.createServiceRate({newRequest: newRequest, object_uuid: this.object_uuid, service_uuid: this.service_uuid});
           this.isAddingRate = false;
@@ -336,6 +331,13 @@ export default {
     this.meta.meta_object_rate.map(subarray => subarray.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     }));
+
+    let rates_length = this.service_id.rates.length;
+
+    for (let i = 0; i < rates_length; i++) {
+      this.formValues['object_rate_rate_' + i] = this.service_id.rates[i].rate;
+      this.formValues['object_rate_date_' + i] = this.service_id.rates[i].start_date
+    }
 
 
   },

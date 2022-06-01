@@ -11,7 +11,8 @@
     )
       template(v-slot:activator="{ on }")
         v-btn.filter-btn(icon, v-on="on" :class="{ active: isApplyFilter }")
-          v-icon(color="#7A91A9") mdi-filter-outline
+          v-badge(color="#EB4D3D" dot :value="isApplyFilter" offset-y="8" offset-x="8")
+            v-icon(color="#7A91A9") mdi-filter-outline
 
       v-card
         v-list-item-content.pa-0.elevation-0
@@ -144,8 +145,10 @@ export default {
 
       const sentFilter = [];
       for (let i = 0; i < this.selected_fields.length; i++) {
-        if(this.selected_fields[i].value && this.selected_fields[i].value.length){
-          sentFilter.push(this.selected_fields[i]);
+        if(this.selected_fields[i].value){
+          if (!Array.isArray(this.selected_fields[i].value) || Array.isArray(this.selected_fields[i].value) && this.selected_fields[i].value.length){
+            sentFilter.push(this.selected_fields[i]);
+          }
         }
       }
       this.$emit('applyFilter', sentFilter, this.searchText);
@@ -205,12 +208,6 @@ export default {
 
 .ruqi-table-filter {
   flex: 1;
-
-  .filter-btn {
-    &.active {
-      background: #e2ecf5;
-    }
-  }
 
 }
 

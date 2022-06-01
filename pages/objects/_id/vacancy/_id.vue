@@ -60,6 +60,7 @@
                     div(v-if="vacancy_id.rates && vacancy_id.rates.length > 1")
                       div(v-for="(rate, index) in vacancy_id.rates")
                         Rate( :prefix_name="index" :isNew="false"
+                          v-if="rate.difference != '='"
                           @updateFiled="updateFiled"
                           :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
                           @deleteRate="isConfirmModalRate= 1, removedUUID = rate.uuid" @putRate="putRate(index, rate.uuid)")
@@ -338,15 +339,6 @@ export default {
       console.log(postBody);
       return postBody;
     },
-    postRate() {
-      let postRate = {
-        "rate": this.formValues.object_rate_rate_new,
-        "start_date": this.formValues.object_rate_date_new,
-      };
-      console.log(postRate);
-      return postRate;
-    },
-
   },
   methods: {
     ...mapActions('dictionary', ['fetcProfessions',]),
@@ -404,13 +396,19 @@ export default {
 
       this.$nextTick(() => {
         if (this.validRate) {
-          const newRequest = JSON.stringify(this.postRate);
+          const newRequest = {
+            "rate": this.formValues['object_rate_rate_new'],
+            "start_date": this.formValues['object_rate_date_new'],
+          };
+
           console.log(newRequest);
+
           this.createVacancyRate({
             newRequest: newRequest,
             object_uuid: this.object_uuid,
             vacancy_uuid: this.vacancy_uuid
           });
+
           this.isAddingRate = false;
         }
       });
@@ -469,6 +467,13 @@ export default {
     this.meta.meta_object_rate.map(subarray => subarray.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     }));
+
+    let rates_length = this.vacancy_id.rates.length;
+
+    for (let i = 0; i < rates_length; i++) {
+      this.formValues['object_rate_rate_' + i] = this.vacancy_id.rates[i].rate;
+      this.formValues['object_rate_date_' + i] = this.vacancy_id.rates[i].start_date
+    }
 
 
   },

@@ -114,7 +114,8 @@
                       .description {{ previewText(item.description) }}
 
                     template(v-slot:item.rate="{ item }")
-                      .price {{ item.rate }} p.
+                      .price(v-if="item.rate") {{ item.rate }} p.
+                      .no-price(v-else="item.rate") нет цены
 
                     template(v-slot:item.rate_with_vat="{ item }")
                       .rate
