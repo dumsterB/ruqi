@@ -8,13 +8,14 @@ export const getters = {
 }
 export const actions = {
     async createExecutor({ commit }, params) {
-        console.log(params,'data form private')
-        const executor = await this.$axios.post('auth/signup', {
+        console.log(params,'data form private') // delete
+        await this.$axios.post('auth/signup', {
             lastname: params.name,
             firstname: params.surname,
-            middlename: params.middlename,
+            middlename: params.middle_name,
             phone: params.phone,
-            birthday: params.birthday,
+            birthday: params.birth_date,
+            gender:params.sex,
             type: "contractor"
         })
          .then((response) => {
@@ -23,10 +24,6 @@ export const actions = {
             setTimeout(function() {
                 commit('response/removeSuccess', null, { root: true });
             }, 2000);
-        /*    setTimeout(function() {
-                self.$router.push('/employees/');
-            }, 3000);*/
-
         })
             .catch((error) => {
                 commit('response/setSuccess', {type: 'error', text: 'Заполните поля', }, {root: true});
@@ -36,8 +33,21 @@ export const actions = {
                 console.log(error);
             });
     },
-    async confirmPassword(){
-
+    async confirmPassword({ commit }, params){
+    await this.$axios.put('auth/confirm',params)
+        .then((response) => {
+            commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
+            setTimeout(function() {
+                commit('response/removeSuccess', null, { root: true });
+            }, 2000);
+        })
+        .catch((error) => {
+            commit('response/setSuccess', {type: 'error', text: 'Заполните поля', }, {root: true});
+            setTimeout(function() {
+                commit('response/removeSuccess', null, { root: true });
+            }, 3000);
+            console.log(error);
+        });
     },
 
 }

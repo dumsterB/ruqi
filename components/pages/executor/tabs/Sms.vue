@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
   name: "Sms",
   props:{
@@ -52,12 +54,26 @@ export default {
     }
   },
   methods:{
+    ...mapActions('executor',['confirmPassword']),
     smsHandler(){
       this.timerEnabled = true
       this.timerCount = 10
     },
     next(val){
       this.$emit('pageHandler',val)
+      if(this.agree){
+        let obj={
+          code_confirm: this.smsCode,
+          email: this.email
+        }
+        this.confirmPassword(obj)
+      }else{
+        let obj={
+          code_confirm: this.smsCode,
+          phone: this.phone
+        }
+        this.confirmPassword(obj)
+      }
     }
   },
   watch:{
