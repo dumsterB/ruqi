@@ -1,110 +1,152 @@
-<template lang="pug">
-  .add-task
-    PageHeader(header_text="Создание новой заявки" button_text="Создать")
+<template>
+  <div>
+    <Header :content="title" :size="title_size" :isnew="false" :isback="true"/>
+    <v-tabs
+      v-model="tab"
+      class="form-tabs"
+    >
+      <v-tab v-for="(item, index) in tabs_list"
+             :key="index">
+        {{ item }}
+      </v-tab>
+    </v-tabs>
+    <div class="wrap-form">
+      <v-form
+        ref="form"
+        v-model="valid"
+        lazy-validation
+      >
+        <v-window v-model="tab">
+          <v-tab-item>
+            <v-form ref="form_part_0" v-model="valid" lazy-validation>
+              <div class="form-part">
+                <div class="form-part-title">
+                  Объект
+                </div>
+                <FormBuilder :meta="meta.meta_object_name" @updateFiled="updateFiled"/>
+              </div>
+              <div class="form-part">
+                <div class="form-part-title">
+                  Информация о заявке
+                </div>
+                <div class="form-part-description">
+                  Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное
+                  расположение.
+                </div>
+                <FormBuilder :meta="meta.meta_object_info" @updateFiled="updateFiled"/>
+              </div>
+              <div class="form-part">
 
-    v-container.object-info-container
-      v-row
-        v-col.pa-6(cols="12")
-          .object-info
-            v-row.object-info-row-rate
-              v-col(cols="12")
-                .wrap-form
-                  v-form(ref="form_part_static" v-model="valid" lazy-validation)
-                    .form-part-single
-                      FormBuilder(:meta="meta.meta_object_name" @updateFiled="updateFiled")
+                <div class="form-part-title">
+                  Расположение
+                </div>
+                <div class="form-part-description">
+                  Краткое описание что сюда писать
+                </div>
+                <FormBuilder :meta="meta.meta_object_location" @updateFiled="updateFiled"/>
+              </div>
+            </v-form>
+          </v-tab-item>
+          <v-tab-item>
+            <v-form ref="form_part_1" v-model="valid" lazy-validation>
+              <div class="form-part min-padding">
+                <div class="form-part-title">
+                  Виды работ и оплата
+                </div>
+                <div class="form-part-description">
+                  Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное
+                  расположение.
+                </div>
+                <v-row class="ma-0">
+                  <v-col
+                    cols="12"
+                    lg="5"
+                    class="pl-0 pb-0"
+                  >
+                    <div class="form-part-label">Наименование работ</div>
 
-                  v-divider.my-8
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    lg="5"
+                    class="pl-0 pb-0"
+                  >
+                    <div class="form-part-label">Стоимость</div>
 
-            v-row.d-flex.pa-4.action-row.align-center(no-gutters)
-              v-col(cols="12")
-                v-tabs.form-tabs-minify.mt-1(v-model="tab", hide-slider, height="36")
-                  v-tab(v-for="(item, index) in tabs_list", :key="index") {{ item }}
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    lg="2"
+                    class="pl-0 pb-0"
+                  >
+                    <div class="form-part-label">Нужно человек</div>
 
-            v-row.object-info-row-rate
-              v-col(cols="12")
-                .wrap-form
-                  v-window(v-model="tab")
-                    v-tab-item(eager)
-                      v-form(ref="form_part_0" v-model="valid" lazy-validation)
-                        .form-part-single
-                          FormBuilder(:meta="meta.meta_object_info" @updateFiled="updateFiled")
+                  </v-col>
 
-                    v-tab-item(eager)
-                      v-form(ref="form_part_1" v-model="valid" lazy-validation)
-                        .form-part-single
-                          .form-part-title Вакансии и ставки
-                          .form-part-description Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное расположение.
+                  <v-row class="d-flex w-100">
+                    <v-col cols="12" :lg="item.col"
+                           v-for="(item, index) in meta.meta_object_pay" :key="index">
+                      <div class="form-part-label" v-if="item.label">{{ item.label }}</div>
+                      <div class="d-flex w-100">
+                        <FormBuilder :meta="meta.meta_object_pay[index]" @removeItem="removeItem"
+                                     @updateFiled="updateFiledinArray(index, ...arguments)"/>
+                        <a href="#" @click.prevent="removeItem(index, 'meta_object_pay')" class="remove-item">
+                          <img src="/img/ico_close.svg" alt="Удалить">
+                        </a>
+                      </div>
+                    </v-col>
+                  </v-row>
 
-                          v-row.flex-column
-                            v-col(:cols="item.col" v-for="(item, index) in meta.meta_object_pay" :key="index")
-                              .ruqi-rate-task
-                                v-row.d-flex.justify-space-between
-                                  v-col(cols="6")
-                                    .form-part-label Наименование работ
-                                  v-col.text-right(cols="6")
-                                    .form-part-label Нужно человек
+                  <a href="#" @click.prevent="addTypeWork" class="add_link">Добавить вид работ</a>
+                </v-row>
 
-                                v-row
-                                  v-col(cols="12")
-                                    FormBuilder(:meta="meta.meta_object_pay[index]" @removeItem="removeItem" @updateFiled="updateFiledinArray(index, ...arguments)")
+              </div>
+            </v-form>
+          </v-tab-item>
+          <v-tab-item>
+            <v-form ref="form_part_2" v-model="valid" lazy-validation>
+              <div class="form-part form-part-contact"
+                   v-for="(item, index) in meta.meta_object_contact"
+                   :key="index">
+                <a v-show="index != 0" href="#" @click.prevent="removeItem(index, 'meta_object_contact')"
+                   class="remove-item">
+                  <img src="/img/ico_close.svg" alt="Удалить">
+                </a>
+                <FormBuilder :meta="item" @updateFiled="updateFiledinArray(index, ...arguments)"/>
+              </div>
+              <AddFormPart :text="addContactPersText" @addFormPart="addFormPart"/>
+            </v-form>
+          </v-tab-item>
+          <v-tab-item>
+            <v-form ref="form_part_3" v-model="valid" lazy-validation>
+              <div class="form-part">
+                <div class="form-part-label">Диспетчеры</div>
+                <FormBuilder :meta="meta.meta_object_responsible" @removeItem="removeItem"
+                             @updateFiled="updateFiledResp"/>
+                <a href="#" @click.prevent="addResponsible('responsible')" class="add_link">Добавить диспетчера</a>
+              </div>
+            </v-form>
+          </v-tab-item>
 
-                                v-row
-                                  v-col(cols="12")
-                                    RateTask( prefix_name="task" :isNew="false"
-                                      @updateFiled="updateFiled"
-                                      rate_value="100" date_value="2022-05-22" )
+          <FNavigation :indexTab="tab" :nextButtonsText="nextButtonsText" @nextFromButton="nextFromButton"
+                       @prevFromButton="prevFromButton"/>
 
-
-
-                    v-tab-item(eager)
-                      v-form(ref="form_part_2" v-model="valid" lazy-validation)
-                        .form-part-single
-                          .form-part-title Контакты
-                          .form-part-description Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное расположение.
-                          v-divider.my-6
-
-                          div(v-for="(item, index) in meta.meta_object_contact"
-                              :key="index")
-                            FormBuilder(:meta="item" @updateFiled="updateFiledinArray(index, ...arguments)")
-
-                          AddFormPart(:text="addContactPersText" @addFormPart="addFormPart")
-
-                    v-tab-item(eager)
-                      v-form(ref="form_part_3" v-model="valid" lazy-validation)
-                        .form-part-single
-                          .form-part-title Ответственные
-                          .form-part-description Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное расположение.
-                          v-divider.my-6
-
-                          .form-part-label ФИО
-
-                          FormBuilder(:meta="meta.meta_object_responsible" @removeItem="removeItem" @updateFiled="updateFiledResp")
-
-                          a.add-field.my-8(@click.prevent="addResponsible('responsible')")
-                            v-icon(color="#0082DE" size="24") mdi-plus-circle
-                            span Добавить ответственного
-
-                  v-btn.btn-blue.mt-6(text :disabled="disabled" height="48" outlined  @click="nextFromButton") Опубликовать заявку
-
-
-
-
-
-
+        </v-window>
+      </v-form>
+    </div>
+  </div>
 
 </template>
+
 <script>
 
 import Vue from "vue";
 import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
-import PageHeader from "@/components/composite/PageCreateEditHeader";
-import RateTask from "@/components/composite/RateTask";
 
 export default {
   meta: {
     title: 'Создание новой заявки'
   },
-  components: {PageHeader, RateTask},
   async fetch({store}) {
     if (store.getters['objects/objects'].length === 0) {
       await store.dispatch('objects/fetchObjects')
@@ -127,15 +169,21 @@ export default {
       title_create: false,
       title_page_create: '',
       tabs_list: [
-        'Общее', 'Вакансии и ставки', 'Контакты', 'Ответственные'
+        'Общее', 'Оплата и ставки', 'Контакты', 'Ответственные'
       ],
       tab: null,
+      nextButtonsText: [
+        'Указать стоимость работ',
+        'указать контактных лиц',
+        'Добавить ответственных',
+        'опубликовать заявку'
+      ],
       meta: {
         meta_object_name: [
           {
             type: 'FTypeSelectUIID',
             label: 'Наименование объекта',
-            col: 10,
+            col: 12,
             id: 'object_name',
             name: 'object_name',
             params: {
@@ -145,30 +193,12 @@ export default {
             validation: 'required',
             value: ''
           },
-          {
-            type: 'FTypeDate',
-            label: 'Начало работ',
-            col: 3,
-            id: 'object_start_date',
-            name: 'object_start_date',
-            validation: 'required',
-            value: ''
-          },
-          {
-            type: 'FTypeDate',
-            label: 'Окончание работ',
-            col: 3,
-            id: 'object_end_date',
-            name: 'object_end_date',
-            validation: 'required',
-            value: ''
-          },
         ],
         meta_object_info: [
           {
             type: 'FTypeText',
-            label: 'Общедоступное название заявки',
-            col: 9,
+            label: 'Название заявки',
+            col: 12,
             id: 'object_id',
             name: 'object_id',
             validation: ['required'],
@@ -177,7 +207,7 @@ export default {
           {
             type: 'FTypeSelectUIID',
             label: 'Категория',
-            col: 9,
+            col: 12,
             id: 'object_cat',
             name: 'object_cat',
             params: {
@@ -188,9 +218,27 @@ export default {
             value: ''
           },
           {
+            type: 'FTypeDate',
+            label: 'Начало работ',
+            col: 4,
+            id: 'object_start_date',
+            name: 'object_start_date',
+            validation: 'required',
+            value: ''
+          },
+          {
+            type: 'FTypeDate',
+            label: 'Окончание работ',
+            col: 4,
+            id: 'object_end_date',
+            name: 'object_end_date',
+            validation: 'required',
+            value: ''
+          },
+          {
             type: 'FTypeSelect',
             label: 'Тип смены',
-            col: 9,
+            col: 12,
             id: 'object_work_shift',
             name: 'object_work_shift',
             params: {
@@ -204,7 +252,7 @@ export default {
           {
             type: 'FTypeTextarea',
             label: 'Описание',
-            col: 9,
+            col: 12,
             id: 'object_desc',
             name: 'object_desc',
             value: ''
@@ -288,7 +336,7 @@ export default {
             type: 'FTypeSelectUIID',
             icon: 'mdi-account',
             label: '',
-            col: 9,
+            col: 12,
             id: 'object_resp',
             name: 'object_resp_0',
             remove: true,
@@ -306,7 +354,7 @@ export default {
             {
               type: 'FTypeSelectUIID',
               label: '',
-              col: 8,
+              col: 5,
               name: 'object_pay_title_0',
               params: {
                 options: [],
@@ -322,7 +370,35 @@ export default {
               type: 'FTypeText',
               label: '',
               icon: '',
-              col: 4,
+              col: 2,
+              name: 'object_pay_salary_0',
+              remove: false,
+              parent_array: 'meta_object_pay',
+              value: '',
+              params: {
+                readonly: true
+              },
+            },
+            {
+              type: 'FTypeSelect',
+              label: '',
+              col: 3,
+              name: 'object_pay_time_0',
+              params: {
+                options: [
+                  'за смену',
+                  'за час',
+                ],
+                readonly: true
+              },
+              parent_array: 'meta_object_pay',
+              value: '',
+            },
+            {
+              type: 'FTypeText',
+              label: '',
+              icon: '',
+              col: 2,
               id: 'object_pay_cw_0',
               name: 'object_pay_cw_0',
               remove: false,
@@ -337,7 +413,6 @@ export default {
       addContactPersText: 'Добавить контактное лицо',
       formHasErrors: false,
       nameCounter: 1,
-      disabled: false,
     }
   },
   computed: {
@@ -435,7 +510,7 @@ export default {
           type: 'FTypeSelectUIID',
           icon: 'mdi-account',
           label: '',
-          col: 9,
+          col: 12,
           id: 'object_resp',
           name: 'object_resp_' + this.nameCounter++,
           remove: true,
@@ -500,6 +575,67 @@ export default {
       if (index != 0 || this.meta[array].length > 1) {
         this.meta[array].splice(index, 1);
       }
+    },
+    addTypeWork() {
+      this.meta.meta_object_pay.push(
+        [
+          {
+            type: 'FTypeSelectUIID',
+            label: '',
+            col: 5,
+            name: 'object_pay_title_' + this.nameCounter,
+            params: {
+              options: [],
+              item_text: 'name',
+              cost: []
+            },
+            validation: 'required',
+            value: '',
+            parent_array: 'meta_object_pay',
+            remove: false,
+          },
+          {
+            type: 'FTypeText',
+            label: '',
+            icon: '',
+            col: 2,
+            name: 'object_pay_salary_' + this.nameCounter,
+            remove: false,
+            parent_array: 'meta_object_pay',
+            value: '',
+            params: {
+              readonly: true
+            },
+          },
+          {
+            type: 'FTypeSelect',
+            label: '',
+            col: 3,
+            name: 'object_pay_time_' + this.nameCounter,
+            params: {
+              options: [
+                'за смену',
+                'за час',
+              ],
+              readonly: true
+            },
+            parent_array: 'meta_object_pay',
+            value: '',
+          },
+          {
+            type: 'FTypeText',
+            label: '',
+            icon: '',
+            col: 2,
+            name: 'object_pay_cw_' + this.nameCounter,
+            remove: false,
+            parent_array: 'meta_object_pay',
+            value: '',
+          },
+        ],
+      );
+      this.meta.meta_object_pay[this.meta.meta_object_pay.length - 1][0].params.options = this.professions;
+      this.nameCounter++;
     },
     nextFromButton() {
       if (this.tab < this.tabs_list.length - 1) {
@@ -596,38 +732,9 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 @import '../../assets/scss/colors';
-
-.ruqi.page--tasks-create {
-  padding: 0;
-  background: #F5F5F5;
-
-  .theme--light.v-application {
-    background: #F5F5F5;
-  }
-
-  .inner-object-page {
-    > .container {
-      padding: 0;
-    }
-  }
-
-  .v-main__wrap {
-    > .container {
-      padding: 0;
-    }
-  }
-
-  .ruqi-rate-task{
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    padding: 20px;
-    max-width: 520px;
-  }
-
-}
 
 
 </style>
