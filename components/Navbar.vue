@@ -52,7 +52,8 @@ export default {
         title: 'Клиенты',
         link: '/clients',
         img: '/img/ico_clients.svg',
-        role: ['superManager',]},
+        role: ['superManager',]
+      },
       {
         title: 'Объекты',
         link: '/objects',
