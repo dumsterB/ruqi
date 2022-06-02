@@ -132,6 +132,8 @@
             <p class="text-grey text-center">Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
           </div>
         </v-form>
+      fewfew  {{executors}}
+        <v-btn @click="createExecutorecutor">click me</v-btn>
       </div>
   </v-container>
 
@@ -139,6 +141,8 @@
 </template>
 
 <script>
+import {mapActions, mapGetters} from "vuex";
+
 export default {
   name: "PrivateInformation",
   props:{
@@ -159,13 +163,22 @@ export default {
     }
   },
   methods:{
+    ...mapActions('executor',['createExecutor']),
     next(value){
       this.$emit('pageHandler',value)
     },
     checkboxHandler(){
       this.switcher=!this.switcher
       this.$emit('checkboxHandler',this.switcher)
+    },
+    createExecutorecutor() {
+      this.createExecutor(this.form)
     }
+  },
+  computed:{
+   executors() {
+    return this.$store.getters['executor/executors']
+   }
   }
 }
 </script>
