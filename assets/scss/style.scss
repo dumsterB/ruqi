@@ -9,7 +9,6 @@
     max-width: 100%;
     margin: 0;
   }
-
 }
 
 /* Colors*/
@@ -1046,6 +1045,7 @@ h1.large {
 }
 
 .table-list-style-minify {
+  margin-bottom: 32px;
 
   .v-data-table.theme--light {
     background: transparent;
@@ -1149,6 +1149,10 @@ h1.large {
             .rate {
               display: flex;
               align-items: center;
+
+              .rate-title{
+                min-width: 50px;
+              }
 
 
             }
@@ -1478,7 +1482,4 @@ h1.large {
       font-weight: 600;
     }
   }
-
-
 }
-

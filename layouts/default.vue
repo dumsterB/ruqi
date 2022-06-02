@@ -3,25 +3,35 @@
   v-app(app)
     v-main
       v-container
-        v-navigation-drawer(v-if="!isLoginPage()" width="98" color="blue" app)
+        v-navigation-drawer(
+          width="98"
+          color="blue"
+          app
+          mobile-breakpoint="1025"
+        )
           div(class="wrapper-main-menu d-flex flex-column justify-space-between")
             Navbar
             Settingsnav
         div
-          Topbar(v-if="!isLoginPage()")
+          Topbar
+
           .content
             Nuxt
             Alert(:requestSuccess="requestSuccess")
+
+          Bottombar
 </template>
 
 <script>
 import { mapActions } from "vuex";
 import Topbar from '@/components/Topbar/index.vue';
+import Bottombar from '@/components/Navigation/mobile/Bottombar';
 
 export default {
   name: "default",
   components: {
     Topbar,
+    Bottombar,
   },
 
   data() {
@@ -47,8 +57,6 @@ export default {
         if (!ruqi) {
           this.timerRuqiId = setInterval(
             () => {
-              // console.log(this);
-
               const ruqi = document.querySelector(".ruqi");
 
               if (ruqi && to.name) {
@@ -65,21 +73,10 @@ export default {
         }
 
         if (from !== undefined) {
-          //console.log('page--' + from.name);
-          //console.log(from.name);
-
           ruqi.classList.remove("page--" + from.name.toLowerCase());
         }
 
         ruqi.classList.add("page--" + to.name.toLowerCase());
-
-        // const body = document.getElementsByTagName('body')[0];
-        // if (from !== undefined) {
-        //   body.classList.remove();
-        // }
-        // body.classList.add('page--' + to.name.toLowerCase());
-
-        //this.initBreadcrumbs(this.$route.fullPath);
       },
 
       immediate: true,
@@ -161,6 +158,15 @@ html {
     background-color: #f2faff;
   }
 }
-
 /* MIXINS STYLES END */
+
+@media screen and (max-width: 1024px) {
+  .ruqi {
+    padding: 0;
+
+    .container {
+      padding: 0;
+    }
+  }
+}
 </style>

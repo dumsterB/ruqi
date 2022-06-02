@@ -30,103 +30,100 @@
 
 <script>
 
-  export default {
-    props : {
-      selected  : {
-        type      : Number,
-        default   : 0,
-      }
-    },
+export default {
+  props: {
+    selected: {
+      type: Number,
+      default: 0,
+    }
+  },
 
-    methods : {
-      handlers ()
-      {
-        return {
-          selectPerformers : () => {
-            console.debug( "selectPerformers emit" ); // TODO delete
-            this.$emit( 'select_performers' );
-          }
+  methods: {
+    handlers() {
+      return {
+        selectPerformers: () => {
+          console.debug("selectPerformers emit"); // TODO delete
+          this.$emit('select_performers');
         }
       }
-    },
-  }
+    }
+  },
+}
 
 </script>
 
 <style lang="scss">
+.add-performers-selected-panel {
+  position: sticky;
+  bottom: 0;
+  background: #F6FBFF;
+  padding: 16px 60px 18px;
+  z-index: 100;
 
-  .add-performers-selected-panel {
-    position    : sticky;
-    bottom      : 0;
-    background  : #F6FBFF;
-    padding     : 16px 60px 18px;
-    z-index     : 100;
+  .wrapper {
+    color: black;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+  }
+}
 
-    .wrapper {
-      color           : black;
-      display         : flex;
-      flex-direction  : row;
-      flex-wrap       : nowrap;
-      align-content   : center;
-      justify-content : flex-start;
-      align-items     : center;
+.selected {
+  .selected__title {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 125%;
+    color: #000000;
+  }
+}
+
+.selected-count {
+  padding-left: 22px;
+  padding-right: 51px;
+
+  .selected-count__title {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 125%;
+    color: #0082DE;
+
+    .count-title_txt {
+      margin-left: 5px;
     }
   }
+}
 
-  .selected {
-    .selected__title {
-      font-weight : 600;
-      font-size   : 16px;
-      line-height : 125%;
-      color       : #000000;
-    }
-  }
+.add-btn {
+  padding: 12px 16px;
+  background: #0082DE;
+  border-radius: 8px;
+  cursor: pointer;
 
-  .selected-count {
-    padding-left  : 22px;
-    padding-right : 51px;
+  .wraper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
 
-    .selected-count__title {
-      display         : flex;
-      flex-direction  : row;
-      flex-wrap       : nowrap;
-      align-content   : center;
-      justify-content : flex-start;
-      align-items     : center;
-      font-weight: 600;
-      font-size: 16px;
+    .btn-title {
+      font-weight: bold;
+      font-size: 14px;
       line-height: 125%;
-      color: #0082DE;
-
-      .count-title_txt {
-        margin-left : 5px;
-      }
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #FDFDFD;
     }
   }
-
-  .add-btn {
-    padding       : 12px 16px;
-    background    : #0082DE;
-    border-radius : 8px;
-    cursor        : pointer;
-
-    .wraper {
-      display         : flex;
-      flex-direction  : row;
-      flex-wrap       : nowrap;
-      align-content   : center;
-      justify-content : flex-start;
-      align-items     : center;
-
-      .btn-title {
-        font-weight     : bold;
-        font-size       : 14px;
-        line-height     : 125%;
-        letter-spacing  : 0.05em;
-        text-transform  : uppercase;
-        color           : #FDFDFD;
-      }
-    }
-  }
-
+}
 </style>

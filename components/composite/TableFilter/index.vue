@@ -11,7 +11,8 @@
     )
       template(v-slot:activator="{ on }")
         v-btn.filter-btn(icon, v-on="on" :class="{ active: isApplyFilter }")
-          v-icon(color="#7A91A9") mdi-filter-outline
+          v-badge(color="#EB4D3D" dot :value="isApplyFilter" offset-y="8" offset-x="8")
+            v-icon(color="#7A91A9") mdi-filter-outline
 
       v-card
         v-list-item-content.pa-0.elevation-0
@@ -33,7 +34,7 @@
                         :name="item.field + '_' + index"
                         :params="item"
                         :label = "fieldHeader(item.field)"
-                        @input="updateFiled(item.field , $event, index)"
+                        @input="updateFiled(item.field , $event, index, 'selected_fields')"
                       )
 
                   v-expansion-panel(v-if="check_fields.length>0")
@@ -45,11 +46,11 @@
                         :name="item.field + '_' + index"
                         :params="item"
                         :label = "fieldHeader(item.field)"
-                        @input="updateFiled(item.field , $event, index)"
+                        @input="updateFiled(item.field , $event, index, 'check_fields')"
                       )
 
             .filter-footer.d-flex.justify-space-between.pa-6
-              v-btn.add(text height="48" outlined @click="hideFilter")
+              v-btn.add(text height="48" outlined @click="cancelFilter")
                 span отмена
               v-btn.btn-blue.add.ml-4(text height="48" outlined @click="applyFilter")
                 span применить
@@ -85,29 +86,16 @@ export default {
       isOpened: false,
       panel: [],
       filter: [],
+      selected_fields: [],
+      check_fields: [],
       searchText: '',
       isApplyFilter: false,
+      lastSelected_fields: [],
+      lastCheck_fields: [],
     }
   },
   computed: {
-    selected_fields(){
-      let filters = [];
-      for (let i = 0; i < this.filter.length; i++) {
-        if(this.filter[i].type != 'string' && this.filter[i].type != 'text' && this.filter[i].type != 'boolean'){
-          filters.push(this.filter[i]);
-        }
-      }
-      return filters;
-    },
-    check_fields(){
-      let filters = [];
-      for (let i = 0; i < this.filter.length; i++) {
-        if(this.filter[i].type == 'boolean'){
-          filters.push(this.filter[i]);
-        }
-      }
-      return filters;
-    },
+
   },
   methods: {
     nameComponent(type) {
@@ -136,23 +124,54 @@ export default {
 
       return translit_header;
     },
-    updateFiled(field, value, index) {
-      this.selected_fields[index].value = value;
-      console.log('field, value, index ---- ', field, value, index, this.selected_fields);
+    updateFiled(field, value, index, array) {
+      this[array][index].value = value;
+      console.log('field, value, index ---- ', field, value, index);
     },
     applyFilter() {
 
       const sentFilter = [];
+
+      this.lastSelected_fields = [];
+      this.lastCheck_fields = [];
+
       for (let i = 0; i < this.selected_fields.length; i++) {
-        if(this.selected_fields[i].value && this.selected_fields[i].value.length){
-          sentFilter.push(this.selected_fields[i]);
+        if (this.selected_fields[i].value) {
+          if (!Array.isArray(this.selected_fields[i].value) || Array.isArray(this.selected_fields[i].value) && this.selected_fields[i].value.length) {
+
+            let sentField = {};
+            Object.assign(sentField, this.selected_fields[i]);
+
+            if (sentField.options) {
+              delete sentField.options;
+            }
+
+            sentFilter.push(sentField);
+          }
         }
+
+        let lastState = {}
+        Object.assign(lastState, this.selected_fields[i]);
+        this.lastSelected_fields.push(lastState);
+
       }
+
+      for (let i = 0; i < this.check_fields.length; i++) {
+        if (this.check_fields[i].value) {
+          sentFilter.push(this.check_fields[i]);
+        }
+
+        let lastState = {}
+        Object.assign(lastState, this.check_fields[i]);
+        this.lastCheck_fields.push(lastState);
+
+      }
+
       this.$emit('applyFilter', sentFilter, this.searchText);
 
       this.isOpened = false;
 
-      if(sentFilter.length){
+      if (sentFilter.length) {
         this.isApplyFilter = true;
       }
 
@@ -164,10 +183,29 @@ export default {
         this.filter[i].value = null;
       }
       this.$emit('applyFilter', [], this.searchText);
-      this.hideFilter();
       this.isApplyFilter = false;
     },
-    hideFilter() {
+    cancelFilter() {
+
+      this.selected_fields = [];
+      this.check_fields = [];
+
+      for (let i = 0; i < this.lastSelected_fields.length; i++) {
+
+        let lastState = {}
+        Object.assign(lastState, this.lastSelected_fields[i]);
+        this.selected_fields.push(lastState);
+
+      }
+
+      for (let i = 0; i < this.lastCheck_fields.length; i++) {
+
+        let lastState = {}
+        Object.assign(lastState, this.lastCheck_fields[i]);
+        this.check_fields.push(lastState);
+
+      }
+
       this.isOpened = false;
     },
     defaultValue(type) {
@@ -186,15 +224,32 @@ export default {
   },
   async created() {
     for (let i = 0; i < this.fields.length; i++) {
+      let options = {};
+      Object.assign(options, this.fields[i].options);
+
       this.filter.push(
         {
           "type": this.fields[i].type,
           "field": this.fields[i].field,
           "value": null,
-          "options": this.fields[i].options,
+          "options": options,
         }
       )
     }
+
+    for (let i = 0; i < this.filter.length; i++) {
+      if (this.filter[i].type != 'string' && this.filter[i].type != 'text' && this.filter[i].type != 'boolean') {
+        this.selected_fields.push(this.filter[i]);
+      }
+    }
+
+    for (let i = 0; i < this.filter.length; i++) {
+      if (this.filter[i].type == 'boolean') {
+        this.check_fields.push(this.filter[i]);
+      }
+    }
+
+
   },
 }
 </script>
@@ -205,12 +260,6 @@ export default {
 
 .ruqi-table-filter {
   flex: 1;
-
-  .filter-btn {
-    &.active {
-      background: #e2ecf5;
-    }
-  }
 
 }
 

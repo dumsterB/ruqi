@@ -13,7 +13,7 @@
         <v-text-field
           v-model="fullDate"
           :name="name"
-          prepend-icon="mdi-calendar"
+          prepend-inner-icon="mdi-calendar"
           v-bind="attrs"
           @blur="date = parseDate(dateFormatted)"
           v-on="on"
@@ -147,6 +147,11 @@ export default {
       margin-top: 0;
       margin-bottom: 0;
     }
+  }
+
+  .v-icon{
+    color: #BDC8D4;
+    margin-right: 8px;
   }
 }
 

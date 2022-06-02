@@ -1,22 +1,16 @@
 
 <template lang="pug">
 .rq-ctwsr
-  TableDesktop.rq-ctwsr__desktop
+  .rq-ctwsr__desktop
     slot(name="desktop")
 
-  //- TableMobile.rq-ctwsr__mobile
-  //-   slot(name="mobile")
+  .rq-ctwsr__mobile
+    slot(name="mobile")
 </template>
 
 <script>
-import TableDesktop from './desktop';
-import TableMobile from './mobile';
-
 export default {
-  components: {
-    TableDesktop,
-    TableMobile,
-  },
+  components: {},
   props: {},
   computed: {},
   watch: {},
@@ -30,33 +24,53 @@ export default {
   data() {
     return {}
   },
-  created() {},
-  mounted() {},
+  created() { },
+  mounted() { },
 }
 </script>
 
 <style lang="scss">
 .rq-ctwsr {
-  &__row {
-    & > div {
-      border-top: 1px solid #D5DEE8;
-      border-bottom: 1px solid #D5DEE8;
-      padding-top: 12px;
-      padding-bottom: 12px;
+  &__desktop {
+    display: block;
+    max-width: 1272px;
+  }
+
+  &__mobile {
+    display: none;
+
+    &-card {
+      box-sizing: border-box;
+      border: 1px solid #E0E0E0;
+      border-radius: 14px;
+      background: #FFFFFF;
+      width: max-content;
+      padding: 16px;
+      margin-top: 16px;
 
       &:first-child {
-        border-radius: 14px 0 0 14px;
-        border-left: 1px solid #D5DEE8;
-        padding-left: 24px;
+        margin-top: 0;
       }
-      &:last-child {
-        border-radius: 0 14px 14px 0;
-        border-right: 1px solid #D5DEE8;
-        padding-right: 24px;
+
+      @media screen and (max-width: 370px) {
+        width: 315px;
       }
     }
   }
-  .__desktop {}
-  .__mobile {}
+
+  @media screen and (max-width: 768px) {
+    &__desktop {
+      display: none;
+    }
+
+    &__mobile {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-content: center;
+      justify-content: center;
+      align-items: center;
+    }
+  }
 }
 </style>

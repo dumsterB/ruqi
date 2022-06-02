@@ -47,15 +47,15 @@ export default {
   }
 
   &__main {
-    display: table;
+    //display: table;
     width: 100%;
 
     &-header {
-      display: table-header-group;
+      //display: table-header-group;
     }
 
     &-body {
-      display: table-row-group;
+      //display: table-row-group;
     }
   }
 

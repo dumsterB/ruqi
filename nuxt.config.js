@@ -83,4 +83,9 @@ export default {
     WSS_URL: process.env.WSS_URL,
     WSS_PATH: process.env.WSS_PATH,
   },
+
+  server: {
+    port: 3000, // default: 3000
+    host: '0.0.0.0', // default: localhost
+  },
 }

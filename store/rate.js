@@ -33,7 +33,7 @@ export const actions = {
         }, 2000);
       })
       .catch((error) => {
-        commit('response/setSuccess', {type: 'error', text: 'Заполните поля', }, {root: true});
+        commit('response/setSuccess', {type: 'error', text: 'Ставка на этот день уже существует', }, {root: true});
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
         }, 3000);
@@ -95,7 +95,7 @@ export const actions = {
         }, 2000);
       })
       .catch((error) => {
-        commit('response/setSuccess', {type: 'error', text: 'Заполните поля', }, {root: true});
+        commit('response/setSuccess', {type: 'error', text: 'Ставка на этот день уже существует', }, {root: true});
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
         }, 3000);
