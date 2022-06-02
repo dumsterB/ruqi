@@ -138,10 +138,10 @@
                                     .rate-item-title(v-if="el.difference == '='") Текущая
                                     .rate-list-item-date {{ parseDate({ date: el.start_date, type: 'date' }) }}
                                     .rate-list-item-price(
-                                      :class="[el.rate > item.rate_with_vat ? 'up' : 'down']"
+                                      :class="[el.difference == '>' ? 'up' : 'down']"
                                     )
-                                      v-icon(v-if="el.rate < item.rate_with_vat && el.difference != '='") mdi-menu-down
-                                      v-icon(v-if="el.rate > item.rate_with_vat && el.difference != '='") mdi-menu-up
+                                      v-icon(v-if="el.difference == '<'") mdi-menu-down
+                                      v-icon(v-if="el.difference == '>'") mdi-menu-up
                                       span {{ el.rate }}
 
                                   .rate-list-item-edit
@@ -243,10 +243,10 @@
                                     .rate-item-title(v-if="el.difference == '='") Текущая
                                     .rate-list-item-date {{ parseDate({ date: el.start_date, type: 'date' }) }}
                                     .rate-list-item-price(
-                                      :class="[el.rate > item.next_rate ? 'up' : 'down']"
+                                      :class="[el.difference == '>' ? 'up' : 'down']"
                                     )
-                                      v-icon(v-if="el.rate < item.next_rate && el.difference != '='") mdi-menu-down
-                                      v-icon(v-if="el.rate > item.next_rate && el.difference != '='") mdi-menu-up
+                                      v-icon(v-if="el.difference == '<'") mdi-menu-down
+                                      v-icon(v-if="el.difference == '>'") mdi-menu-up
                                       span {{ el.rate }}
 
                                   .rate-list-item-edit
