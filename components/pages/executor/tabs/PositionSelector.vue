@@ -53,6 +53,8 @@
 </template>
 
 <script>
+import {mapActions, mapGetters} from "vuex";
+
 export default {
   name: "PositionSelector",
   data(){
@@ -61,9 +63,23 @@ export default {
     }
   },
   methods:{
+    ...mapActions('executor',['loadWorks','loadSpecializations']),
     next(value){
       this.$emit('pageHandler',value)
+    },
+  },
+  computed:{
+    works(){
+      return this.$store.getters['executor/works']
+    },
+    specializations() {
+      return this.$store.getters['executor/specializations']
     }
+
+  },
+ async mounted() {
+    await this.loadWorks()
+    await this.loadSpecializations()
   }
 }
 </script>

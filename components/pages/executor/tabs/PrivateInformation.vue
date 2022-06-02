@@ -128,7 +128,7 @@
               Выбрав эту опцию вам будет предложено <br>  связаться с менеджером для регистрации по телефону
             </p>
             <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
-            <v-btn dark elevation="0" class="btn-primary" :disabled="!disableHandler" @click="next(1)"><span class="btn-title">Далее</span> </v-btn>
+            <v-btn dark elevation="0" class="btn-primary" @click="next(1)"><span class="btn-title">Далее</span> </v-btn>
             <p class="text-grey text-center">Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
           </div>
         </v-form>
@@ -163,9 +163,11 @@ export default {
   },
   methods:{
     ...mapActions('executor',['createExecutor']),
-    next(value){
-      this.$emit('pageHandler',value)
-      this.createExecutor(this.form)
+  async next(value){
+     this.$emit('pageHandler',value)
+     let response = ''
+     response = await this.createExecutor(this.form)
+    console.log(response,'data of res')
     },
     checkboxHandler(){
       this.switcher=!this.switcher
