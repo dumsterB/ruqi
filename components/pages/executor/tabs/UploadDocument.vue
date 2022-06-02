@@ -5,7 +5,7 @@
     <p class="mt-4">Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
     <br>
     <div class="d-flex">
-   <h3> <strong>1. Паспорт РФ</strong></h3>
+   <h2> <strong>1. Паспорт РФ</strong></h2>
       <img  class="ml-2" src="@/assets/img/correct.svg" alt="">
     </div>
     <div class="mt-5">
@@ -98,35 +98,173 @@
     <div>
       <v-row>
         <v-col>
-          <div  class=" mt-2  justify-center text-center" id="app">
-            <div class="drag-drop pa-4">
-              <button class="mt-4"  @click="selectFile()">
-                <img height="80" style="margin-left: -15px" src="@/assets/img/uploader.svg" alt="">
-                <br>
-                <div class="logo-zone mt-3">
-                  <div @dragover="dragover" @dragleave="dragleave" @drop="drop">
-                    <input type="file"   @change="readFile" hidden ref="input"  id="logo-zone-input" class="logo-zone-input" />
-                  </div>
+          <div  class=" mt-2  justify-center text-center">
+            <vue-dropzone id="fileUpload1" ref="myVueDropzone" @click.prevent="setImg('1')"  @vdropzone-thumbnail="afterAdded" :options="dropzoneOptions" :useCustomSlot="true">
+              <div class="dropzone-custom-content">
+                <div class="d-block">
+                  <img src="@/assets/img/uploader.svg" alt="">
+                  <br>
+                  <strong>Перетащите сюда файл</strong>
                 </div>
-              </button>
-            </div>
+              </div>
+            </vue-dropzone>
             <p class="text-gray">или загрузите фото</p>
             <div class="d-flex">
-              <v-btn elevation="0" @click="selectFile()" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">
-                загрузить Из файла</v-btn>
+              <v-btn elevation="0" @click="selectFile()" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
             </div>
           </div>
         </v-col>
         <v-col>
-          <img  v-if="logo"  style="border-radius: 10px;margin-left: 3px" height="270" class="mt-2" width="220" :src="logo" alt="">
+          <img src="@/assets/img/passport_1.svg" alt="">
         </v-col>
       </v-row>
       </div>
+
     <v-divider class="mt-4"></v-divider>
     <div class="mt-5">
-      <h3><strong> Фото паспорта разворот прописка (стр. 3-4)</strong></h3>
+      <h3><strong> Фото паспорта разворот прописка (стр. 3-4)</strong>
+        <img  class="ml-2" src="@/assets/img/correct.svg" alt="">
+      </h3>
       <p class="mt-3">На фотографии должны быть отчетливо видны серия, номер, основные данные, фотография. В поле зрения не должны попадать пальцы и посторонние предметы.</p>
     </div>
+    <v-row>
+      <v-col>
+        <div class="mt-2 justify-center text-center">
+          <vue-dropzone id="fileUpload2" ref="myVueDropzone"  @vdropzone-thumbnail="setImg('2')" :options="dropzoneOptions" :useCustomSlot="true">
+            <div class="dropzone-custom-content">
+              <div class="d-block">
+                <img src="@/assets/img/uploader.svg" alt="">
+                <br>
+                <strong>Перетащите сюда файл</strong>
+              </div>
+            </div>
+          </vue-dropzone>
+          <p class="text-gray">или загрузите фото</p>
+          <div class="d-flex">
+            <v-btn elevation="0" @click="selectFile()" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
+          </div>
+        </div>
+      </v-col>
+      <v-col>
+        <img src="@/assets/img/passport_1.svg" alt="">
+      </v-col>
+    </v-row>
+    <v-divider class="mt-4"></v-divider>
+    <div class="mt-5">
+      <h3><strong>Фото с паспортом</strong>
+        <img  class="ml-2" src="@/assets/img/correct.svg" alt="">
+      </h3>
+      <p class="mt-3">На фотографии должны быть отчетливо видны серия, номер, основные данные, фотография. В поле зрения не должны попадать пальцы и посторонние предметы.</p>
+    </div>
+    <v-row>
+      <v-col>
+        <div class="mt-2 justify-center text-center">
+          <vue-dropzone id="fileUpload3" ref="myVueDropzone"  @vdropzone-thumbnail="setImg('3')" :options="dropzoneOptions" :useCustomSlot="true">
+            <div class="dropzone-custom-content">
+              <div class="d-block">
+                <img src="@/assets/img/uploader.svg" alt="">
+                <br>
+                <strong>Перетащите сюда файл</strong>
+              </div>
+            </div>
+          </vue-dropzone>
+          <p class="text-gray">или загрузите фото</p>
+          <div class="d-flex">
+            <v-btn elevation="0" @click="selectFile()" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
+          </div>
+        </div>
+      </v-col>
+      <v-col>
+        <img src="@/assets/img/passport_1.svg" alt="">
+      </v-col>
+    </v-row>
+    <v-divider class="mt-4"></v-divider>
+    <div class="mt-5">
+      <h3><strong> Фото паспорта разворот прописка (стр. 3-4)</strong>
+        <img  class="ml-2" src="@/assets/img/correct.svg" alt="">
+      </h3>
+      <p class="mt-3">На фотографии должны быть отчетливо видны серия, номер, основные данные, фотография. В поле зрения не должны попадать пальцы и посторонние предметы.</p>
+    </div>
+    <v-row>
+      <v-col>
+        <div class="mt-2 justify-center text-center">
+          <vue-dropzone id="fileUpload4" ref="myVueDropzone"  @vdropzone-thumbnail="setImg('4')" :options="dropzoneOptions" :useCustomSlot="true">
+            <div class="dropzone-custom-content">
+              <div class="d-block">
+                <img src="@/assets/img/uploader.svg" alt="">
+                <br>
+                <strong>Перетащите сюда файл</strong>
+              </div>
+            </div>
+          </vue-dropzone>
+          <p class="text-gray">или загрузите фото</p>
+          <div class="d-flex">
+            <v-btn elevation="0" @click="selectFile()" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
+          </div>
+        </div>
+      </v-col>
+      <v-col>
+        <img src="@/assets/img/passport_1.svg" alt="">
+      </v-col>
+    </v-row>
+    <v-divider class="mt-4"></v-divider>
+    <div class="mt-5">
+      <h2><strong> 2. Дополнительные документы</strong>
+        <img  class="ml-2" src="@/assets/img/correct.svg" alt="">
+      </h2>
+      <p class="mt-3">Следующий перечень документов требуется для участия в заявках по выбранных Вами профессиям:</p>
+    </div>
+    <v-row>
+      <v-col>
+        <div class="mt-2 justify-center text-center">
+          <vue-dropzone id="fileUpload5" ref="myVueDropzone"  @vdropzone-thumbnail="setImg('5')" :options="dropzoneOptions" :useCustomSlot="true">
+            <div class="dropzone-custom-content">
+              <div class="d-block">
+                <img src="@/assets/img/uploader.svg" alt="">
+                <br>
+                <strong>Перетащите сюда файл</strong>
+              </div>
+            </div>
+          </vue-dropzone>
+          <p class="text-gray">или загрузите фото</p>
+          <div class="d-flex">
+            <v-btn elevation="0" @click="selectFile()" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
+          </div>
+        </div>
+      </v-col>
+      <v-col>
+        <img src="@/assets/img/passport_1.svg" alt="">
+      </v-col>
+    </v-row>
+    <v-divider class="mt-4"></v-divider>
+    <div class="mt-5">
+      <h2><strong> 2. Дополнительные документы</strong>
+        <img  class="ml-2" src="@/assets/img/correct.svg" alt="">
+      </h2>
+      <p class="mt-3">Следующий перечень документов требуется для участия в заявках по выбранных Вами профессиям:</p>
+    </div>
+    <v-row>
+      <v-col>
+        <div class="mt-2 justify-center text-center">
+          <vue-dropzone id="fileUpload6" ref="myVueDropzone"  @vdropzone-thumbnail="setImg('6')" :options="dropzoneOptions" :useCustomSlot="true">
+            <div class="dropzone-custom-content">
+              <div class="d-block">
+                <img src="@/assets/img/uploader.svg" alt="">
+                <br>
+                <strong>Перетащите сюда файл</strong>
+              </div>
+            </div>
+          </vue-dropzone>
+          <p class="text-gray">или загрузите фото</p>
+          <div class="d-flex">
+            <v-btn elevation="0" @click="selectFile()" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
+          </div>
+        </div>
+      </v-col>
+      <v-col>
+        <img src="@/assets/img/passport_1.svg" alt="">
+      </v-col>
+    </v-row>
     <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
     <v-btn dark elevation="0" class="btn-primary" @click="next(6)"><span class="btn-title">Далее</span> </v-btn>
   </v-container>
@@ -134,15 +272,33 @@
 </template>
 
 <script>
+import vue2Dropzone from 'vue2-dropzone'
+import 'vue2-dropzone/dist/vue2Dropzone.min.css'
 export default {
   name: "UploadDocument",
+  components:{
+    vueDropzone: vue2Dropzone
+  },
   data(){
     return{
       filelist: [],
       logo:'',
+      files:[],
+      passport_1:null,
+      dropzoneOptions: {
+        url: 'https://httpbin.org/post',
+        thumbnailWidth: 200,
+        addRemoveLinks: true,
+        dictDefaultMessage: "<img class=\"mr-2\" src=\"@/assets/img/File_Blank.svg\" alt=\"\">"
+      }
     }
   },
   methods:{
+    afterAdded(e,file,place){
+      console.log(e,file,place)
+    },
+    setImg(val){
+    },
     next(val){
       this.$emit('pageHandler',val)
     },
@@ -156,8 +312,7 @@ export default {
       event.preventDefault();
     },
     selectFile() {
-      let fileInputElement = this.$refs.input;
-      fileInputElement.click();
+      document.getElementById("fileUpload1").click()
     },
     readFile(e) {
       const input = e.target
@@ -231,5 +386,23 @@ export default {
   height: 45px!important;
   width: 100%;
   border: 1px solid lightgrey;
+}
+.dropzone-custom-content {
+  text-align: center;
+}
+
+.dropzone-custom-title {
+  margin-top: 0;
+  color: #00b782;
+}
+
+.subtitle {
+  color: #314b5f;
+}
+#customdropzone .dz-preview .dz-image  img{
+ display: none!important;
+}
+#customdropzone .dz-success-mark, .dz-error-mark, .dz-remove {
+  display: none;
 }
 </style>

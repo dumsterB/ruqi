@@ -53,7 +53,6 @@ export default {
       },
     }
   },
-  computed: {},
   methods: {
     updateFiled() {
       let value;
@@ -76,6 +75,36 @@ export default {
       }
 
       this.$emit('input', value);
+    }
+  },
+  created() {
+    if(this.params.value){
+      if (this.params.type == 'range') {
+        this.value_from = this.params.value.from;
+        this.value_to = this.params.value.to;
+      }
+      else{
+        this.value_from = this.params.value[0].value;
+        this.value_to = this.params.value[1].value;
+      }
+    }
+  },
+  watch: {
+    params: {
+      handler(val){
+        if(this.params.value){
+          if (this.params.type == 'range') {
+            this.value_from = this.params.value.from;
+            this.value_to = this.params.value.to;
+          }
+          else{
+            this.value_from = this.params.value[0].value;
+            this.value_to = this.params.value[1].value;
+          }
+        }
+
+      },
+      deep: true
     }
   },
 }

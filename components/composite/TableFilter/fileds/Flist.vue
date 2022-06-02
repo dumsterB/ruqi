@@ -27,6 +27,17 @@ export default {
       selected: [],
     }
   },
+  created() {
+   // this.selected = this.params.value;
+  },
+  watch: {
+    params: {
+      handler(val){
+        this.selected = this.params.value;
+      },
+      deep: true
+    }
+  },
 }
 </script>
 

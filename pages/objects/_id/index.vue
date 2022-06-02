@@ -138,10 +138,10 @@
                                     .rate-item-title(v-if="el.difference == '='") Текущая
                                     .rate-list-item-date {{ parseDate({ date: el.start_date, type: 'date' }) }}
                                     .rate-list-item-price(
-                                      :class="[el.rate > item.rate_with_vat ? 'up' : 'down']"
+                                      :class="[el.difference == '>' ? 'up' : 'down']"
                                     )
-                                      v-icon(v-if="el.rate < item.rate_with_vat && el.difference != '='") mdi-menu-down
-                                      v-icon(v-if="el.rate > item.rate_with_vat && el.difference != '='") mdi-menu-up
+                                      v-icon(v-if="el.difference == '<'") mdi-menu-down
+                                      v-icon(v-if="el.difference == '>'") mdi-menu-up
                                       span {{ el.rate }}
 
                                   .rate-list-item-edit
@@ -222,9 +222,9 @@
                     template(v-slot:item.age="{ item }")
                       span {{ item.age_from }} - {{ item.age_to }}
 
-                    template(v-slot:item.rate_with_vat="{ item }")
+                    template(v-slot:item.next_rate="{ item }")
                       .rate
-                        .rate-title {{ item.rate_with_vat }}
+                        .rate-title {{ item.next_rate }}
                         .rate-icon(v-if="item.rates && item.rates.length")
                           v-menu(
                             bottom,
@@ -243,10 +243,10 @@
                                     .rate-item-title(v-if="el.difference == '='") Текущая
                                     .rate-list-item-date {{ parseDate({ date: el.start_date, type: 'date' }) }}
                                     .rate-list-item-price(
-                                      :class="[el.rate > item.rate_with_vat ? 'up' : 'down']"
+                                      :class="[el.difference == '>' ? 'up' : 'down']"
                                     )
-                                      v-icon(v-if="el.rate < item.rate_with_vat && el.difference != '='") mdi-menu-down
-                                      v-icon(v-if="el.rate > item.rate_with_vat && el.difference != '='") mdi-menu-up
+                                      v-icon(v-if="el.difference == '<'") mdi-menu-down
+                                      v-icon(v-if="el.difference == '>'") mdi-menu-up
                                       span {{ el.rate }}
 
                                   .rate-list-item-edit
@@ -563,7 +563,7 @@ export default {
         {text: "пол", value: "gender", width: "120px"},
         {text: "возраст", value: "age", width: "120px"},
         {text: "ставка текущая", value: "rate", width: "140px"},
-        {text: "ставка плановая", value: "rate_with_vat", width: "140px"},
+        {text: "ставка плановая", value: "next_rate", width: "140px"},
       ],
       headers_vacancies_filter: [
         {field: 'driver_license', translit: 'Права'},
@@ -571,7 +571,7 @@ export default {
         {field: 'stacker_license', translit: 'Права управления штабелером'},
         {field: 'patent', translit: 'Патент'},
         {field: 'rate', translit: 'Ставка текущая', unit: 'р.'},
-        {field: 'rate_with_vat', translit: 'Ставка плановая', unit: 'р.'},
+        {field: 'next_rate', translit: 'Ставка плановая', unit: 'р.'},
         {field: 'gender', translit: 'Пол'},
         {field: 'age', translit: 'Возраст'},
       ],
