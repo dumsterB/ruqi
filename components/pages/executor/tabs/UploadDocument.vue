@@ -175,10 +175,17 @@
         </div>
       </v-col>
       <v-col>
-        <img src="@/assets/img/passport_1.svg" alt="">
+        <img src="@/assets/img/passportman.svg" alt="">
       </v-col>
     </v-row>
     <v-divider class="mt-4"></v-divider>
+    <div>
+      <div class="d-flex mt-15">
+        <h2> <strong>2. Дополнительные документы</strong></h2>
+        <img  class="ml-2" src="@/assets/img/correct.svg" alt="">
+      </div>
+      <p>Следующий перечень документов требуется для участия в заявках по выбранных Вами профессиям:</p>
+    </div>
     <div class="mt-5">
       <h3><strong> Фото паспорта разворот прописка (стр. 3-4)</strong>
         <img  class="ml-2" src="@/assets/img/correct.svg" alt="">
@@ -209,10 +216,10 @@
     </v-row>
     <v-divider class="mt-4"></v-divider>
     <div class="mt-5">
-      <h2><strong> 2. Дополнительные документы</strong>
+      <h3><strong> Водительские права</strong>
         <img  class="ml-2" src="@/assets/img/correct.svg" alt="">
-      </h2>
-      <p class="mt-3">Следующий перечень документов требуется для участия в заявках по выбранных Вами профессиям:</p>
+      </h3>
+      <p class="mt-3">На фотографии должны быть отчетливо видны серия, номер, основные данные, фотография. В поле зрения не должны попадать пальцы и посторонние предметы.</p>
     </div>
     <v-row>
       <v-col>
@@ -233,15 +240,15 @@
         </div>
       </v-col>
       <v-col>
-        <img src="@/assets/img/passport_1.svg" alt="">
+        <img src="@/assets/img/driverlicensefront.svg" alt="">
       </v-col>
     </v-row>
     <v-divider class="mt-4"></v-divider>
     <div class="mt-5">
-      <h2><strong> 2. Дополнительные документы</strong>
+      <h3><strong> Водительские права</strong>
         <img  class="ml-2" src="@/assets/img/correct.svg" alt="">
-      </h2>
-      <p class="mt-3">Следующий перечень документов требуется для участия в заявках по выбранных Вами профессиям:</p>
+      </h3>
+      <p class="mt-3">На фотографии должны быть отчетливо видны серия, номер, основные данные, фотография. В поле зрения не должны попадать пальцы и посторонние предметы.</p>
     </div>
     <v-row>
       <v-col>
@@ -262,7 +269,7 @@
         </div>
       </v-col>
       <v-col>
-        <img src="@/assets/img/passport_1.svg" alt="">
+        <img src="@/assets/img/driverlicense.svg" alt="">
       </v-col>
     </v-row>
     <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
