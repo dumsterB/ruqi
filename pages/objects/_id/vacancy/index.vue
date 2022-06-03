@@ -285,7 +285,7 @@ export default {
     closeCreateEditForm() {
       this.$router.push({
         name: "objects-id",
-        params: {id: this.object_uuid, ServiceId: "", objectId: this.object_uuid, activeTab: 1},
+        params: {ServiceId: "", objectId: this.object_uuid, activeTab: 1},
       });
     },
     updateFiled(field, value) {

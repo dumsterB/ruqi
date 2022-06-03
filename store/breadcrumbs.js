@@ -12,12 +12,12 @@ export const getters = {
 
 export const actions = {
   async setBreadcrumbs({ commit }, { crumbs }) {
-    console.debug('setBreadcrumbs', crumbs);
+    //console.debug('setBreadcrumbs', crumbs);
 
     commit('updateBreadcrumbs', crumbs);
   },
   async initBreadcrumbs({ commit }, fullPath) {
-    console.debug('initBreadcrumbs', fullPath);
+    //console.debug('initBreadcrumbs', fullPath);
 
     const params_r = fullPath.startsWith('/')
       ? fullPath.substring(1).split('/')
@@ -29,7 +29,7 @@ export const actions = {
 
     await params_r.forEach((param, index) => {
       path = `${path}/${param}`;
-      console.log('path ---', path)
+      //console.log('path ---', path)
       const match = this.$router.match(path);
 
       let title = match.meta.title;

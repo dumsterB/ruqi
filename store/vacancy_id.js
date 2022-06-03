@@ -32,9 +32,8 @@ export const actions = {
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
-        setTimeout(function() {
-          self.$router.push('/objects/' + object_uuid);
-        }, 3000);
+        console.log('/objects/' + object_uuid + '/vacancy/' + response.data.uuid);
+        self.$router.push('/objects/' + object_uuid + '/vacancy/' + response.data.uuid);
 
       })
       .catch((error) => {

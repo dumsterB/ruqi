@@ -153,6 +153,14 @@ export default {
     color: #BDC8D4;
     margin-right: 8px;
   }
+
+  .v-input {
+    &.v-input--is-readonly{
+      input{
+        color: #263043 !important;
+      }
+    }
+  }
 }
 
 

@@ -21,9 +21,7 @@ export default {
   props: {},
   data: () => ({}),
   computed: {
-    ...mapGetters('user', [
-      'user',
-    ]),
+    ...mapGetters('user', ['user',]),
   },
 
   watch: {},

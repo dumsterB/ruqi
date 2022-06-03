@@ -8,7 +8,7 @@ export const getters = {
 
 
 export const actions = {
-  async fetch({commit}) {
+  async fetchDispatchers({commit}) {
 
     const dispatchers = await this.$axios.get('/manager/dispatchers', {
       headers: {

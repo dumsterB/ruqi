@@ -1,5 +1,5 @@
 <template lang="pug">
-.rq-tasks__executor
+.rq-home-executor
   .mobile
     .mobile__header
       .mobile__header-title
@@ -9,7 +9,7 @@
       mContentDisplayController.mobile__header-display-ctrl
 
   .desktop
-    h1 Поиск работы
+    Userbar.desktop-userbar
     ContentDisplayController.desktop__content-display-ctrl
 
   TasksList.search__task-list(:tasks="searchTasks")
@@ -21,7 +21,8 @@ import ContentDisplayController from '@/components/pages/tasks/executor/search/C
 import mContentDisplayController from '@/components/pages/tasks/executor/search/ContentDisplayController/mobile';
 import TasksFilter from '@/components/pages/tasks/executor/search/TasksFilter/desktop';
 import mTasksFilter from '@/components/pages/tasks/executor/search/TasksFilter/mobile';
-import TasksList from '@/components/pages/tasks/executor/search/TasksList';
+import TasksList from './TasksList';
+import Userbar from './Userbar';
 import mSearchLine from '@/components/pages/tasks/executor/search/SearchLine';
 
 export default {
@@ -31,6 +32,7 @@ export default {
     TasksFilter,
     mTasksFilter,
     TasksList,
+    Userbar,
     mSearchLine,
   },
 
@@ -62,10 +64,14 @@ export default {
 </script>
 
 <style lang="scss">
-.rq-tasks__executor {
+.rq-home-executor {
   .desktop {
     display: block;
-    max-width: 1272px;
+    //max-width: 1272px;
+
+    &-userbar {
+      margin-top: 28px;
+    }
 
     &__content-display-ctrl {
       margin-top: 32px;

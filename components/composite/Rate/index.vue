@@ -178,7 +178,7 @@ export default {
       font-weight: 600;
       padding-bottom: 0;
     }
-     &.v-input.v-input--is-readonly input {
+    &.v-input.v-input--is-readonly input {
       color: #263043;
       font-weight: 600;
     }
