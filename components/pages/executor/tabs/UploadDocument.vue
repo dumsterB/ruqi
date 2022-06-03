@@ -184,10 +184,17 @@
         <h2> <strong>2. Дополнительные документы</strong></h2>
         <img  class="ml-2" src="@/assets/img/correct.svg" alt="">
       </div>
-      <p>Следующий перечень документов требуется для участия в заявках по выбранных Вами профессиям:</p>
+      <p style="font-weight: 600" class="mt-4">Следующий перечень документов требуется для участия в заявках по выбранных Вами профессиям:</p>
+      <div class="access-content">
+        <div class="d-flex">
+          <img style="margin-top: -50px" src="@/assets/img/attention.svg" alt="">
+          <p class="ml-2" style="font-weight: 600">Если вы не готовы сейчас предоставить документы нужные для работы по этим профессиям, вы можете вернуться к выбору профессий, изменить свой выбор и продолжить регистрацию.</p>
+        </div>
+        <a href="" style="text-decoration: none;font-weight: 600" class="ml-6">Вернуться к выбору профессий</a>
+      </div>
     </div>
     <div class="mt-5">
-      <h3><strong> Фото паспорта разворот прописка (стр. 3-4)</strong>
+      <h3><strong> Медицинская книжка основной разворот</strong>
         <img  class="ml-2" src="@/assets/img/correct.svg" alt="">
       </h3>
       <p class="mt-3">На фотографии должны быть отчетливо видны серия, номер, основные данные, фотография. В поле зрения не должны попадать пальцы и посторонние предметы.</p>
@@ -211,7 +218,7 @@
         </div>
       </v-col>
       <v-col>
-        <img src="@/assets/img/passport_1.svg" alt="">
+        <img src="@/assets/img/medical_book.svg" alt="">
       </v-col>
     </v-row>
     <v-divider class="mt-4"></v-divider>
