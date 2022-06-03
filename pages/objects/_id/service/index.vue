@@ -164,7 +164,7 @@ export default {
 
   },
   methods: {
-    ...mapActions('specializations', ['fetch',]),
+    ...mapActions('specializations', ['fetchSpecializations',]),
     ...mapActions('service_id', ['createService',]),
     ...mapActions('service_id', ['putService',]),
     ...mapActions('service_id', ['fetchServiceId',]),
@@ -174,7 +174,7 @@ export default {
      // this.$router.go(-1);
       this.$router.push({
         name: "objects-id",
-        params: { id: this.object_uuid, ServiceId: "",  objectId: this.$route.params.objectId, activeTab: 0 },
+        params: { ServiceId: "",  objectId: this.$route.params.objectId, activeTab: 0 },
       });
     },
     updateFiled(field, value) {
@@ -197,7 +197,7 @@ export default {
   },
   async created() {
 
-    await this.fetch();
+    await this.fetchSpecializations();
     this.meta.meta_object_service[0].params.options = this.specializations;
 
     this.$route.meta.title = 'Добавить услугу';
