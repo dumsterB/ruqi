@@ -18,8 +18,9 @@
         Пароль повторно
         <v-text-field
             outlined
+            :rules="[(password === confirm_password) || 'Пароль не совподает']"
             class="mt-2"
-            v-model="password"
+            v-model="confirm_password"
             dense
             single-line
         ></v-text-field>
@@ -38,20 +39,29 @@
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
   name: "CreatePassword",
   props:{
-    password:{
-    }
+    password:{}
   },
   data(){
     return{
-      valid:false
+      valid:false,
+      confirm_password:null,
     }
   },
   methods:{
+    ...mapActions('executor', ['createPassword']),
     next(val){
     this.$emit('pageHandler',val)
+      this.createPassword(this.password)
+    }
+  },
+  computed:{
+    disableHandler(){
+      return this.password === this.confirm_password
     }
   }
 }

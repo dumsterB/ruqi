@@ -73,17 +73,15 @@ export default {
   data(){
     return{
       power: 78,
-      current_page:0,
+      current_page:4,
       form:{
-        name:'',
-        surname:'',
-        middle_name:'',
-        sex_options:['мужской','женский'],
-        date:'',
-        sex:'',
-        birth_date:'',
-        phone:'',
-        email:'',
+        name: '',
+        surname: '',
+        middle_name: '',
+        sex: '',
+        birth_date: '',
+        phone: '',
+        email: null,
       },
       tabs:[
         {title:'Личные данные', value:'',active:true, mobile:true},

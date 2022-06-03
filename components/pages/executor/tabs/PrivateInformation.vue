@@ -44,7 +44,7 @@
                   dense
                   placeholder="Не выбрано"
                   v-model="form.sex"
-                  :items="form.sex_options"
+                  :items="sex_options"
               ></v-select>
             </div>
           <div class="form-part">
@@ -60,7 +60,7 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
-                    v-model="form.date"
+                    v-model="form.birth_date"
                     label="ДД.ММ.ГГГГ"
                     class="mt-2"
                     readonly
@@ -71,7 +71,7 @@
                 ></v-text-field>
               </template>
               <v-date-picker
-                  v-model="form.date"
+                  v-model="form.birth_date"
                   no-title
                   scrollable
               >
@@ -86,7 +86,7 @@
                 <v-btn
                     text
                     color="primary"
-                    @click="$refs.menu.save(form.date)"
+                    @click="$refs.menu.save(form.birth_date)"
                 >
                   OK
                 </v-btn>
@@ -132,8 +132,6 @@
             <p class="text-grey text-center">Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
           </div>
         </v-form>
-      fewfew  {{executors}}
-        <v-btn @click="createExecutorecutor">click me</v-btn>
       </div>
   </v-container>
 
@@ -159,26 +157,35 @@ export default {
     return{
       valid:false,
       menu:'',
+      sex_options:['мужской','женский'],
       switcher:false
     }
   },
   methods:{
     ...mapActions('executor',['createExecutor']),
-    next(value){
-      this.$emit('pageHandler',value)
+  async next(value){
+     this.$emit('pageHandler',value)
+     let response = ''
+     response = await this.createExecutor(this.form)
+    console.log(response,'data of res')
     },
     checkboxHandler(){
       this.switcher=!this.switcher
       this.$emit('checkboxHandler',this.switcher)
     },
-    createExecutorecutor() {
-      this.createExecutor(this.form)
-    }
   },
   computed:{
    executors() {
     return this.$store.getters['executor/executors']
-   }
+   },
+    disableHandler(){
+     if(this.agree){
+       return this.form.name && this.form.surname  && this.form.email && this.form.sex && this.form.date
+     }else{
+       return this.form.name && this.form.surname  && this.form.phone && this.form.sex && this.form.date
+     }
+
+    }
   }
 }
 </script>
@@ -214,4 +221,8 @@ export default {
   color: #8692A6;
   font-size: 14px;
 }
+.theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
+background: lightgrey!important;
+}
+
 </style>
