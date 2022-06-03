@@ -1,6 +1,6 @@
 <template lang="pug">
   .add-task
-    PageHeader(header_text="Создание новой заявки" button_text="сохранить изменения" @createAction = "nextFromButton" @closeAction="$router.push('/tasks/')")
+    PageHeader(header_text="Создание новой заявки" :disabled="disabled" button_text="сохранить изменения" @createAction = "nextFromButton" @closeAction="$router.push('/tasks/')")
 
     v-container.object-info-container
       v-row
@@ -23,9 +23,8 @@
                 v-col(cols="12")
                   v-window(v-model="tab")
                     v-tab-item(eager)
-                      v-form(ref="form_part_0" v-model="valid" lazy-validation)
-                        .form-part-single
-                          FormBuilder(:meta="meta.meta_object_info" @updateFiled="updateFiled")
+                      .form-part-single
+                        FormBuilder(:meta="meta.meta_object_info" @updateFiled="updateFiled")
 
                   v-btn.btn-blue.mt-6(text :disabled="disabled" height="48" outlined  @click="nextFromButton") сохранить изменения
 
