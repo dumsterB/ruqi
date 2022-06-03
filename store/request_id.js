@@ -46,6 +46,65 @@ export const actions = {
         console.log(error);
       });
   },
+
+  async putTaskWorks({commit, dispatch}, {uuid, body}) {
+    await this.$axios.put('/tasks/'+uuid +'/works ',
+      body,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        commit('response/setSuccess', {type: 'success', text: 'Ваша заявка успешно обновлена', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+  async putTaskContacts({commit, dispatch}, {uuid, body}) {
+    await this.$axios.put('/tasks/'+uuid +'/contacts ',
+      body,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        commit('response/setSuccess', {type: 'success', text: 'Ваша заявка успешно обновлена', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+  async putTaskDispatchers({commit, dispatch}, {uuid, body}) {
+    await this.$axios.put('/tasks/'+uuid +'/dispatchers ',
+      body,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        commit('response/setSuccess', {type: 'success', text: 'Ваша заявка успешно обновлена', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+
   async subscribeToObject({commit, dispatch}, {requestId, objectId}) {
     const requests = await this.$axios.post('/user/subscribe/objects',
       objectId,

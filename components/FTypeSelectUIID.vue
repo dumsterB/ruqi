@@ -68,6 +68,10 @@ export default {
   .v-input__prepend-inner {
     margin-top: 10px;
   }
+
+  .v-select__selection--comma{
+    color: #263043;
+  }
 }
 
 </style>

@@ -13,32 +13,7 @@
           :rules="[rules.number, rules.required]")
 
       .v-col(cols="4")
-        .form-date
-          v-menu(
-            v-model="menu"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="290px"
-          )
-            template(v-slot:activator="{ on, attrs }")
-              v-text-field( v-model="fullDate"
-                :name="date_name"
-                label="Действует с"
-                append-icon="mdi-calendar"
-                v-bind="attrs"
-                @blur="date = parseDate(dateFormatted)"
-                v-on="on"
-                filled
-                outlined
-                hide-details="true"
-                readonly
-                :rules="[rules.required]")
-
-            v-date-picker(v-model="date" no-title @input="updateDate")
-
-
+        menu
       .v-col(cols="4" v-if="isNew")
         a.set(@click.prevent="$emit('setRate')") Установить
 

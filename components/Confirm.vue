@@ -57,6 +57,13 @@ export default {
       justify-content: center;
     }
 
+     .v-card__text{
+       font-weight: 400;
+       font-size: 14px;
+       line-height: 20px;
+       text-align: center;
+     }
+
     .v-card__actions {
       flex-direction: column;
 

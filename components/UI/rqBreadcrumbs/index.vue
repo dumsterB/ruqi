@@ -21,7 +21,7 @@ export default {
   methods: {
     /* HANDLERS */
     onBreadcrumbClicked(payload = null) {
-      console.debug("onBreadcrumbClicked", payload); // DELETE
+      //console.debug("onBreadcrumbClicked", payload); // DELETE
 
       if (!payload) {
         return;
@@ -34,8 +34,8 @@ export default {
 
     /* HELPERS */
     isLast(payload = null) {
-      console.debug("isLast", payload); // DELETE
-      console.debug("breadcrumbs", payload, this.breadcrumbs); // DELETE
+      //console.debug("isLast", payload); // DELETE
+      //console.debug("breadcrumbs", payload, this.breadcrumbs); // DELETE
 
       if (!payload) {
         return false;

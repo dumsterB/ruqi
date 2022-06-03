@@ -5,7 +5,7 @@
         .header-dialog {{ header_text}}
 
       v-col.d-flex.justify-end(cols="2")
-        v-btn.btn-blue.add(text height="48" outlined @click="$emit('createAction')")
+        v-btn.btn-blue.add(text :disabled="disabled" height="48" outlined @click="$emit('createAction')")
           span {{ button_text }}
 
         v-btn.add.ml-4(text height="48" outlined @click="$emit('closeAction')")
@@ -26,6 +26,10 @@ export default {
       type: String,
       default: '',
     },
+    disabled: {
+      type: Boolean,
+      default: true,
+    }
 
   },
   data() {

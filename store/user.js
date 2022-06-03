@@ -54,8 +54,6 @@ export const actions = {
   async fetchUser({ commit }) {
     const response = await this.$axios.get('user/my');
 
-    console.log('fetchUser', response);
-
     commit('updateUserData', response?.data?.data);
   },
   async fetchUserTasks({ commit, state }, payload = {}) {

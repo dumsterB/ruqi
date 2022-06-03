@@ -31,12 +31,10 @@ export const actions = {
         console.log(response);
         dispatch('fetch');
         commit('response/setSuccess', {type: 'success', text: 'Ваша заявка успешно создана', }, {root: true});
+        self.$router.push('/tasks/' + response.data.uuid + '/edit');
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
-        setTimeout(function() {
-          self.$router.push('/tasks/');
-        }, 3000);
 
       })
       .catch((error) => {
@@ -108,15 +106,10 @@ export const actions = {
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
-        setTimeout(function() {
-          self.$router.push('/tasks/');
-        }, 3000);
       })
       .catch((error) => {
         console.log(error);
       });
-
-
   },
 }
 
