@@ -1045,7 +1045,7 @@ h1.large {
 }
 
 .table-list-style-minify {
-  margin-bottom: 32px;
+  margin-bottom: 48px;
 
   .v-data-table.theme--light {
     background: transparent;
@@ -1066,8 +1066,8 @@ h1.large {
           th {
             padding: 5px 12px !important;
             background: transparent;
-            border-top: 1px solid $table-border-color;
-            border-bottom: 1px solid $table-border-color;
+            border-top: 1px solid #E0E0E0;
+            border-bottom: 1px solid #E0E0E0;
             height: 40px;
             position: relative;
 
@@ -1122,6 +1122,7 @@ h1.large {
           td {
             padding: 5px 12px !important;
             white-space: nowrap;
+            border-bottom: 1px solid #F7F7F7 !important;
 
             &:first-child {
               width: 30px;
