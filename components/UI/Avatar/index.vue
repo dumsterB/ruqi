@@ -18,10 +18,17 @@ export default {
       type: String,
       default: '',
     },
-
     theme: {
       type: String,
       default: '',
+    },
+    height: {
+      type: String,
+      default: '48px',
+    },
+    width: {
+      type: String,
+      default: '48px',
     },
   },
   data: () => ({}),
