@@ -13,6 +13,7 @@
         ФИО в паспорте
         <v-text-field
             outlined
+            v-model="passport_info"
             placeholder="Иванов Иван Иванович"
             class="mt-2"
             dense
@@ -25,6 +26,7 @@
             Серия
             <v-text-field
                 outlined
+                v-model="passport_series"
                 class="mt-2"
                 dense
                 single-line
@@ -37,6 +39,7 @@
             <v-text-field
                 outlined
                 class="mt-2"
+                v-model="passport_number"
                 dense
                 single-line
             ></v-text-field>
@@ -48,6 +51,7 @@
             <v-text-field
                 outlined
                 class="mt-2"
+                v-model="passport_date"
                 dense
                 single-line
             ></v-text-field>
@@ -59,6 +63,7 @@
             <v-text-field
                 outlined
                 class="mt-2"
+                v-model="passport_term"
                 dense
                 single-line
             ></v-text-field>
@@ -70,6 +75,7 @@
         <v-text-field
             outlined
             class="mt-2"
+            v-model="passport_given"
             dense
             single-line
         ></v-text-field>
@@ -80,6 +86,7 @@
           <v-text-field
               outlined
               class="mt-2"
+              v-model="passport_code"
               dense
               single-line
           ></v-text-field>
@@ -99,7 +106,7 @@
       <v-row>
         <v-col>
           <div  class=" mt-2  justify-center text-center">
-            <vue-dropzone id="fileUpload1" ref="myVueDropzone" @click.prevent="setImg('1')"  @vdropzone-thumbnail="afterAdded" :options="dropzoneOptions" :useCustomSlot="true">
+            <vue-dropzone id="fileUpload1" ref="myVueDropzone" @click.prevent="setImg('1')"  @vdropzone-thumbnail="afterAdded1" :options="dropzoneOptions" :useCustomSlot="true">
               <div class="dropzone-custom-content">
                 <div class="d-block">
                   <img src="@/assets/img/uploader.svg" alt="">
@@ -110,7 +117,7 @@
             </vue-dropzone>
             <p class="text-gray">или загрузите фото</p>
             <div class="d-flex">
-              <v-btn elevation="0" @click="selectFile()" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
+              <v-btn elevation="0" @click="selectFile(1)" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
             </div>
           </div>
         </v-col>
@@ -130,7 +137,7 @@
     <v-row>
       <v-col>
         <div class="mt-2 justify-center text-center">
-          <vue-dropzone id="fileUpload2" ref="myVueDropzone"  @vdropzone-thumbnail="setImg('2')" :options="dropzoneOptions" :useCustomSlot="true">
+          <vue-dropzone id="fileUpload2" ref="myVueDropzone"  @vdropzone-thumbnail="afterAdded2" :options="dropzoneOptions" :useCustomSlot="true">
             <div class="dropzone-custom-content">
               <div class="d-block">
                 <img src="@/assets/img/uploader.svg" alt="">
@@ -141,7 +148,7 @@
           </vue-dropzone>
           <p class="text-gray">или загрузите фото</p>
           <div class="d-flex">
-            <v-btn elevation="0" @click="selectFile()" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
+            <v-btn elevation="0" @click="selectFile(2)" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
           </div>
         </div>
       </v-col>
@@ -159,7 +166,7 @@
     <v-row>
       <v-col>
         <div class="mt-2 justify-center text-center">
-          <vue-dropzone id="fileUpload3" ref="myVueDropzone"  @vdropzone-thumbnail="setImg('3')" :options="dropzoneOptions" :useCustomSlot="true">
+          <vue-dropzone id="fileUpload3" ref="myVueDropzone" @vdropzone-thumbnail="afterAdded3" :options="dropzoneOptions" :useCustomSlot="true">
             <div class="dropzone-custom-content">
               <div class="d-block">
                 <img src="@/assets/img/uploader.svg" alt="">
@@ -170,7 +177,7 @@
           </vue-dropzone>
           <p class="text-gray">или загрузите фото</p>
           <div class="d-flex">
-            <v-btn elevation="0" @click="selectFile()" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
+            <v-btn elevation="0" @click="selectFile(3)" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
           </div>
         </div>
       </v-col>
@@ -202,7 +209,7 @@
     <v-row>
       <v-col>
         <div class="mt-2 justify-center text-center">
-          <vue-dropzone id="fileUpload4" ref="myVueDropzone"  @vdropzone-thumbnail="setImg('4')" :options="dropzoneOptions" :useCustomSlot="true">
+          <vue-dropzone id="fileUpload4" ref="myVueDropzone"  @vdropzone-thumbnail="afterAdded4" :options="dropzoneOptions" :useCustomSlot="true">
             <div class="dropzone-custom-content">
               <div class="d-block">
                 <img src="@/assets/img/uploader.svg" alt="">
@@ -213,7 +220,7 @@
           </vue-dropzone>
           <p class="text-gray">или загрузите фото</p>
           <div class="d-flex">
-            <v-btn elevation="0" @click="selectFile()" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
+            <v-btn elevation="0" @click="selectFile(4)" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
           </div>
         </div>
       </v-col>
@@ -231,7 +238,7 @@
     <v-row>
       <v-col>
         <div class="mt-2 justify-center text-center">
-          <vue-dropzone id="fileUpload5" ref="myVueDropzone"  @vdropzone-thumbnail="setImg('5')" :options="dropzoneOptions" :useCustomSlot="true">
+          <vue-dropzone id="fileUpload5" ref="myVueDropzone"  @vdropzone-thumbnail="afterAdded5" :options="dropzoneOptions" :useCustomSlot="true">
             <div class="dropzone-custom-content">
               <div class="d-block">
                 <img src="@/assets/img/uploader.svg" alt="">
@@ -242,7 +249,7 @@
           </vue-dropzone>
           <p class="text-gray">или загрузите фото</p>
           <div class="d-flex">
-            <v-btn elevation="0" @click="selectFile()" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
+            <v-btn elevation="0" @click="selectFile(5)" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
           </div>
         </div>
       </v-col>
@@ -260,7 +267,7 @@
     <v-row>
       <v-col>
         <div class="mt-2 justify-center text-center">
-          <vue-dropzone id="fileUpload6" ref="myVueDropzone"  @vdropzone-thumbnail="setImg('6')" :options="dropzoneOptions" :useCustomSlot="true">
+          <vue-dropzone id="fileUpload6" ref="myVueDropzone" @vdropzone-thumbnail="afterAdded6" :options="dropzoneOptions" :useCustomSlot="true">
             <div class="dropzone-custom-content">
               <div class="d-block">
                 <img src="@/assets/img/uploader.svg" alt="">
@@ -271,7 +278,7 @@
           </vue-dropzone>
           <p class="text-gray">или загрузите фото</p>
           <div class="d-flex">
-            <v-btn elevation="0" @click="selectFile()" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
+            <v-btn elevation="0" @click="selectFile(6)" dark class="btn-primary"><img class="mr-2" src="@/assets/img/File_Blank.svg" alt="">загрузить Из файла</v-btn>
           </div>
         </div>
       </v-col>
@@ -279,6 +286,7 @@
         <img src="@/assets/img/driverlicense.svg" alt="">
       </v-col>
     </v-row>
+    {{logo}}
     <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
     <v-btn dark elevation="0" class="btn-primary" @click="next(6)"><span class="btn-title">Далее</span> </v-btn>
   </v-container>
@@ -308,7 +316,22 @@ export default {
     }
   },
   methods:{
-    afterAdded(e,file,place){
+    afterAdded1(e,file,place){
+      console.log(e,file,place)
+    },
+    afterAdded2(e,file,place){
+      console.log(e,file,place)
+    },
+    afterAdded3(e,file,place){
+      console.log(e,file,place)
+    },
+    afterAdded4(e,file,place){
+      console.log(e,file,place)
+    },
+    afterAdded5(e,file,place){
+      console.log(e,file,place)
+    },
+    afterAdded6(e,file,place){
       console.log(e,file,place)
     },
     setImg(val){
@@ -325,8 +348,8 @@ export default {
     dragover(event) {
       event.preventDefault();
     },
-    selectFile() {
-      document.getElementById("fileUpload1").click()
+    selectFile(value) {
+      document.getElementById("fileUpload" + value).click()
     },
     readFile(e) {
       const input = e.target
@@ -343,9 +366,6 @@ export default {
       reader.onerror = function() {
         console.log(reader.error);
       };
-    },
-    dragleave(event) {
-      // Clean up
     },
     drop(event) {
       event.preventDefault();

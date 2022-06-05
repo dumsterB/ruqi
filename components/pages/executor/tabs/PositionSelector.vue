@@ -8,7 +8,7 @@
     <v-expansion-panels flat >
       <v-expansion-panel
           class="panels"
-          v-for="(item,i) in specializations"
+          v-for="(item,i) in specializationCopy"
           :key="i"
       >
         <v-expansion-panel-header>
@@ -71,11 +71,21 @@ export default {
     },
     setStatus(work){
       console.log(work)
+      if(work.status === null){
+        work.status = "active"
+      }else{
+        work.status = null
+      }
+      console.log(work)
+      this.$forceUpdate()
     }
   },
   computed:{
     specializations() {
       return this.$store.getters['executor/specializations']
+    },
+    specializationCopy(){
+      return JSON.parse( JSON.stringify(this.$store.getters['executor/specializations']))
     }
 
   },

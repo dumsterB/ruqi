@@ -40,7 +40,7 @@
           <position-selector  @pageHandler="pageHandler" v-if="current_page === 4"></position-selector>
           <upload-document  @pageHandler="pageHandler" v-if="current_page === 5"></upload-document>
           <payment-information @pageHandler="pageHandler" v-if="current_page === 6"></payment-information>
-         <finish v-if="current_page === 7"></finish>
+          <finish v-if="current_page === 7"></finish>
       </v-container>
     </div>
   </div>
