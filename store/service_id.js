@@ -60,9 +60,6 @@ export const actions = {
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
-        setTimeout(function() {
-          self.$router.push('/objects/' + object_uuid);
-        }, 3000);
       })
       .catch((error) => {
         console.log(error);
