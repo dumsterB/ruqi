@@ -119,7 +119,7 @@
           <div class="form-part-checkbox">
             <div class="d-flex">
               <v-checkbox
-                  v-model="agree"
+                  v-model="form.agree"
                   @click="checkboxHandler"
               ></v-checkbox>
             <p class="mt-5"> Я не могу получить код по SMS</p>

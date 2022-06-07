@@ -72,9 +72,9 @@
       </div>
       <p class="text-grey" style="margin-top: -15px">Если карта чужая то мы можем платить по карте , но не можем <br> на чужие реквизиты</p>
     </div>
-    <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
-    <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Заполнить позже</span> </v-btn>
-    <v-btn dark elevation="0" class="btn-primary" @click="next(7)"><span class="btn-title">Далее</span> </v-btn>
+    <v-btn  elevation="0" class="btn-secondary" @click="next(6)"> <span class="btn-title">Назад</span> </v-btn>
+    <v-btn  elevation="0" class="btn-secondary" @click="next(8)"> <span class="btn-title">Заполнить позже</span> </v-btn>
+    <v-btn dark elevation="0" class="btn-primary" @click="next(8)"><span class="btn-title">Далее</span> </v-btn>
   </v-container>
 </div>
 </template>
@@ -85,6 +85,9 @@ export default {
   methods:{
     next(val){
       this.$emit('pageHandler', val)
+    },
+    back(val){
+      this.$emit('pageHandler',val , 'back')
     }
   }
 }

@@ -17,9 +17,10 @@ export const actions = {
             phone: params.phone,
             birthday: params.birth_date,
             gender:params.sex,
+            email:params.email,
             type: "contractor"
         })
-         .then((response) => {
+       .then((response) => {
             commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
             setTimeout(function() {
                 commit('response/removeSuccess', null, { root: true });
@@ -50,7 +51,7 @@ export const actions = {
         });
     },
     async createPassword({ commit }, params){
-        await this.$axios.post('',{password:params})
+        await this.$axios.put('auth/password',{password:params})
             .then((response) => {
                 commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
                 setTimeout(function() {
@@ -86,6 +87,60 @@ export const actions = {
                 return error
             });
     },
+    async setSpecializations({ commit },params){
+        await this.$axios.put('user/settings',{ professions:[ params ] })
+            .then((response) => {
+                commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
+                setTimeout(function() {
+                    commit('response/removeSuccess', null, { root: true });
+                }, 2000);
+                return (response && response.data) || {};
+            })
+            .catch((error) => {
+                commit('response/setSuccess', {type: 'error', text: 'Заполните поля', }, {root: true});
+                setTimeout(function() {
+                    commit('response/removeSuccess', null, { root: true });
+                }, 3000);
+                console.log(error);
+                return error
+            });
+    },
+    async createDocument({ commit }, params){
+        await this.$axios.post('user/documents', params)
+            .then((response) => {
+                commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
+                setTimeout(function() {
+                    commit('response/removeSuccess', null, { root: true });
+                }, 2000);
+                return (response && response.data) || {};
+            })
+            .catch((error) => {
+                commit('response/setSuccess', {type: 'error', text: 'Заполните поля', }, {root: true});
+                setTimeout(function() {
+                    commit('response/removeSuccess', null, { root: true });
+                }, 3000);
+                console.log(error);
+                return error
+            });
+    },
+    async setPassport({commit}, params){
+        await this.$axios.post(`user/documents/${params.uuid}`,)
+            .then((response) => {
+                commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
+                setTimeout(function() {
+                    commit('response/removeSuccess', null, { root: true });
+                }, 2000);
+                return (response && response.data) || {};
+            })
+            .catch((error) => {
+                commit('response/setSuccess', {type: 'error', text: 'Заполните поля', }, {root: true});
+                setTimeout(function() {
+                    commit('response/removeSuccess', null, { root: true });
+                }, 3000);
+                console.log(error);
+                return error
+            });
+    }
 }
 export const mutations = {
     setSpecializations(state,payload){

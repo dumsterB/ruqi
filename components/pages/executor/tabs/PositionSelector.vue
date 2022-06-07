@@ -8,7 +8,7 @@
     <v-expansion-panels flat >
       <v-expansion-panel
           class="panels"
-          v-for="(item,i) in specializationCopy"
+          v-for="(item,i) in copySpec"
           :key="i"
       >
         <v-expansion-panel-header>
@@ -17,7 +17,7 @@
         <v-expansion-panel-content>
           <v-row>
             <v-col v-for="(work ,i) of item.professions" :key="i">
-              <v-chip @click="setStatus(work)" :class="work.status === 'active' ? 'chip_active' : 'chip'"> {{work.name  }}</v-chip>
+              <v-chip @click="setStatus(work)" :class="work.active === false ? 'chip_active' : 'chip'"> {{work.name  }}</v-chip>
             </v-col>
           </v-row>
         </v-expansion-panel-content>
@@ -47,8 +47,8 @@
         </div>
       </div>
 
-      <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
-      <v-btn dark elevation="0" class="btn-primary" @click="next(5)"><span class="btn-title">Далее</span> </v-btn>
+      <v-btn  elevation="0" class="btn-secondary" @click="back(3)"> <span class="btn-title">Назад</span> </v-btn>
+      <v-btn dark elevation="0" class="btn-primary" @click="next( 5 )"><span class="btn-title">Далее</span> </v-btn>
     </div>
   </div>
 </v-container>
@@ -62,35 +62,61 @@ export default {
   name: "PositionSelector",
   data(){
     return{
+      copySpec:[]
     }
   },
   methods:{
-    ...mapActions('executor',['loadSpecializations']),
+    ...mapActions('executor',['loadSpecializations','setSpecializations']),
     next(value){
-      this.$emit('pageHandler',value)
+      this.$emit('pageHandler', value)
+    let activeSpecializations = (this.specializationCopy || []).map((ell) => {
+        return {
+          ...ell,
+          professions: (ell.professions || []).filter((ell) => {
+              ell.active === true
+          }),
+        };
+      })
+      activeSpecializations.map(ell => ell.name)
+      let params = activeSpecializations.map(({professions,...rest})=>({...rest}))
+      this.setSpecializations(params)
+
+    },
+    back(val){
+      this.$emit('pageHandler',val , 'back')
     },
     setStatus(work){
-      console.log(work)
-      if(work.status === null){
-        work.status = "active"
+      if(work.active === false){
+        work.active = true
       }else{
-        work.status = null
+        work.active = false
       }
-      console.log(work)
       this.$forceUpdate()
-    }
+    },
   },
   computed:{
     specializations() {
       return this.$store.getters['executor/specializations']
     },
     specializationCopy(){
-      return JSON.parse( JSON.stringify(this.$store.getters['executor/specializations']))
+      return JSON.parse(JSON.stringify(this.$store.getters['executor/specializations']))
     }
 
   },
  async mounted() {
     await this.loadSpecializations()
+    this.copySpec = (this.specializationCopy || []).map((ell) => {
+      return {
+        ...ell,
+        professions: (ell.professions || []).map((ell) => {
+          return {
+            ...ell,
+            active: true,
+          };
+        }),
+      };
+    })
+
   }
 }
 </script>

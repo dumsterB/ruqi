@@ -31,7 +31,7 @@
         заглавные буквы; <br>
         строчные буквы; <br>
         цифры или специальные символы: %, #, $ и другие.</p>
-      <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
+      <v-btn  elevation="0" class="btn-secondary" @click="back(1)"> <span class="btn-title">Назад</span> </v-btn>
       <v-btn dark elevation="0" class="btn-primary" @click="next(3)"><span class="btn-title">Далее</span> </v-btn>
     </v-form>
   </v-container>
@@ -43,13 +43,11 @@ import {mapActions} from "vuex";
 
 export default {
   name: "CreatePassword",
-  props:{
-    password:{}
-  },
   data(){
     return{
       valid:false,
       confirm_password:null,
+      password: '',
     }
   },
   methods:{
@@ -57,6 +55,9 @@ export default {
     next(val){
     this.$emit('pageHandler',val)
       this.createPassword(this.password)
+    },
+    back(val){
+      this.$emit('pageHandler',val , 'back')
     }
   },
   computed:{

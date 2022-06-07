@@ -106,7 +106,7 @@
       <v-row>
         <v-col>
           <div  class=" mt-2  justify-center text-center">
-            <vue-dropzone id="fileUpload1" ref="myVueDropzone" @click.prevent="setImg('1')"  @vdropzone-thumbnail="afterAdded1" :options="dropzoneOptions" :useCustomSlot="true">
+            <vue-dropzone id="fileUpload1" ref="myVueDropzone" @click.prevent="selectFile(0)"  @vdropzone-thumbnail="afterAdded1" :options="dropzoneOptions" :useCustomSlot="true">
               <div class="dropzone-custom-content">
                 <div class="d-block">
                   <img src="@/assets/img/uploader.svg" alt="">
@@ -286,9 +286,8 @@
         <img src="@/assets/img/driverlicense.svg" alt="">
       </v-col>
     </v-row>
-    {{logo}}
-    <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
-    <v-btn dark elevation="0" class="btn-primary" @click="next(6)"><span class="btn-title">Далее</span> </v-btn>
+    <v-btn  elevation="0" class="btn-secondary" @click="back(6)"> <span class="btn-title">Назад</span> </v-btn>
+    <v-btn dark elevation="0" class="btn-primary" @click="next(8)"><span class="btn-title">Далее</span> </v-btn>
   </v-container>
 </div>
 </template>
@@ -305,6 +304,13 @@ export default {
     return{
       filelist: [],
       logo:'',
+      passport_number:'',
+      passport_info:'',
+      passport_code:'',
+      passport_series:'',
+      passport_given:'',
+      passport_date:'',
+      passport_term:'',
       files:[],
       passport_1:null,
       dropzoneOptions: {
@@ -316,6 +322,30 @@ export default {
     }
   },
   methods:{
+    next(value){
+      this.$emit('pageHandler', value)
+      let data=[
+        {
+          document:'Паспорт',
+          slug:'передняя сторана',
+          count_media: 3
+
+        }
+      ]
+      this.createDocument()
+    },
+    back(value){
+      this.$emit('pageHandler', value , 'back')
+    },
+    onChange() {
+      this.filelist = [...this.$refs.file.files];
+    },
+    remove(i) {
+      this.filelist.splice(i, 1);
+    },
+    dragover(event) {
+      event.preventDefault();
+    },
     afterAdded1(e,file,place){
       console.log(e,file,place)
     },
@@ -333,20 +363,6 @@ export default {
     },
     afterAdded6(e,file,place){
       console.log(e,file,place)
-    },
-    setImg(val){
-    },
-    next(val){
-      this.$emit('pageHandler',val)
-    },
-    onChange() {
-      this.filelist = [...this.$refs.file.files];
-    },
-    remove(i) {
-      this.filelist.splice(i, 1);
-    },
-    dragover(event) {
-      event.preventDefault();
     },
     selectFile(value) {
       document.getElementById("fileUpload" + value).click()

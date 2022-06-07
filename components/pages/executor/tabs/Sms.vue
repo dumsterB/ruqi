@@ -19,7 +19,7 @@
       <p class="mt-10 text-grey" v-if="countDown > 1">Выслать код заново можно будет через    {{ countDown }} секунд.</p>
       <v-btn elevation="0" class="mt-10" @click="smsHandler" v-else>Выслать код заново</v-btn>
       <div class="mt-10">
-        <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
+        <v-btn  elevation="0" class="btn-secondary" @click="back(0)"> <span class="btn-title">Назад</span> </v-btn>
         <v-btn dark elevation="0" class="btn-primary" @click="next(2)"><span class="btn-title">Далее</span> </v-btn>
       </div>
     </v-container>
@@ -82,6 +82,62 @@ export default {
         }
         this.confirmPassword(obj)
       }
+    },
+    back(val){
+      this.$emit('pageHandler',val , 'back')
+    }
+  },
+  watch:{
+    code:function(newValue,oldValue){
+      let tempValue=''
+      for(let i=0;i<newValue.length;i++){
+        if(i==5){
+          console.log(i)
+          break
+        }
+        if(newValue[i]){
+          tempValue=tempValue+newValue[i]
+        }
+      }
+      this.smsCode=tempValue
+      let m=tempValue.split("")
+      let location=0
+      for(let i=0;i<newValue.length;i++){
+        if(m[i]&&i<5){
+          location++
+          newValue[i]=m[i]
+        }else{
+          newValue[i]=''
+        }
+      }
+      if(location<1){
+        location=1
+      }else if(location>5){
+        location=5
+      }
+      document.getElementById(this.codeId[location-1]).focus()
+    },
+
+    timerEnabled(value) {
+      if (value) {
+        setTimeout(() => {
+          this.timerCount--;
+        }, 1000);
+      }
+    },
+
+    timerCount: {
+      handler(value) {
+
+        if (value > 0 && this.timerEnabled) {
+          setTimeout(() => {
+            this.timerCount--;
+          }, 1000);
+        }else{
+          this.timerEnabled=false
+        }
+      },
+      immediate: true // This ensures the watcher is triggered upon creation
     }
   },
   created () {
