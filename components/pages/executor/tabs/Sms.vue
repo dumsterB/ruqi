@@ -16,10 +16,10 @@
         <input id="forth" class="inputStyle" placeholder="-" v-model="code[3]"  type="text"/>
         <input id="fifth"class="inputStyle" placeholder="-" v-model="code[4]"  type="text"/>
         </div>
-      <p class="mt-10 text-grey" v-if="timerEnabled">Выслать код заново можно будет через    {{ timerCount }} секунд.</p>
-      <v-btn elevation="0" class="mt-10" @click="smsHandler" v-if="!timerEnabled">Выслать код заново</v-btn>
+      <p class="mt-10 text-grey" v-if="countDown > 1">Выслать код заново можно будет через    {{ countDown }} секунд.</p>
+      <v-btn elevation="0" class="mt-10" @click="smsHandler" v-else>Выслать код заново</v-btn>
       <div class="mt-10">
-        <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
+        <v-btn  elevation="0" class="btn-secondary" @click="back(0)"> <span class="btn-title">Назад</span> </v-btn>
         <v-btn dark elevation="0" class="btn-primary" @click="next(2)"><span class="btn-title">Далее</span> </v-btn>
       </div>
     </v-container>
@@ -50,14 +50,22 @@ export default {
       codeId:['first','second','third','forth','fifth'],
       interval:0,
       timerEnabled: true,
-      timerCount: 10,
+      countDown: 10
     }
   },
   methods:{
     ...mapActions('executor',['confirmPassword']),
+    countDownTimer () {
+      if (this.countDown > 0) {
+        setTimeout(() => {
+          this.countDown -= 1
+          this.countDownTimer()
+        }, 1000)
+      }
+    },
     smsHandler(){
-      this.timerEnabled = true
-      this.timerCount = 10
+      this.countDown = 10
+      this.countDownTimer()
     },
     next(val){
       this.$emit('pageHandler',val)
@@ -74,6 +82,9 @@ export default {
         }
         this.confirmPassword(obj)
       }
+    },
+    back(val){
+      this.$emit('pageHandler',val , 'back')
     }
   },
   watch:{
@@ -125,14 +136,12 @@ export default {
         }else{
           this.timerEnabled=false
         }
-
       },
       immediate: true // This ensures the watcher is triggered upon creation
     }
-
   },
-  mounted(){
-
+  created () {
+    this.countDownTimer()
   }
 }
 </script>

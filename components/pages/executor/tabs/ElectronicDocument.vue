@@ -41,7 +41,7 @@
         <img src="@/assets/img/file_pdf.svg" alt=""> <span class="primary-text">Cоглашение на обмен персональными данными и документами посредством ЭЦП</span>
       </div>
       <v-btn dark elevation="0" class="btn-primary" @click="next(4)"><span class="btn-title">принимаю условия</span> </v-btn>
-      <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
+      <v-btn  elevation="0" class="btn-secondary" @click="next(2)"> <span class="btn-title">Назад</span> </v-btn>
     </div>
   </v-container>
 </div>
@@ -53,6 +53,9 @@ export default {
   methods:{
     next(value){
       this.$emit('pageHandler',value)
+    },
+    back(val){
+      this.$emit('pageHandler',val , 'back')
     }
   }
 }
