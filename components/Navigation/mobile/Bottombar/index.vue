@@ -92,7 +92,14 @@ export default {
   bottom: 0;
   width: 100%;
   z-index: 100;
-  display: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 5px;
 
   &-panel {
     box-sizing: border-box;
@@ -141,17 +148,6 @@ export default {
         width: 45px;
       }
     }
-  }
-
-  @media screen and (max-width: 1024px) {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-    padding: 5px;
   }
 }
 </style>

@@ -2,11 +2,10 @@
 .rq-home-executor
   .mobile
     .mobile__header
-      .mobile__header-title
-        .mobile__header-title-text Поиск работы
-
-      mSearchLine.mobile__header-search
-      mContentDisplayController.mobile__header-display-ctrl
+      .mobile__header-container
+        mUserbar.mobile__header-userbar
+        .mobile__header-widgetbar
+        mContentDisplayController.mobile__header-display-ctrl
 
   .desktop
     Userbar.desktop-userbar
@@ -21,9 +20,12 @@ import ContentDisplayController from '@/components/pages/tasks/executor/search/C
 import mContentDisplayController from '@/components/pages/tasks/executor/search/ContentDisplayController/mobile';
 import TasksFilter from '@/components/pages/tasks/executor/search/TasksFilter/desktop';
 import mTasksFilter from '@/components/pages/tasks/executor/search/TasksFilter/mobile';
-import TasksList from './TasksList';
-import Userbar from './Userbar';
 import mSearchLine from '@/components/pages/tasks/executor/search/SearchLine';
+
+import TasksList from './TasksList';
+import Userbar from './Userbar/desktop';
+import mUserbar from './Userbar/mobile';
+
 
 export default {
   components: {
@@ -31,9 +33,10 @@ export default {
     mContentDisplayController,
     TasksFilter,
     mTasksFilter,
+    mSearchLine,
     TasksList,
     Userbar,
-    mSearchLine,
+    mUserbar,
   },
 
   props: {},
@@ -92,6 +95,16 @@ export default {
       padding-top: 16px;
       padding-bottom: 32px;
 
+      &-container {
+        @media screen and (min-width: 370px) {
+          width: 344px;
+        }
+
+        @media screen and (max-width: 370px) {
+          width: 315px;
+        }
+      }
+
       &-title {
         &-text {
           font-family: 'Source Sans Pro';
@@ -102,12 +115,12 @@ export default {
           color: #FFFFFF;
         }
 
-        @media screen and (min-width: 370px) {
-          width: 344px;
-        }
-        @media screen and (max-width: 370px) {
-          width: 315px;
-        }
+        // @media screen and (min-width: 370px) {
+        //   width: 344px;
+        // }
+        // @media screen and (max-width: 370px) {
+        //   width: 315px;
+        // }
       }
 
       &-search {

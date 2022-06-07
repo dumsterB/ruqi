@@ -7,31 +7,34 @@
           width="98"
           color="blue"
           app
-          mobile-breakpoint="1025"
+          mobile-breakpoint="769"
         )
           div(class="wrapper-main-menu d-flex flex-column justify-space-between")
             Navbar
             Settingsnav
         div
-          Topbar
+          Topbar(v-if="isSmallScreen || isLargeScreen || isExtraLargeScreen")
+          mAppbar(v-if="isMobile || isTablet")
 
           .content
             Nuxt
             Alert(:requestSuccess="requestSuccess")
 
-          Bottombar
+          Bottombar(v-if="isMobile || isTablet")
 </template>
 
 <script>
 import { mapActions } from "vuex";
 import Topbar from '@/components/Topbar/index.vue';
 import Bottombar from '@/components/Navigation/mobile/Bottombar';
+import mAppbar from '@/components/Navigation/mobile/Appbar';
 
 export default {
   name: "default",
   components: {
     Topbar,
     Bottombar,
+    mAppbar,
   },
 
   data() {
@@ -46,6 +49,21 @@ export default {
     },
     authorized() {
       return this.$store.getters["user/userAuthorizationStatus"];
+    },
+    isMobile() {
+      return this.$store.getters["platformDetection/IS_MOBILE"];
+    },
+    isTablet() {
+      return this.$store.getters["platformDetection/IS_TABLET"];
+    },
+    isSmallScreen() {
+      return this.$store.getters["platformDetection/IS_SMALL_SCREEN"];
+    },
+    isLargeScreen() {
+      return this.$store.getters["platformDetection/IS_LARGE_SCREEN"];
+    },
+    isExtraLargeScreen() {
+      return this.$store.getters["platformDetection/IS_EXTRA_LARGE_SCREEN"];
     },
   },
 
@@ -88,6 +106,11 @@ export default {
       'initBreadcrumbs',
     ]),
 
+    /* HANDLERS */
+    resize(event) {
+      console.debug("resize", event.target.outerWidth);
+    },
+
     /* HELPERS */
     isLoginPage() {
       return this.$route.name === "signin";
@@ -95,15 +118,19 @@ export default {
   },
 
   async created() {
+    this.$platformDetection.initPlatforms({ width: Number(window.outerWidth) });
+    this.$platformDetection.onSubscribe();
     await this.$socket.setQuery({
       ...this.$socket.query,
       token: JSON.parse(localStorage.getItem('ruqi_auth_data')).token,
     });
     this.$socket.connect();
   },
+  mounted() { },
+  beforeUnmount() {
+    console.debug("beforeUnmount");
 
-  mounted() {
-    //this.initBreadcrumbs(this.$route.fullPath);
+    this.$platformDetection.offSubscribe();
   },
 };
 </script>
@@ -158,9 +185,10 @@ html {
     background-color: #f2faff;
   }
 }
+
 /* MIXINS STYLES END */
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 768px) {
   .ruqi {
     padding: 0;
 
