@@ -237,7 +237,7 @@ export default {
 
   },
   methods: {
-    ...mapActions('specializations', ['fetch',]),
+    ...mapActions('specializations', ['fetchSpecializations',]),
     ...mapActions('service_id', ['createService',]),
     ...mapActions('service_id', ['putService',]),
     ...mapActions('service_id', ['fetchServiceId',]),
@@ -317,7 +317,7 @@ export default {
   },
   async created() {
 
-    await this.fetch();
+    await this.fetchSpecializations();
     this.meta.meta_object_service[0].params.options = this.specializations;
     await this.fetchServiceId({objectId: this.object_uuid, ServiceId: this.service_uuid});
 

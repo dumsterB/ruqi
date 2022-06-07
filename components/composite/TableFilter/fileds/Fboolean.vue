@@ -29,8 +29,8 @@ export default {
       new_value: '',
     }
   },
-  created() {
-   // this.new_value = this.params.value;
+  mounted() {
+    //this.new_value = this.params.value;
   },
   watch: {
     params: {

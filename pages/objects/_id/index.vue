@@ -64,7 +64,12 @@
                     v-icon mdi-plus
                     span добавить услугу
 
-                  TableFilter.ml-8(v-if="service_filters.length" :fields="service_filters" :headers="headers_services_filter" @applyFilter="applyFilter('fetchServiceParams', 'options', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
+                  TableFilter.ml-8(v-if="service_filters.length"
+                    :fields="service_filters"
+                    :headers="headers_services_filter"
+                    name="filter_services"
+                    :page_uuid="object_id.uuid"
+                    @applyFilter="applyFilter('fetchServiceParams', 'options', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
 
                 .filter-row-right
                   .container-object-nds
@@ -171,7 +176,12 @@
                     v-icon mdi-plus
                     span добавить вакансию
 
-                  TableFilter.ml-8.mr-5(v-if="vacancy_filters.length" :fields="vacancy_filters" :headers="headers_vacancies_filter" @applyFilter="applyFilter('fetchVacancyParams', 'headerOptionsVacancy', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
+                  TableFilter.ml-8.mr-5(v-if="vacancy_filters.length"
+                    :fields="vacancy_filters"
+                    :headers="headers_vacancies_filter"
+                    name="filter_vacancies"
+                    :page_uuid="object_id.uuid"
+                    @applyFilter="applyFilter('fetchVacancyParams', 'headerOptionsVacancy', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
 
                 .filter-row-right
                   .container-object-nds
@@ -259,7 +269,12 @@
                     v-icon mdi-plus
                     span новая заявка
 
-                  TableFilter.ml-8.mr-5(:fields="task_filters" :headers="headers_tasks_filter" @applyFilter="applyFilter('fetchTaskParams', 'headerOptionsTask', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
+                  TableFilter.ml-8.mr-5(v-if="task_filters.length"
+                    :fields="task_filters"
+                    :headers="headers_tasks_filter"
+                    name="filter_tasks"
+                    :page_uuid="object_id.uuid"
+                    @applyFilter="applyFilter('fetchTaskParams', 'headerOptionsTask', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
 
 
 

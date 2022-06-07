@@ -21,7 +21,7 @@
               .header Фильтр
               .actions
                 a(@click.prevent="clearFields") Очистить все
-                a(@click.prevent="applyFilter") Сохранить
+                a(@click.prevent="saveFilter") Сохранить
 
             .filter-content
               v-form(ref="form" v-model="valid" lazy-validation)
@@ -52,7 +52,7 @@
             .filter-footer.d-flex.justify-space-between.pa-6
               v-btn.add(text height="48" outlined @click="cancelFilter")
                 span отмена
-              v-btn.btn-blue.add.ml-4(text height="48" outlined @click="applyFilter")
+              v-btn.btn-blue.add.ml-4(text height="48" outlined @click="applyFilter(false)")
                 span применить
 
     Search(:searchText="searchText" @updateSearchText="updateSearchText" @blurSearch="$emit('blurSearch')" @focusSearch="$emit('focusSearch')")
@@ -78,6 +78,14 @@ export default {
       type: Array,
       default: [],
     },
+    name: {
+      type: String,
+      default: 'default',
+    },
+    page_uuid: {
+      type: String,
+      default: '',
+    },
   },
   components: {Fstring, Flist, Frange, Fboolean, Search},
   data() {
@@ -95,7 +103,9 @@ export default {
     }
   },
   computed: {
-
+    user() {
+      return this.$store.getters["user/user"];
+    },
   },
   methods: {
     nameComponent(type) {
@@ -109,6 +119,7 @@ export default {
         return 'Fstring';
       }
     },
+
     fieldHeader(field) {
 
       let header = this.headers.filter(obj => obj.field == field),
@@ -124,11 +135,28 @@ export default {
 
       return translit_header;
     },
+
     updateFiled(field, value, index, array) {
       this[array][index].value = value;
       console.log('field, value, index ---- ', field, value, index);
     },
-    applyFilter() {
+
+    saveFilter() {
+
+      const filters = {
+        "selected_fields": this.selected_fields,
+        "check_fields": this.check_fields,
+        "user_uuid": this.user.uuid,
+        "page_uuid": this.page_uuid,
+      };
+
+      localStorage.setItem(this.name, JSON.stringify(filters));
+
+      this.applyFilter(true);
+
+    },
+
+    applyFilter(isClosePopup) {
 
       const sentFilter = [];
 
@@ -169,13 +197,14 @@ export default {
 
       this.$emit('applyFilter', sentFilter, this.searchText);
 
-      this.isOpened = false;
+      this.isOpened = isClosePopup;
 
       if (sentFilter.length) {
         this.isApplyFilter = true;
       }
 
     },
+
     clearFields() {
       this.$refs.form.reset();
       this.panel = [];
@@ -184,7 +213,9 @@ export default {
       }
       this.$emit('applyFilter', [], this.searchText);
       this.isApplyFilter = false;
+      localStorage.removeItem(this.name);
     },
+
     cancelFilter() {
 
       this.selected_fields = [];
@@ -208,6 +239,7 @@ export default {
 
       this.isOpened = false;
     },
+
     defaultValue(type) {
       let defaultValue = null;
       if (type == 'range') {
@@ -217,9 +249,10 @@ export default {
       }
       return defaultValue;
     },
+
     updateSearchText(value) {
       this.searchText = value;
-      this.applyFilter();
+      this.applyFilter(false);
     },
   },
   async created() {
@@ -249,8 +282,20 @@ export default {
       }
     }
 
-
   },
+  mounted() {
+    let localFilter = localStorage.getItem(this.name)
+    let objectLocalFilter = JSON.parse(localFilter);
+
+    if (objectLocalFilter && objectLocalFilter.user_uuid == this.user.uuid && objectLocalFilter.page_uuid == this.page_uuid) {
+      this.selected_fields = objectLocalFilter.selected_fields;
+      this.check_fields = objectLocalFilter.check_fields;
+
+      this.isApplyFilter = true;
+
+      this.applyFilter(false);
+    }
+  }
 }
 </script>
 
