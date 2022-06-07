@@ -118,6 +118,7 @@ export default {
   },
 
   async created() {
+    this.$platformDetection.initPlatforms({ width: Number(window.outerWidth) });
     this.$platformDetection.onSubscribe();
     await this.$socket.setQuery({
       ...this.$socket.query,
