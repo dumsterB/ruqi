@@ -8,7 +8,7 @@ export const getters = {
 
 
 export const actions = {
-  async fetch({commit}) {
+  async fetchSpecializations({commit}) {
 
     const specializations = await this.$axios.get('/dictionary/specializations', {
       headers: {

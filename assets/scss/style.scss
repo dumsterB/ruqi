@@ -1045,7 +1045,7 @@ h1.large {
 }
 
 .table-list-style-minify {
-  margin-bottom: 32px;
+  margin-bottom: 48px;
 
   .v-data-table.theme--light {
     background: transparent;
@@ -1066,8 +1066,8 @@ h1.large {
           th {
             padding: 5px 12px !important;
             background: transparent;
-            border-top: 1px solid $table-border-color;
-            border-bottom: 1px solid $table-border-color;
+            border-top: 1px solid #E0E0E0;
+            border-bottom: 1px solid #E0E0E0;
             height: 40px;
             position: relative;
 
@@ -1122,6 +1122,7 @@ h1.large {
           td {
             padding: 5px 12px !important;
             white-space: nowrap;
+            border-bottom: 1px solid #F7F7F7 !important;
 
             &:first-child {
               width: 30px;
@@ -1187,6 +1188,7 @@ h1.large {
     border: 1px solid #E2E4E5;
     box-shadow: 0 4px 25px #EDEEF1;
     border-radius: 10px;
+    background: #fff;
 
     .rate-list-item {
       width: 215px;
@@ -1255,6 +1257,10 @@ h1.large {
       }
     }
 
+  }
+
+  &.rate-menu{
+    border-radius: 10px;
   }
 }
 
@@ -1431,6 +1437,13 @@ h1.large {
     .v-icon {
       margin-right: 8px;
     }
+  }
+
+  .remove-field{
+    display: inline-block;
+    font-weight: 600;
+    font-size: 14px;
+    color: #EB4D3D;
   }
 
 }

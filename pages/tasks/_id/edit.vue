@@ -1,161 +1,114 @@
-<template>
-  <div>
-    <Header :content="request_id.name" :size="title_size" :isnew="false" :isback="true"/>
-    <v-tabs
-      v-model="tab"
-      class="form-tabs"
-    >
-      <v-tab v-for="(item, index) in tabs_list"
-             :key="index">
-        {{ item }}
-      </v-tab>
-    </v-tabs>
-    <div class="wrap-form">
-      <v-form
-        ref="form"
-        v-model="valid"
-        lazy-validation
-      >
-        <v-window v-model="tab">
-          <v-tab-item eager>
-            <v-form ref="form_part_0" v-model="valid" lazy-validation>
-              <div class="form-part">
-                <div class="form-part-title">
-                  Объект
-                </div>
-                <FormBuilder :meta="meta.meta_object_name" @updateFiled="updateFiled"/>
-              </div>
-              <div class="form-part">
-                <div class="form-part-title">
-                  Информация о заявке
-                </div>
-                <div class="form-part-description">
-                  Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное
-                  расположение.
-                </div>
-                <FormBuilder :meta="meta.meta_object_info" @updateFiled="updateFiled"/>
-              </div>
-              <div class="form-part">
+<template lang="pug">
+  .add-task
+    PageHeader(:header_text="request_id.name" button_text="Сохранить изменения" :disabled="disabled" @createAction = "updateTask(false)" @closeAction="$router.push('/tasks/')")
 
-                <div class="form-part-title">
-                  Расположение
-                </div>
-                <div class="form-part-description">
-                  Краткое описание что сюда писать
-                </div>
-                <FormBuilder :meta="meta.meta_object_location" @updateFiled="updateFiled"/>
-              </div>
-            </v-form>
-          </v-tab-item>
-          <v-tab-item eager>
-            <v-form ref="form_part_1" v-model="valid" lazy-validation>
-              <div class="form-part min-padding">
-                <div class="form-part-title">
-                  Виды работ и оплата
-                </div>
-                <div class="form-part-description">
-                  Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное
-                  расположение.
-                </div>
-                <v-row class="ma-0">
-                  <v-col
-                    cols="12"
-                    lg="5"
-                    class="pl-0 pb-0"
-                  >
-                    <div class="form-part-label">Наименование работ</div>
+    v-container.object-info-container
+      v-row
+        v-col.pa-6(cols="12")
+          .object-info
+            v-row.object-info-row-rate
+              v-col(cols="12")
+                .wrap-form
+                  v-form(ref="form_part_static" v-model="valid" lazy-validation)
+                    .form-part-single
+                      FormBuilder(:meta="meta.meta_object_name" @updateFiled="updateFiled")
 
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    lg="5"
-                    class="pl-0 pb-0"
-                  >
-                    <div class="form-part-label">Стоимость</div>
+                  v-divider.my-8
 
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    lg="2"
-                    class="pl-0 pb-0"
-                  >
-                    <div class="form-part-label">Нужно человек</div>
+            v-row.d-flex.pa-4.action-row.align-center(no-gutters)
+              v-col(cols="12")
+                v-tabs.form-tabs-minify.mt-1(v-model="tab" hide-slider, height="36" )
+                  v-tab(v-for="(item, index) in tabs_list", :key="index" @click="selectTab(tab, index)" ) {{ item }}
 
-                  </v-col>
+            v-row.object-info-row-rate
+              v-col(cols="12")
+                .wrap-form
+                  v-window(v-model="tab")
+                    v-tab-item(eager)
+                      v-form(ref="form_part_0" v-model="valid" lazy-validation)
+                        .form-part-single
+                          FormBuilder(:meta="meta.meta_object_info" @updateFiled="updateFiled")
 
-                  <v-row class="d-flex w-100">
-                    <v-col cols="12" :lg="item.col"
-                           v-for="(item, index) in meta.meta_object_pay" :key="index">
-                      <div class="form-part-label" v-if="item.label">{{ item.label }}</div>
-                      <div class="d-flex w-100">
-                        <FormBuilder :meta="meta.meta_object_pay[index]" @removeItem="removeItem"
-                                     @updateFiled="updateFiledinArray(index, ...arguments)"/>
-                        <a href="#" @click.prevent="removeItem(index, 'meta_object_pay')" class="remove-item">
-                          <img src="/img/ico_close.svg" alt="Удалить">
-                        </a>
-                      </div>
-                    </v-col>
-                  </v-row>
+                    v-tab-item(eager)
+                      v-form(ref="form_part_1" v-model="valid" lazy-validation)
+                        .form-part-single
+                          .form-part-title Вакансии и ставки
+                          .form-part-description Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное расположение.
 
-                  <a href="#" @click.prevent="addTypeWork" class="add_link">Добавить вид работ</a>
-                </v-row>
+                          v-row.flex-column
+                            v-col(:cols="item.col" v-for="(item, index) in meta.meta_object_pay" :key="index")
+                              .ruqi-rate-task
+                                v-row.d-flex.justify-space-between
+                                  v-col(cols="6")
+                                    .form-part-label Наименование работ
+                                  v-col.text-right(cols="6")
+                                    .form-part-label Нужно человек
 
-              </div>
-            </v-form>
-          </v-tab-item>
-          <v-tab-item eager>
-            <v-form ref="form_part_2" v-model="valid" lazy-validation>
-              <div class="form-part form-part-contact"
-                   v-for="(item, index) in meta.meta_object_contact"
-                   :key="index">
-                <a v-show="index != 0" href="#" @click.prevent="removeItem(index, 'meta_object_contact')"
-                   class="remove-item">
-                  <img src="/img/ico_close.svg" alt="Удалить">
-                </a>
-                <FormBuilder :meta="item" @updateFiled="updateFiledinArray(index, ...arguments)"/>
-              </div>
-              <AddFormPart :text="addContactPersText" @addFormPart="addFormPart"/>
-            </v-form>
-          </v-tab-item>
-          <v-tab-item eager>
-            <v-form ref="form_part_3" v-model="valid" lazy-validation>
-              <div class="form-part">
-                <div class="form-part-label">Диспетчеры</div>
-                <FormBuilder :meta="meta.meta_object_responsible" @removeItem="removeItem"
-                             @updateFiled="updateFiledResp"/>
-                <a href="#" @click.prevent="addResponsible('responsible')" class="add_link">Добавить диспетчера</a>
-              </div>
-            </v-form>
-          </v-tab-item>
+                                v-row
+                                  v-col(cols="12")
+                                    FormBuilder(:meta="meta.meta_object_pay[index]" @removeItem="removeItem" @updateFiled="updateFiledinArray(index, ...arguments)")
 
-          <FNavigation :indexTab="tab" :nextButtonsText="nextButtonsText" @nextFromButton="nextFromButton"
-                       @prevFromButton="prevFromButton"/>
-        </v-window>
-      </v-form>
-    </div>
-  </div>
+                                v-row
+                                  v-col(cols="12")
+                                    RateTask(:rate="rate")
+
+                    v-tab-item(eager)
+                      v-form(ref="form_part_2" v-model="valid" lazy-validation)
+                        .form-part-single
+                          .form-part-title Контакты
+                          .form-part-description Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное расположение.
+                          v-divider.my-6
+
+                          div(v-for="(item, index) in meta.meta_object_contact"
+                            :key="index")
+                            FormBuilder(:meta="item" @updateFiled="updateFiledinArray(index, ...arguments)")
+
+                            a.remove-field.pt-6( @click.prevent="removeItem(index, 'meta_object_contact')") Удалить контактное лицо
+
+                            v-divider.my-8(v-if="meta.meta_object_contact.length")
+
+                          a.add-field.my-8(@click.prevent="addFormPart")
+                            v-icon(color="#0082DE" size="24") mdi-plus-circle
+                            span Добавить контактное лицо
+
+                    v-tab-item(eager)
+                      v-form(ref="form_part_3" v-model="valid" lazy-validation)
+                        .form-part-single
+                          .form-part-title Ответственные
+                          .form-part-description Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное расположение.
+                          v-divider.my-6
+
+                          .form-part-label ФИО
+
+                          FormBuilder(:meta="meta.meta_object_responsible" @removeItem="removeItem" @updateFiled="updateFiledResp")
+
+                          a.add-field.my-8(@click.prevent="addResponsible('responsible')")
+                            v-icon(color="#0082DE" size="24") mdi-plus-circle
+                            span Добавить ответственного
+
+                  v-btn.btn-blue.mt-6(text :disabled="disabled" height="48" outlined  @click="updateTask(false)") Cохранить изменения
+
+    Confirm(
+      :isConfirmModal="isConfirmModal",
+      :content="confirmModal",
+      @confirmRemove="confirmTab"
+    )
+
+
 </template>
 
 <script>
 
 import Vue from "vue";
 import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
+import PageHeader from "@/components/composite/PageCreateEditHeader";
+import RateTask from "@/components/composite/RateTask";
 
 export default {
-  async fetch({store}) {
-    if (store.getters['objects/objects'].length === 0) {
-      await store.dispatch('objects/fetchObjects')
-    }
-    if (store.getters['specializations/specializations'].length === 0) {
-      await store.dispatch('specializations/fetch')
-    }
-    if (store.getters['dispatchers/dispatchers'].length === 0) {
-      await store.dispatch('dispatchers/fetch')
-    }
-  },
   meta: {
     title: 'Редактирование заявки'
   },
+  components: {PageHeader, RateTask},
   data() {
     return {
       formValues: {},
@@ -163,58 +116,41 @@ export default {
       title_create: false,
       title_page_create: '',
       tabs_list: [
-        'Общее', 'Оплата и ставки', 'Контакты', 'Ответственные'
+        'Общее', 'Вакансии и ставки', 'Контакты', 'Ответственные'
       ],
       tab: null,
-      nextButtonsText: [
-        'Указать стоимость работ',
-        'указать контактных лиц',
-        'Добавить ответственных',
-        'Сохранить'
-      ],
+      tabIndexReserved: null,
       meta: {
         meta_object_name: [
           {
             type: 'FTypeSelectUIID',
             label: 'Наименование объекта',
-            col: 12,
+            col: 9,
             id: 'object_name',
             name: 'object_name',
             params: {
               options: [],
               item_text: 'name',
+              label: 'Не выбрано'
             },
             validation: 'required',
             value: ''
           },
-        ],
-        meta_object_info: [
           {
-            type: 'FTypeText',
-            label: 'Название заявки',
-            col: 12,
-            id: 'object_id',
-            name: 'object_id',
-            validation: ['required'],
-            value: ''
-          },
-          {
-            type: 'FTypeSelectUIID',
-            label: 'Категория',
-            col: 12,
-            id: 'object_cat',
-            name: 'object_cat',
+            type: 'FTypeNote',
+            label: '',
+            col: 10,
+            name: 'object_place_note',
             params: {
-              options: [],
-              item_text: 'name',
+              label: 'Место проведения работ'
             },
-            validation: 'required',
+            validation: [],
             value: ''
           },
           {
             type: 'FTypeDate',
             label: 'Начало работ',
-            col: 4,
+            col: 3,
             id: 'object_start_date',
             name: 'object_start_date',
             validation: 'required',
@@ -223,16 +159,52 @@ export default {
           {
             type: 'FTypeDate',
             label: 'Окончание работ',
-            col: 4,
+            col: 3,
             id: 'object_end_date',
             name: 'object_end_date',
             validation: 'required',
             value: ''
           },
           {
+            type: 'FTypeText',
+            label: 'График работ',
+            col: 3,
+            name: 'object_schedule',
+            validation: [],
+            value: '',
+            params: {
+              readonly: true
+            },
+          },
+        ],
+        meta_object_info: [
+          {
+            type: 'FTypeText',
+            label: 'Общедоступное название заявки',
+            col: 9,
+            id: 'object_id',
+            name: 'object_id',
+            validation: ['required'],
+            value: ''
+          },
+          {
+            type: 'FTypeSelectUIID',
+            label: 'Категория',
+            col: 7,
+            id: 'object_cat',
+            name: 'object_cat',
+            params: {
+              options: [],
+              item_text: 'name',
+              label: 'Не выбрано'
+            },
+            validation: 'required',
+            value: ''
+          },
+          {
             type: 'FTypeSelect',
             label: 'Тип смены',
-            col: 12,
+            col: 7,
             id: 'object_work_shift',
             name: 'object_work_shift',
             params: {
@@ -240,83 +212,60 @@ export default {
                 'Дневная',
                 'Ночная',
               ],
+              label: 'Не выбрано'
             },
             value: ''
           },
           {
             type: 'FTypeTextarea',
             label: 'Описание',
-            col: 12,
+            col: 9,
             id: 'object_desc',
             name: 'object_desc',
             value: ''
           },
 
         ],
-        meta_object_location: [
-          {
-            type: 'FTypeText',
-            label: 'Область, край',
-            col: 12,
-            id: 'object_region',
-            name: 'object_region',
-            validation: ['required'],
-            value: ''
-          },
-          {
-            type: 'FTypeText',
-            label: 'Город',
-            col: 12,
-            id: 'object_city',
-            name: 'object_city',
-            validation: ['required'],
-            value: ''
-          },
-          {
-            type: 'FTypeTextarea',
-            label: 'Предлагаемая схема проезда',
-            col: 12,
-            id: 'object_driving_directions',
-            name: 'object_driving_directions',
-            value: ''
-          },
-        ],
         meta_object_contact: [
           [
             {
               type: 'FTypeText',
               label: 'ФИО',
-              col: 12,
+              col: 9,
               id: 'object_contact_fio',
               name: 'object_contact_fio_0',
               validation: ['required'],
+              parent_array: 'meta_object_contact',
               value: ''
             },
             {
               type: 'FTypeText',
               label: 'Должность',
-              col: 12,
+              col: 9,
               id: 'object_contact_post',
               name: 'object_contact_post_0',
               validation: ['required'],
+              parent_array: 'meta_object_contact',
               value: ''
             },
             {
               type: 'FTypeText',
               label: 'Телефон',
-              col: 12,
+              col: 9,
               id: 'object_contact_phone',
               name: 'object_contact_phone_0',
               validation: ['required', 'phone'],
+              parent_array: 'meta_object_contact',
               value: ''
             },
             {
               type: 'FTypeText',
               label: 'Email',
-              col: 12,
+              col: 9,
               id: 'object_contact_email',
               name: 'object_contact_email_0',
               validation: ['required', 'email'],
+              parent_array: 'meta_object_contact',
               value: ''
             },
           ],
@@ -324,15 +273,16 @@ export default {
         meta_object_responsible: [
           {
             type: 'FTypeSelectUIID',
-            icon: 'mdi-account',
+            icon: '',
             label: '',
-            col: 12,
+            col: 9,
             id: 'object_resp',
             name: 'object_resp_0',
             remove: true,
             params: {
               options: [],
               item_text: 'fullname',
+              label: 'Не выбрано'
             },
             parent_array: 'meta_object_responsible',
             validation: 'required',
@@ -344,12 +294,13 @@ export default {
             {
               type: 'FTypeSelectUIID',
               label: '',
-              col: 5,
+              col: 8,
               name: 'object_pay_title_0',
               params: {
                 options: [],
                 item_text: 'name',
                 cost: [],
+                label: 'Не выбрано'
               },
               validation: 'required',
               value: '',
@@ -360,35 +311,7 @@ export default {
               type: 'FTypeText',
               label: '',
               icon: '',
-              col: 2,
-              name: 'object_pay_salary_0',
-              remove: false,
-              parent_array: 'meta_object_pay',
-              value: '',
-              params: {
-                readonly: true
-              },
-            },
-            {
-              type: 'FTypeSelect',
-              label: '',
-              col: 3,
-              name: 'object_pay_time_0',
-              params: {
-                options: [
-                  'за смену',
-                  'за час',
-                ],
-                readonly: true
-              },
-              parent_array: 'meta_object_pay',
-              value: '',
-            },
-            {
-              type: 'FTypeText',
-              label: '',
-              icon: '',
-              col: 2,
+              col: 4,
               id: 'object_pay_cw_0',
               name: 'object_pay_cw_0',
               remove: false,
@@ -403,14 +326,32 @@ export default {
       addContactPersText: 'Добавить контактное лицо',
       formHasErrors: false,
       nameCounter: 1,
+      disabled: true,
+      rate: {
+        rate: '',
+        end_date: '-',
+        rates: []
+      },
+      isConfirmModal: false,
+      confirmModal: {
+        title: "Внимание!",
+        description: "Есть несохраненные изменения. Хотите сохранить изменения и перейти к следующей вкладке?",
+        text_btn_ok: "Да",
+        text_btn_cancel: "Нет",
+      },
     }
   },
   computed: {
+    ...mapGetters("breadcrumbs", ["BREADCRUMBS"]),
+
     request_id() {
       return this.$store.getters['request_id/request_id']
     },
     objects() {
       return this.$store.getters['objects/objects']
+    },
+    vacancies() {
+      return this.$store.getters['object_id/object_id_vacancies']
     },
     specializations() {
       return this.$store.getters['specializations/specializations']
@@ -418,11 +359,37 @@ export default {
     dispatchers() {
       return this.$store.getters['dispatchers/dispatchers']
     },
-    professions() {
-      console.log('task - professions', this.$store.getters['request_id/request_id_professions'])
-      return this.$store.getters['request_id/request_id_professions']
-    },
     postBody() {
+
+      let postBody = {
+        "uuid": this.request_id.uuid,
+        "name": this.formValues.object_id,
+        "description": this.formValues.object_desc,
+        "start_date": this.formValues.object_start_date,
+        "end_date": this.formValues.object_end_date,
+        "object": this.formValues.object_name,
+        "specialization": this.formValues.object_cat,
+        "shift": this.formValues.object_work_shift
+      };
+
+      return postBody;
+    },
+    postBodyWorks() {
+      let works = [];
+
+      for (let i = 0; i < this.meta.meta_object_pay.length; i++) {
+        let index_name = this.meta.meta_object_pay[i][0].name.substr(17, 18);
+        works.push(
+          {
+            "uuid": this.formValues['object_pay_title_' + index_name],
+            "requires_people": this.formValues['object_pay_cw_' + index_name],
+          }
+        )
+      }
+
+      return works;
+    },
+    postBodyContacts() {
 
       let contacts = [];
       for (let i = 0; i < this.meta.meta_object_contact.length; i++) {
@@ -437,6 +404,10 @@ export default {
         )
       }
 
+      return contacts;
+    },
+    postBodyDispatchers() {
+
       let dispatchers = [];
       for (let i = 0; i < this.meta.meta_object_responsible.length; i++) {
         let name = this.meta.meta_object_responsible[i].name;
@@ -445,46 +416,37 @@ export default {
         )
       }
 
-      let works = [];
-      for (let i = 0; i < this.meta.meta_object_pay.length; i++) {
-        let index_name = this.meta.meta_object_pay[i][0].name.substr(17, 18);
-        works.push(
-          {
-            "uuid": this.formValues['object_pay_title_' + index_name],
-            "payment": this.formValues['object_pay_salary_' + index_name],
-            "period": this.formValues['object_pay_time_' + index_name],
-            "requires_people": this.formValues['object_pay_cw_' + index_name],
-          }
-        )
-      }
-
-      let postBody = {
-        "uuid": this.request_id.uuid,
-        "name": this.formValues.object_id,
-        "description": this.formValues.object_desc,
-        "start_date": this.formValues.object_start_date,
-        "end_date": this.formValues.object_end_date,
-        "until_date": this.formValues.object_end_date,
-        "object": this.formValues.object_name,
-        "specialization": this.formValues.object_cat,
-        "region": this.formValues.object_region,
-        "city": this.formValues.object_city,
-        "schema": this.formValues.object_driving_directions,
-        "contacts": contacts,
-        "dispatchers": dispatchers,
-        "works": works
-      };
-      return postBody;
+      return dispatchers;
     },
+
   },
   methods: {
+    ...mapActions('request_id', ['fetchRequestId', 'putTaskWorks', 'putTaskContacts', 'putTaskDispatchers',]),
+    ...mapActions('requests', ['putRequest',]),
     ...mapActions('objects', ['fetchObjects',]),
     ...mapActions('specializations', ['fetchSpecializations',]),
     ...mapActions('dispatchers', ['fetchDispatchers',]),
-    ...mapActions('requests', ['putRequest',]),
-    ...mapActions('request_id', ['fetchRequestId',]),
-    ...mapActions('request_id', ['fetchRequestIdProfessions',]),
-    ...mapMutations('breadcrumbs', ["setBreadcrumbs",]),
+    ...mapActions('object_id', ['fetchObjectIdVacancies',]),
+    ...mapActions("breadcrumbs", ["initBreadcrumbs", "setBreadcrumbs"]),
+
+    selectTab(currentTab, nextTab) {
+      if (!this.disabled) {
+        this.isConfirmModal = true;
+        this.tabIndexReserved = nextTab;
+
+        this.$nextTick(() => {
+          this.tab = currentTab;
+        });
+      }
+    },
+
+    confirmTab(confirm) {
+      if (confirm) {
+        this.updateTask(true);
+      }
+
+      this.isConfirmModal = false;
+    },
 
     addResponsible(resp_name, isInit = false) {
       let flag = false;
@@ -504,9 +466,9 @@ export default {
       let dispatchers = this.dispatchers;
       this.meta.meta_object_responsible.push({
           type: 'FTypeSelectUIID',
-          icon: 'mdi-account',
+          icon: '',
           label: '',
-          col: 12,
+          col: 9,
           id: 'object_resp',
           name: 'object_resp_' + this.nameCounter++,
           remove: true,
@@ -520,6 +482,7 @@ export default {
         },
       );
     },
+
     addFormPart() {
       this.meta.meta_object_contact.push(
         [
@@ -567,133 +530,102 @@ export default {
       );
       this.nameCounter++;
     },
+
     removeItem(index, array) {
       if (index != 0 || this.meta[array].length > 1) {
         this.meta[array].splice(index, 1);
       }
     },
-    addTypeWork() {
-      this.meta.meta_object_pay.push(
-        [
-          {
-            type: 'FTypeSelectUIID',
-            label: '',
-            col: 5,
-            name: 'object_pay_title_' + this.nameCounter,
-            params: {
-              options: [],
-              item_text: 'name',
-              cost: []
-            },
-            validation: 'required',
-            value: '',
-            parent_array: 'meta_object_pay',
-            remove: false,
-          },
-          {
-            type: 'FTypeText',
-            label: '',
-            icon: '',
-            col: 2,
-            name: 'object_pay_salary_' + this.nameCounter,
-            remove: false,
-            parent_array: 'meta_object_pay',
-            value: '',
-            params: {
-              readonly: true
-            },
-          },
-          {
-            type: 'FTypeSelect',
-            label: '',
-            col: 3,
-            name: 'object_pay_time_' + this.nameCounter,
-            params: {
-              options: [
-                'за смену',
-                'за час',
-              ],
-              readonly: true
-            },
-            parent_array: 'meta_object_pay',
-            value: '',
-          },
-          {
-            type: 'FTypeText',
-            label: '',
-            icon: '',
-            col: 2,
-            name: 'object_pay_cw_' + this.nameCounter,
-            remove: false,
-            parent_array: 'meta_object_pay',
-            value: '',
-          },
-        ],
-      );
-      this.meta.meta_object_pay[this.meta.meta_object_pay.length - 1][0].params.options = this.professions;
-      this.nameCounter++;
-    },
-    nextFromButton() {
-      if (this.tab < this.tabs_list.length - 1) {
-        let formPart = 'form_part_' + this.tab;
-        this.$refs[formPart].validate();
 
-        this.$nextTick(() => {
-          if (this.valid) {
-            this.tab += 1;
-          } else {
-            let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
-            this.$vuetify.goTo(el);
+    updateTask(autosave) {
+
+      let formPart = 'form_part_' + this.tab;
+      this.$refs[formPart].validate();
+
+      this.$nextTick(() => {
+        if (this.valid) {
+
+          if (this.tab == 0) {
+            const newRequet = JSON.stringify(this.postBody);
+            console.log(newRequet);
+            this.putRequest({uuid: this.request_id.uuid, body: newRequet});
+          } else if (this.tab == 1) {
+            this.putTaskWorks({uuid: this.request_id.uuid, body: this.postBodyWorks});
+          } else if (this.tab == 2) {
+            this.putTaskContacts({uuid: this.request_id.uuid, body: this.postBodyContacts});
+          } else if (this.tab == 3) {
+            this.putTaskDispatchers({uuid: this.request_id.uuid, body: this.postBodyDispatchers});
           }
-        });
-      } else {
-        const newRequet = JSON.stringify(this.postBody);
-        console.log(newRequet);
-        this.putRequest({uuid: this.request_id.uuid, body: newRequet});
-      }
+
+          this.disabled = true;
+          if(autosave){
+            this.tab = this.tabIndexReserved;
+          }
+
+        } else {
+          let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
+          this.$vuetify.goTo(el);
+        }
+      });
+
     },
-    prevFromButton() {
-      this.tab -= 1;
-    },
+
     async updateFiled(field, value) {
       this.formValues[field] = value;
       console.log(field, value)
 
       if (field == 'object_name') {
-        await this.fetchRequestIdProfessions(value);
-        this.clearMetaObjectPay();
+        this.clearMetaObjectPay(value);
+        await this.fetchObjectIdVacancies({
+          requestId: value,
+          params: {settings: {"per_page": 1000}},
+          concat: false,
+          unit: false
+        });
       }
-    },
-    clearMetaObjectPay() {
-      this.meta.meta_object_pay.splice(1, this.meta.meta_object_pay.length - 1);
-      this.meta.meta_object_pay[0][0].params.options = this.professions;
-      this.meta.meta_object_pay[0][1].value = '';
-      this.meta.meta_object_pay[0][2].value = 'за смену';
-      this.meta.meta_object_pay[0][3].value = '';
+
+      this.disabled = false;
 
     },
+
+    clearMetaObjectPay(value) {
+      let object_info = this.objects.filter(obj => obj.uuid === value)[0];
+
+      this.meta.meta_object_name[1].value = object_info.region + ', ' + object_info.city;
+      this.meta.meta_object_name[4].value = object_info.schedule;
+    },
+
     updateFiledResp(field, value, index) {
       this.formValues[field] = value;
       this.meta.meta_object_responsible[index].value = value;
       console.log(field, value);
+
+      this.disabled = false;
+
     },
+
     updateFiledinArray(index_block, field, value, index, parent_array) {
       this.formValues[field] = value;
       this.meta[parent_array][index_block][index].value = value;
 
       if (field.includes('object_pay_title')) {
-        let profession_params = this.professions.filter(obj => obj.uuid === value);
-        this.meta[parent_array][index_block][1].value = profession_params[0].payment;
-        this.meta[parent_array][index_block][2].value = profession_params[0].period;
-
-        this.formValues['object_pay_salary_' + index_block] = profession_params[0].payment;
-        this.formValues['object_pay_time_' + index_block] = profession_params[0].period;
-
+        this.setRate(value);
       }
 
+      this.disabled = false;
+
       console.log(field, value);
+    },
+
+    setRate(uuid) {
+      let vacancy_params = this.vacancies.filter(obj => obj.uuid === uuid)[0];
+
+      this.rate.rate = vacancy_params.rate;
+      this.rate.end_date = vacancy_params.end_date;
+      this.rate.rates = vacancy_params.rates;
 
     },
+
     addFileds(length, method, args) {
       if (length > 1) {
         for (let i = 1; i < length; i++) {
@@ -702,24 +634,37 @@ export default {
       }
     }
   },
+  beforeDestroy() {
+    this.setBreadcrumbs({
+      crumbs: this.BREADCRUMBS.slice(0, this.BREADCRUMBS.length - 1),
+    });
+  },
   async created() {
 
     await this.fetchRequestId(this.$route.params.id);
-    await this.fetchRequestIdProfessions(this.request_id.object.uuid);
+    await this.fetchObjects();
+    await this.fetchSpecializations();
+    await this.fetchDispatchers();
+    await this.fetchObjectIdVacancies({
+      requestId: this.request_id.object.uuid,
+      params: {settings: {"per_page": 1000}},
+      concat: false,
+      unit: false
+    });
+
+    this.clearMetaObjectPay(this.request_id.object.uuid);
 
     this.$route.meta.pre_title = this.request_id.name;
-    this.setBreadcrumbs(this.$route.fullPath);
 
     let works_length = this.request_id.works.length,
       contact_length = this.request_id.contacts.length,
       dispatchers_length = this.request_id.dispatchers.length;
 
-    await this.addFileds(works_length, 'addTypeWork', '');
     await this.addFileds(contact_length, 'addFormPart', '');
     await this.addFileds(dispatchers_length, 'addResponsible', 'responsible');
 
     this.meta.meta_object_name[0].params.options = this.objects;
-    this.meta.meta_object_pay[0][0].params.options = this.professions;
+    this.meta.meta_object_pay[0][0].params.options = this.vacancies;
     this.meta.meta_object_name[0].value = this.request_id.object.uuid;
 
     this.meta.meta_object_info[1].params.options = this.specializations;
@@ -734,30 +679,23 @@ export default {
 
     let end_date = '';
     if (this.request_id.start_date != null) {
-      end_date = this.request_id.start_date.substring(0, 10) + ' ' + this.request_id.start_date.substring(11, 16);
+      end_date = this.request_id.end_date.substring(0, 10) + ' ' + this.request_id.end_date.substring(11, 16);
     }
 
-    this.meta.meta_object_info[2].value = start_date;
-    this.meta.meta_object_info[3].value = end_date;
+    this.meta.meta_object_name[2].value = start_date;
+    this.meta.meta_object_name[3].value = end_date;
 
     this.meta.meta_object_info[0].value = this.request_id.name;
-    this.meta.meta_object_info[5].value = this.request_id.description;
-
-    this.meta.meta_object_location[0].value = this.request_id.location.city;
-    this.meta.meta_object_location[1].value = this.request_id.location.region;
-    this.meta.meta_object_location[2].value = this.request_id.location.scheme;
+    this.meta.meta_object_info[3].value = this.request_id.description;
 
     for (let i = 0; i < works_length; i++) {
 
-      this.meta.meta_object_pay[i][0].params.options = this.professions;
+      if (this.request_id.works[i].uuid) {
+        this.meta.meta_object_pay[i][0].value = this.request_id.works[i].uuid;
+        this.meta.meta_object_pay[i][1].value = this.request_id.works[i].requires_people;
 
-      console.log(this.professions, this.request_id.works[i].uuid);
-
-      this.meta.meta_object_pay[i][0].value = this.request_id.works[i].uuid;
-      this.meta.meta_object_pay[i][1].value = this.request_id.works[i].payment;
-      this.meta.meta_object_pay[i][2].value = this.request_id.works[i].period;
-      this.meta.meta_object_pay[i][3].value = this.request_id.works[i].requires_people;
-
+        this.setRate(this.request_id.works[i].uuid);
+      }
     }
 
     for (let i = 0; i < contact_length; i++) {
@@ -777,9 +715,6 @@ export default {
     this.meta.meta_object_info.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     })
-    this.meta.meta_object_location.map(f => {
-      Vue.set(this.formValues, f.name, f.value);
-    })
     this.meta.meta_object_contact.map(subarray => subarray.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     }));
@@ -790,16 +725,46 @@ export default {
       Vue.set(this.formValues, f.name, f.value);
     }));
 
+    await this.initBreadcrumbs(this.$route.fullPath);
+
   },
   async mounted() {
-
+    this.disabled = true;
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 @import '../../../assets/scss/colors';
 
+.ruqi.page--tasks-id-edit {
+  padding: 0;
+  background: #F5F5F5;
+
+  .theme--light.v-application {
+    background: #F5F5F5;
+  }
+
+  .inner-object-page {
+    > .container {
+      padding: 0;
+    }
+  }
+
+  .v-main__wrap {
+    > .container {
+      padding: 0;
+    }
+  }
+
+  .ruqi-rate-task {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 520px;
+  }
+
+}
 
 </style>

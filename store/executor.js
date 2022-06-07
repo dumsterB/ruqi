@@ -1,13 +1,9 @@
 export const state = () => ({
   executors: [],
-  works:[],
   specializations:[],
 
 })
 export const getters = {
-    works(state) {
-        return state.works;
-    },
     specializations(state){
         return state.specializations
     }
@@ -90,34 +86,9 @@ export const actions = {
                 return error
             });
     },
-    async loadWorks({ commit }){
-        await this.$axios.get('dictionary/works')
-            .then((response) => {
-                commit('setWorks',response)
-                commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
-                setTimeout(function() {
-                    commit('response/removeSuccess', null, { root: true });
-                }, 2000);
-                return (response && response.data) || {};
-            })
-            .catch((error) => {
-                commit('response/setSuccess', {type: 'error', text: 'Заполните поля', }, {root: true});
-                setTimeout(function() {
-                    commit('response/removeSuccess', null, { root: true });
-                }, 3000);
-                console.log(error);
-                return error
-            });
-    },
-    
-
-
 }
 export const mutations = {
-    setWorks(state, payload) {
-        state.works = payload.data.data;
-    },
     setSpecializations(state,payload){
-        state.specializations = payload.data.data
+       state.specializations = payload.data.data
     }
 }

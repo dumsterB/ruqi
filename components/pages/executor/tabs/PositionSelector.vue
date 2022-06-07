@@ -8,15 +8,18 @@
     <v-expansion-panels flat >
       <v-expansion-panel
           class="panels"
-          v-for="(item,i) in 5"
+          v-for="(item,i) in specializations"
           :key="i"
       >
         <v-expansion-panel-header>
-          Item {{item}}
+           {{item.name}}
         </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <v-chip class="chip"> profesion + {{ item }}</v-chip>
-          <v-chip class="chip_active"> profesion + {{ item }}</v-chip>
+          <v-row>
+            <v-col v-for="(work ,i) of item.professions" :key="i">
+              <v-chip @click="setStatus(work)" :class="work.status === 'active' ? 'chip_active' : 'chip'"> {{work.name  }}</v-chip>
+            </v-col>
+          </v-row>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -59,26 +62,24 @@ export default {
   name: "PositionSelector",
   data(){
     return{
-
     }
   },
   methods:{
-    ...mapActions('executor',['loadWorks','loadSpecializations']),
+    ...mapActions('executor',['loadSpecializations']),
     next(value){
       this.$emit('pageHandler',value)
     },
+    setStatus(work){
+      console.log(work)
+    }
   },
   computed:{
-    works(){
-      return this.$store.getters['executor/works']
-    },
     specializations() {
       return this.$store.getters['executor/specializations']
     }
 
   },
  async mounted() {
-    await this.loadWorks()
     await this.loadSpecializations()
   }
 }

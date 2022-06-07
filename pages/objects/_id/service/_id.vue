@@ -247,7 +247,11 @@ export default {
 
 
     closeCreateEditForm() {
-      this.$router.go(-1);
+      //this.$router.go(-1);
+      this.$router.push({
+        name: "objects-id",
+        params: { id: this.object_uuid, ServiceId: "",  objectId: this.object_uuid, activeTab: 0 },
+      });
     },
     updateFiled(field, value) {
       this.formValues[field] = value;

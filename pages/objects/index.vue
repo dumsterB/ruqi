@@ -178,7 +178,7 @@ export default {
   },
   async fetch({store}) {
     if (store.getters['specializations/specializations'].length === 0) {
-      await store.dispatch('specializations/fetch')
+      await store.dispatch('specializations/fetchSpecializations')
     }
     if (store.getters['dictionary/regions'].length === 0) {
       await store.dispatch('dictionary/fetchRegions')
@@ -231,7 +231,7 @@ export default {
     ...mapActions('objects', ['fetchObjects',]),
     ...mapActions('objects', ['fetchObjectsMap',]),
     ...mapActions('objects', ['removeRequest',]),
-    ...mapActions('specializations', ['fetch',]),
+    ...mapActions('specializations', ['fetchSpecializations',]),
     ...mapActions('dictionary', ['fetchRegions',]),
     ...mapActions("breadcrumbs", ["initBreadcrumbs",]),
 

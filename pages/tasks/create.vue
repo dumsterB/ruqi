@@ -1,95 +1,32 @@
 <template lang="pug">
   .add-task
-    PageHeader(header_text="Создание новой заявки" button_text="Создать")
+    PageHeader(header_text="Создание новой заявки" :disabled="disabled" button_text="сохранить изменения" @createAction = "nextFromButton" @closeAction="$router.push('/tasks/')")
 
     v-container.object-info-container
       v-row
         v-col.pa-6(cols="12")
-          .object-info
-            v-row.object-info-row-rate
-              v-col(cols="12")
-                .wrap-form
-                  v-form(ref="form_part_static" v-model="valid" lazy-validation)
-                    .form-part-single
-                      FormBuilder(:meta="meta.meta_object_name" @updateFiled="updateFiled")
+          .object-info.wrap-form
+            v-form(ref="form_part_0" v-model="valid" lazy-validation)
+              v-row.object-info-row-rate
+                v-col(cols="12")
+                  .form-part-single
+                    FormBuilder(:meta="meta.meta_object_name" @updateFiled="updateFiled")
 
                   v-divider.my-8
 
-            v-row.d-flex.pa-4.action-row.align-center(no-gutters)
-              v-col(cols="12")
-                v-tabs.form-tabs-minify.mt-1(v-model="tab", hide-slider, height="36")
-                  v-tab(v-for="(item, index) in tabs_list", :key="index") {{ item }}
+              v-row.d-flex.pa-4.action-row.align-center(no-gutters)
+                v-col(cols="12")
+                  v-tabs.form-tabs-minify.mt-1(v-model="tab", hide-slider, height="36")
+                    v-tab(v-for="(item, index) in tabs_list", :key="index" :disabled="index > 0 ? true : false") {{ item }}
 
-            v-row.object-info-row-rate
-              v-col(cols="12")
-                .wrap-form
+              v-row.object-info-row-rate
+                v-col(cols="12")
                   v-window(v-model="tab")
                     v-tab-item(eager)
-                      v-form(ref="form_part_0" v-model="valid" lazy-validation)
-                        .form-part-single
-                          FormBuilder(:meta="meta.meta_object_info" @updateFiled="updateFiled")
+                      .form-part-single
+                        FormBuilder(:meta="meta.meta_object_info" @updateFiled="updateFiled")
 
-                    v-tab-item(eager)
-                      v-form(ref="form_part_1" v-model="valid" lazy-validation)
-                        .form-part-single
-                          .form-part-title Вакансии и ставки
-                          .form-part-description Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное расположение.
-
-                          v-row.flex-column
-                            v-col(:cols="item.col" v-for="(item, index) in meta.meta_object_pay" :key="index")
-                              .ruqi-rate-task
-                                v-row.d-flex.justify-space-between
-                                  v-col(cols="6")
-                                    .form-part-label Наименование работ
-                                  v-col.text-right(cols="6")
-                                    .form-part-label Нужно человек
-
-                                v-row
-                                  v-col(cols="12")
-                                    FormBuilder(:meta="meta.meta_object_pay[index]" @removeItem="removeItem" @updateFiled="updateFiledinArray(index, ...arguments)")
-
-                                v-row
-                                  v-col(cols="12")
-                                    RateTask( prefix_name="task" :isNew="false"
-                                      @updateFiled="updateFiled"
-                                      rate_value="100" date_value="2022-05-22" )
-
-
-
-                    v-tab-item(eager)
-                      v-form(ref="form_part_2" v-model="valid" lazy-validation)
-                        .form-part-single
-                          .form-part-title Контакты
-                          .form-part-description Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное расположение.
-                          v-divider.my-6
-
-                          div(v-for="(item, index) in meta.meta_object_contact"
-                              :key="index")
-                            FormBuilder(:meta="item" @updateFiled="updateFiledinArray(index, ...arguments)")
-
-                          AddFormPart(:text="addContactPersText" @addFormPart="addFormPart")
-
-                    v-tab-item(eager)
-                      v-form(ref="form_part_3" v-model="valid" lazy-validation)
-                        .form-part-single
-                          .form-part-title Ответственные
-                          .form-part-description Краткое описание что сюда писать, например напишите в наименовании общедоступное название и примерное расположение.
-                          v-divider.my-6
-
-                          .form-part-label ФИО
-
-                          FormBuilder(:meta="meta.meta_object_responsible" @removeItem="removeItem" @updateFiled="updateFiledResp")
-
-                          a.add-field.my-8(@click.prevent="addResponsible('responsible')")
-                            v-icon(color="#0082DE" size="24") mdi-plus-circle
-                            span Добавить ответственного
-
-                  v-btn.btn-blue.mt-6(text :disabled="disabled" height="48" outlined  @click="nextFromButton") Опубликовать заявку
-
-
-
-
-
+                  v-btn.btn-blue.mt-6(text :disabled="disabled" height="48" outlined  @click="nextFromButton") сохранить изменения
 
 
 </template>
@@ -105,27 +42,10 @@ export default {
     title: 'Создание новой заявки'
   },
   components: {PageHeader, RateTask},
-  async fetch({store}) {
-    if (store.getters['objects/objects'].length === 0) {
-      await store.dispatch('objects/fetchObjects')
-    }
-    if (store.getters['specializations/specializations'].length === 0) {
-      await store.dispatch('specializations/fetch')
-    }
-    if (store.getters['dispatchers/dispatchers'].length === 0) {
-      await store.dispatch('dispatchers/fetch')
-    }
-    if (store.getters['dictionary/professions'].length === 0) {
-      await store.dispatch('dictionary/fetcProfessions')
-    }
-  },
   data() {
     return {
       formValues: {},
       title: 'Создание новой заявки',
-      title_size: 'large',
-      title_create: false,
-      title_page_create: '',
       tabs_list: [
         'Общее', 'Вакансии и ставки', 'Контакты', 'Ответственные'
       ],
@@ -135,14 +55,26 @@ export default {
           {
             type: 'FTypeSelectUIID',
             label: 'Наименование объекта',
-            col: 10,
+            col: 9,
             id: 'object_name',
             name: 'object_name',
             params: {
               options: [],
               item_text: 'name',
+              label: 'Не выбрано'
             },
             validation: 'required',
+            value: ''
+          },
+          {
+            type: 'FTypeNote',
+            label: '',
+            col: 10,
+            name: 'object_place_note',
+            params: {
+              label: 'Место проведения работ'
+            },
+            validation: [],
             value: ''
           },
           {
@@ -163,6 +95,17 @@ export default {
             validation: 'required',
             value: ''
           },
+          {
+            type: 'FTypeText',
+            label: 'График работ',
+            col: 3,
+            name: 'object_schedule',
+            validation: [],
+            value: '',
+            params: {
+              readonly: true
+            },
+          },
         ],
         meta_object_info: [
           {
@@ -177,12 +120,13 @@ export default {
           {
             type: 'FTypeSelectUIID',
             label: 'Категория',
-            col: 9,
+            col: 7,
             id: 'object_cat',
             name: 'object_cat',
             params: {
               options: [],
               item_text: 'name',
+              label: 'Не выбрано'
             },
             validation: 'required',
             value: ''
@@ -190,7 +134,7 @@ export default {
           {
             type: 'FTypeSelect',
             label: 'Тип смены',
-            col: 9,
+            col: 7,
             id: 'object_work_shift',
             name: 'object_work_shift',
             params: {
@@ -198,6 +142,7 @@ export default {
                 'Дневная',
                 'Ночная',
               ],
+              label: 'Не выбрано'
             },
             value: ''
           },
@@ -210,34 +155,6 @@ export default {
             value: ''
           },
 
-        ],
-        meta_object_location: [
-          {
-            type: 'FTypeText',
-            label: 'Область, край',
-            col: 12,
-            id: 'object_region',
-            name: 'object_region',
-            validation: ['required'],
-            value: ''
-          },
-          {
-            type: 'FTypeText',
-            label: 'Город',
-            col: 12,
-            id: 'object_city',
-            name: 'object_city',
-            validation: ['required'],
-            value: ''
-          },
-          {
-            type: 'FTypeTextarea',
-            label: 'Предлагаемая схема проезда',
-            col: 12,
-            id: 'object_driving_directions',
-            name: 'object_driving_directions',
-            value: ''
-          },
         ],
         meta_object_contact: [
           [
@@ -286,7 +203,7 @@ export default {
         meta_object_responsible: [
           {
             type: 'FTypeSelectUIID',
-            icon: 'mdi-account',
+            icon: '',
             label: '',
             col: 9,
             id: 'object_resp',
@@ -295,6 +212,7 @@ export default {
             params: {
               options: [],
               item_text: 'fullname',
+              label: 'Не выбрано'
             },
             parent_array: 'meta_object_responsible',
             validation: 'required',
@@ -312,6 +230,7 @@ export default {
                 options: [],
                 item_text: 'name',
                 cost: [],
+                label: 'Не выбрано'
               },
               validation: 'required',
               value: '',
@@ -334,9 +253,7 @@ export default {
       },
       valid: true,
       select: null,
-      addContactPersText: 'Добавить контактное лицо',
       formHasErrors: false,
-      nameCounter: 1,
       disabled: false,
     }
   },
@@ -347,47 +264,7 @@ export default {
     specializations() {
       return this.$store.getters['specializations/specializations']
     },
-    dispatchers() {
-      return this.$store.getters['dispatchers/dispatchers']
-    },
-    professions() {
-      return this.$store.getters['request_id/request_id_professions']
-    },
     postBody() {
-      let contacts = [];
-      for (let i = 0; i < this.meta.meta_object_contact.length; i++) {
-        let index_name = this.meta.meta_object_contact[i][0].name.substr(19, 20);
-        contacts.push(
-          {
-            "fullname": this.formValues['object_contact_fio_' + index_name],
-            "position": this.formValues['object_contact_post_' + index_name],
-            "phone": this.formValues['object_contact_phone_' + index_name],
-            "email": this.formValues['object_contact_email_' + index_name],
-          }
-        )
-      }
-
-      let dispatchers = [];
-      for (let i = 0; i < this.meta.meta_object_responsible.length; i++) {
-        let name = this.meta.meta_object_responsible[i].name;
-        dispatchers.push(
-          this.formValues[name]
-        )
-      }
-
-      let works = [];
-      for (let i = 0; i < this.meta.meta_object_pay.length; i++) {
-        let index_name = this.meta.meta_object_pay[i][0].name.substr(17, 18);
-        works.push(
-          {
-            "uuid": this.formValues['object_pay_title_' + index_name],
-            "payment": this.formValues['object_pay_salary_' + index_name],
-            "period": this.formValues['object_pay_time_' + index_name],
-            "requires_people": this.formValues['object_pay_cw_' + index_name],
-          }
-        )
-      }
-
       let postBody = {
         "name": this.formValues.object_id,
         "description": this.formValues.object_desc,
@@ -396,12 +273,7 @@ export default {
         "until_date": this.formValues.object_end_date,
         "object": this.formValues.object_name,
         "specialization": this.formValues.object_cat,
-        "region": this.formValues.object_region,
-        "city": this.formValues.object_city,
-        "schema": this.formValues.object_driving_directions,
-        "contacts": contacts,
-        "dispatchers": dispatchers,
-        "works": works
+        "shift": this.formValues.object_work_shift,
       };
       console.log(postBody);
       return postBody;
@@ -409,169 +281,56 @@ export default {
   },
   methods: {
     ...mapActions('objects', ['fetchObjects',]),
-    ...mapActions('specializations', ['fetchSpecializations',]),
-    ...mapActions('dispatchers', ['fetchDispatchers',]),
     ...mapActions('requests', ['createRequest',]),
-    ...mapActions('dictionary', ['fetcProfessions',]),
-    ...mapActions('request_id', ['fetchRequestIdProfessions',]),
+    ...mapActions('specializations', ['fetchSpecializations',]),
+    ...mapActions('breadcrumbs', ["setBreadcrumbs",]),
 
-    addResponsible(resp_name, isInit = false) {
-      let flag = false;
-
-      if (!isInit) {
-        let name = this.meta['meta_object_' + resp_name][this.meta['meta_object_' + resp_name].length - 1].name;
-        if (!this.meta['meta_object_' + resp_name].length) {
-          flag = false;
-        } else if (!this.formValues[name]) {
-          flag = true;
-        }
-        if (flag) {
-          return;
-        }
-      }
-
-      let dispatchers = this.dispatchers;
-      this.meta.meta_object_responsible.push({
-          type: 'FTypeSelectUIID',
-          icon: 'mdi-account',
-          label: '',
-          col: 9,
-          id: 'object_resp',
-          name: 'object_resp_' + this.nameCounter++,
-          remove: true,
-          params: {
-            options: dispatchers,
-            item_text: 'fullname',
-          },
-          parent_array: 'meta_object_responsible',
-          validation: 'required',
-          value: ''
-        },
-      );
-    },
-    addFormPart() {
-      this.meta.meta_object_contact.push(
-        [
-          {
-            type: 'FTypeText',
-            label: 'ФИО',
-            col: 12,
-            id: 'object_contact_fio',
-            name: 'object_contact_fio_' + this.nameCounter,
-            validation: ['required'],
-            parent_array: 'meta_object_contact',
-            value: ''
-          },
-          {
-            type: 'FTypeText',
-            label: 'Должность',
-            col: 12,
-            id: 'object_contact_post',
-            name: 'object_contact_post_' + this.nameCounter,
-            validation: ['required'],
-            parent_array: 'meta_object_contact',
-            value: ''
-          },
-          {
-            type: 'FTypeText',
-            label: 'Телефон',
-            col: 12,
-            id: 'object_contact_phone',
-            name: 'object_contact_phone_' + this.nameCounter,
-            validation: ['required', 'phone'],
-            parent_array: 'meta_object_contact',
-            value: ''
-          },
-          {
-            type: 'FTypeText',
-            label: 'Email',
-            col: 12,
-            id: 'object_contact_email',
-            name: 'object_contact_email_' + this.nameCounter,
-            validation: ['required', 'email'],
-            parent_array: 'meta_object_contact',
-            value: ''
-          },
-        ],
-      );
-      this.nameCounter++;
-    },
-    removeItem(index, array) {
-      if (index != 0 || this.meta[array].length > 1) {
-        this.meta[array].splice(index, 1);
-      }
-    },
     nextFromButton() {
-      if (this.tab < this.tabs_list.length - 1) {
-        let formPart = 'form_part_' + this.tab;
-        this.$refs[formPart].validate();
 
-        this.$nextTick(() => {
-          if (this.valid) {
-            this.tab += 1;
-          } else {
-            let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
-            this.$vuetify.goTo(el);
-          }
-        });
-      } else {
-        const newRequet = JSON.stringify(this.postBody);
-        console.log(newRequet);
-        this.createRequest(newRequet);
-      }
-    },
-    prevFromButton() {
-      this.tab -= 1;
+      let formPart = 'form_part_' + this.tab;
+      this.$refs[formPart].validate();
+
+      this.$nextTick(() => {
+        if (this.valid) {
+          const newRequet = JSON.stringify(this.postBody);
+          console.log(newRequet);
+          this.createRequest(newRequet);
+        } else {
+          let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
+          this.$vuetify.goTo(el);
+        }
+      });
     },
     async updateFiled(field, value) {
       this.formValues[field] = value;
       console.log(field, value)
 
       if (field == 'object_name') {
-        await this.fetchRequestIdProfessions(value);
-        this.clearMetaObjectPay();
+        this.clearMetaObjectPay(value);
       }
     },
-    clearMetaObjectPay() {
-      this.meta.meta_object_pay.splice(1, this.meta.meta_object_pay.length - 1);
-      this.meta.meta_object_pay[0][0].params.options = this.professions;
-      this.meta.meta_object_pay[0][1].value = '';
-      this.meta.meta_object_pay[0][2].value = 'за смену';
-      this.meta.meta_object_pay[0][3].value = '';
+    clearMetaObjectPay(value) {
 
-    },
-    updateFiledResp(field, value, index) {
-      this.formValues[field] = value;
-      this.meta.meta_object_responsible[index].value = value;
-    },
-    updateFiledinArray(index_block, field, value, index, parent_array) {
-      this.formValues[field] = value;
-      this.meta[parent_array][index_block][index].value = value;
+      let object_info = this.objects.filter(obj => obj.uuid === value)[0];
 
-      if (field.includes('object_pay_title')) {
-        let profession_params = this.professions.filter(obj => obj.uuid === value);
-        this.meta[parent_array][index_block][1].value = profession_params[0].payment;
-        this.meta[parent_array][index_block][2].value = profession_params[0].period;
-
-        this.formValues['object_pay_salary_' + index_block] = profession_params[0].payment;
-        this.formValues['object_pay_time_' + index_block] = profession_params[0].period;
-      }
-
-      console.log(field, value);
+      this.meta.meta_object_name[1].value = object_info.region + ', ' + object_info.city;
+      this.meta.meta_object_name[4].value = object_info.schedule;
 
     },
   },
   async created() {
 
+    await this.fetchObjects();
+    await this.fetchSpecializations();
+
+    console.log('this.specializations ----- ', this.specializations);
+
     this.meta.meta_object_name[0].params.options = this.objects;
     this.meta.meta_object_info[1].params.options = this.specializations;
-    this.meta.meta_object_responsible[0].params.options = this.dispatchers;
-    this.meta.meta_object_pay[0][0].params.options = this.professions;
 
     if (this.$route.params.objectId) {
       this.meta.meta_object_name[0].value = this.$route.params.objectId;
-      await this.fetchRequestIdProfessions(this.$route.params.objectId);
-      this.clearMetaObjectPay();
+      this.clearMetaObjectPay(this.$route.params.objectId);
     }
 
     this.meta.meta_object_name.map(f => {
@@ -580,18 +339,6 @@ export default {
     this.meta.meta_object_info.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     })
-    this.meta.meta_object_location.map(f => {
-      Vue.set(this.formValues, f.name, f.value);
-    })
-    this.meta.meta_object_contact.map(subarray => subarray.map(f => {
-      Vue.set(this.formValues, f.name, f.value);
-    }));
-    this.meta.meta_object_responsible.map(f => {
-      Vue.set(this.formValues, f.name, f.value);
-    })
-    this.meta.meta_object_pay.map(subarray => subarray.map(f => {
-      Vue.set(this.formValues, f.name, f.value);
-    }));
   }
 }
 </script>
@@ -620,7 +367,7 @@ export default {
     }
   }
 
-  .ruqi-rate-task{
+  .ruqi-rate-task {
     border: 1px solid #e0e0e0;
     border-radius: 10px;
     padding: 20px;
