@@ -4,7 +4,7 @@
       v-row.d-flex.pa-4.action-row.align-center(no-gutters)
         v-col(cols="10")
           v-tabs.form-tabs-minify.mt-1(v-model="tab", hide-slider, height="36")
-            v-tab(v-for="(item, index) in tabs_list", :key="index") {{ item }}
+            v-tab(v-for="(item, index) in tabs_list", :key="index" @click="selectedItems = []") {{ item }}
 
         v-col.d-flex.justify-end(cols="2")
           v-select.select-status(
@@ -71,6 +71,11 @@
                     :page_uuid="object_id.uuid"
                     @applyFilter="applyFilter('fetchServiceParams', 'options', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
 
+                  .filter-col-after-left
+                    TableGroupAction(v-if="selectedItems.length"
+                      :actions="groupListAction" :selected="selectedItems"
+                      @selectAction="changeConfirmModalContentAny(true)" @clearSelected="clearSelected")
+
                 .filter-row-right
                   .container-object-nds
                     .nds-title ндс текущий
@@ -81,12 +86,12 @@
                   v-data-table.elevation-0(
                     :headers="headers_services",
                     :items="object_id_services",
-
+                    item-key="uuid"
                     hide-default-footer,
                     show-select,
                     disable-pagination
                     :options.sync="options"
-
+                    v-model="selectedItems"
                   )
                     template(v-slot:item.actions="{ item }")
                       .d-flex.justify-end.card-actions
@@ -111,7 +116,7 @@
                                   span Редактировать
 
                               .mx-auto.text-left.card-action
-                                a(@click.prevent="isConfirmModalService = 1, removedUUID = item.uuid")
+                                a(@click.prevent="changeConfirmModalContentAny(false, [item.uuid])")
                                   v-icon mdi-close-box-outline
                                   span Удалить
 
@@ -183,6 +188,11 @@
                     :page_uuid="object_id.uuid"
                     @applyFilter="applyFilter('fetchVacancyParams', 'headerOptionsVacancy', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
 
+                  .filter-col-after-left
+                    TableGroupAction(v-if="selectedItems.length"
+                      :actions="groupListAction" :selected="selectedItems"
+                      @selectAction="changeConfirmModalContentAny(true)" @clearSelected="clearSelected")
+
                 .filter-row-right
                   .container-object-nds
                     .nds-title ндс текущий
@@ -193,6 +203,8 @@
                   v-data-table.elevation-0(
                     :headers="headers_vacancies",
                     :items="object_id_vacancies",
+                    item-key="uuid"
+                    v-model="selectedItems"
                     hide-default-footer,
                     show-select,
                     disable-pagination
@@ -219,7 +231,7 @@
                                   span Редактировать
 
                               .mx-auto.text-left.card-action
-                                a(@click.prevent="isConfirmModalVacancy = 1, removedUUID = item.uuid")
+                                a(@click.prevent="changeConfirmModalContentAny(false, [item.uuid])")
                                   v-icon mdi-close-box-outline
                                   span Удалить
 
@@ -285,10 +297,12 @@
                   v-data-table.elevation-0(
                     :headers="headers",
                     :items="object_id_requests",
+                    item-key="uuid"
                     hide-default-footer,
                     show-select,
                     disable-pagination
                     :options.sync="headerOptionsTask"
+                    v-model="selectedItems"
                   )
                     template(v-slot:item.actions="{ item }")
                       .d-flex.justify-end.card-actions
@@ -446,14 +460,9 @@
       @confirmRemove="confirmRemove"
     )
     Confirm(
-      :isConfirmModal="isConfirmModalService",
-      :content="confirmModalContentService",
-      @confirmRemove="confirmRemoveService"
-    )
-    Confirm(
-      :isConfirmModal="isConfirmModalVacancy",
-      :content="confirmModalContentVacancy",
-      @confirmRemove="confirmRemoveVacancy"
+      :isConfirmModal="isConfirmModalAny",
+      :content="confirmModalContentAny",
+      @confirmRemove="confirmRemoveAny"
     )
 </template>
 
@@ -461,10 +470,11 @@
 import {mapState, mapActions, mapGetters, mapMutations} from "vuex";
 import Contact from "@/components/object/Contact";
 import TableFilter from "@/components/composite/TableFilter";
+import TableGroupAction from "@/components/composite/TableGroupAction";
 
 export default {
   props: [],
-  components: {Contact, TableFilter},
+  components: {Contact, TableFilter, TableGroupAction},
   data() {
     return {
       coords: [54, 39],
@@ -526,7 +536,6 @@ export default {
       itemsPerPage: 20,
       servicesPageCount: 1,
       vacanciesPageCount: 1,
-      selectedItems: [],
       activeSelectAll: 0,
       activeSelectBtn: 0,
       property1: true,
@@ -597,26 +606,21 @@ export default {
         {text: "Изменение", value: "description"},
       ],
       isConfirmModal: false,
-      isConfirmModalService: false,
-      isConfirmModalVacancy: false,
-      removedUUID: '',
+      isConfirmModalGroup: false,
+      removedUUID: [],
       confirmModalContent: {
         title: "Удалить этот объект?",
         description: "",
         text_btn_ok: "Удалить",
         text_btn_cancel: "Отмена",
       },
-      confirmModalContentService: {
-        title: "Удалить услугу?",
+      isConfirmModalAny: false,
+      confirmModalContentAny: {
+        title: "Удалить этот объект?",
         description: "",
         text_btn_ok: "Удалить",
         text_btn_cancel: "Отмена",
-      },
-      confirmModalContentVacancy: {
-        title: "Удалить вакансию?",
-        description: "",
-        text_btn_ok: "Удалить",
-        text_btn_cancel: "Отмена",
+        actionName: 'removeService',
       },
       fetchServiceParams: {
         "page": 1,
@@ -643,7 +647,14 @@ export default {
       headerOptionsHistory: {},
       isSearchFocus: false,
       limit: 1,
-      busy: false
+      busy: false,
+      selectedServices: [],
+      selectedVacancies: [],
+      selectedTasks: [],
+      selectedItems: [],
+      groupListAction: [
+        {title: 'Удалить', uuid: 'delete'},
+      ],
     };
   },
   watch: {
@@ -724,6 +735,16 @@ export default {
         return true;
       }
     },
+    selectedItemsUUID(){
+      let uuids = [];
+
+      for (let i = 0; i < this.selectedItems.length; i++) {
+          uuids.push(this.selectedItems[i].uuid);
+      }
+
+      return JSON.stringify(uuids);
+
+    }
   },
   methods: {
     ...mapActions("object_id", ["fetchObjectId"]),
@@ -742,12 +763,15 @@ export default {
     openRequest(id) {
       this.$router.push("/tasks/" + id);
     },
+
     updateSearchText(value) {
       this.searchText = value;
     },
+
     openTimesheet() {
       this.$router.push("/objects/" + this.$route.params.id + "/timesheet");
     },
+
     selectAll(val) {
       this.activeSelectBtn = +!this.activeSelectBtn;
       if (this.activeSelectAll == 0) {
@@ -758,25 +782,31 @@ export default {
         this.activeSelectAll = 0;
       }
     },
+
     changeStatus(status) {
       this.putStatus({requestId: this.object_id.uuid, status: status});
       this.selectStatus = status;
     },
+
     setItemsPerPage(value) {
       this.itemsPerPage = value;
     },
+
     setCurrentPage(value) {
       this.page = value;
     },
+
     closeCreateEditForm(type) {
       this[type] = 0;
     },
+
     addService() {
       this.$router.push({
         name: "objects-id-service",
         params: {ServiceId: "", objectId: this.object_id.uuid},
       });
     },
+
     editService(ServiceId) {
       /*this.$router.push({
         name: "objects-id-service-id",
@@ -784,12 +814,14 @@ export default {
       });*/
       this.$router.push('/objects/' + this.object_id.uuid + '/service/' + ServiceId);
     },
+
     addVacancy() {
       this.$router.push({
         name: "objects-id-vacancy",
         params: {VacancyId: "", objectId: this.object_id.uuid},
       });
     },
+
     editVacancy(VaсancyId) {
       /*this.$router.push({
         name: "objects-id-vacancy",
@@ -797,15 +829,18 @@ export default {
       });*/
       this.$router.push('/objects/' + this.object_id.uuid + '/vacancy/' + VaсancyId);
     },
+
     addTask() {
       this.$router.push({
         name: "tasks-create",
         params: {objectId: this.object_id.uuid},
       });
     },
+
     editTask(TaskId) {
       this.$router.push("/tasks/" + TaskId + "/edit");
     },
+
     selectAction(val) {
       if (val == "edit") {
         this.$router.push("/objects/" + this.$route.params.id + "/edit");
@@ -815,24 +850,59 @@ export default {
         this.tab = 5;
       }
     },
+
+    confirmRemoveAny(confirm) {
+
+      let actionName = this.confirmModalContentAny.actionName,
+          uuids = [this.removedUUID];
+
+      if(this.selectedItemsUUID.length > 0){
+        uuids = this.selectedItemsUUID;
+      }
+      console.log('actionName', actionName, this.removedUUID, uuids)
+
+      if (confirm) {
+       //this[actionName]({object_uuid: this.object_id.uuid, uuid:  uuids});
+      }
+
+      this.isConfirmModalAny = false;
+    },
+
     confirmRemove(confirm) {
       if (confirm) {
         this.removeRequest(this.object_id.uuid);
       }
       this.isConfirmModal = false;
     },
-    confirmRemoveService(confirm) {
-      if (confirm) {
-        this.removeService({object_uuid: this.object_id.uuid, service_uuid: this.removedUUID});
+
+    changeConfirmModalContentAny(isGroup, uuid){
+      let content = this.confirmModalContentAny;
+
+      this.removedUUID = uuid;
+
+      if(this.tab == 0){
+        content.title = "Удалить эту услугу?";
+        content.actionName = "removeService";
+      } else if(this.tab == 1){
+        content.title = "Удалить эту вакансию?";
+        content.actionName = 'removeVacancy';
+      }else if(this.tab == 2){
+        content.title = "Удалить эту заявку?";
+        content.actionName = 'removeTask';
       }
-      this.isConfirmModalService = false;
-    },
-    confirmRemoveVacancy(confirm) {
-      if (confirm) {
-        this.removeVacancy({object_uuid: this.object_id.uuid, vacancy_uuid: this.removedUUID});
+
+      if (isGroup){
+        content.title = "Удалить выбранные записи?";
       }
-      this.isConfirmModalVacancy = false;
+
+      this.isConfirmModalAny = true;
+
     },
+
+    clearSelected(){
+      this.selectedItems = [];
+    },
+
     parseDate: (payload = {}) => {
       let date = payload.date.split("-");
 
@@ -840,6 +910,7 @@ export default {
         return `${date[2]}.${date[1]}.${date[0]}`;
       }
     },
+
     async loadMore() {
 
       let fetchParams = 'fetchServiceParams',
@@ -874,6 +945,7 @@ export default {
       this.busy = false;
 
     },
+
     getDataFromApi(fetchParams, watcherParams, action) {
       this.loading = true;
 
@@ -897,6 +969,7 @@ export default {
         console.log('пришел ответ')
       })
     },
+
     applyFilter(fetchParams, watcherParams, filter, search) {
       this[fetchParams].value = search;
       this[fetchParams].filters = filter;
@@ -909,7 +982,9 @@ export default {
           "filters": filter
         }
       };
+
       console.log('params-----', filter, params);
+
       if (this.tab == 0) {
         this.fetchObjectIdServices({requestId: this.$route.params.id, params: params, concat: false, unit: false})
       } else if (this.tab == 1) {
@@ -917,8 +992,8 @@ export default {
       } else if (this.tab == 2) {
         this.fetchObjectIdRequest({requestId: this.$route.params.id, params: params, concat: false, unit: false})
       }
-
     },
+
     previewText(value) {
       if (value && value.length > 56) {
         return value.substring(0, 56) + '...';
@@ -926,12 +1001,15 @@ export default {
         return value;
       }
     },
+
     focusSearch() {
       this.isSearchFocus = 1;
     },
+
     blurSearch() {
       this.isSearchFocus = 0;
     }
+
   },
   beforeDestroy() {
     /*console.debug(
@@ -1101,6 +1179,8 @@ export default {
   border: 1px solid $table-border-color;
   border-radius: 6px;
   height: 48px;
+  display: inline-flex;
+  flex-direction: column;
 
   .nds-title {
     color: $grey;

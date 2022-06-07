@@ -72,9 +72,9 @@ export const actions = {
       });
   },
 
-  async removeVacancy({commit, dispatch}, {object_uuid, vacancy_uuid}) {
+  async removeVacancy({commit, dispatch}, {object_uuid, uuid}) {
 
-    await this.$axios.delete('/objects/' + object_uuid + '/vacancies/' + vacancy_uuid)
+    await this.$axios.delete('/objects/' + object_uuid + '/vacancies/' + uuid)
       .then((response) => {
         console.log(response);
         dispatch('object_id/fetchObjectIdVacancies', {requestId:object_uuid, params:{}, concat: false, unit: false}, {root: true});
