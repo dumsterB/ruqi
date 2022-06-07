@@ -12,6 +12,7 @@
     template(#item="{ item }")
       .task-tabs__item
         .task-tabs__title {{ item.name }}
+  SearchTasksExecutor(v-else-if="user.type === 'contractor' && $route.name === 'index'")
   rqBreadcrumbs(v-else, :breadcrumbs="BREADCRUMBS")
 </template>
 
@@ -19,15 +20,18 @@
 import { mapActions, mapGetters } from "vuex";
 import rqTabs from "@/components/composite/rqTabs";
 import rqBreadcrumbs from "@/components/UI/rqBreadcrumbs";
+import SearchTasksExecutor from './SearchTasksExecutor';
 
 export default {
   components: {
     rqTabs,
     rqBreadcrumbs,
+    SearchTasksExecutor,
   },
   computed: {
     ...mapGetters("rqTabs", ["RQ_TABS_TASKS"]),
     ...mapGetters("breadcrumbs", ["BREADCRUMBS"]),
+    ...mapGetters('user', ['user',]),
   },
   methods: {
     ...mapActions("rqTabs", ["closeRqTabTasks", "unPinRqTabTasks"]),
