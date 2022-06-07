@@ -45,7 +45,7 @@ export const actions = {
       });
 
   },
-  async putVacancy({commit, dispatch}, {body, object_uuid, vacancy_uuid}) {
+  async putVacancy({commit, dispatch}, {body, object_uuid, vacancy_uuid, isClose}) {
     let self= this;
     await this.$axios.put('/objects/' + object_uuid + '/vacancies/' + vacancy_uuid,
       body,
@@ -61,6 +61,11 @@ export const actions = {
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
+        if(isClose){
+          setTimeout(function() {
+            self.$router.push('/objects/'+object_uuid);
+          }, 1000);
+        }
       })
       .catch((error) => {
         console.log(error);

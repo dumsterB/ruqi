@@ -6,7 +6,7 @@
         .header-dialog(v-if="title") {{ title }}
 
       v-col.d-flex.justify-end(cols="2")
-        v-btn.btn-blue.add(text height="48" outlined @click="createVacancyHandler")
+        v-btn.btn-blue.add(text height="48" :disabled="disabled" outlined @click="createVacancyHandler(false)")
           span {{ submitBtnText }}
 
         v-btn.add.ml-4(text height="48" outlined @click="closeCreateEditForm")
@@ -23,7 +23,7 @@
                     .form-part-single
                       .form-part-title Данные
                       FormBuilder(:meta="meta.meta_object_vacancy" @updateFiled="updateFiled")
-                      v-btn.btn-blue.mt-6(text :disabled="disabled" height="48" outlined  @click="createVacancyHandler") {{ submitBtnText }}
+                      v-btn.btn-blue.mt-6(text :disabled="disabled" height="48" outlined  @click="createVacancyHandler(false)") {{ submitBtnText }}
 
             v-row.object-info-row-rate
               v-col(cols="12")
@@ -73,6 +73,12 @@
       :isConfirmModal="isConfirmModalRate",
       :content="confirmModalRate",
       @confirmRemove="deleteRate"
+    )
+
+    Confirm(
+      :isConfirmModal="isConfirmModal",
+      :content="confirmModal",
+      @confirmRemove="confirmClose"
     )
 
 
@@ -293,6 +299,13 @@ export default {
         text_btn_cancel: "Отмена",
       },
       removedUUID: '',
+      isConfirmModal: false,
+      confirmModal: {
+        title: "Внимание!",
+        description: "Есть несохраненные изменения. Хотите сохранить изменения и закрыть вакансию?",
+        text_btn_ok: "Да",
+        text_btn_cancel: "Нет",
+      },
     }
   },
   computed: {
@@ -353,26 +366,42 @@ export default {
 
 
     closeCreateEditForm() {
-      //this.$router.go(-1);
-      this.$router.push({
-        name: "objects-id",
-        params: { id: this.object_uuid, ServiceId: "",  objectId: this.object_uuid, activeTab: 1 },
-      });
+      if (!this.disabled) {
+        this.isConfirmModal = true;
+
+      } else{
+        //this.$router.go(-1);
+        this.$router.push({
+          name: "objects-id",
+          params: { id: this.object_uuid, ServiceId: "",  objectId: this.object_uuid, activeTab: 1 },
+        });
+      }
+
     },
     updateFiled(field, value) {
       this.formValues[field] = value;
       console.log(field, value);
+      this.disabled = false;
     },
     updateFiledinArray(index_block, field, value, index, parent_array) {
       this.formValues[field] = value;
       this.meta[parent_array][index_block][index].value = value;
+      this.disabled = false;
     },
     removeItem(index, array) {
       if (index != 0 || this.meta[array].length > 1) {
         this.meta[array].splice(index, 1);
       }
     },
-    createVacancyHandler() {
+
+    async confirmClose(confirm) {
+      if (confirm) {
+        this.createVacancyHandler(true);
+      }
+      this.isConfirmModal = false;
+    },
+
+    createVacancyHandler(isClose) {
       let formPart = 'form_part_0';
 
       this.$refs[formPart].validate();
@@ -382,7 +411,7 @@ export default {
           const newRequest = JSON.stringify(this.postBody);
           console.log(newRequest);
 
-          this.putVacancy({body: newRequest, object_uuid: this.object_uuid, vacancy_uuid: this.vacancy_uuid});
+          this.putVacancy({body: newRequest, object_uuid: this.object_uuid, vacancy_uuid: this.vacancy_uuid,  isClose: isClose});
 
         } else {
           let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
@@ -475,6 +504,7 @@ export default {
       this.formValues['object_rate_date_' + i] = this.vacancy_id.rates[i].start_date
     }
 
+    this.disabled = true;
 
   },
 }

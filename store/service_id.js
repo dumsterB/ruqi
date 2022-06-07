@@ -44,7 +44,7 @@ export const actions = {
       });
 
   },
-  async putService({commit, dispatch}, {body, object_uuid, service_uuid}) {
+  async putService({commit, dispatch}, {body, object_uuid, service_uuid, isClose}) {
     let self= this;
     await this.$axios.put('/objects/' + object_uuid + '/services/' + service_uuid,
       body,
@@ -60,6 +60,11 @@ export const actions = {
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
+        if(isClose){
+          setTimeout(function() {
+            self.$router.push('/objects/'+object_uuid);
+          }, 1000);
+        }
       })
       .catch((error) => {
         console.log(error);
