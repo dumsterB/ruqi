@@ -32,7 +32,9 @@ export default {
       this.selected = this.params.value;
     }
     else{
-      this.selected.push(this.params.value);
+      if(this.params.value){
+        this.selected.push(this.params.value);
+      }
     }
   },
   watch: {
