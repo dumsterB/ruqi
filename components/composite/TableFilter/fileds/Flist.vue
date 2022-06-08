@@ -28,7 +28,14 @@ export default {
     }
   },
   created() {
-   // this.selected = this.params.value;
+    if(Array.isArray(this.params.value)){
+      this.selected = this.params.value;
+    }
+    else{
+      if(this.params.value){
+        this.selected.push(this.params.value);
+      }
+    }
   },
   watch: {
     params: {

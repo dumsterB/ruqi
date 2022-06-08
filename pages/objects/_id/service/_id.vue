@@ -6,7 +6,7 @@
         .header-dialog(v-if="title") {{ title }}
 
       v-col.d-flex.justify-end(cols="2")
-        v-btn.btn-blue.add(text height="48" outlined @click="createServiceHandler")
+        v-btn.btn-blue.add(text height="48" :disabled="disabled" outlined @click="createServiceHandler(false)")
           span {{ submitBtnText }}
 
         v-btn.add.ml-4(text height="48" outlined @click="closeCreateEditForm")
@@ -23,7 +23,7 @@
                     .form-part-single
                       .form-part-title Данные
                       FormBuilder(:meta="meta.meta_object_service" @updateFiled="updateFiled")
-                      v-btn.btn-blue.mt-6(text :disabled="disabled" height="48" outlined  @click="createServiceHandler") {{ submitBtnText }}
+                      v-btn.btn-blue.mt-6(text :disabled="disabled" height="48" outlined  @click="createServiceHandler(false)") {{ submitBtnText }}
 
             v-row.object-info-row-rate
               v-col(cols="12")
@@ -73,6 +73,12 @@
       :isConfirmModal="isConfirmModalRate",
       :content="confirmModalRate",
       @confirmRemove="deleteRate"
+    )
+
+    Confirm(
+      :isConfirmModal="isConfirmModal",
+      :content="confirmModal",
+      @confirmRemove="confirmClose"
     )
 
 
@@ -199,6 +205,13 @@ export default {
         text_btn_cancel: "Отмена",
       },
       removedUUID: '',
+      isConfirmModal: false,
+      confirmModal: {
+        title: "Внимание!",
+        description: "Есть несохраненные изменения. Сохранить перед закрытием?",
+        text_btn_ok: "Да",
+        text_btn_cancel: "Нет",
+      },
     }
   },
   computed: {
@@ -237,7 +250,7 @@ export default {
 
   },
   methods: {
-    ...mapActions('specializations', ['fetch',]),
+    ...mapActions('specializations', ['fetchSpecializations',]),
     ...mapActions('service_id', ['createService',]),
     ...mapActions('service_id', ['putService',]),
     ...mapActions('service_id', ['fetchServiceId',]),
@@ -245,28 +258,53 @@ export default {
     ...mapActions('rate', ['putServiceRate',]),
     ...mapActions('rate', ['removeServiceRate',]),
 
-
     closeCreateEditForm() {
-      //this.$router.go(-1);
-      this.$router.push({
-        name: "objects-id",
-        params: { id: this.object_uuid, ServiceId: "",  objectId: this.object_uuid, activeTab: 0 },
-      });
+
+      if (!this.disabled) {
+        this.isConfirmModal = true;
+
+      } else{
+        //this.$router.go(-1);
+        this.$router.push({
+          name: "objects-id",
+          params: { id: this.object_uuid, ServiceId: "",  objectId: this.object_uuid, activeTab: 0 },
+        });
+      }
+
     },
+
     updateFiled(field, value) {
       this.formValues[field] = value;
       console.log(field, value);
+      this.disabled = false;
     },
+
     updateFiledinArray(index_block, field, value, index, parent_array) {
       this.formValues[field] = value;
       this.meta[parent_array][index_block][index].value = value;
+      this.disabled = false;
     },
+
     removeItem(index, array) {
       if (index != 0 || this.meta[array].length > 1) {
         this.meta[array].splice(index, 1);
       }
     },
-    createServiceHandler() {
+
+    async confirmClose(confirm) {
+      if (confirm) {
+         this.createServiceHandler(true);
+      } else{
+        this.$router.push({
+          name: "objects-id",
+          params: { id: this.object_uuid, ServiceId: "",  objectId: this.object_uuid, activeTab: 0 },
+        });
+      }
+
+      this.isConfirmModal = false;
+    },
+
+    createServiceHandler(isClose) {
       let formPart = 'form_part_0';
 
       this.$refs[formPart].validate();
@@ -275,13 +313,14 @@ export default {
         if (this.valid) {
           const newRequest = JSON.stringify(this.postBody);
           console.log(newRequest);
-          this.putService({body: newRequest, object_uuid: this.object_uuid, service_uuid: this.service_uuid});
+          this.putService({body: newRequest, object_uuid: this.object_uuid, service_uuid: this.service_uuid, isClose: isClose});
         } else {
           let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
           this.$vuetify.goTo(el);
         }
       });
     },
+
     setRate() {
       let formPart = 'form_part_1';
       this.$refs[formPart].validate();
@@ -296,14 +335,15 @@ export default {
           this.isAddingRate = false;
         }
       });
-
     },
+
     deleteRate(confirm) {
       if (confirm) {
         this.removeServiceRate({object_uuid: this.object_uuid, service_uuid: this.service_uuid, rate_uuid: this.removedUUID});
       }
       this.isConfirmModalRate = false;
     },
+
     putRate(index, uuid) {
       let putRate = {
           "rate": this.formValues['object_rate_rate_' + index],
@@ -315,9 +355,10 @@ export default {
       this.putServiceRate({body: newRequet, object_uuid: this.object_uuid, service_uuid: this.service_uuid, rate_uuid: uuid});
     }
   },
+
   async created() {
 
-    await this.fetch();
+    await this.fetchSpecializations();
     this.meta.meta_object_service[0].params.options = this.specializations;
     await this.fetchServiceId({objectId: this.object_uuid, ServiceId: this.service_uuid});
 
@@ -342,6 +383,8 @@ export default {
       this.formValues['object_rate_rate_' + i] = this.service_id.rates[i].rate;
       this.formValues['object_rate_date_' + i] = this.service_id.rates[i].start_date
     }
+
+    this.disabled = true;
 
 
   },

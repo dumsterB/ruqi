@@ -45,7 +45,7 @@ export const actions = {
       });
 
   },
-  async putVacancy({commit, dispatch}, {body, object_uuid, vacancy_uuid}) {
+  async putVacancy({commit, dispatch}, {body, object_uuid, vacancy_uuid, isClose}) {
     let self= this;
     await this.$axios.put('/objects/' + object_uuid + '/vacancies/' + vacancy_uuid,
       body,
@@ -61,15 +61,23 @@ export const actions = {
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
+        if(isClose){
+          setTimeout(function() {
+            self.$router.push('/objects/'+object_uuid);
+          }, 1000);
+        }
       })
       .catch((error) => {
         console.log(error);
       });
   },
 
-  async removeVacancy({commit, dispatch}, {object_uuid, vacancy_uuid}) {
+  async removeVacancy({commit, dispatch}, {object_uuid, uuid}) {
 
-    await this.$axios.delete('/objects/' + object_uuid + '/vacancies/' + vacancy_uuid)
+    await this.$axios.delete('/objects/' + object_uuid + '/vacancies',{
+      headers: { 'Content-Type': 'application/json', },
+      data: uuid
+      })
       .then((response) => {
         console.log(response);
         dispatch('object_id/fetchObjectIdVacancies', {requestId:object_uuid, params:{}, concat: false, unit: false}, {root: true});

@@ -44,7 +44,7 @@ export const actions = {
       });
 
   },
-  async putService({commit, dispatch}, {body, object_uuid, service_uuid}) {
+  async putService({commit, dispatch}, {body, object_uuid, service_uuid, isClose}) {
     let self= this;
     await this.$axios.put('/objects/' + object_uuid + '/services/' + service_uuid,
       body,
@@ -60,15 +60,24 @@ export const actions = {
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
         }, 2000);
+        if(isClose){
+          setTimeout(function() {
+            self.$router.push('/objects/'+object_uuid);
+          }, 1000);
+        }
       })
       .catch((error) => {
         console.log(error);
       });
   },
 
-  async removeService({commit, dispatch}, {object_uuid, service_uuid}) {
+  async removeService({commit, dispatch}, {object_uuid, uuid}) {
 
-    await this.$axios.delete('/objects/' + object_uuid + '/services/'  + service_uuid)
+    await this.$axios.delete('/objects/' + object_uuid + '/services',
+      {
+        headers: { 'Content-Type': 'application/json', },
+        data: uuid
+      })
       .then((response) => {
         console.log(response);
         dispatch('object_id/fetchObjectIdServices',  {requestId:object_uuid, params:{}, concat: false, unit: false}, {root: true});

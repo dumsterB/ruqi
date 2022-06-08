@@ -35,6 +35,7 @@ export default {
 .ruqi {
   .wrap-search-filter {
     flex: 1;
+    max-width: 44px;
 
     .v-input {
 
@@ -55,7 +56,7 @@ export default {
         height: 100%;
       }
 
-      &:not(.v-input--is-focused ){
+      &:not(.v-input--is-focused ) {
         .v-input__slot {
 
           .v-input__icon--clear {
@@ -81,6 +82,17 @@ export default {
 
     .v-icon {
       color: #7A91A9;
+    }
+
+  }
+
+  .filter-row {
+    &.search-is-focus {
+
+      .wrap-search-filter {
+        max-width: 100%;
+      }
+
     }
 
   }
