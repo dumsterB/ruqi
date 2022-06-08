@@ -288,6 +288,11 @@
                     :page_uuid="object_id.uuid"
                     @applyFilter="applyFilter('fetchTaskParams', 'headerOptionsTask', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
 
+                  .filter-col-after-left
+                    TableGroupAction(v-if="selectedItems.length"
+                      :actions="groupListAction" :selected="selectedItems"
+                      @selectAction="changeConfirmModalContentAny(true)" @clearSelected="clearSelected")
+
 
 
               .table-row(v-infinite-scroll="loadMore")
@@ -550,7 +555,10 @@ export default {
         {text: "Набор до", value: "date", width: "132px"},
         {text: "Наполнение", value: "completion", width: "152px"},
       ],
-      headers_tasks_filter: [],
+      headers_tasks_filter: [
+        {field: 'start_date', translit: 'Период'},
+        {field: 'status', translit: 'Статус'},
+      ],
       headers_services: [
         {
           text: "",
@@ -754,6 +762,7 @@ export default {
     ...mapActions("object_id", ["fetchObjectIdHistory"]),
     ...mapActions("object_id", ["putStatus"]),
     ...mapActions("object_id", ["resetObjectState"]),
+    ...mapActions("object_id", ["removeTask"]),
     ...mapActions("service_id", ["removeService"]),
     ...mapActions("vacancy_id", ["removeVacancy"]),
     ...mapActions("objects", ["removeRequest"]),
@@ -859,10 +868,10 @@ export default {
       if(this.selectedItemsUUID.length > 0){
         uuids = this.selectedItemsUUID;
       }
-      console.log('actionName', actionName, this.removedUUID, uuids)
 
       if (confirm) {
-       //this[actionName]({object_uuid: this.object_id.uuid, uuid:  uuids});
+       this[actionName]({object_uuid: this.object_id.uuid, uuid:  uuids});
+       this.selectedItems = [];
       }
 
       this.isConfirmModalAny = false;
