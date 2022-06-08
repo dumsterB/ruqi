@@ -39,9 +39,9 @@
           <electronic-document  @pageHandler="pageHandler" v-if="current_page === 3"></electronic-document>
           <position-selector  @pageHandler="pageHandler" v-if="current_page === 4"></position-selector>
           <address-page @pageHandler="pageHandler" v-if="current_page === 5"></address-page>
-          <upload-document  @pageHandler="pageHandler" v-if="current_page === 6"></upload-document>
-          <payment-information @pageHandler="pageHandler" v-if="current_page === 7"></payment-information>
-          <finish v-if="current_page === 8"></finish>
+          <upload-document  @pageHandler="pageHandler" v-if="current_page == 6"></upload-document>
+          <payment-information @pageHandler="pageHandler" v-if="current_page == 7"></payment-information>
+          <finish v-if="current_page == 8"></finish>
       </v-container>
     </div>
   </div>
@@ -76,7 +76,7 @@ export default {
   data(){
     return{
       power: 78,
-      current_page: 5,
+      current_page: 8,
       form:{
         name: '',
         surname: '',
@@ -104,9 +104,7 @@ export default {
       console.log(helper)
       if(helper== 'back'){
         this.current_page = val
-        console.log('back')
         this.$forceUpdate()
-        console.log(this.current_page)
       }else {
         if (val == 1) {
           this.current_page = val
@@ -142,7 +140,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .tab{
   width: 180px;
   margin-left: 5px;
@@ -166,6 +164,28 @@ export default {
   .mobile{
     display: flex!important;
   }
+}
+.main_text_executor{
+  font-size: 44px;
+  font-weight: 700;
+}
+.input_label{
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 600;
+}
+.btn-primary{
+  background: #0082DE!important;
+  border-radius: 8px;
+  height: 45px!important;
+  width: 100%;
+  margin-top: 15px;
+}
+.btn-secondary{
+  background: #F2F6F9!important;
+  border-radius: 8px;
+  height: 45px!important;
+  width: 100%;
 }
 .text-lightgrey{
  color: #9398A1

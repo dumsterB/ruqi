@@ -1,18 +1,18 @@
 <template>
 <div class="position_selector">
 <v-container>
-   <h2>Выбор профессий</h2>
+   <p class="main_text_executor">Выбор профессий</p>
   <p>Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
   <div>
     <h3>Выберите виды работ</h3>
-    <v-expansion-panels flat >
+    <v-expansion-panels flat class="mt-4" >
       <v-expansion-panel
           class="panels"
           v-for="(item,i) in copySpec"
           :key="i"
       >
         <v-expansion-panel-header>
-           {{item.name}}
+          <span class="input_label">{{item.name}}</span>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-row>
@@ -32,15 +32,15 @@
       </div>
       <div class="desktop">
         <div class="d-flex">
-          <strong class="small-text">Водитель электроштабелера </strong> <span  style="margin-top: -2px" class="primary-text ml-3"> требуются права для управления</span>
+          <strong class="small-text ml-5">Водитель электроштабелера </strong> <span  style="margin-top: -2px" class="primary-text ml-3"> требуются права для управления</span>
         </div>
         <div class="d-flex">
-          <strong class="small-text">Кладовщик </strong> <span style="margin-top: -2px" class="primary-text ml-3 "> требуются медицинская книжка</span>
+          <strong class="small-text ml-5">Кладовщик </strong> <span style="margin-top: -2px" class="primary-text ml-3 "> требуются медицинская книжка</span>
         </div>
       </div>
       <div class="mobile">
         <div >
-          <strong class="small-text">Водитель электроштабелера </strong> <br> <span class="primary-text"> требуются права для управления</span>
+          <strong class="small-text" >Водитель электроштабелера </strong> <br> <span class="primary-text"> требуются права для управления</span>
         </div>
         <div >
           <strong class="small-text">Кладовщик </strong> <br> <span class="primary-text"> требуются медицинская книжка</span>

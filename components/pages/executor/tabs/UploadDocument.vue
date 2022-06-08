@@ -1,7 +1,7 @@
 <template>
 <div class="upload_document">
  <v-container>
-    <h2>Загрузка документов</h2>
+    <p class="main_text_executor">Загрузка документов</p>
     <p class="mt-4">Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
     <br>
     <div class="d-flex">
@@ -10,7 +10,7 @@
     </div>
     <div class="mt-5">
       <div class="form-part">
-        ФИО в паспорте
+       <p class="input_label">ФИО в паспорте</p>
         <v-text-field
             outlined
             v-model="passport_info"
@@ -23,7 +23,8 @@
       <v-row>
         <v-col>
           <div class="form-part">
-            Серия
+            <p class="input_label">Серия</p>
+
             <v-text-field
                 outlined
                 v-model="passport_series"
@@ -35,7 +36,8 @@
         </v-col>
         <v-col>
           <div class="form-part">
-            Номер
+            <p class="input_label">Номер</p>
+
             <v-text-field
                 outlined
                 class="mt-2"
@@ -47,7 +49,8 @@
         </v-col>
         <v-col>
           <div class="form-part">
-            Дата выдачи
+            <p class="input_label">    Дата выдачи</p>
+
             <v-text-field
                 outlined
                 class="mt-2"
@@ -59,7 +62,8 @@
         </v-col>
         <v-col>
           <div class="form-part">
-            Срок действия
+            <p class="input_label"> Срок действия</p>
+
             <v-text-field
                 outlined
                 class="mt-2"
@@ -71,7 +75,8 @@
         </v-col>
       </v-row>
       <div class="form-part">
-        Кем выдан
+        <p class="input_label">Кем выдан</p>
+
         <v-text-field
             outlined
             class="mt-2"
@@ -82,7 +87,8 @@
       </div>
       <div style="width: 200px">
         <div class="form-part">
-          Код подразделения
+          <p   class="input_label">Код подразделения</p>
+
           <v-text-field
               outlined
               class="mt-2"
@@ -285,9 +291,11 @@
       <v-col>
         <img src="@/assets/img/driverlicense.svg" alt="">
       </v-col>
-    </v-row>-->
-    <v-btn  elevation="0" class="btn-secondary" @click="back(5)"> <span class="btn-title">Назад</span> </v-btn>
-    <v-btn dark elevation="0" class="btn-primary" @click="next( 7)"><span class="btn-title">Далее</span> </v-btn>
+    </v-row>
+   <div class="mt-10">
+     <v-btn  elevation="0" class="btn-secondary" @click="back(5)"> <span class="btn-title">Назад</span> </v-btn>
+     <v-btn dark elevation="0" class="btn-primary" @click="next( 7)"><span class="btn-title">Далее</span> </v-btn>
+   </div>
   </v-container>
 </div>
 </template>
@@ -323,7 +331,7 @@ export default {
     }
   },
   methods:{
-    ...mapActions('executor', ['createDocument']),
+    ...mapActions('executor', ['createDocument','setPassport']),
     next(value){
       this.$emit('pageHandler', value)
      let data=[
@@ -361,6 +369,7 @@ export default {
         }
       ]
       this.createDocument()
+      this.setPassport(data)
     },
     back(value){
       this.$emit('pageHandler', value , 'back')

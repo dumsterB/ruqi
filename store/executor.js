@@ -127,8 +127,9 @@ export const actions = {
                 return error
             });
     },
-    async setPassport({commit}, params){
-        await this.$axios.post(`user/documents/${params.uuid}`,)
+    async setPassport({commit, state}, params){
+        console.log(state.document)
+        await this.$axios.post(`user/documents/${state.document}`,params)
             .then((response) => {
                 commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
                 setTimeout(function() {

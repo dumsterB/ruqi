@@ -2,11 +2,11 @@
   <div class="private_info">
     <v-container>
       <div class="content">
-      <h2>Личные данные</h2>
-      <p class="text-grey">Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
+      <p class="main_text_executor">Личные данные</p>
+      <p class="mt-4 mb-4">Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
         <v-form ref="form_part_0" v-model="valid" lazy-validation>
             <div class="form-part">
-              Имя
+            <p class="input_label">Имя</p>
               <v-text-field
                   outlined
                   class="mt-2"
@@ -17,7 +17,7 @@
             </div>
 
             <div class="form-part">
-              Фамилия
+              <p class="input_label">Фамилия</p>
               <v-text-field
                   outlined
                   class="mt-2"
@@ -28,7 +28,7 @@
 
 
             <div class="form-part">
-              Отчество
+              <p class="input_label">Отчество</p>
               <v-text-field
                   outlined
                   class="mt-2"
@@ -37,7 +37,8 @@
               ></v-text-field>
             </div>
             <div class="form-part">
-              Пол
+              <p class="input_label">Пол</p>
+
               <v-select
                   outlined
                   class="mt-2"
@@ -48,7 +49,7 @@
               ></v-select>
             </div>
           <div class="form-part">
-            Дата рождения
+            <p class="input_label">    Дата рождения</p>
             <v-menu
                 ref="menu"
                 v-model="menu"
@@ -95,7 +96,8 @@
 
           </div>
           <div class="form-part">
-            Телефон
+            <p class="input_label">Телефон</p>
+
             <v-text-field
                 v-model="form.phone"
                 class="mt-2"
@@ -106,7 +108,7 @@
           </div>
 
           <div class="form-part" v-if="agree">
-            Email
+            <p class="input_label">Email</p>
             <v-text-field
                 class="mt-2"
                 v-model="form.email"
@@ -122,7 +124,7 @@
                   v-model="form.agree"
                   @click="checkboxHandler"
               ></v-checkbox>
-            <p class="mt-5"> Я не могу получить код по SMS</p>
+            <p class="mt-5 input_label"> Я не могу получить код по SMS</p>
             </div>
             <p class="text-grey-checkbox">
               Выбрав эту опцию вам будет предложено <br>  связаться с менеджером для регистрации по телефону
@@ -213,11 +215,10 @@ export default {
   margin-top: 15px;
 }
 .btn-secondary{
-  background: white!important;
+  background: #F2F6F9!important;
   border-radius: 8px;
   height: 45px!important;
   width: 100%;
-  border: 1px solid lightgrey;
 }
 .form-part-title{
   margin-top: -10px;

@@ -2,12 +2,12 @@
   <div class="sms">
     <v-container>
       <div v-if="agree===false">
-        <h2>Введите код из sms</h2>
-        <p>Мы выслали SMS с кодом на номер {{phone}}</p>
+        <p class="main_text_executor">Введите код из sms</p>
+        <p>Мы выслали SMS с кодом на номер <strong>{{phone}}</strong> </p>
       </div>
       <div v-else>
         <h2>Введите код из email</h2>
-        <p>Мы выслали SMS с кодом на почту  {{email}}</p>
+        <p>Мы выслали SMS с кодом на почту <strong>{{email}}</strong></p>
       </div>
       <div class="code mt-10">
         <input id="first" class="inputStyle" placeholder="-" v-model="code[0]" type="text"/>
@@ -158,19 +158,5 @@ export default {
 }
 .text-grey{
   color: #8692A6;
-}
-.btn-primary{
-  background: #0082DE!important;
-  border-radius: 8px;
-  height: 45px!important;
-  width: 100%;
-  margin-top: 15px;
-}
-.btn-secondary{
-  background: white!important;
-  border-radius: 8px;
-  height: 45px!important;
-  width: 100%;
-  border: 1px solid lightgrey;
 }
 </style>
