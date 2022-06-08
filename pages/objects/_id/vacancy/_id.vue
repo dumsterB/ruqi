@@ -302,7 +302,7 @@ export default {
       isConfirmModal: false,
       confirmModal: {
         title: "Внимание!",
-        description: "Есть несохраненные изменения. Хотите сохранить изменения и закрыть вакансию?",
+        description: "Есть несохраненные изменения. Сохранить перед закрытием?",
         text_btn_ok: "Да",
         text_btn_cancel: "Нет",
       },
@@ -397,7 +397,13 @@ export default {
     async confirmClose(confirm) {
       if (confirm) {
         this.createVacancyHandler(true);
+      }else{
+        this.$router.push({
+          name: "objects-id",
+          params: { id: this.object_uuid, ServiceId: "",  objectId: this.object_uuid, activeTab: 1 },
+        });
       }
+
       this.isConfirmModal = false;
     },
 
