@@ -43,6 +43,11 @@ import {mapActions} from "vuex";
 
 export default {
   name: "CreatePassword",
+  props:{
+    email:{},
+    phone:{},
+    agree:{},
+  },
   data(){
     return{
       valid:false,
@@ -54,7 +59,17 @@ export default {
     ...mapActions('executor', ['createPassword']),
     next(val){
     this.$emit('pageHandler',val)
-      this.createPassword(this.password)
+      let data ={
+      password:this.password,
+      phone: this.phone,
+      email:this.email
+      }
+      if(data.agree){
+        delete data.phone
+      }else{
+        delete data.email
+      }
+      this.createPassword(data)
     },
     back(val){
       this.$emit('pageHandler',val , 'back')

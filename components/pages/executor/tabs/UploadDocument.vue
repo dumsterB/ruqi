@@ -1,6 +1,6 @@
 <template>
 <div class="upload_document">
-  <v-container>
+ <v-container>
     <h2>Загрузка документов</h2>
     <p class="mt-4">Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
     <br>
@@ -285,9 +285,9 @@
       <v-col>
         <img src="@/assets/img/driverlicense.svg" alt="">
       </v-col>
-    </v-row>
-    <v-btn  elevation="0" class="btn-secondary" @click="back(6)"> <span class="btn-title">Назад</span> </v-btn>
-    <v-btn dark elevation="0" class="btn-primary" @click="next(8)"><span class="btn-title">Далее</span> </v-btn>
+    </v-row>-->
+    <v-btn  elevation="0" class="btn-secondary" @click="back(5)"> <span class="btn-title">Назад</span> </v-btn>
+    <v-btn dark elevation="0" class="btn-primary" @click="next( 7)"><span class="btn-title">Далее</span> </v-btn>
   </v-container>
 </div>
 </template>
@@ -295,6 +295,7 @@
 <script>
 import vue2Dropzone from 'vue2-dropzone'
 import 'vue2-dropzone/dist/vue2Dropzone.min.css'
+import {mapActions} from "vuex";
 export default {
   name: "UploadDocument",
   components:{
@@ -322,14 +323,41 @@ export default {
     }
   },
   methods:{
+    ...mapActions('executor', ['createDocument']),
     next(value){
       this.$emit('pageHandler', value)
-      let data=[
+     let data=[
         {
-          document:'Паспорт',
-          slug:'передняя сторана',
-          count_media: 3
-
+          field: 'fullname',
+          value: this.passport_info,
+        },
+        {
+         field:'seria',
+         value: this.passport_series
+        },
+        {
+         field:'seria',
+         value: this.passport_series
+        },
+        {
+         field:'number',
+         value: this.passport_number
+        },
+        {
+         field:'date_of_issue',
+         value: this.passport_date
+        },
+        {
+         field:'validity',
+         value: this.passport_term
+        },
+        {
+         field: 'issued',
+         value: this.passport_given
+        },
+        {
+         field: "code",
+         value:this.passport_code
         }
       ]
       this.createDocument()

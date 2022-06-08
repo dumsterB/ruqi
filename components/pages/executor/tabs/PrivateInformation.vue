@@ -166,6 +166,12 @@ export default {
   async next(value){
      this.$emit('pageHandler',value)
      let response = ''
+    if(this.form.agree){
+      delete this.form.phone
+    }else{
+      delete this.form.email
+    }
+    console.log(this.form)
      response = await this.createExecutor(this.form)
     console.log(response,'data of res')
     },

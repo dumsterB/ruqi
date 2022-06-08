@@ -36,31 +36,31 @@
       <v-row>
         <v-col cols="5">
           <p>ИНН</p>
-          <v-text-field dense outlined></v-text-field>
+          <v-text-field v-model="settings.inn" dense outlined></v-text-field>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12">
           <p>Способ оплаты</p>
-          <v-select dense outlined placeholder="Расчетный счет"></v-select>
+          <v-select dense v-model="settings.type_payment" outlined placeholder="Расчетный счет"></v-select>
         </v-col>
       </v-row>
       <v-row>
         <v-col col="5">
           <p>Номер счета</p>
-          <v-text-field dense outlined></v-text-field>
+          <v-text-field v-model="settings.payment_account" dense outlined></v-text-field>
         </v-col>
         <v-col col="4">
           <p>БИК</p>
-          <v-text-field placeholder="044521234" dense outlined></v-text-field>
+          <v-text-field  v-model="settings.bik" placeholder="044521234" dense outlined></v-text-field>
         </v-col>
       </v-row>
       <v-row>
         <v-col col="12">
           <p>Банк</p>
-          <v-text-field placeholder="Московский банк ПАО Сбербанк г. Москва" dense outlined></v-text-field>
+          <v-text-field v-model="settings.bank" placeholder="Московский банк ПАО Сбербанк г. Москва" dense outlined></v-text-field>
           <p>ФИО получателя</p>
-          <v-text-field placeholder="Московский банк ПАО Сбербанк г. Москва" dense outlined></v-text-field>
+          <v-text-field v-model="settings.payment_fullname" placeholder="Московский банк ПАО Сбербанк г. Москва" dense outlined></v-text-field>
         </v-col>
       </v-row>
     </div>
@@ -80,15 +80,33 @@
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
   name: "PaymentInformation",
-  methods:{
+  data() {
+    return {
+      settings:{
+        inn: '',
+        bik: '',
+        bank: '',
+        type_payment: 'visa',
+        payment_account: '',
+        payment_fullname: '',
+      }
+    }
+  },
+  methods: {
+    ...mapActions('executor',['setPayment']),
     next(val){
       this.$emit('pageHandler', val)
+      this.setPayment(this.settings)
     },
     back(val){
       this.$emit('pageHandler',val , 'back')
     }
+  },
+  mounted(){
   }
 }
 </script>

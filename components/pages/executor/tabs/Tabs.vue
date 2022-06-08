@@ -35,7 +35,7 @@
       <v-container class="tab-content">
           <private-information @checkboxHandler="checkboxHandler" :agree="agree" :form="form" @pageHandler="pageHandler" v-if="current_page === 0"></private-information>
           <sms :agree="form.agree" :email="form.email" :phone="form.phone" @pageHandler="pageHandler" v-if="current_page === 1"></sms>
-          <create-password :password="password"  @pageHandler="pageHandler"  v-if="current_page === 2" ></create-password>
+          <create-password :agree="form.agree" :phone="form.phone" :email:="form.email" :password="password"  @pageHandler="pageHandler"  v-if="current_page === 2" ></create-password>
           <electronic-document  @pageHandler="pageHandler" v-if="current_page === 3"></electronic-document>
           <position-selector  @pageHandler="pageHandler" v-if="current_page === 4"></position-selector>
           <address-page @pageHandler="pageHandler" v-if="current_page === 5"></address-page>
@@ -76,7 +76,7 @@ export default {
   data(){
     return{
       power: 78,
-      current_page: 0,
+      current_page: 5,
       form:{
         name: '',
         surname: '',

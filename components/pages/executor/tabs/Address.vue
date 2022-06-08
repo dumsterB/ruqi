@@ -31,7 +31,7 @@
           outlined
           class="mt-2"
           placeholder="Например: Зеленоград, Ленинский район"
-          v-model="address_extra"
+          v-model="address_extra_2"
           dense
           single-line
       ></v-text-field>
@@ -42,27 +42,35 @@
       </div>
     </div>
     <div class="mt-5">
-    <v-btn  elevation="0" class="btn-secondary" @click="back(3)"> <span class="btn-title">Назад</span> </v-btn>
-    <v-btn dark elevation="0" class="btn-primary" @click="next( 6 )"><span class="btn-title">Далее</span> </v-btn>
+    <v-btn  elevation="0" class="btn-secondary" @click="back(4)"> <span class="btn-title">Назад</span> </v-btn>
+    <v-btn dark elevation="0" class="btn-primary" @click="next( 7 )"><span class="btn-title">Далее</span> </v-btn>
     </div>
   </v-container>
 </div>
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
   data(){
     return{
       address:'',
       address_extra:'',
+      address_extra_2:'',
     }
   },
   methods:{
+    ...mapActions('executor',['setAddress']),
     back(value){
       this.$emit('pageHandler', value, 'back')
     },
     next(value){
       this.$emit('pageHandler', value)
+      let data =[
+          this.address,this.address_extra,this.address_extra_2
+      ]
+     this.setAddress(data)
     }
   }
 }
