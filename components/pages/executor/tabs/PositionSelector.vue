@@ -38,12 +38,12 @@
           <strong class="small-text ml-5">Кладовщик </strong> <span style="margin-top: -2px" class="primary-text ml-3 "> требуются медицинская книжка</span>
         </div>
       </div>
-      <div class="mobile">
+      <div class="mobile d-block">
         <div >
-          <strong class="small-text" >Водитель электроштабелера </strong> <br> <span class="primary-text"> требуются права для управления</span>
+          <strong class="small-text ml-5">Водитель электроштабелера </strong> <br> <span class="primary-text ml-5"> требуются права для управления</span>
         </div>
         <div >
-          <strong class="small-text">Кладовщик </strong> <br> <span class="primary-text"> требуются медицинская книжка</span>
+          <strong class="small-text ml-5">Кладовщик </strong> <br> <span class="primary-text ml-5"> требуются медицинская книжка</span>
         </div>
       </div>
 

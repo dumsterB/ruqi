@@ -149,7 +149,7 @@ export default {
 <style scoped>
 
 .inputStyle {
-  width: 8%;
+  width: 50px;
   height: 50px;
   text-align: center;
   border: 1px solid lightgrey;
