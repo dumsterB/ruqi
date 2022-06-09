@@ -320,7 +320,7 @@
                <v-btn elevation="0" @click="selectFile(1)" dark class="btn-primary"><img class="mr-2" src="@/assets/img/pics.svg" alt="">загрузить Из файла</v-btn>
              </div>
              <div class="d-flex">
-               <v-btn elevation="0" @click="selectFile(1)" dark class="btn-primary"><img class="mr-2" src="@/assets/img/camera.svg" alt="">новое фото с камеры</v-btn>
+               <v-btn elevation="0" @click="selectFile(1)" dark class="btn-primary"><img class="mr-2" src="@/assets/img/Camera.svg" alt="">новое фото с камеры</v-btn>
              </div>
            </div>
          </v-col>
