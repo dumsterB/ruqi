@@ -4,14 +4,16 @@
       <div class="content">
       <p class="main_text_executor">Личные данные</p>
       <p class="mt-4 mb-4">Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
-        <v-form ref="form_part_0" v-model="valid" lazy-validation>
+        <v-form ref="form" v-model="valid" lazy-validation>
             <div class="form-part">
             <p class="input_label">Имя</p>
               <v-text-field
                   outlined
                   class="mt-2"
                   v-model="form.name"
+                  :rules="inputRules"
                   dense
+                  required
                   single-line
               ></v-text-field>
             </div>
@@ -20,8 +22,10 @@
               <p class="input_label">Фамилия</p>
               <v-text-field
                   outlined
+                  required
                   class="mt-2"
                   dense
+                  :rules="inputRules"
                   v-model="form.surname"
               ></v-text-field>
             </div>
@@ -31,7 +35,9 @@
               <p class="input_label">Отчество</p>
               <v-text-field
                   outlined
+                  required
                   class="mt-2"
+                  :rules="inputRules"
                   v-model="form.middle_name"
                   dense
               ></v-text-field>
@@ -42,8 +48,10 @@
               <v-select
                   outlined
                   class="mt-2"
+                  required
                   dense
                   placeholder="Не выбрано"
+                  :rules="inputRules"
                   v-model="form.sex"
                   :items="sex_options"
               ></v-select>
@@ -62,7 +70,9 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
                     v-model="form.birth_date"
+                    :rules="inputRules"
                     label="ДД.ММ.ГГГГ"
+                    required
                     class="mt-2"
                     readonly
                     v-bind="attrs"
@@ -73,7 +83,9 @@
               </template>
               <v-date-picker
                   v-model="form.birth_date"
+                  :rules="inputRules"
                   no-title
+                  required
                   scrollable
               >
                 <v-spacer></v-spacer>
@@ -95,12 +107,14 @@
             </v-menu>
 
           </div>
-          <div class="form-part">
+          <div class="form-part" v-if="!agree">
             <p class="input_label">Телефон</p>
 
             <v-text-field
                 v-model="form.phone"
                 class="mt-2"
+                :rules="inputRules"
+                type="number"
                 outlined
                 placeholder="+7"
                 dense
@@ -112,6 +126,7 @@
             <v-text-field
                 class="mt-2"
                 v-model="form.email"
+                :rules="inputRules"
                 outlined
                 placeholder=""
                 dense
@@ -160,22 +175,31 @@ export default {
       valid:false,
       menu:'',
       sex_options:['мужской','женский'],
-      switcher:false
+      switcher:false,
+      inputRules: [
+        v => !!v || 'Заполните поля',
+      ],
     }
   },
   methods:{
     ...mapActions('executor',['createExecutor']),
+    validate () {
+      this.$refs.form.validate()
+    },
   async next(value){
-     this.$emit('pageHandler',value)
-     let response = ''
     if(this.form.agree){
       delete this.form.phone
     }else{
       delete this.form.email
     }
-    console.log(this.form)
-     response = await this.createExecutor(this.form)
-    console.log(response,'data of res')
+     await this.createExecutor(this.form)
+    console.log(this.requestSuccess)
+    if(this.requestSuccess.type === 'success'){
+      this.$emit('pageHandler',value)
+    }else{
+     this.validate()
+    }
+
     },
     checkboxHandler(){
       this.switcher=!this.switcher
@@ -183,6 +207,7 @@ export default {
     },
   },
   computed:{
+    ...mapGetters('response',['requestSuccess']),
    executors() {
     return this.$store.getters['executor/executors']
    },

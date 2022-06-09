@@ -1,17 +1,17 @@
 <template>
   <div>
   <div class="tabs">
-    <div class="content mt-3">
-      <v-container>
+    <div class="content mt-3" v-if="current_page !== 8">
+      <v-container fluid>
         <v-row class="desktop">
-          <v-col v-for="(tab ,item) of tabs" :key="tab.title" cols="12" lg="2" md="2" xl="2">
+          <div v-for="(tab ,item) of tabs" :key="tab.title" >
           <div class="tab" >
            Шаг {{item + 1}}
             <br>
            <strong class="mt-1" :class="tab.active ? '' : 'text-lightgrey'">{{tab.title}}</strong>
             <v-progress-linear class="mt-2 mr-1 " color="success" :value="tab.value"></v-progress-linear>
           </div>
-          </v-col>
+          </div>
         </v-row>
         <v-row class="mobile">
           <v-col v-for="(tab ,item) of tabs" :key="tab.title" v-if="tab.mobile"  cols="12" >
@@ -22,26 +22,26 @@
             </div>
           </v-col>
         </v-row>
-        <v-row class="mobile">
-          <v-col v-for="(tab ,item) of tabs" :key="tab.title"  cols="2" >
-            <div class="tab d-block" >
-              <v-progress-linear class="mt-2 mobile-linear" color="success" :value="tab.value"></v-progress-linear>
+        <v-container class="mobile">
+          <v-row class="tab_row" v-for="(tab ,item) of tabs" :key="tab.title" >
+            <div class="tab d-flex">
+              <v-progress-linear  class="mobile-linear" color="success" :value="tab.value"></v-progress-linear>
             </div>
-          </v-col>
-        </v-row>
+          </v-row>
+        </v-container>
       </v-container>
     </div>
     <div class="tabs-content">
       <v-container class="tab-content">
           <private-information @checkboxHandler="checkboxHandler" :agree="agree" :form="form" @pageHandler="pageHandler" v-if="current_page === 0"></private-information>
           <sms :agree="form.agree" :email="form.email" :phone="form.phone" @pageHandler="pageHandler" v-if="current_page === 1"></sms>
-          <create-password :agree="form.agree" :phone="form.phone" :email:="form.email" :password="password"  @pageHandler="pageHandler"  v-if="current_page === 2" ></create-password>
+          <create-password :agree="form.agree" :phone="form.phone" :email="form.email" :password="password"  @pageHandler="pageHandler"  v-if="current_page === 2" ></create-password>
           <electronic-document  @pageHandler="pageHandler" v-if="current_page === 3"></electronic-document>
           <position-selector  @pageHandler="pageHandler" v-if="current_page === 4"></position-selector>
           <address-page @pageHandler="pageHandler" v-if="current_page === 5"></address-page>
-          <upload-document  @pageHandler="pageHandler" v-if="current_page == 6"></upload-document>
-          <payment-information @pageHandler="pageHandler" v-if="current_page == 7"></payment-information>
-          <finish v-if="current_page == 8"></finish>
+          <upload-document  @pageHandler="pageHandler" v-if="current_page === 6"></upload-document>
+          <payment-information @pageHandler="pageHandler" v-if="current_page === 7"></payment-information>
+          <finish v-if="current_page === 8"></finish>
       </v-container>
     </div>
   </div>
@@ -76,7 +76,7 @@ export default {
   data(){
     return{
       power: 78,
-      current_page: 0,
+      current_page: 5,
       form:{
         name: '',
         surname: '',
@@ -92,8 +92,9 @@ export default {
         {title:'Создание пароля', value:'',active:false, mobile:false},
         {title:'Соглашение ЭДО', value:'',active:false, mobile:false},
         {title:'Выбор профессий', value:'',active:false, mobile:false},
+        {title:'Адресса', value:'',active:false, mobile:false},
         {title:'Загрузка документов', value:'',active:false, mobile:false},
-        {title:'Платежные данные', value:'',active:false, mobile:false}
+        {title:'Платежные данные', value:'',active:false, mobile:false},
       ],
       agree:false,
       password: '',
@@ -101,10 +102,12 @@ export default {
   },
   methods:{
     pageHandler(val,helper){
-      console.log(helper)
-      if(helper== 'back'){
+      if(helper === 'back'){
         this.current_page = val
         this.$forceUpdate()
+      }else if(val === 'finish'){
+        this.current_page = 8
+        return true
       }else {
         if (val == 1) {
           this.current_page = val
@@ -153,10 +156,20 @@ export default {
 .mobile{
   display: none;
 }
+.desktop{
+  margin-right: auto;
+  margin-left: auto;
+  justify-content: center;
+  display: flex;
+  margin-top: 20px;
+}
 @media (max-width: 1000px) {
   .tab-content{
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .tab{
+    width: 25px;
   }
   .desktop{
     display: none;
@@ -191,9 +204,14 @@ export default {
  color: #9398A1
 }
 .mobile-linear{
-  width: 40px!important;
+  width: 25px!important;
+  display: flex;
 }
 .tabs{
   overflow: hidden;
+}
+.tab_row{
+  margin-top: 12px;
+  margin-left: 5px;
 }
 </style>

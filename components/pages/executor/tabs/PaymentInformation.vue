@@ -3,6 +3,7 @@
   <v-container>
    <p class="main_text_executor">Платежная информация</p>
     <p>Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют.</p>
+    <v-form v-model="valid" lazy-validation ref="form">
     <div class="access-content">
       <div class="d-flex">
         <img src="@/assets/img/attention.svg" alt="">
@@ -72,9 +73,10 @@
       </div>
       <p class="text-grey" style="margin-top: -15px">Если карта чужая то мы можем платить по карте , но не можем <br> на чужие реквизиты</p>
     </div>
+    </v-form>
     <v-btn  elevation="0" class="btn-secondary" @click="next(6)"> <span class="btn-title">Назад</span> </v-btn>
-    <v-btn  elevation="0" class="btn-secondary" @click="next(8)"> <span class="btn-title">Заполнить позже</span> </v-btn>
-    <v-btn dark elevation="0" class="btn-primary" @click="next(8)"><span class="btn-title">Далее</span> </v-btn>
+    <v-btn  elevation="0" class="btn-secondary" @click="next"> <span class="btn-title">Заполнить позже</span> </v-btn>
+    <v-btn dark elevation="0" class="btn-primary" @click="next"><span class="btn-title">Далее</span> </v-btn>
   </v-container>
 </div>
 </template>
@@ -86,6 +88,7 @@ export default {
   name: "PaymentInformation",
   data() {
     return {
+      valid:false,
       settings:{
         inn: '',
         bik: '',
@@ -98,8 +101,11 @@ export default {
   },
   methods: {
     ...mapActions('executor',['setPayment']),
-    next(val){
-      this.$emit('pageHandler', val)
+    validate () {
+      this.$refs.form.validate()
+    },
+    next(){
+      this.$emit('pageHandler', 'finish')
       this.setPayment(this.settings)
     },
     back(val){

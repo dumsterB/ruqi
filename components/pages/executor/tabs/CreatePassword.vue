@@ -3,12 +3,13 @@
   <v-container>
     <p class="main_text_executor">Придумайте пароль</p>
     <p>Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
-    <v-form ref="form_part_0" v-model="valid" lazy-validation>
+    <v-form ref="form" v-model="valid" lazy-validation>
       <div class="form-part">
        <p class="input_label">Пароль</p>
         <v-text-field
             outlined
             class="mt-2"
+            :rules="inputRules"
             v-model="password"
             dense
             single-line
@@ -39,7 +40,7 @@
 </template>
 
 <script>
-import {mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
   name: "CreatePassword",
@@ -53,29 +54,39 @@ export default {
       valid:false,
       confirm_password:null,
       password: '',
+      inputRules: [v => !!v || 'Заполните поля'],
     }
   },
   methods:{
     ...mapActions('executor', ['createPassword']),
-    next(val){
-    this.$emit('pageHandler',val)
+    validate () {
+      this.$refs.form.validate()
+    },
+    next(value){
       let data ={
       password:this.password,
       phone: this.phone,
       email:this.email
       }
-      if(data.agree){
+      if(this.agree){
         delete data.phone
       }else{
         delete data.email
       }
       this.createPassword(data)
+      if(this.requestSuccess.type === 'success'){
+        this.$emit('pageHandler',value)
+      }else{
+        this.validate()
+      }
+
     },
     back(val){
       this.$emit('pageHandler',val , 'back')
     }
   },
   computed:{
+    ...mapGetters('response',['requestSuccess']),
     disableHandler(){
       return this.password === this.confirm_password
     }

@@ -30,7 +30,7 @@
         <img  src="@/assets/img/attention.svg" alt="">
         <p class="ml-2 small-text mt-8"> Некоторые из выбранных Вами профессий требуют загрузки дополнительных документов для подтверждения:</p>
       </div>
-      <div class="desktop">
+      <div class="desktop d-block">
         <div class="d-flex">
           <strong class="small-text ml-5">Водитель электроштабелера </strong> <span  style="margin-top: -2px" class="primary-text ml-3"> требуются права для управления</span>
         </div>
@@ -161,14 +161,14 @@ export default {
   font-size: 14px;
 }
 .mobile{
-  display: none;
+  display: none!important;
 }
 @media (max-width: 1000px) {
   .desktop{
-    display: none;
+    display: none!important;
   }
   .mobile{
-    display: block;
+    display: block!important;
   }
 }
 </style>

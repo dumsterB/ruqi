@@ -2,6 +2,7 @@ export const state = () => ({
   executors: [],
   specializations:[],
   document:'',
+  error:'',
 
 })
 export const getters = {
@@ -53,9 +54,9 @@ export const actions = {
     },
     async createPassword({ commit }, params){
         console.log(params)
-        await this.$axios.put('auth/password',{password:params})
+        await this.$axios.put('auth/password',params)
             .then((response) => {
-                commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
+                commit('response/setSuccess', {type: 'success', text: 'Пароль успешно создан', }, {root: true});
                 setTimeout(function() {
                     commit('response/removeSuccess', null, { root: true });
                 }, 2000);
@@ -74,7 +75,6 @@ export const actions = {
         await this.$axios.get('dictionary/specializations')
             .then((response) => {
                 commit('setSpecializations',response)
-                commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
                 setTimeout(function() {
                     commit('response/removeSuccess', null, { root: true });
                 }, 2000);
@@ -93,7 +93,7 @@ export const actions = {
         console.log(params)
         await this.$axios.put('user/settings',{ professions:{ ...params } })
             .then((response) => {
-                commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
+                commit('response/setSuccess', {type: 'success', text: 'Специализации успешно созданы', }, {root: true});
                 setTimeout(function() {
                     commit('response/removeSuccess', null, { root: true });
                 }, 2000);
@@ -112,7 +112,6 @@ export const actions = {
         await this.$axios.post('user/documents', {document:'Паспорт',slug:'',count_media: 7})
             .then((response) => {
                 console.log(response.data)
-                commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
                 setTimeout(function() {
                     commit('response/removeSuccess', null, { root: true });
                 }, 2000);
@@ -131,7 +130,7 @@ export const actions = {
         console.log(state.document)
         await this.$axios.post(`user/documents/${state.document}`,params)
             .then((response) => {
-                commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
+                commit('response/setSuccess', {type: 'success', text: 'Паспортные данные успешно созданы', }, {root: true});
                 setTimeout(function() {
                     commit('response/removeSuccess', null, { root: true });
                 }, 2000);
@@ -161,7 +160,7 @@ export const actions = {
              }
             )
             .then((response) => {
-                commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
+                commit('response/setSuccess', {type: 'success', text: 'Платежная информация успешно создана', }, {root: true});
                 setTimeout(function() {
                     commit('response/removeSuccess', null, { root: true });
                 }, 2000);
@@ -179,7 +178,7 @@ export const actions = {
    async setAddress({ commit }, params){
         await this.$axios.put(`user/settings`, { addresses:[...params]})
     .then((response) => {
-            commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
+            commit('response/setSuccess', {type: 'success', text: 'Адресс успешно создан', }, {root: true});
             setTimeout(function() {
                 commit('response/removeSuccess', null, { root: true });
             }, 2000);
