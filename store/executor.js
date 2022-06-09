@@ -108,8 +108,8 @@ export const actions = {
                 return error
             });
     },
-    async createDocument({ commit }, params){
-        await this.$axios.post('user/documents', params)
+    async createDocument({ commit }, ){
+        await this.$axios.post('user/documents', {document:'Паспорт',slug:'',count_media: 7})
             .then((response) => {
                 console.log(response.data)
                 commit('response/setSuccess', {type: 'success', text: 'Исполнитель успешно создан', }, {root: true});
