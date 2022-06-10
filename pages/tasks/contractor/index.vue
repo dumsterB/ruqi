@@ -17,11 +17,15 @@ import Header from '@/components/pages/tasks/executor/index/Header';
 import Tabs from '@/components/pages/tasks/executor/index/Tabs';
 import Banner from '@/components/UI/Banner';
 
+import Picture from '@/components/UI/Picture';
+
 export default {
   components: {
     Header,
     Tabs,
     Banner,
+
+    Picture,
   },
 
   props: {},
