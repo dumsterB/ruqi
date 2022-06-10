@@ -332,7 +332,7 @@ export default {
 
         }
       ]
-      this.createDocument()
+      // this.createDocument()
     },
     back(value){
       this.$emit('pageHandler', value , 'back')
