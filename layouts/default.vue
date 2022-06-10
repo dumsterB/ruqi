@@ -12,7 +12,7 @@
           div(class="wrapper-main-menu d-flex flex-column justify-space-between")
             Navbar
             Settingsnav
-        div
+        .ruqi__wrapper
           Topbar(v-if="isSmallScreen || isLargeScreen || isExtraLargeScreen")
           mAppbar(v-if="isMobile || isTablet")
 
@@ -20,7 +20,7 @@
             Nuxt
             Alert(:requestSuccess="requestSuccess")
 
-          Bottombar(v-if="isMobile || isTablet")
+          Bottombar.ruqi__mbottombar(v-if="isMobile || isTablet")
 </template>
 
 <script>
@@ -191,6 +191,14 @@ html {
 @media screen and (max-width: 768px) {
   .ruqi {
     padding: 0;
+
+    &__wrapper {
+      height: 100vh;
+    }
+
+    &__mbottombar {
+      //top: 100%;
+    }
 
     .container {
       padding: 0;

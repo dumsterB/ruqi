@@ -4,9 +4,9 @@
 
   v-row.haupt-tabs__container
     v-tabs( v-model="tab_haupt" )
-      v-tab( @click="handlers().onTaskTypeTabClick( { type : 'active' } )" ) Активные
-      v-tab( @click="handlers().onTaskTypeTabClick( { type : 'responded' } )" ) Откликнулся
-      v-tab( @click="handlers().onTaskTypeTabClick( { type : 'completed' } )" ) Завершенные
+      v-tab( @click="handlers().onTaskTypeTabClick({ type: 'active' })" ) Активные
+      v-tab( @click="handlers().onTaskTypeTabClick({ type: 'responded' })" ) Откликнулся
+      v-tab( @click="handlers().onTaskTypeTabClick({ type: 'completed' })" ) Завершенные
 
   v-row.table-filter-row
     v-col( cols="3" )
@@ -18,7 +18,7 @@
         hide-details="true"
         item-text="name"
         item-value="id"
-        @change="handlers().onSortSelectChange( { $event } )"
+        @change="handlers().onSortSelectChange({ $event })"
       )
 
     v-col( cols="9" class="d-flex justify-end align-center" )
@@ -66,16 +66,16 @@
           :items-per-page="itemsPerPageTable"
           hide-default-footer
           @page-count="pageCount = $event"
-          @update:sort-by="handlers().updateSortBy( { $event } )"
-          @update:sort-desc="handlers().updateSortDesc( { $event } )"
+          @update:sort-by="handlers().updateSortBy({ $event })"
+          @update:sort-desc="handlers().updateSortDesc({ $event })"
         )
           template( v-slot:item.name="{ item }" )
-            div.color-black( @click="handlers().onNameTaskClick( { uuid : item.uuid } )" )
+            div.color-black( @click="handlers().onNameTaskClick({ uuid: item.uuid })" )
               span {{ item.info.name }}
 
           template( v-slot:item.status="{ item }" )
             .task-status(
-              :class="getters().classStatusObj( { status : item.my_status } )"
+              :class="getters().classStatusObj({ status: item.my_status })"
             )
               .task-status__wrapper
                 .task-status__inner( v-if="!item.my_status" ) {{ 'открыт набор' }}
@@ -90,15 +90,15 @@
 
 
           template( v-slot:item.payment="{ item }" )
-            .payment( :class="{ close : userTaskStatus === 'close' }" )
+            .payment( :class="{ close: userTaskStatus === 'close' }" )
               .wrapper
-                span.value {{ `${ item.info.payment.value || '0' } р. / смена` }}
+                span.value {{ `${item.info.payment.value || '0'} р. / смена` }}
 
           template( v-slot:item.object_name="{ item }" )
             .color-black {{ item.info.object.name }}
 
           template( v-slot:item.start_date="{ item }" )
-            div {{ helpers().parseDate( { date : item.info.start_date } ) }}
+            div {{ helpers().parseDate({ date: item.info.start_date }) }}
 
           template(
             v-slot:item.actions="{ item }"
@@ -119,17 +119,17 @@
                 )
                   v-icon mdi-dots-vertical
               v-card(
-                v-if="getters().tableItemIndex( { status : item.my_status  } ).length"
+                v-if="getters().tableItemIndex({ status: item.my_status }).length"
               )
                 v-list-item-content.justify-start
                   .mx-auto.text-left
                     .actions
                       .action(
-                        v-for="( action, index ) in getters().tableItemIndex( { status : item.my_status  } )" :key="action.slug"
-                        @click="handlers().onActionClick( { action : action.slug, uuid : item.uuid } )"
+                        v-for="( action, index ) in getters().tableItemIndex({ status: item.my_status })" :key="action.slug"
+                        @click="handlers().onActionClick({ action: action.slug, uuid: item.uuid })"
                       )
                         .action-item {{ action.name }}
-                        v-divider.my-3( v-if="index !== getters().tableItemIndex( { status : item.my_status  } ).length - 1" )
+                        v-divider.my-3( v-if="index !== getters().tableItemIndex({ status: item.my_status }).length - 1" )
       FooterTable(
         :itemsPerPage="itemsPerPage"
         :pageCount="pageCount"
@@ -151,401 +151,391 @@
 
 <script>
 
-  import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
-  import _ from 'lodash';
+import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
+import _ from 'lodash';
 
-  export default {
-    components : {},
+export default {
+  components: {},
 
-    async fetch ( { store } ) {
-      if (store.getters['specializations/specializations'].length === 0) {
-        await store.dispatch('specializations/fetch')
+  async fetch({ store }) {
+    if (store.getters['specializations/specializations'].length === 0) {
+      await store.dispatch('specializations/fetch')
+    }
+    if (store.getters['dictionary/regions'].length === 0) {
+      await store.dispatch('dictionary/fetchRegions')
+    }
+  },
+  meta: {
+    title: 'Мои заявки'
+  },
+  data() {
+    return {
+      title: 'Мои заявки',
+      title_size: 'big',
+      title_create: false,
+      title_page_create: 'create',
+      sortSpecializations: [],
+      sortRegions: [],
+      sortActive: [
+        {
+          id: 0,
+          name: 'Сначала ближайшие (по локации)',
+        },
+
+        {
+          id: 1,
+          name: 'Сначала дорогие (по стоимости ставки)',
+        },
+
+        {
+          id: 2,
+          name: 'Сначала ближайший старт работ (по дате старта)',
+        },
+      ],
+      defSort: [{ name: 'Все', uuid: '0000' }],
+      specialization: '',
+      region: '',
+      active: '',
+      searchText: '',
+      page: 1,
+      pageCount: 0,
+      itemsPerPage: 5,
+      selected: [],
+      avatarColor: '#EFCD4F',
+      headers: [
+        { text: 'Название', align: 'start', value: 'name', },
+        { text: '', align: 'start', value: 'status', sortable: false, },
+        { text: 'оплата', value: 'payment' },
+        { text: 'Объект', value: 'object_name' },
+        { text: 'Начало работ', value: 'start_date' },
+        { text: '', value: 'actions', sortable: false, align: 'right' },
+      ],
+      tab_haupt: null,
+      tab_list_map: null,
+      coords: [45.04, 38.98],
+
+      userTaskStatus: 'open',
+
+      tableSortParams: { // BUG sort und order müssen getauscht werden
+        sort: null,
+        order: null,
       }
-      if (store.getters['dictionary/regions'].length === 0) {
-        await store.dispatch('dictionary/fetchRegions')
+    }
+  },
+
+  created() {
+    this.sortSpecializations = this.defSort.concat(this.specializations);
+    this.sortRegions = this.defSort.concat(this.regions);
+  },
+
+  methods: {
+    ...mapActions('user', ['fetchUserTasks', 'setUserTasksParams',]),
+    ...mapActions('contractors', ['acceptTask', 'canceltTask', 'rejectTask', 'requestTask',]),
+
+    ...mapActions('objects', ['fetchObjects',]),
+    ...mapActions('objects', ['fetchObjectsMap',]),
+    ...mapActions('objects', ['removeRequest',]),
+    ...mapActions('specializations', ['fetch',]),
+    ...mapActions('dictionary', ['fetchRegions',]),
+
+    updateSearchText(value) {
+      console.log('updateSearchText', this);
+    },
+
+    filter() {
+      const newRequet = this.postBody;
+      if (this.tab == 0) {
+        this.fetchObjects(newRequet);
+      } else if (this.tab == 1) {
+        this.fetchObjectsMap(newRequet);
       }
     },
-    meta: {
-      title: 'Мои заявки'
+
+    setItemsPerPage(value) {
+      this.itemsPerPage = value;
     },
-    data ()
-    {
+
+    setCurrentPage(value) {
+      this.page = value;
+    },
+
+    getters() {
       return {
-        title: 'Мои заявки',
-        title_size: 'big',
-        title_create: false,
-        title_page_create: 'create',
-        sortSpecializations: [],
-        sortRegions: [],
-        sortActive: [
-          {
-            id : 0,
-            name : 'Сначала ближайшие (по локации)',
-          },
+        classStatusObj: (payload = {}) => {
+          return {
+            open: !payload.status,
+            requested: payload.status === 'requested',
+            rejected: payload.status === 'rejected',
+            accepted: payload.status === 'accepted',
+            invited: payload.status === 'invited',
+          }
+        },
 
-          {
-            id : 1,
-            name : 'Сначала дорогие (по стоимости ставки)',
-          },
+        tableItemIndex: (payload = {}) => {
+          switch (payload.status) {
+            case 'requested':
+              return [
+                { name: 'отменить', slug: 'cancel' },
+              ];
 
-          {
-            id : 2,
-            name : 'Сначала ближайший старт работ (по дате старта)',
-          },
-        ],
-        defSort: [{name: 'Все', uuid: '0000'}],
-        specialization: '',
-        region: '',
-        active: '',
-        searchText: '',
-        page: 1,
-        pageCount: 0,
-        itemsPerPage: 5,
-        selected: [],
-        avatarColor: '#EFCD4F',
-        headers: [
-          {text: 'Название', align: 'start', value: 'name',},
-          {text: '', align: 'start', value: 'status', sortable: false,},
-          {text: 'оплата', value: 'payment'},
-          {text: 'Объект', value: 'object_name'},
-          {text: 'Начало работ', value: 'start_date'},
-          {text: '', value: 'actions', sortable: false, align: 'right'},
-        ],
-        tab_haupt : null,
-        tab_list_map: null,
-        coords: [45.04, 38.98],
+            case 'rejected':
+              return [];
 
-        userTaskStatus : 'open',
+            case 'accepted':
+              return [
+                { name: 'отменить', slug: 'cancel' },
+              ];
 
-        tableSortParams : { // BUG sort und order müssen getauscht werden
-          sort : null,
-          order : null,
-        }
+            case 'invited':
+              return [
+                { name: 'принять', slug: 'accept' },
+                { name: 'отказаться', slug: 'refuse' },
+              ];
+
+            default:
+              return [
+                { name: 'участвовать', slug: 'participate' },
+              ];
+          }
+        },
       }
     },
 
-    created ()
-    {
-      this.sortSpecializations = this.defSort.concat(this.specializations);
-      this.sortRegions = this.defSort.concat(this.regions);
+    helpers() {
+      return {
+        parseDate: (payload = {}) => {
+          if (!payload.date) {
+            return '';
+          }
+
+          let day = payload.date.split('T')[0].split('-')[2];
+          let month = payload.date.split('T')[0].split('-')[1];
+          let year = payload.date.split('T')[0].split('-')[0];
+          let time = `${payload.date.split('T')[1].split(':')[0]}:${payload.date.split('T')[1].split(':')[1]}`;
+
+          return `${day}.${month}.${year} ${time}`;
+        },
+      }
     },
 
-    methods: {
-      ...mapActions( 'user', [ 'fetchUserTasks', 'setUserTasksParams', ] ),
-      ...mapActions( 'contractors', [ 'acceptTask', 'canceltTask', 'rejectTask', 'requestTask', ] ),
+    handlers() {
+      return {
+        onTaskTypeTabClick: async (payload = {}) => {
+          console.log('onTaskTypeTabClick', payload); // DELETE
 
-      ...mapActions('objects', ['fetchObjects',]),
-      ...mapActions('objects', ['fetchObjectsMap',]),
-      ...mapActions('objects', ['removeRequest',]),
-      ...mapActions('specializations', ['fetch',]),
-      ...mapActions('dictionary', ['fetchRegions',]),
+          console.log('objects_map', this.objects_map);
 
-      updateSearchText(value) {
-        console.log( 'updateSearchText', this );
-      },
+          switch (payload.type) {
+            case 'active':
+              await this.setUserTasksParams({ ...this.userTasksParams, type: 'accepted', });
+              await this.fetchUserTasks({ params: this.tableSortParams });
 
-      filter() {
-        const newRequet = this.postBody;
-        if (this.tab == 0) {
-          this.fetchObjects(newRequet);
-        } else if (this.tab == 1) {
-          this.fetchObjectsMap(newRequet);
-        }
-      },
+              this.userTaskStatus = 'open';
+              break;
 
-      setItemsPerPage(value) {
-        this.itemsPerPage = value;
-      },
+            case 'responded':
+              await this.setUserTasksParams({ ...this.userTasksParams, type: 'requested', });
+              await this.fetchUserTasks({ params: this.tableSortParams });
 
-      setCurrentPage(value) {
-        this.page = value;
-      },
+              this.userTaskStatus = 'open';
+              break;
 
-      getters ()
-      {
-        return {
-          classStatusObj : ( payload = {} ) => {
-            return {
-              open      : !payload.status,
-              requested : payload.status === 'requested',
-              rejected  : payload.status === 'rejected',
-              accepted  : payload.status === 'accepted',
-              invited   : payload.status === 'invited',
-            }
-          },
+            case 'completed':
+              await this.setUserTasksParams({ ...this.userTasksParams, type: null, });
+              await this.fetchUserTasks({ params: this.tableSortParams });
 
-          tableItemIndex : ( payload = {} ) => {
-            switch ( payload.status )
+              this.userTaskStatus = 'close';
+              break;
+
+            default:
+              break;
+          }
+        },
+
+        onSortSelectChange: async (payload = {}) => {
+          console.log('onSortSelectChange', payload); // DELETE
+
+          switch (payload.$event) {
+            case 0:
+              await this.setUserTasksParams({ ...this.userTasksParams, distance: 1, date: 0, payment: 0, }); // FIXME
+              await this.fetchUserTasks({ params: this.tableSortParams });
+              break;
+
+            case 1:
+              await this.setUserTasksParams({ ...this.userTasksParams, distance: 0, date: 0, payment: 1, }); // FIXME
+              await this.fetchUserTasks({ params: this.tableSortParams });
+              break;
+
+            case 2:
+              await this.setUserTasksParams({ ...this.userTasksParams, distance: 0, date: 1, payment: 0, }); // FIXME
+              await this.fetchUserTasks({ params: this.tableSortParams });
+              break;
+
+            default:
+              break;
+          }
+        },
+
+        onNameTaskClick: (payload = {}) => {
+          this.$router.push(
             {
-              case 'requested' :
-                return [
-                  { name : 'отменить', slug : 'cancel' },
-                ];
-
-              case 'rejected' :
-                return [];
-
-              case 'accepted' :
-                return [
-                  { name : 'отменить', slug : 'cancel' },
-                ];
-
-              case 'invited' :
-                return [
-                  { name : 'принять', slug : 'accept' },
-                  { name : 'отказаться', slug : 'refuse' },
-                ];
-
-              default:
-                return [
-                  { name : 'участвовать', slug : 'participate' },
-                ];
-            }
-          },
-        }
-      },
-
-      helpers ()
-      {
-        return {
-          parseDate : ( payload = {} ) => {
-            if (!payload.date) {
-              return '';
-            }
-
-            let day   = payload.date.split( 'T' )[ 0 ].split( '-' )[ 2 ];
-            let month = payload.date.split( 'T' )[ 0 ].split( '-' )[ 1 ];
-            let year  = payload.date.split( 'T' )[ 0 ].split( '-' )[ 0 ];
-            let time  = `${ payload.date.split( 'T' )[ 1 ].split( ':' )[ 0 ] }:${ payload.date.split( 'T' )[ 1 ].split( ':' )[ 1 ] }`;
-
-            return `${ day }.${ month }.${ year } ${ time }`;
-          },
-        }
-      },
-
-      handlers ()
-      {
-        return {
-          onTaskTypeTabClick : async ( payload = {} ) => {
-            console.log( 'onTaskTypeTabClick', payload ); // DELETE
-
-            console.log( 'objects_map', this.objects_map );
-
-            switch ( payload.type )
-            {
-              case 'active' :
-                await this.setUserTasksParams( { ...this.userTasksParams, type : 'accepted', } );
-                await this.fetchUserTasks( { params : this.tableSortParams } );
-
-                this.userTaskStatus = 'open';
-              break;
-
-              case 'responded' :
-                await this.setUserTasksParams( { ...this.userTasksParams, type : 'requested', } );
-                await this.fetchUserTasks( { params : this.tableSortParams } );
-
-                this.userTaskStatus = 'open';
-              break;
-
-              case 'completed' :
-                await this.setUserTasksParams( { ...this.userTasksParams, type : null, } );
-                await this.fetchUserTasks( { params : this.tableSortParams } );
-
-                this.userTaskStatus = 'close';
-              break;
-
-              default:
-              break;
-            }
-          },
-
-          onSortSelectChange : async ( payload = {} ) => {
-            console.log( 'onSortSelectChange', payload ); // DELETE
-
-            switch ( payload.$event )
-            {
-              case 0 :
-                await this.setUserTasksParams( { ...this.userTasksParams, distance : 1, date : 0, payment : 0, } ); // FIXME
-                await this.fetchUserTasks( { params : this.tableSortParams } );
-              break;
-
-              case 1 :
-                await this.setUserTasksParams( { ...this.userTasksParams, distance : 0, date : 0, payment : 1, } ); // FIXME
-                await this.fetchUserTasks( { params : this.tableSortParams } );
-              break;
-
-              case 2 :
-                await this.setUserTasksParams( { ...this.userTasksParams, distance : 0, date : 1, payment : 0, } ); // FIXME
-                await this.fetchUserTasks( { params : this.tableSortParams } );
-              break;
-
-              default :
-              break;
-            }
-          },
-
-          onNameTaskClick : ( payload = {} ) => {
-            this.$router.push(
-              {
-                name : "tasks-contractor-id",
-                params : {
-                  id : payload.uuid,
-                }
+              name: "tasks-contractor-id",
+              params: {
+                id: payload.uuid,
               }
-            );
-          },
-
-          onMapTabClick : ( payload = {} ) => {
-            this.tab_list_map = payload.tab;
-          },
-
-          onActionClick : ( payload = {} ) => {
-            console.log( 'onActionClick', payload ); // DELETE
-
-            switch ( payload.action )
-            {
-              case 'accept' :
-                this.acceptTask( { uuid : payload.uuid } )
-                  .then(
-                    () => {
-                      this.fetchUserTasks(  { params : this.tableSortParams } );
-                    }
-                  );
-              break;
-
-              case 'cancel' :
-                this.canceltTask( { uuid : payload.uuid } )
-                  .then(
-                    () => {
-                      this.fetchUserTasks(  { params : this.tableSortParams } );
-                    }
-                  );
-              break;
-
-              case 'refuse' :
-                this.rejectTask( { uuid : payload.uuid } )
-                  .then(
-                    () => {
-                      this.fetchUserTasks(  { params : this.tableSortParams } );
-                    }
-                  );
-              break;
-
-              case 'participate' :
-                this.requestTask( { uuid : payload.uuid } )
-                  .then(
-                    () => {
-                      this.fetchUserTasks(  { params : this.tableSortParams } );
-                    }
-                  );
-              break;
-            }
-          },
-
-          updateSortBy : ( payload = {} ) => {
-            console.log( 'updateSortBy', payload ); // DELETE
-
-            this.tableSortParams.sort = !!payload.$event.length ? payload.$event[ 0 ] : null;
-
-            this.sortTable();
-          },
-
-          updateSortDesc : ( payload = {} ) => {
-            console.log( 'updateSortDesc', payload ); // DELETE
-
-            this.tableSortParams.order = payload.$event.length ? payload.$event[ 0 ] ? 'desc' : 'asc' : null;
-
-            this.sortTable();
-          },
-        }
-      },
-
-      onSearchInput : _.debounce(
-        function( payload = {} ) {
-          this.setUserTasksParams( { ...this.userTasksParams, search : payload } ).then(
-            () => {
-              this.fetchUserTasks( { params : this.tableSortParams } );
             }
           );
         },
 
-        400
-      ),
-
-      sortTable : _.debounce(
-        function ( payload = {} ) {
-          console.debug( '[helper]::sortTable', payload, this.tableSortParams ); // DELETE
-
-          this.fetchUserTasks( { params : this.tableSortParams } );
+        onMapTabClick: (payload = {}) => {
+          this.tab_list_map = payload.tab;
         },
 
-        200
-      ),
+        onActionClick: (payload = {}) => {
+          console.log('onActionClick', payload); // DELETE
+
+          switch (payload.action) {
+            case 'accept':
+              this.acceptTask({ uuid: payload.uuid })
+                .then(
+                  () => {
+                    this.fetchUserTasks({ params: this.tableSortParams });
+                  }
+                );
+              break;
+
+            case 'cancel':
+              this.canceltTask({ uuid: payload.uuid })
+                .then(
+                  () => {
+                    this.fetchUserTasks({ params: this.tableSortParams });
+                  }
+                );
+              break;
+
+            case 'refuse':
+              this.rejectTask({ uuid: payload.uuid })
+                .then(
+                  () => {
+                    this.fetchUserTasks({ params: this.tableSortParams });
+                  }
+                );
+              break;
+
+            case 'participate':
+              this.requestTask({ uuid: payload.uuid })
+                .then(
+                  () => {
+                    this.fetchUserTasks({ params: this.tableSortParams });
+                  }
+                );
+              break;
+          }
+        },
+
+        updateSortBy: (payload = {}) => {
+          console.log('updateSortBy', payload); // DELETE
+
+          this.tableSortParams.sort = !!payload.$event.length ? payload.$event[0] : null;
+
+          this.sortTable();
+        },
+
+        updateSortDesc: (payload = {}) => {
+          console.log('updateSortDesc', payload); // DELETE
+
+          this.tableSortParams.order = payload.$event.length ? payload.$event[0] ? 'desc' : 'asc' : null;
+
+          this.sortTable();
+        },
+      }
     },
 
-    computed: {
-      objects() {
-        return this.$store.getters['objects/objects'];
+    onSearchInput: _.debounce(
+      function (payload = {}) {
+        this.setUserTasksParams({ ...this.userTasksParams, search: payload }).then(
+          () => {
+            this.fetchUserTasks({ params: this.tableSortParams });
+          }
+        );
       },
 
-      objects_map() {
-        return this.$store.getters['objects/objects_map'];
+      400
+    ),
+
+    sortTable: _.debounce(
+      function (payload = {}) {
+        console.debug('[helper]::sortTable', payload, this.tableSortParams); // DELETE
+
+        this.fetchUserTasks({ params: this.tableSortParams });
       },
 
-      specializations() {
-        return this.$store.getters['specializations/specializations'];
-      },
+      200
+    ),
+  },
 
-      regions() {
-        return this.$store.getters['dictionary/regions'];
-      },
-
-      itemsPerPageTable() {
-        if (this.itemsPerPage) {
-          return parseInt(this.itemsPerPage, 10)
-        } else {
-          return 1;
-        }
-      },
-
-      postBody() {
-        let type;
-        let specialization = this.specialization,
-          region = this.region;
-        if (specialization == 'Все') {
-          specialization = '';
-        }
-        if (region == 'Все') {
-          region = '';
-        }
-        if (this.tab == 1) {
-          type = 'map';
-        }
-        let postBody = {
-          "specialization": specialization,
-          "region": region,
-          "active": this.active,
-          "sort": "city",
-          "order": "asc",
-          "type": type
-        }
-        console.log(postBody);
-        return postBody;
-      },
-
-      ...mapGetters( 'user', [ 'userTasks', 'userTasksParams', ] ),
+  computed: {
+    objects() {
+      return this.$store.getters['objects/objects'];
     },
 
-    async mounted() {
-      await this.setUserTasksParams( { ...this.userTasksParams,  type : 'accepted', } );
-      await this.fetchUserTasks( { params : this.tableSortParams } );
+    objects_map() {
+      return this.$store.getters['objects/objects_map'];
     },
-  }
+
+    specializations() {
+      return this.$store.getters['specializations/specializations'];
+    },
+
+    regions() {
+      return this.$store.getters['dictionary/regions'];
+    },
+
+    itemsPerPageTable() {
+      if (this.itemsPerPage) {
+        return parseInt(this.itemsPerPage, 10)
+      } else {
+        return 1;
+      }
+    },
+
+    postBody() {
+      let type;
+      let specialization = this.specialization,
+        region = this.region;
+      if (specialization == 'Все') {
+        specialization = '';
+      }
+      if (region == 'Все') {
+        region = '';
+      }
+      if (this.tab == 1) {
+        type = 'map';
+      }
+      let postBody = {
+        "specialization": specialization,
+        "region": region,
+        "active": this.active,
+        "sort": "city",
+        "order": "asc",
+        "type": type
+      }
+      console.log(postBody);
+      return postBody;
+    },
+
+    ...mapGetters('user', ['userTasks', 'userTasksParams',]),
+  },
+
+  async mounted() {
+    await this.setUserTasksParams({ ...this.userTasksParams, type: 'accepted', });
+    await this.fetchUserTasks({ params: this.tableSortParams });
+  },
+}
 
 </script>
 
 <style lang="scss">
-
 @import '@/assets/scss/colors';
 
 
@@ -554,76 +544,78 @@
 }
 
 /* OBJECTS STYLES START */
-  .haupt-tabs__container
-  {
-    width: max-content !important;
-  }
+.haupt-tabs__container {
+  width: max-content !important;
+}
 
-  .payment
-  {
-    display         : flex;
-    flex-direction  : row;
-    flex-wrap       : nowrap;
-    align-content   : center;
-    justify-content : center;
-    align-items     : center;
-    background      : #E4F1FA;
-    border-radius   : 6px;
-    padding         : 7px 8px;
-    width           : max-content;
+.payment {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  background: #E4F1FA;
+  border-radius: 6px;
+  padding: 7px 8px;
+  width: max-content;
 
-    &.close
-    {
-      background : #F2F4F5;
+  &.close {
+    background: #F2F4F5;
 
-      .value
-      {
-        color : #7A91A9 !important;
-      }
-    }
-
-    .wrapper
-    {
-      display         : flex;
-      flex-direction  : column;
-      flex-wrap       : nowrap;
-      align-content   : center;
-      justify-content : center;
-      align-items     : center;
-
-      .value
-      {
-        font-style      : normal;
-        font-weight     : bold;
-        font-size       : 14px;
-        line-height     : 125%;
-        letter-spacing  : 0.01em;
-        color           : #0082DE;
-      }
+    .value {
+      color: #7A91A9 !important;
     }
   }
 
-  .sort-select
-  {
-    .item
-    {
-      width   : 245px;
-      height  : 44px;
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
 
-      .v-input__slot
-      {
-        margin        : 0 !important;
-        background    : #FFFFFF;
-        border        : 1px solid #D5DEE8 !important;
-        box-sizing    : border-box;
-        border-radius : 10px;
-        box-shadow    : unset !important;
-      }
+    .value {
+      font-style: normal;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 125%;
+      letter-spacing: 0.01em;
+      color: #0082DE;
     }
   }
+}
 
-  .map-tabs
-  {
+.sort-select {
+  .item {
+    width: 245px;
+    height: 44px;
+
+    .v-input__slot {
+      margin: 0 !important;
+      background: #FFFFFF;
+      border: 1px solid #D5DEE8 !important;
+      box-sizing: border-box;
+      border-radius: 10px;
+      box-shadow: unset !important;
+    }
+  }
+}
+
+.map-tabs {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: flex-start;
+  align-items: center;
+
+  background: #E9F6FF;
+  border-radius: 9px;
+  padding: 4px;
+
+  .map-tab {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -631,197 +623,151 @@
     justify-content: flex-start;
     align-items: center;
 
-    background: #E9F6FF;
-    border-radius: 9px;
-    padding: 4px;
+    cursor: pointer;
+    color: #7A91A9;
+    padding: 10px;
 
-    .map-tab
-    {
+    &.active {
+      background: #FFFFFF;
+      border-radius: 5px;
+
+      color: #0082DE !important;
+    }
+
+    .titel {
+      margin-left: 10px;
+    }
+  }
+}
+
+.task-status {
+  padding: 4px 8px;
+  box-sizing: border-box;
+  border-radius: 5px;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+
+  width: max-content;
+
+  .task-status__wrapper {
+    .task-status__inner {
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
       align-content: center;
-      justify-content: flex-start;
+      justify-content: center;
       align-items: center;
 
-      cursor: pointer;
-      color : #7A91A9;
-      padding: 10px;
-
-      &.active
-      {
-        background: #FFFFFF;
-        border-radius: 5px;
-
-        color : #0082DE !important;
-      }
-
-      .titel
-      {
-        margin-left: 10px;
-      }
-    }
-  }
-
-  .task-status
-  {
-    padding: 4px 8px;
-    box-sizing: border-box;
-    border-radius: 5px;
-
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-
-    width: max-content;
-
-    .task-status__wrapper
-    {
-      .task-status__inner
-      {
+      .task-status__icon {
+        margin-right: 5px;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         flex-wrap: nowrap;
         align-content: center;
         justify-content: center;
         align-items: center;
+      }
 
-        .task-status__icon
-        {
-          margin-right: 5px;
-          display: flex;
-          flex-direction: column;
-          flex-wrap: nowrap;
-          align-content: center;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .task-status__title
-        {
-          font-style: normal;
-          font-weight: 700;
-          font-size: 12px;
-          line-height: 125%;
-          letter-spacing: 0.02em;
-          text-transform: uppercase;
-        }
+      .task-status__title {
+        font-style: normal;
+        font-weight: 700;
+        font-size: 12px;
+        line-height: 125%;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
       }
     }
-
-    &.open
-    {
-      background: #E4F4FF;
-      border: 1px solid #0082DE;
-
-      .task-status__wrapper
-      {
-        .task-status__inner
-        {
-          .task-status__icon
-          {}
-
-          .task-status__title
-          {
-            color: #0082DE;
-          }
-        }
-      }
-    }
-
-    &.requested
-    {
-      background: #FFFCF0;
-      border: 1px solid #F4D150;
-
-      .task-status__wrapper
-      {
-        .task-status__inner
-        {
-          .task-status__icon
-          {}
-
-          .task-status__title
-          {
-            color: #F4D150;
-          }
-        }
-      }
-    }
-
-    &.rejected
-    {
-      background: #FAFAFA;
-      border: 1px solid #666666;
-
-      .task-status__wrapper
-      {
-        .task-status__inner
-        {
-          .task-status__icon
-          {}
-
-          .task-status__title
-          {
-            color: #666666;
-          }
-        }
-      }
-    }
-
-    &.accepted
-    {
-      background: #ECFFEC;
-      border: 1px solid #71D472;
-
-      .task-status__wrapper
-      {
-        .task-status__inner
-        {
-          .task-status__icon
-          {}
-
-          .task-status__title
-          {
-            color: #71D472;
-          }
-        }
-      }
-    }
-
-    &.invited
-    {
-      background: #0082DE;
-      border: 1px solid #0082DE;
-
-      .task-status__wrapper
-      {
-        .task-status__inner
-        {
-          .task-status__icon
-          {}
-
-          .task-status__title
-          {
-            color: #FFFFFF;
-          }
-        }
-      }
-    }
-
   }
 
-  .action-item
-  {
-    text-decoration: none;
-    text-transform: uppercase;
-    color: #7A91A9;
-    padding: 0 16px;
-    cursor: pointer;
+  &.open {
+    background: #E4F4FF;
+    border: 1px solid #0082DE;
+
+    .task-status__wrapper {
+      .task-status__inner {
+        .task-status__icon {}
+
+        .task-status__title {
+          color: #0082DE;
+        }
+      }
+    }
   }
+
+  &.requested {
+    background: #FFFCF0;
+    border: 1px solid #F4D150;
+
+    .task-status__wrapper {
+      .task-status__inner {
+        .task-status__icon {}
+
+        .task-status__title {
+          color: #F4D150;
+        }
+      }
+    }
+  }
+
+  &.rejected {
+    background: #FAFAFA;
+    border: 1px solid #666666;
+
+    .task-status__wrapper {
+      .task-status__inner {
+        .task-status__icon {}
+
+        .task-status__title {
+          color: #666666;
+        }
+      }
+    }
+  }
+
+  &.accepted {
+    background: #ECFFEC;
+    border: 1px solid #71D472;
+
+    .task-status__wrapper {
+      .task-status__inner {
+        .task-status__icon {}
+
+        .task-status__title {
+          color: #71D472;
+        }
+      }
+    }
+  }
+
+  &.invited {
+    background: #0082DE;
+    border: 1px solid #0082DE;
+
+    .task-status__wrapper {
+      .task-status__inner {
+        .task-status__icon {}
+
+        .task-status__title {
+          color: #FFFFFF;
+        }
+      }
+    }
+  }
+
+}
+
+.action-item {
+  text-decoration: none;
+  text-transform: uppercase;
+  color: #7A91A9;
+  padding: 0 16px;
+  cursor: pointer;
+}
+
 /* OBJECTS STYLES END */
-
 </style>

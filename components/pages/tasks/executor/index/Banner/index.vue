@@ -1,4 +1,5 @@
 <template lang="pug">
+.page-task-contractor-banner
 </template>
 
 <script>

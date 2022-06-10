@@ -1,18 +1,27 @@
 <template lang="pug">
 .page-task-contractor
   Header.page-task-contractor__header
-  .page-task-contractor__tabs
+  Tabs.page-task-contractor__tabs
   .page-task-contractor__actions
-  .page-task-contractor__banner
+  Banner.page-task-contractor__banner(
+    title
+    logo
+    description
+    link
+  )
   .page-task-contractor__tasks
 </template>
 
 <script>
 import Header from '@/components/pages/tasks/executor/index/Header';
+import Tabs from '@/components/pages/tasks/executor/index/Tabs';
+import Banner from '@/components/UI/Banner';
 
 export default {
   components: {
     Header,
+    Tabs,
+    Banner,
   },
 
   props: {},
@@ -27,17 +36,21 @@ export default {
     /* HELPERS */
   },
 
-  created() {},
-  mounted() {},
+  created() { },
+  mounted() { },
 }
 </script>
 
 <style lang="scss">
 .page-task-contractor {
   &__header {}
+
   &__tabs {}
+
   &__actions {}
+
   &__banner {}
+
   &__tasks {}
 }
 </style>
