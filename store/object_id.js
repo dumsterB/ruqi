@@ -96,6 +96,22 @@ export const actions = {
   resetObjectState({commit}) {
     commit('resetObjectState');
   },
+
+  async removeTask({commit, dispatch}, {object_uuid, uuid}) {
+
+    await this.$axios.delete('/objects/' + object_uuid + '/tasks',{
+      headers: { 'Content-Type': 'application/json', },
+      data: uuid
+    })
+      .then((response) => {
+        console.log(response);
+        dispatch('object_id/fetchObjectIdRequest', {requestId:object_uuid, params:{}, concat: false, unit: false}, {root: true});
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  },
 }
 
 export const mutations = {
@@ -109,7 +125,7 @@ export const mutations = {
       state.object_id_requests = object_id_requests.data.data;
     }
     if (unit) {
-      //state.task_filters = object_id_requests.data.meta.filters;
+      state.task_filters = object_id_requests.data.meta.filters;
     }
   },
   setObjectIdServices(state, {object_id_services, concat, unit}) {

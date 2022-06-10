@@ -1,14 +1,14 @@
 <template>
 <div>
   <v-container>
-   <h2>Платежная информация</h2>
+   <p class="main_text_executor">Платежная информация</p>
     <p>Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют.</p>
     <div class="access-content">
       <div class="d-flex">
         <img src="@/assets/img/attention.svg" alt="">
         <strong class="ml-2">Где взять платежные реквизиты моей карты?</strong>
       </div>
-      <div class="ml-6">
+      <div class="ml-6 mt-4">
       <p>Мы подготовили краткие инструкции как найти платежные реквизиты в личных кабинетах популярных банков</p>
       <div class="d-flex mt-3">
         <img src="@/assets/img/External_Link.svg" alt="">
@@ -28,39 +28,39 @@
       <div class="d-flex">
         <v-checkbox>
         </v-checkbox>
-        <p class="mt-5">Являюсь самозанятым</p>
+        <p class="mt-5 input_label">Являюсь самозанятым</p>
       </div>
       <p class="text-grey" style="margin-top: -15px">Если карта чужая то мы можем платить по карте , но не можем на <br> чужие реквизиты</p>
     </div>
     <div>
       <v-row>
         <v-col cols="5">
-          <p>ИНН</p>
-          <v-text-field dense outlined></v-text-field>
+          <p class="input_label">ИНН</p>
+          <v-text-field v-model="settings.inn" dense outlined></v-text-field>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12">
-          <p>Способ оплаты</p>
-          <v-select dense outlined placeholder="Расчетный счет"></v-select>
+          <p class="input_label">Способ оплаты</p>
+          <v-select dense v-model="settings.type_payment" outlined placeholder="Расчетный счет"></v-select>
         </v-col>
       </v-row>
       <v-row>
         <v-col col="5">
-          <p>Номер счета</p>
-          <v-text-field dense outlined></v-text-field>
+          <p class="input_label">Номер счета</p>
+          <v-text-field v-model="settings.payment_account" dense outlined></v-text-field>
         </v-col>
         <v-col col="4">
-          <p>БИК</p>
-          <v-text-field placeholder="044521234" dense outlined></v-text-field>
+          <p class="input_label">БИК</p>
+          <v-text-field  v-model="settings.bik" placeholder="044521234" dense outlined></v-text-field>
         </v-col>
       </v-row>
       <v-row>
         <v-col col="12">
-          <p>Банк</p>
-          <v-text-field placeholder="Московский банк ПАО Сбербанк г. Москва" dense outlined></v-text-field>
-          <p>ФИО получателя</p>
-          <v-text-field placeholder="Московский банк ПАО Сбербанк г. Москва" dense outlined></v-text-field>
+          <p class="input_label">Банк</p>
+          <v-text-field v-model="settings.bank" placeholder="Московский банк ПАО Сбербанк г. Москва" dense outlined></v-text-field>
+          <p class="input_label">ФИО получателя</p>
+          <v-text-field v-model="settings.payment_fullname" placeholder="Московский банк ПАО Сбербанк г. Москва" dense outlined></v-text-field>
         </v-col>
       </v-row>
     </div>
@@ -68,7 +68,7 @@
       <div class="d-flex">
         <v-checkbox>
         </v-checkbox>
-        <p class="mt-5">Карта принадлежит мне</p>
+        <p class="mt-5 input_label">Карта принадлежит мне</p>
       </div>
       <p class="text-grey" style="margin-top: -15px">Если карта чужая то мы можем платить по карте , но не можем <br> на чужие реквизиты</p>
     </div>
@@ -80,15 +80,33 @@
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
   name: "PaymentInformation",
-  methods:{
+  data() {
+    return {
+      settings:{
+        inn: '',
+        bik: '',
+        bank: '',
+        type_payment: 'visa',
+        payment_account: '',
+        payment_fullname: '',
+      }
+    }
+  },
+  methods: {
+    ...mapActions('executor',['setPayment']),
     next(val){
       this.$emit('pageHandler', val)
+      this.setPayment(this.settings)
     },
     back(val){
       this.$emit('pageHandler',val , 'back')
     }
+  },
+  mounted(){
   }
 }
 </script>

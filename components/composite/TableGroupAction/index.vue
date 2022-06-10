@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       select: '',
-      new_count: '',
+      new_count: '1',
     }
   },
   computed: {
@@ -55,7 +55,9 @@ export default {
   },
   watch: {
     selected: function () {
+
       this.new_count = this.selected.length;
+
     },
   },
   methods: {

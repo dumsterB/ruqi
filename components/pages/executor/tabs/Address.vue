@@ -1,11 +1,11 @@
 <template>
 <div>
   <v-container>
-    <h2>Адреса</h2>
+    <p class="main_text_executor">Адреса</p>
     <p>Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
     <div class="mt-5">
       <h3>Укажите место проживания</h3>
-      <p>Место основного проживания</p>
+      <p class="input_label">Место основного проживания</p>
       <v-text-field
           outlined
           class="mt-2"
@@ -16,7 +16,7 @@
       ></v-text-field>
       <h3>Укажите место проживания</h3>
       <p>Введите название населенного пункта город с районом или метро, откуда хотели бы получать предложения о работе</p>
-      <p>Дополнительный адрес 1</p>
+      <p class="input_label">Дополнительный адрес 1</p>
       <v-text-field
           outlined
           class="mt-2"
@@ -26,12 +26,12 @@
           single-line
       ></v-text-field>
       <v-divider></v-divider>
-      <p class="mt-3">Дополнительный адрес 1</p>
+      <p class="mt-3 input_label">Дополнительный адрес 1</p>
       <v-text-field
           outlined
           class="mt-2"
           placeholder="Например: Зеленоград, Ленинский район"
-          v-model="address_extra"
+          v-model="address_extra_2"
           dense
           single-line
       ></v-text-field>
@@ -42,7 +42,7 @@
       </div>
     </div>
     <div class="mt-5">
-    <v-btn  elevation="0" class="btn-secondary" @click="back(3)"> <span class="btn-title">Назад</span> </v-btn>
+    <v-btn  elevation="0" class="btn-secondary" @click="back(4)"> <span class="btn-title">Назад</span> </v-btn>
     <v-btn dark elevation="0" class="btn-primary" @click="next( 6 )"><span class="btn-title">Далее</span> </v-btn>
     </div>
   </v-container>
@@ -50,19 +50,27 @@
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
   data(){
     return{
       address:'',
       address_extra:'',
+      address_extra_2:'',
     }
   },
   methods:{
+    ...mapActions('executor',['setAddress']),
     back(value){
       this.$emit('pageHandler', value, 'back')
     },
     next(value){
       this.$emit('pageHandler', value)
+      let data =[
+          this.address,this.address_extra,this.address_extra_2
+      ]
+     this.setAddress(data)
     }
   }
 }
@@ -79,19 +87,5 @@ export default {
   border-radius: 16px;
   height: 100%;
   padding: 30px;
-}
-.btn-primary{
-  background: #0082DE!important;
-  border-radius: 8px;
-  height: 45px!important;
-  width: 100%;
-  margin-top: 15px;
-}
-.btn-secondary{
-  background: white!important;
-  border-radius: 8px;
-  height: 45px!important;
-  width: 100%;
-  border: 1px solid lightgrey;
 }
 </style>

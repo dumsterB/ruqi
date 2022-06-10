@@ -1,11 +1,11 @@
 <template>
 <div class="create_password">
   <v-container>
-    <h2>Придумайте пароль</h2>
+    <p class="main_text_executor">Придумайте пароль</p>
     <p>Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
     <v-form ref="form_part_0" v-model="valid" lazy-validation>
       <div class="form-part">
-        Пароль
+       <p class="input_label">Пароль</p>
         <v-text-field
             outlined
             class="mt-2"
@@ -15,7 +15,7 @@
         ></v-text-field>
       </div>
       <div class="form-part">
-        Пароль повторно
+        <p class="input_label">   Пароль повторно</p>
         <v-text-field
             outlined
             :rules="[(password === confirm_password) || 'Пароль не совподает']"
@@ -43,6 +43,11 @@ import {mapActions} from "vuex";
 
 export default {
   name: "CreatePassword",
+  props:{
+    email:{},
+    phone:{},
+    agree:{},
+  },
   data(){
     return{
       valid:false,
@@ -54,7 +59,17 @@ export default {
     ...mapActions('executor', ['createPassword']),
     next(val){
     this.$emit('pageHandler',val)
-      this.createPassword(this.password)
+      let data ={
+      password:this.password,
+      phone: this.phone,
+      email:this.email
+      }
+      if(data.agree){
+        delete data.phone
+      }else{
+        delete data.email
+      }
+      this.createPassword(data)
     },
     back(val){
       this.$emit('pageHandler',val , 'back')
@@ -72,18 +87,5 @@ export default {
 .text-grey{
   color: #9398A1;
 }
-.btn-primary{
-  background: #0082DE!important;
-  border-radius: 8px;
-  height: 45px!important;
-  width: 100%;
-  margin-top: 15px;
-}
-.btn-secondary{
-  background: white!important;
-  border-radius: 8px;
-  height: 45px!important;
-  width: 100%;
-  border: 1px solid lightgrey;
-}
+
 </style>

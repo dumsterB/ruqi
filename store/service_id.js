@@ -74,11 +74,9 @@ export const actions = {
   async removeService({commit, dispatch}, {object_uuid, uuid}) {
 
     await this.$axios.delete('/objects/' + object_uuid + '/services',
-      uuid,
       {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json', },
+        data: uuid
       })
       .then((response) => {
         console.log(response);

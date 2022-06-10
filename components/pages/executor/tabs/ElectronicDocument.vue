@@ -4,8 +4,9 @@
     <div class="img">
       <img src="@/assets/img/electronic_document.svg" alt="">
     </div>
-    <h2>Электронный  документооборот</h2>
-    <p class="mt-2">Система ruqi.ru использует электроный документооборот, это эффективный способ подписывать документы и быстро получать оплату. Мы бесплатно храним ваши документы на нескольких серверах,которые надежно защищены от взлома.</p>
+    <p class="main_text_executor">Электронный  документооборот</p>
+    <p class="mt-2 input_label">Система ruqi.ru использует электроный документооборот, это <br> эффективный способ подписывать документы и быстро получать
+      <br> оплату. Мы бесплатно храним ваши документы на нескольких <br> серверах,которые надежно защищены от взлома.</p>
     <div>
       <v-row class="mt-8">
         <v-col  md="6" lg="6" lx="6" cols="12" sm="12" xs="12">
@@ -80,11 +81,11 @@ export default {
   margin-top: 15px;
 }
 .btn-secondary{
-  background: white!important;
+  background: #F5F7F9!important;
   border-radius: 8px;
   height: 45px!important;
   width: 100%;
-  border: 1px solid lightgrey;
+  border: 1px solid #D5DEE8;
   margin-top: 15px;
 }
 .primary-text{
