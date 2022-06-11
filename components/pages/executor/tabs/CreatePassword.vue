@@ -33,7 +33,7 @@
         строчные буквы; <br>
         цифры или специальные символы: %, #, $ и другие.</p>
       <v-btn  elevation="0" class="btn-secondary" @click="back(1)"> <span class="btn-title">Назад</span> </v-btn>
-      <v-btn dark elevation="0" class="btn-primary" @click="next(3)"><span class="btn-title">Далее</span> </v-btn>
+      <v-btn dark elevation="0" class="btn-primary" :disabled="!disableHandler" @click="next(3)"><span class="btn-title">Далее</span> </v-btn>
     </v-form>
   </v-container>
 </div>
@@ -98,5 +98,8 @@ export default {
 .text-grey{
   color: #9398A1;
 }
-
+.theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
+  color: lightgrey !important;
+  background: #0082de!important;
+}
 </style>

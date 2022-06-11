@@ -46,9 +46,8 @@
           <strong class="small-text ml-5">Кладовщик </strong> <br> <span class="primary-text ml-5"> требуются медицинская книжка</span>
         </div>
       </div>
-
       <v-btn  elevation="0" class="btn-secondary" @click="back(3)"> <span class="btn-title">Назад</span> </v-btn>
-      <v-btn dark elevation="0" class="btn-primary" @click="next( 5 )"><span class="btn-title">Далее</span> </v-btn>
+      <v-btn dark elevation="0" class="btn-primary" :disableHandler="!disableHandler" @click="next( 5 )"><span class="btn-title">Далее</span> </v-btn>
     </div>
   </div>
 </v-container>
@@ -100,6 +99,17 @@ export default {
     },
     specializationCopy(){
       return JSON.parse(JSON.stringify(this.$store.getters['executor/specializations']))
+    },
+    disableHandler(){
+      let specializationCopy = (this.specializationCopy || []).map((ell) => {
+        return {
+          ...ell,
+          professions: (ell.professions || []).filter((ell) => {
+            ell.active === true
+          }),
+        };
+      })
+      return specializationCopy
     }
 
   },

@@ -30,14 +30,12 @@
               ></v-text-field>
             </div>
 
-
             <div class="form-part">
               <p class="input_label">Отчество</p>
               <v-text-field
                   outlined
                   required
                   class="mt-2"
-                  :rules="inputRules"
                   v-model="form.middle_name"
                   dense
               ></v-text-field>

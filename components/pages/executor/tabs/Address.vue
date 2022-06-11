@@ -46,7 +46,7 @@
     </v-form>
     <div class="mt-5">
     <v-btn  elevation="0" class="btn-secondary" @click="back(4)"> <span class="btn-title">Назад</span> </v-btn>
-    <v-btn dark elevation="0" class="btn-primary" @click="next( 6 )"><span class="btn-title">Далее</span> </v-btn>
+    <v-btn dark elevation="0" class="btn-primary" :disabled="!disableHandler" @click="next( 6 )"><span class="btn-title">Далее</span> </v-btn>
     </div>
   </v-container>
 </div>
@@ -87,6 +87,9 @@ export default {
   },
   computed:{
     ...mapGetters('response',['requestSuccess']),
+    disableHandler(){
+      return this.address
+    }
   }
 }
 </script>
