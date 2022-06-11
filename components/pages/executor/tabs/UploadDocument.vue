@@ -112,8 +112,8 @@
     <div>
       <v-row>
         <v-col>
-          <div  class=" mt-2  justify-center text-center">
-            <vue-dropzone id="fileUpload1" ref="myVueDropzone" @click.prevent="selectFile(0)"  @vdropzone-thumbnail="afterAdded1" :options="dropzoneOptions" :useCustomSlot="true">
+          <div  class="mt-2  justify-center text-center">
+            <vue-dropzone id="fileUpload1" ref="myVueDropzone" @click.prevent="selectFile(0)"  @vdropzone-sending="afterAdded1" :options="dropzoneOptions" :useCustomSlot="true">
               <div class="dropzone-custom-content">
                 <div class="d-block">
                   <img src="@/assets/img/uploader.svg" alt="">
@@ -144,7 +144,7 @@
     <v-row>
       <v-col>
         <div class="mt-2 justify-center text-center">
-          <vue-dropzone id="fileUpload2" ref="myVueDropzone"  @vdropzone-thumbnail="afterAdded2" :options="dropzoneOptions" :useCustomSlot="true">
+          <vue-dropzone id="fileUpload2" ref="myVueDropzone" @click.prevent="selectFile(0)" @vdropzone-sending="afterAdded2" :options="dropzoneOptions" :useCustomSlot="true">
             <div class="dropzone-custom-content">
               <div class="d-block">
                 <img src="@/assets/img/uploader.svg" alt="">
@@ -173,7 +173,7 @@
     <v-row>
       <v-col>
         <div class="mt-2 justify-center text-center">
-          <vue-dropzone id="fileUpload3" ref="myVueDropzone" @vdropzone-thumbnail="afterAdded3" :options="dropzoneOptions" :useCustomSlot="true">
+          <vue-dropzone id="fileUpload3" ref="myVueDropzone" @vdropzone-sending="afterAdded3" :options="dropzoneOptions" :useCustomSlot="true">
             <div class="dropzone-custom-content">
               <div class="d-block">
                 <img src="@/assets/img/uploader.svg" alt="">
@@ -216,7 +216,7 @@
     <v-row>
       <v-col>
         <div class="mt-2 justify-center text-center">
-          <vue-dropzone id="fileUpload4" ref="myVueDropzone"  @vdropzone-thumbnail="afterAdded4" :options="dropzoneOptions" :useCustomSlot="true">
+          <vue-dropzone id="fileUpload4" ref="myVueDropzone"  @vdropzone-sending="afterAdded4" :options="dropzoneOptions" :useCustomSlot="true">
             <div class="dropzone-custom-content">
               <div class="d-block">
                 <img src="@/assets/img/uploader.svg" alt="">
@@ -245,7 +245,7 @@
     <v-row>
       <v-col>
         <div class="mt-2 justify-center text-center">
-          <vue-dropzone id="fileUpload5" ref="myVueDropzone"  @vdropzone-thumbnail="afterAdded5" :options="dropzoneOptions" :useCustomSlot="true">
+          <vue-dropzone id="fileUpload5" ref="myVueDropzone"  @vdropzone-sending="afterAdded5" :options="dropzoneOptions" :useCustomSlot="true">
             <div class="dropzone-custom-content">
               <div class="d-block">
                 <img src="@/assets/img/uploader.svg" alt="">
@@ -274,7 +274,7 @@
     <v-row>
       <v-col>
         <div class="mt-2 justify-center text-center">
-          <vue-dropzone id="fileUpload6" ref="myVueDropzone" @vdropzone-thumbnail="afterAdded6" :options="dropzoneOptions" :useCustomSlot="true">
+          <vue-dropzone id="fileUpload6" ref="myVueDropzone" @vdropzone-sending="afterAdded6" :options="dropzoneOptions" :useCustomSlot="true">
             <div class="dropzone-custom-content">
               <div class="d-block">
                 <img src="@/assets/img/uploader.svg" alt="">
@@ -495,6 +495,7 @@
      <v-btn  elevation="0" class="btn-secondary" @click="back(5)"> <span class="btn-title">Назад</span> </v-btn>
      <v-btn dark elevation="0" class="btn-primary" @click="next( 7)"><span class="btn-title">Далее</span> </v-btn>
    </div>
+
   </v-container>
 </div>
 </template>
@@ -513,12 +514,12 @@ export default {
       filelist: [],
       logo:'',
       passport_number:'',
-      passport_info:'',
-      passport_code:'',
-      passport_series:'',
-      passport_given:'',
-      passport_date:'',
-      passport_term:'',
+      passport_info:'4324',
+      passport_code:'4324',
+      passport_series:'4324',
+      passport_given:'234',
+      passport_date:'4324',
+      passport_term:'43242',
       files:[],
       passport_1:null,
       dropzoneOptions: {
@@ -530,7 +531,7 @@ export default {
     }
   },
   methods:{
-    ...mapActions('executor', ['createDocument','setPassport']),
+    ...mapActions('executor', ['createDocument','setPassport','uploadPassportMainSpread','uploadPassportMedical','uploadDriverLicense']),
     next(value){
       this.$emit('pageHandler', value)
      let data=[
@@ -567,8 +568,10 @@ export default {
          value:this.passport_code
         }
       ]
-      this.createDocument()
-      this.setPassport(data)
+      this.createDocument({document:'passport'})
+      setTimeout(()=>{
+        this.setPassport(data)
+      },1000)
     },
     back(value){
       this.$emit('pageHandler', value , 'back')
@@ -582,23 +585,65 @@ export default {
     dragover(event) {
       event.preventDefault();
     },
-    afterAdded1(e,file,place){
-      console.log(e,file,place)
+   async afterAdded1(file, xhr, formDataArg){
+      let data = {
+        slug:'passport_main_spread',
+        name_media: 'Основной разворот',
+      }
+      await this.createDocument('passport_media')
+      let formData = new FormData();
+      formData.append("file", file);
+      this.uploadPassportMainSpread({data,formData})
     },
-    afterAdded2(e,file,place){
-      console.log(e,file,place)
+  async afterAdded2(file, xhr, formDataArg){
+      let data = {
+        slug:'passport_registration_page',
+        name_media: 'Фото паспорта основной разворот (стр. 1-3)',
+      }
+      await this.createDocument('passport_media')
+      let formData = new FormData();
+      formData.append("file", file);
+      this.uploadPassportMainSpread({data,formData})
     },
-    afterAdded3(e,file,place){
-      console.log(e,file,place)
+   async afterAdded3(file, xhr, formDataArg){
+      let data = {
+        slug:'photo_with_passport',
+        name_media: 'Фото паспорта разворот прописка (стр. 3-4) ',
+      }
+      await this.createDocument('passport_media')
+      let formData = new FormData();
+      formData.append("file", file);
+      this.uploadPassportMainSpread({data,formData})
     },
-    afterAdded4(e,file,place){
-      console.log(e,file,place)
+    async afterAdded4(file, xhr, formDataArg){
+       let data = {
+        slug:'medical_book_main_spread',
+        name_media: 'Медицинская книжка основной разворот',
+       }
+      await this.createDocument('medical_media')
+      let formData = new FormData();
+      formData.append("file", file);
+      this.uploadPassportMedical({data,formData})
     },
-    afterAdded5(e,file,place){
-      console.log(e,file,place)
+   async afterAdded5(file, xhr, formDataArg){
+      let data = {
+        slug:'stacker_driving_license',
+        name_media: 'Водительские права',
+      }
+      await this.createDocument('driver_media')
+      let formData = new FormData();
+      formData.append("file", file);
+      this.uploadDriverLicense({data,formData})
     },
-    afterAdded6(e,file,place){
-      console.log(e,file,place)
+   async afterAdded6(file, xhr, formDataArg){
+      let data = {
+        slug:'stacker_driving_license',
+        name_media: 'Водительские права',
+      }
+      await this.createDocument('driver_media')
+      let formData = new FormData();
+      formData.append("file", file);
+      this.uploadDriverLicense({data,formData})
     },
     selectFile(value) {
       document.getElementById("fileUpload" + value).click()

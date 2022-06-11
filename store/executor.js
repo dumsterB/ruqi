@@ -1,8 +1,14 @@
+import {STACKER_DRIVING_LICENSE} from "@/constants";
+
 export const state = () => ({
   executors: [],
   specializations:[],
   document:'',
+  passport_media:'',
+  medical_media:'',
+  driver_media:'',
   error:'',
+  passport_main_spread: null,
 
 })
 export const getters = {
@@ -74,7 +80,7 @@ export const actions = {
     async loadSpecializations({ commit }){
         await this.$axios.get('dictionary/specializations')
             .then((response) => {
-                commit('setSpecializations',response)
+                commit('SET_SPECIALIZATIONS',response)
                 setTimeout(function() {
                     commit('response/removeSuccess', null, { root: true });
                 }, 2000);
@@ -108,10 +114,19 @@ export const actions = {
                 return error
             });
     },
-    async createDocument({ commit }, ){
-        await this.$axios.post('user/documents', {document:'Паспорт',slug:'',count_media: 7})
+    async createDocument({ commit }, params ){
+        console.log(params)
+        await this.$axios.post('user/documents', params)
             .then((response) => {
-                console.log(response.data)
+                if(params === 'document'){
+                    commit('SET_DOCUMENT', response)
+                }else if(params === 'passport_media'){
+                    commit('SET_PASSPORT_MEDIA', response)
+                }else if(params === 'medical_media'){
+                    commit('SET_MEDICAL_MEDIA',response)
+                }else if(params === 'driver_media'){
+                    commit('SET_DRIVER_MEDIA',response)
+                }
                 setTimeout(function() {
                     commit('response/removeSuccess', null, { root: true });
                 }, 2000);
@@ -128,9 +143,88 @@ export const actions = {
     },
     async setPassport({commit, state}, params){
         console.log(state.document)
-        await this.$axios.post(`user/documents/${state.document}`,params)
+        await this.$axios.post(`user/documents/${state.document}`, params)
             .then((response) => {
                 commit('response/setSuccess', {type: 'success', text: 'Паспортные данные успешно созданы', }, {root: true});
+                setTimeout(function() {
+                    commit('response/removeSuccess', null, { root: true });
+                }, 2000);
+                return (response && response.data) || {};
+            })
+            .catch((error) => {
+                commit('response/setSuccess', {type: 'error', text: 'Заполните поля', }, {root: true});
+                setTimeout(function() {
+                    commit('response/removeSuccess', null, { root: true });
+                }, 3000);
+                console.log(error);
+                return error
+            });
+    },
+    async uploadPassportMainSpread({commit, state}, payload){
+       console.log(payload,'file')
+    await this.$axios.put(`user/documents/${state.passport_media}/uploadImage`,
+        payload.formData,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            params: payload.params
+        }
+        )
+        .then((response) => {
+            commit('response/setSuccess', {type: 'success', text: 'Платежная информация успешно создана', }, {root: true});
+            setTimeout(function() {
+                commit('response/removeSuccess', null, { root: true });
+            }, 2000);
+            return (response && response.data) || {};
+        })
+        .catch((error) => {
+            commit('response/setSuccess', {type: 'error', text: 'Заполните поля', }, {root: true});
+            setTimeout(function() {
+                commit('response/removeSuccess', null, { root: true });
+            }, 3000);
+            console.log(error);
+            return error
+        });
+    },
+    async uploadPassportMedical({commit, state}, payload){
+        await this.$axios.put(`user/documents/${state.medical_media}/uploadImage`,
+            payload.formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                params: payload.params
+            }
+          )
+            .then((response) => {
+                commit('response/setSuccess', {type: 'success', text: 'Платежная информация успешно создана', }, {root: true});
+                setTimeout(function() {
+                    commit('response/removeSuccess', null, { root: true });
+                }, 2000);
+                return (response && response.data) || {};
+            })
+            .catch((error) => {
+                commit('response/setSuccess', {type: 'error', text: 'Заполните поля', }, {root: true});
+                setTimeout(function() {
+                    commit('response/removeSuccess', null, { root: true });
+                }, 3000);
+                console.log(error);
+                return error
+            });
+    },
+    async uploadDriverLicense({commit, state}, payload){
+        await this.$axios.put(`user/documents/${state.driver_media}/uploadImage`,
+            payload.formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                params: payload.params
+            }
+        )
+            .then((response) => {
+                commit('response/setSuccess', {type: 'success', text: 'Платежная информация успешно создана', }, {root: true});
                 setTimeout(function() {
                     commit('response/removeSuccess', null, { root: true });
                 }, 2000);
@@ -175,7 +269,7 @@ export const actions = {
                 return error
             });
     },
-   async setAddress({ commit }, params){
+    async setAddress({ commit }, params){
         await this.$axios.put(`user/settings`, { addresses:[...params]})
     .then((response) => {
             commit('response/setSuccess', {type: 'success', text: 'Адресс успешно создан', }, {root: true});
@@ -196,10 +290,21 @@ export const actions = {
 
 }
 export const mutations = {
-    setSpecializations(state,payload){
+    SET_SPECIALIZATIONS(state,payload){
        state.specializations = payload.data.data
     },
-    setDocument(state,payload){
-        state.document = payload
+    SET_DOCUMENT(state,payload){
+        state.document = payload.data.uuid
+    },
+    SET_PASSPORT_MEDIA(state,payload){
+     if(state.passport_media.length < 1){
+            state.passport_media = payload.data.uuid
+        }
+    },
+    SET_MEDICAL_MEDIA(state,payload){
+        state.medical_media = payload.data.uuid
+    },
+    SET_DRIVER_MEDIA(state,payload){
+        state.driver_media = payload.data.uuid
     }
 }
