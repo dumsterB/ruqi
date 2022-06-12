@@ -130,7 +130,7 @@ export default {
   data() {
     return {
       power: 78,
-      current_page: 6,
+      current_page: 2,
       form: {
         name: "",
         surname: "",
@@ -160,6 +160,7 @@ export default {
     };
   },
   methods: {
+
     pageHandler(val, helper) {
       if (helper === "back") {
         this.current_page = val;

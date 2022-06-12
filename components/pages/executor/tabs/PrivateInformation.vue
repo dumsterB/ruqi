@@ -111,8 +111,8 @@
             <v-text-field
                 v-model="form.phone"
                 class="mt-2"
+                type="tel"
                 :rules="inputRules"
-                type="number"
                 outlined
                 placeholder="+7"
                 dense
@@ -171,6 +171,7 @@ export default {
   data(){
     return{
       valid:false,
+      phoneNumber: '',
       menu:'',
       sex_options:['мужской','женский'],
       switcher:false,
