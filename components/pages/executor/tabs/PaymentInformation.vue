@@ -43,12 +43,16 @@
       <v-row>
         <v-col cols="12">
           <p class="input_label">Способ оплаты</p>
-          <v-select dense v-model="settings.type_payment" outlined placeholder="Расчетный счет"></v-select>
+          <v-select :items="types" dense v-model="settings.type_payment" outlined placeholder="Расчетный счет"></v-select>
         </v-col>
       </v-row>
       <v-row>
-        <v-col col="5">
+        <v-col col="5" v-if="settings.type_payment != 'Банковская карта'">
           <p class="input_label">Номер счета</p>
+          <v-text-field v-model="settings.payment_account" dense outlined></v-text-field>
+        </v-col>
+        <v-col col="5" v-if="settings.type_payment == 'Банковская карта'">
+          <p class="input_label">Номер карты</p>
           <v-text-field v-model="settings.payment_account" dense outlined></v-text-field>
         </v-col>
         <v-col col="4">
@@ -56,7 +60,7 @@
           <v-text-field  v-model="settings.bik" placeholder="044521234" dense outlined></v-text-field>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-if="settings.type_payment != 'Банковская карта'">
         <v-col col="12">
           <p class="input_label">Банк</p>
           <v-text-field v-model="settings.bank" placeholder="Московский банк ПАО Сбербанк г. Москва" dense outlined></v-text-field>
@@ -65,7 +69,7 @@
         </v-col>
       </v-row>
     </div>
-    <div>
+    <div v-if="settings.type_payment != 'Банковская карта'">
       <div class="d-flex">
         <v-checkbox>
         </v-checkbox>
@@ -89,6 +93,7 @@ export default {
   data() {
     return {
       valid:false,
+      types:['Банковская карта','Расчетный счет'],
       settings:{
         inn: '',
         bik: '',
