@@ -55,6 +55,7 @@
           @click="next(3)"
           ><span class="btn-title">Далее</span>
         </v-btn>
+        <div class="d-none">{{requestSuccess}}</div>
       </v-form>
     </v-container>
   </div>
@@ -89,7 +90,7 @@ export default {
     validate() {
       this.$refs.form.validate();
     },
-     next(value) {
+  async next(value) {
       let data = {
         password: this.password,
         phone: '+4554355345435',
@@ -100,8 +101,7 @@ export default {
       } else {
         delete data.email;
       }
-      this.createPassword(data);
-       this.$emit("pageHandler", value);
+    await  this.createPassword(data);
       if (this.requestSuccess.type === "success") {
         this.$emit("pageHandler", value);
       } else {
