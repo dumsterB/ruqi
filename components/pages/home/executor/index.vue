@@ -1,15 +1,15 @@
 <template lang="pug">
 .rq-home-executor
-  .mobile
-    .mobile__header
-      .mobile__header-container
-        mUserbar.mobile__header-userbar
-        .mobile__header-widgetbar
-        mContentDisplayController.mobile__header-display-ctrl
+  .rq-home-executor__mobile
+    .rq-home-executor__mobile__header
+      .rq-home-executor__mobile__header-container
+        mUserbar.rq-home-executor__mobile__header-userbar
+        .rq-home-executor__mobile__header-widgetbar
+        mContentDisplayController.rq-home-executor__mobile__header-display-ctrl
 
-  .desktop
-    Userbar.desktop-userbar
-    ContentDisplayController.desktop__content-display-ctrl
+  .rq-home-executor__desktop
+    Userbar.rq-home-executor__desktop-userbar
+    ContentDisplayController.rq-home-executor__desktop__content-display-ctrl
 
   TasksList.search__task-list(:tasks="searchTasks")
 </template>
@@ -68,7 +68,7 @@ export default {
 
 <style lang="scss">
 .rq-home-executor {
-  .desktop {
+  &__desktop {
     display: block;
     //max-width: 1272px;
 
@@ -81,7 +81,7 @@ export default {
     }
   }
 
-  .mobile {
+  &__mobile {
     display: none;
 
     &__header {
@@ -140,11 +140,11 @@ export default {
   }
 
   @media screen and (max-width: 768px) {
-    .desktop {
+    &__desktop {
       display: none;
     }
 
-    .mobile {
+    &__mobile {
       display: block;
     }
   }

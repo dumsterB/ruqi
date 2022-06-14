@@ -12,7 +12,9 @@
     template(#item="{ item }")
       .task-tabs__item
         .task-tabs__title {{ item.name }}
-  SearchTasksExecutor(v-else-if="user.type === 'contractor' && $route.name === 'index'")
+  SearchTasksExecutor(
+    v-else-if="user.type === 'contractor' && ($route.name === 'index' || $route.name === 'tasks-contractor')"
+  )
   rqBreadcrumbs(v-else, :breadcrumbs="BREADCRUMBS")
 </template>
 
@@ -55,7 +57,7 @@ export default {
     onUnpinRqTabClicked({ item }) {
       console.debug("onUnpinRqTabClicked", item); // DELETE
 
-      this.unPinRqTabTasks({rqTabTasks: item}).then((result) => {
+      this.unPinRqTabTasks({ rqTabTasks: item }).then((result) => {
         this.$router.push(result);
       });
     },
@@ -140,14 +142,15 @@ export default {
     padding: 20px 24px;
     height: 60px;
   }
-  &__node {
-  }
+
+  &__node {}
 
   /* OBJECTS */
   .task-tabs {
     &__title {
       max-width: 250px;
     }
+
     &__item {
       margin-right: 10px;
     }
