@@ -24,7 +24,7 @@ export default {
   },
   methods:{
     register(){
-      this.$router.push('/auth/signup/executor/registration')
+      this.$router.push('/auth/signup/executor/steps')
     }
   }
 }
