@@ -5,7 +5,7 @@
     :is="getComponent(name)"
   )
   img.ui-picture__img(
-    v-else
+    v-else-if="name"
     :src="require(`../../../assets/img/${name}`)"
   )
 </template>

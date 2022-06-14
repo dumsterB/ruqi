@@ -3,19 +3,21 @@
   Header.page-task-contractor__header
   Tabs.page-task-contractor__tabs
   .page-task-contractor__actions
-  Banner.page-task-contractor__banner(
-    title
-    logo
-    description
-    link
-  )
+  //- Banner.page-task-contractor__banner(
+  //-   title
+  //-   logo
+  //-   description
+  //-   link
+  //- )
   .page-task-contractor__tasks
+
+  Picture
 </template>
 
 <script>
 import Header from '@/components/pages/tasks/executor/index/Header';
 import Tabs from '@/components/pages/tasks/executor/index/Tabs';
-import Banner from '@/components/UI/Banner';
+import Banner from '@/components/composite/Banner';
 
 import Picture from '@/components/UI/Picture';
 
