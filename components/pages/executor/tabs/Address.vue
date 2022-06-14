@@ -3,6 +3,7 @@
   <v-container>
     <p class="main_text_executor">Адреса</p>
     <p>Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
+    <v-form ref="form" v-model="valid" lazy-validation>
     <div class="mt-5">
       <h3>Укажите место проживания</h3>
       <p class="input_label">Место основного проживания</p>
@@ -10,6 +11,7 @@
           outlined
           class="mt-2"
           placeholder="Введите адрес"
+          :rules="inputRules"
           v-model="address"
           dense
           single-line
@@ -41,16 +43,17 @@
         <strong class="ml-2" style="font-weight: 600;margin-bottom: -10px">Вы всегда можете добавить, удалить и изменить основной и дополнительные адреса в личном кабинете.</strong>
       </div>
     </div>
+    </v-form>
     <div class="mt-5">
     <v-btn  elevation="0" class="btn-secondary" @click="back(4)"> <span class="btn-title">Назад</span> </v-btn>
-    <v-btn dark elevation="0" class="btn-primary" @click="next( 6 )"><span class="btn-title">Далее</span> </v-btn>
+    <v-btn dark elevation="0" class="btn-primary" :disabled="!disableHandler" @click="next( 6 )"><span class="btn-title">Далее</span> </v-btn>
     </div>
   </v-container>
 </div>
 </template>
 
 <script>
-import {mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
   data(){
@@ -58,19 +61,34 @@ export default {
       address:'',
       address_extra:'',
       address_extra_2:'',
+      valid:false,
+      inputRules: [v => !!v || 'Заполните поля'],
     }
   },
   methods:{
     ...mapActions('executor',['setAddress']),
+    validate () {
+      this.$refs.form.validate()
+    },
     back(value){
       this.$emit('pageHandler', value, 'back')
     },
     next(value){
-      this.$emit('pageHandler', value)
       let data =[
           this.address,this.address_extra,this.address_extra_2
       ]
      this.setAddress(data)
+      if(this.requestSuccess.type === 'success'){
+        this.$emit('pageHandler',value)
+      }else{
+        this.validate()
+      }
+    }
+  },
+  computed:{
+    ...mapGetters('response',['requestSuccess']),
+    disableHandler(){
+      return this.address
     }
   }
 }

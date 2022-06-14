@@ -3,6 +3,7 @@
   <v-container>
    <p class="main_text_executor">Платежная информация</p>
     <p>Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют.</p>
+    <v-form v-model="valid" lazy-validation ref="form">
     <div class="access-content">
       <div class="d-flex">
         <img src="@/assets/img/attention.svg" alt="">
@@ -42,12 +43,16 @@
       <v-row>
         <v-col cols="12">
           <p class="input_label">Способ оплаты</p>
-          <v-select dense v-model="settings.type_payment" outlined placeholder="Расчетный счет"></v-select>
+          <v-select :items="types" dense v-model="settings.type_payment" outlined placeholder="Расчетный счет"></v-select>
         </v-col>
       </v-row>
       <v-row>
-        <v-col col="5">
+        <v-col col="5" v-if="settings.type_payment != 'Банковская карта'">
           <p class="input_label">Номер счета</p>
+          <v-text-field v-model="settings.payment_account" dense outlined></v-text-field>
+        </v-col>
+        <v-col col="5" v-if="settings.type_payment == 'Банковская карта'">
+          <p class="input_label">Номер карты</p>
           <v-text-field v-model="settings.payment_account" dense outlined></v-text-field>
         </v-col>
         <v-col col="4">
@@ -55,7 +60,7 @@
           <v-text-field  v-model="settings.bik" placeholder="044521234" dense outlined></v-text-field>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-if="settings.type_payment != 'Банковская карта'">
         <v-col col="12">
           <p class="input_label">Банк</p>
           <v-text-field v-model="settings.bank" placeholder="Московский банк ПАО Сбербанк г. Москва" dense outlined></v-text-field>
@@ -64,7 +69,7 @@
         </v-col>
       </v-row>
     </div>
-    <div>
+    <div v-if="settings.type_payment != 'Банковская карта'">
       <div class="d-flex">
         <v-checkbox>
         </v-checkbox>
@@ -72,9 +77,10 @@
       </div>
       <p class="text-grey" style="margin-top: -15px">Если карта чужая то мы можем платить по карте , но не можем <br> на чужие реквизиты</p>
     </div>
+    </v-form>
     <v-btn  elevation="0" class="btn-secondary" @click="next(6)"> <span class="btn-title">Назад</span> </v-btn>
-    <v-btn  elevation="0" class="btn-secondary" @click="next(8)"> <span class="btn-title">Заполнить позже</span> </v-btn>
-    <v-btn dark elevation="0" class="btn-primary" @click="next(8)"><span class="btn-title">Далее</span> </v-btn>
+    <v-btn  elevation="0" class="btn-secondary" @click="next"> <span class="btn-title">Заполнить позже</span> </v-btn>
+    <v-btn dark elevation="0" class="btn-primary" @click="next"><span class="btn-title">Далее</span> </v-btn>
   </v-container>
 </div>
 </template>
@@ -86,6 +92,8 @@ export default {
   name: "PaymentInformation",
   data() {
     return {
+      valid:false,
+      types:['Банковская карта','Расчетный счет'],
       settings:{
         inn: '',
         bik: '',
@@ -98,8 +106,11 @@ export default {
   },
   methods: {
     ...mapActions('executor',['setPayment']),
-    next(val){
-      this.$emit('pageHandler', val)
+    validate () {
+      this.$refs.form.validate()
+    },
+    next(){
+      this.$emit('pageHandler', 'finish')
       this.setPayment(this.settings)
     },
     back(val){

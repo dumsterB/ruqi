@@ -30,7 +30,7 @@
         <img  src="@/assets/img/attention.svg" alt="">
         <p class="ml-2 small-text mt-8"> Некоторые из выбранных Вами профессий требуют загрузки дополнительных документов для подтверждения:</p>
       </div>
-      <div class="desktop">
+      <div class="desktop d-block">
         <div class="d-flex">
           <strong class="small-text ml-5">Водитель электроштабелера </strong> <span  style="margin-top: -2px" class="primary-text ml-3"> требуются права для управления</span>
         </div>
@@ -46,9 +46,8 @@
           <strong class="small-text ml-5">Кладовщик </strong> <br> <span class="primary-text ml-5"> требуются медицинская книжка</span>
         </div>
       </div>
-
       <v-btn  elevation="0" class="btn-secondary" @click="back(3)"> <span class="btn-title">Назад</span> </v-btn>
-      <v-btn dark elevation="0" class="btn-primary" @click="next( 5 )"><span class="btn-title">Далее</span> </v-btn>
+      <v-btn dark elevation="0" class="btn-primary" :disableHandler="!disableHandler" @click="next( 5 )"><span class="btn-title">Далее</span> </v-btn>
     </div>
   </div>
 </v-container>
@@ -100,6 +99,17 @@ export default {
     },
     specializationCopy(){
       return JSON.parse(JSON.stringify(this.$store.getters['executor/specializations']))
+    },
+    disableHandler(){
+      let specializationCopy = (this.specializationCopy || []).map((ell) => {
+        return {
+          ...ell,
+          professions: (ell.professions || []).filter((ell) => {
+            ell.active === true
+          }),
+        };
+      })
+      return specializationCopy
     }
 
   },
@@ -161,14 +171,14 @@ export default {
   font-size: 14px;
 }
 .mobile{
-  display: none;
+  display: none!important;
 }
 @media (max-width: 1000px) {
   .desktop{
-    display: none;
+    display: none!important;
   }
   .mobile{
-    display: block;
+    display: block!important;
   }
 }
 </style>

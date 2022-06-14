@@ -2,7 +2,7 @@
   <div class="signup">
     <header class="header">
       <div class="logo">
-        <img class="img" src="@/assets/img/logo-executor.svg" alt="">
+        <img class="img" src="@/assets/img/logo-executor.svg" alt="" />
       </div>
     </header>
     <main>
@@ -20,16 +20,15 @@ export default {
     tabs,
   },
   data() {
-    return {
-    }
-  }
-}
+    return {};
+  },
+};
 </script>
 
 <style scoped>
 .header {
   height: 96px;
-  background: #006EDF;
+  background: #006edf;
 }
 
 .logo {
