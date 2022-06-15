@@ -1,10 +1,10 @@
 <template lang="pug">
   .inner-task-page-selections
-    SelectionHeader(@onBackToAppClick="onBackToAppClick")
+    SelectionHeader(@onBackToAppClick="onBackToAppClick" :task_name="request_id.name" :selected_count="selectedItems.length")
 
     SelectionFilter
 
-    Responses(:items="contractors" :headers="headers" :options="options" @callAction="callAction" @setSelected="setSelected")
+    Responses(:items="contractors" :headers="headers" @callAction="callAction" @setSelected="setSelected")
 
 </template>
 
@@ -22,13 +22,14 @@ export default {
   data() {
     return {
       headers: [
-        { text: "фио", align: "start", value: "fullname" },
+        { text: "фио", align: "start", value: "shortname", width: '200px' },
         { text: "Лет", value: "age", width: '112px' },
-        { text: "география", value: "geography", width: '286px' },
-        { text: "ранг", value: "rang", width: '112px' },
+        { text: "география", value: "location", width: '286px' },
+        { text: "%БН", value: "trust", width: '112px' },
+        { text: "ранг", value: "rank", width: '112px' },
         { text: "ставка", value: "rate", width: '112px'},
         { text: "профессия", value: "professions" },
-        { text: "Работал", value: "works" },
+        { text: "Работал", value: "on_object" },
       ],
       options: {},
       selectedItems: [],
@@ -37,12 +38,17 @@ export default {
   computed : {
     ...mapGetters("breadcrumbs", ["BREADCRUMBS"]),
 
+    request_id() {
+      return this.$store.getters["request_id/request_id"];
+    },
+
     contractors () {
       return this.$store.getters[ 'request_id_dispatchers/request_id_search' ];
     },
 
   },
   methods: {
+    ...mapActions("request_id", ["fetchRequestId",]),
     ...mapActions( 'contractors', [ 'getContractors', 'inviteContractorsToVacancy', 'setSortColumn', 'setSortOrder' ] ),
     ...mapActions("breadcrumbs", ["initBreadcrumbs", "setBreadcrumbs"]),
     ...mapActions("request_id_dispatchers", ["fetchRequestIdSearch",]),
@@ -70,6 +76,9 @@ export default {
   },
 
   async created() {
+
+    await this.fetchRequestId(this.$route.params.id);
+
     await this.fetchRequestIdSearch({
       requestId: this.$route.params.id,
       params: {"page": 1},

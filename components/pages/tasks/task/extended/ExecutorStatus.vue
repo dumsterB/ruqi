@@ -61,6 +61,8 @@ export default {
     full_name() {
       if (!this.short_name) {
         return `${this.lastname} ${this.firstname} ${this.middlename}`;
+      }else{
+        return `${this.lastname} ${this.firstname.substr(0, 1)}. ${this.middlename.substr(0, 1)}.`;
       }
     },
   },

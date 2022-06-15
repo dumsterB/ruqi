@@ -9,6 +9,8 @@
                 v-icon mdi-plus
                 span новая заявка
 
+              TasksFilter.ml-8
+
               TableFilter.ml-8.mr-5(v-if="tasks_filters.length"
                 :fields="tasks_filters"
                 :headers="headers_tasks_filter"
@@ -117,12 +119,13 @@ import {mapState, mapActions, mapGetters, mapMutations} from "vuex";
 import TableFilter from "@/components/composite/TableFilter";
 import TableGroupAction from "@/components/composite/TableGroupAction";
 import TaskStatus from "@/components/pages/tasks/TaskStatus";
+import TasksFilter from "@/components/pages/tasks/TasksFilter";
 
 export default {
   meta: {
     title: "Заявки",
   },
-  components: {TableFilter, TableGroupAction, TaskStatus},
+  components: {TableFilter, TableGroupAction, TaskStatus, TasksFilter},
   data() {
     return {
       title: "Заявки",

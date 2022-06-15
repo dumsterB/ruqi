@@ -45,7 +45,7 @@
               .filter-col-after-left
                 TableGroupAction(v-if="selectedItems.length > 0"
                   :actions="groupListAction" :selected="selectedItems"
-                  @selectAction="changeConfirmModalContentAny(true)" @clearSelected="clearSelected")
+                  @selectAction="callActionTask" @clearSelected="clearSelected")
 
             .filter-row-right.d-flex
               v-btn.btn-blue.add(
@@ -69,55 +69,55 @@
 
                   v-card
                     v-list-item-content.justify-start
-                      .mx-auto.text-left.card-action(v-for="action in actions_tasks")
+                      .mx-auto.text-left.card-action.card-action-task(v-for="action in actions_tasks")
+                        div(v-if="action.display")
+                          v-menu(
+                            open-on-hover left offset-x
+                            v-if="action.sub_actions"
+                            content-class="card-actions-menu"
+                          )
+                            template(v-slot:activator="{ on, attrs }")
+                              a.d-flex.justify-space-between(v-bind="attrs" v-on="on")
+                                div
+                                  v-icon {{ action.icon }}
+                                  span {{ action.text }}
+                                v-icon mdi-menu-right
+                            v-card
+                              v-list-item-content.justify-start
+                                .mx-auto.text-left.card-action(v-for="(sub_action, index) in action.sub_actions" :key="index")
+                                  a.select-status(@click.prevent="callActionTask(action.action, [$route.params.id], sub_action.params)")
+                                    v-icon(:color="sub_action.color") {{ sub_action.icon }}
+                                    span.select-status-title {{ sub_action.text }}
 
-                        v-menu(
-                          open-on-hover left offset-x
-                          v-if="action.sub_actions"
-                          content-class="card-actions-menu"
-                        )
-                          template(v-slot:activator="{ on, attrs }")
-                            a.d-flex.justify-space-between(v-bind="attrs" v-on="on")
-                              div
-                                v-icon {{ action.icon }}
-                                span {{ action.text }}
-                              v-icon mdi-menu-right
-                          v-card
-                            v-list-item-content.justify-start
-                              .mx-auto.text-left.card-action(v-for="(sub_action, index) in action.sub_actions" :key="index")
-                                a.select-status(@click.prevent="callActionTask(action.action, [$route.params.id], sub_action.params)")
-                                  v-icon(:color="sub_action.color") {{ sub_action.icon }}
-                                  span.select-status-title {{ sub_action.text }}
-
-                        a(@click.prevent="callActionTask(action.action, [$route.params.id])" v-else)
-                          v-icon {{ action.icon }}
-                          span {{ action.text }}
+                          a(@click.prevent="callActionTask(action.action, [$route.params.id])" v-else)
+                            v-icon {{ action.icon }}
+                            span {{ action.text }}
 
 
       v-row.d-flex(no-gutters)
         v-col(cols="12")
           v-window(v-model="tab")
             v-tab-item(eager)
-              Responses(:items="request_id_responses" :headers="headers" :actions="actions_responses"
+              Responses(:items="request_id_responses" :headers="headers" :actions="actions_responses" :model="selectedItems"
                 @callAction="callAction"
                 @setSelected="setSelected"
                 @getDataFromApi ="getDataFromApi('fetchResponseParams', 'optionsResponse', 'fetchRequestIdResponses', ...arguments)")
 
             v-tab-item(eager)
-              Responses(:items="request_id_selection" :headers="headers_selection" :actions="actions_selection" :isAddElement="true"
+              Responses(:items="request_id_selection" :headers="headers_selection" :actions="actions_selection" :isAddElement="true" :model="selectedItems"
                 @addSelection="addArtist"
                 @callAction="callAction"
                 @setSelected="setSelected"
                 @getDataFromApi ="getDataFromApi('fetchSelectionParams', 'optionsSelection', 'fetchRequestIdSelection', ...arguments)")
 
             v-tab-item(eager)
-              Responses(:items="request_id_invitations" :headers="headers_invitations" :actions="actions_invitations"
+              Responses(:items="request_id_invitations" :headers="headers_invitations" :actions="actions_invitations" :model="selectedItems"
                 @callAction="callAction"
                 @setSelected="setSelected"
                 @getDataFromApi ="getDataFromApi('fetchInvitationsParams', 'optionsInvitations', 'fetchRequestIdInvitations', ...arguments)")
 
             v-tab-item(eager)
-              Responses(:items="request_id_assigned" :headers="headers_assigned" :actions="actions_assigned"
+              Responses(:items="request_id_assigned" :headers="headers_assigned" :actions="actions_assigned" :model="selectedItems"
                 @callAction="callAction"
                 @setSelected="setSelected"
                 @getDataFromApi ="getDataFromApi('fetchAssignedParams', 'optionsAssigned', 'fetchRequestIdAssigned', ...arguments)")
@@ -271,21 +271,28 @@ export default {
         {field: 'status', translit: 'Статус',},
       ],
       actions_tasks: [
-        {text: "Закрепить", icon: "mdi-pin-outline", action: 'onPinTabClicked'},
-        {text: "Создать копию", icon: "mdi-content-copy", action: 'copyTask'},
-        {text: "Перейти к объекту", icon: "mdi-exit-to-app", action: 'goToObject'},
-        {text: "Пометить на удаление", icon: "mdi-close-box-outline", action: 'markForDeletion'},
-        {text: "История изменений", icon: "mdi-timer-sand-empty", action: 'goToHistory'},
-        {text: "Редактировать", icon: "mdi-pencil-outline", action: 'editTask'},
+        {text: "Закрепить", icon: "mdi-pin-outline", action: 'onPinTabClicked', display: true},
+        {text: "Открепить", icon: "mdi-pin-off-outline", action: 'onUnpinTabClicked', display: false},
+        {text: "Создать копию", icon: "mdi-content-copy", action: 'copyTask', display: true},
+        {text: "Перейти к объекту", icon: "mdi-exit-to-app", action: 'goToObject', display: true},
+        {text: "Пометить на удаление", icon: "mdi-close-box-outline", action: 'markForDeletion', display: true},
+        {text: "История изменений", icon: "mdi-timer-sand-empty", action: 'goToHistory', display: true},
+        {text: "Редактировать", icon: "mdi-pencil-outline", action: 'editTask', display: true},
         {
-          text: "Изменить статус", icon: "mdi-email-outline", action: 'editStatus',
+          text: "Изменить статус", icon: "mdi-email-outline", action: 'editStatus', display: true,
           sub_actions: [
-            {text: "Ведется набор", icon: "mdi-circle", params: 'isRecruiting', color: '#F4D150'},
-            {text: "Набор завершен", icon: "mdi-circle", params: 'recruitmentCompleted', color: '#71D472'},
-            {text: "В работе", icon: "mdi-circle", params: 'working', color: '#D7D7D7'},
-            {text: "Подтверждение", icon: "mdi-circle", params: 'confirmation', color: '#7B61FF'},
-            {text: "Не подтверждена", icon: "mdi-circle", params: 'notConfirmed', color: '#EB4D3D'},
-            {text: "Подтверждена", icon: "mdi-circle", params: 'confirmed', color: '#71D472'},
+            {text: "Ведется набор", icon: "mdi-circle", params: 'isRecruiting', color: '#F4D150', display: true},
+            {
+              text: "Набор завершен",
+              icon: "mdi-circle",
+              params: 'recruitmentCompleted',
+              color: '#71D472',
+              display: true
+            },
+            {text: "В работе", icon: "mdi-circle", params: 'working', color: '#D7D7D7', display: true},
+            {text: "Подтверждение", icon: "mdi-circle", params: 'confirmation', color: '#7B61FF', display: true},
+            {text: "Не подтверждена", icon: "mdi-circle", params: 'notConfirmed', color: '#EB4D3D', display: true},
+            {text: "Подтверждена", icon: "mdi-circle", params: 'confirmed', color: '#71D472', display: true},
           ],
         },
       ],
@@ -333,6 +340,14 @@ export default {
       );
 
       return RQ_TABS_TASKS_FILTERED.length ? RQ_TABS_TASKS_FILTERED[0] : null;
+    },
+
+    isPined() {
+      const RQ_TABS_TASKS_FILTERED = this.RQ_TABS_TASKS.filter(
+        (tab) => tab.params?.id === this.$route.params.id
+      );
+
+      return RQ_TABS_TASKS_FILTERED[0].isPinned;
     },
 
     user() {
@@ -422,10 +437,23 @@ export default {
 
     onPinTabClicked() {
       this.pinRqTabTasks({rqTabTasks: this.rqTab});
+      this.detectedPin();
     },
 
     onUnpinTabClicked() {
       this.unPinRqTabTasks({rqTabTasks: this.rqTab});
+      this.detectedPin();
+    },
+
+    detectedPin() {
+
+      if (this.isPined) {
+        this.actions_tasks[0].display = false;
+        this.actions_tasks[1].display = true;
+      } else {
+        this.actions_tasks[0].display = true;
+        this.actions_tasks[1].display = false;
+      }
     },
 
     openTimesheet() {
@@ -614,6 +642,10 @@ export default {
     this.addRqTabsTaskNew({route: this.$route}).then(
       () => this.setRqTabsTaskActive({route: this.$route})
     );
+
+    this.detectedPin();
+
+
   },
 
   async mounted() {
@@ -645,6 +677,16 @@ export default {
   .v-main__wrap {
     > .container {
       padding: 0;
+    }
+  }
+
+  .card-actions-menu {
+    .card-action-task{
+      margin-bottom: 0;
+
+      > div {
+        margin-bottom: 12px;
+      }
     }
   }
 }

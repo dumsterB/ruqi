@@ -59,7 +59,7 @@ export default {
   .form-button{
 
     .v-btn{
-
+      width: 100%;
       height: 48px;
       box-shadow: none;
       font-weight: 700;
@@ -76,10 +76,41 @@ export default {
 
     &.outline{
 
+       .v-btn{
+         background: transparent;
+         color: #0082DE;
+         border: 1.5px solid #0082DE;
+       }
+
+     }
+
+    &.grey-noborder{
+
       .v-btn{
         background: transparent;
-        color: #0082DE;
-        border: 1.5px solid #0082DE;
+        color: transparent;
+        border: none;
+        font-weight: 700;
+        font-size: 14px;
+        text-transform: uppercase;
+
+        &:hover{
+          background: transparent;
+          color: transparent;
+        }
+
+        &:before{
+          display: none !important;
+        }
+
+          span{
+            color: #7A91A9;
+          }
+
+          .v-ripple__container{
+            display: none !Important;
+          }
+
       }
 
     }

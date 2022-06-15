@@ -40,7 +40,7 @@
                       open-on-hover right offset-x
                       v-if="action.sub_actions"
                       content-class="card-actions-menu"
-                      )
+                    )
                       template(v-slot:activator="{ on, attrs }")
                         a.d-flex.justify-space-between(v-bind="attrs" v-on="on")
                           div
@@ -62,6 +62,9 @@
 
         template(v-slot:item.lastname="{ item }")
           ExecutorStatus(:status_alias="item.last_active" :middlename="item.middlename" :firstname="item.firstname" :lastname="item.lastname" :link="'/performers/'+ item.uuid")
+
+        template(v-slot:item.shortname="{ item }")
+          ExecutorStatus(:status_alias="item.last_active" :middlename="item.middlename" :firstname="item.firstname" :lastname="item.lastname" :link="'/performers/'+ item.uuid" :short_name="true")
 
         template(v-slot:item.trust="{ item }")
           span {{ item.trust }}%
@@ -91,9 +94,11 @@
                 span.count + {{item.professions.length - 1}}
 
             v-card.pa-5
-              div(v-for="(profession, index) in item.professions.slice(1)", :key="index") {{ profession }}
+              .simple-list
+                div(v-for="(profession, index) in item.professions.slice(1)", :key="index") {{ profession }}
 
-
+        template(v-slot:item.location="{ item }")
+          .wrap-location(v-if="item.location" :class="returnDistanceClass(item.location.distance)") {{ previewText(item.location.address) }}
 
 
 </template>
@@ -115,6 +120,12 @@ export default {
       type: Array,
       default: [],
     },
+    model:{
+      type: Array,
+      default() {
+        return []
+      }
+    },
     options: {
       type: Object,
       default() {
@@ -132,7 +143,7 @@ export default {
       default: false,
     },
   },
-  components: { Status, Communication, ExecutorStatus, CommunicationIcon },
+  components: {Status, Communication, ExecutorStatus, CommunicationIcon},
   data() {
     return {
       newModel: [],
@@ -143,6 +154,9 @@ export default {
     newModel: function () {
       this.$emit('setSelected', this.newModel)
     },
+    model: function () {
+      this.newModel = this.model;
+    },
     optionsFilter: {
       handler() {
         console.log('Serverside sorted .....');
@@ -152,18 +166,44 @@ export default {
     },
   },
   methods: {
-    callAction(action, uuids){
+    callAction(action, uuids) {
       console.log(action, uuids);
       this.$emit('callAction', {action, uuids})
-    }
+    },
+
+    previewText(value) {
+      if (value && value.length > 30) {
+        return value.substring(0, 30) + '...';
+      } else {
+        return value;
+      }
+    },
+
+    returnDistanceClass(distance) {
+      let css_class = 'green_location';
+
+      if (distance > 5) {
+        css_class = 'yellow_location';
+      } else if (distance > 15) {
+        css_class = 'red_location';
+      }
+
+      return css_class;
+    },
   }
 }
 </script>
 
 
-<style lang="scss" >
-.table-executor{
-  .wrap-phone{
+<style lang="scss">
+
+.table-executor {
+
+  td {
+    position: relative;
+  }
+
+  .wrap-phone {
     display: inline-flex;
     align-items: center;
     padding: 9px 14px;
@@ -172,18 +212,18 @@ export default {
     color: #263043;
     font-weight: 600;
 
-    .v-icon{
+    .v-icon {
       font-size: 20px;
     }
 
-    .phone{
+    .phone {
       margin-left: 8px;
       text-decoration: none;
       color: #263043;
     }
   }
 
-  .button-add-element{
+  .button-add-element {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -199,5 +239,33 @@ export default {
     cursor: pointer;
   }
 
+  .wrap-location {
+    background: #BEE6BF;
+    color: #263043;
+    font-weight: 600;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    padding: 5px 12px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+
+    &.yellow_location {
+      background: #BEE6BF;
+    }
+
+    &.red_location {
+      background: #EFB0A9;
+    }
+  }
+}
+
+.v-card {
+  .simple-list {
+    line-height: 2;
+  }
 }
 </style>

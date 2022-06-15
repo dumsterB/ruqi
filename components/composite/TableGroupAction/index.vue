@@ -62,7 +62,7 @@ export default {
       this.$emit('clearSelected', {array: '', value: []})
     },
     selectAction() {
-      this.$emit('selectAction');
+      this.$emit('selectAction', this.select);
     }
   },
   created() {
