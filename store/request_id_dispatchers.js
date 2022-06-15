@@ -221,7 +221,7 @@ export const actions = {
   },
 
   async refuseExecutor({commit, dispatch}, {task_uuid, user_uuids}) {
-    await this.$axios.put('/tasks/'+task_uuid+'/contractors/refuse',
+    await this.$axios.put('/tasks/'+task_uuid+'/contractors/refused',
       user_uuids,
       { headers: {
           'Content-Type': 'application/json',

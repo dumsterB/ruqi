@@ -529,7 +529,6 @@ export default {
     },
 
     setSelected(selected) {
-      console.log(selected);
       this.selectedItems = selected;
     },
 
