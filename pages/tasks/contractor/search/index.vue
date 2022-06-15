@@ -1,21 +1,20 @@
 <template lang="pug">
-.rq-tasks__executor-search
-  .mobile
-    .mobile__header
-      .mobile__header-title
-        .mobile__header-title-text Поиск работы
+.tasks-executor-search
+  .tasks-executor-search--mobile
+    .tasks-executor-search--mobile__header
+      .tasks-executor-search--mobile__header-title Поиск работы
 
-      mSearchLine.mobile__header-search
-      mContentDisplayController.mobile__header-display-ctrl
+      mSearchLine.tasks-executor-search--mobile__header-search
+      mContentDisplayController.tasks-executor-search--mobile__header-display-ctrl
 
     mTasksFilter
 
-  .desktop
+  .tasks-executor-search--desktop
     h1 Поиск работы
     TasksFilter
-    ContentDisplayController.desktop__content-display-ctrl
+    ContentDisplayController.tasks-executor-search--desktop__content-display-ctrl
 
-  TasksList.search__task-list(:tasks="searchTasks")
+  TasksList.tasks-executor-search--task-list(:tasks="searchTasks")
 </template>
 
 <script>
@@ -65,8 +64,8 @@ export default {
 </script>
 
 <style lang="scss">
-.rq-tasks__executor-search {
-  .desktop {
+.tasks-executor-search {
+  &--desktop {
     display: block;
     max-width: 1272px;
 
@@ -75,7 +74,7 @@ export default {
     }
   }
 
-  .mobile {
+  &--mobile {
     display: none;
 
     &__header {
@@ -90,18 +89,17 @@ export default {
       padding-bottom: 32px;
 
       &-title {
-        &-text {
-          font-family: 'Source Sans Pro';
-          font-style: normal;
-          font-weight: 700;
-          font-size: 24px;
-          line-height: 125%;
-          color: #FFFFFF;
-        }
+        font-family: 'Source Sans Pro';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 24px;
+        line-height: 125%;
+        color: #FFFFFF;
 
         @media screen and (min-width: 370px) {
           width: 344px;
         }
+
         @media screen and (max-width: 370px) {
           width: 315px;
         }
@@ -117,18 +115,16 @@ export default {
     }
   }
 
-  .search {
-    &__task-list {
-      margin-top: 24px;
-    }
+  &--task-list {
+    margin-top: 24px;
   }
 
   @media screen and (max-width: 768px) {
-    .desktop {
+    &--desktop {
       display: none;
     }
 
-    .mobile {
+    &--mobile {
       display: block;
     }
   }
