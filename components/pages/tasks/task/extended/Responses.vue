@@ -9,6 +9,7 @@
         show-select,
         disable-pagination
         v-model="newModel"
+        :options.sync="optionsFilter"
       )
 
         template(v-slot:body.prepend="{ headers }" v-if="isAddElement")
@@ -49,8 +50,9 @@
                       v-card
                         v-list-item-content.justify-start
                           .mx-auto.text-left.card-action(v-for="(sub_action, index) in action.sub_actions" :key="index")
-                            a.select-status(@click.prevent="callAction(action.action, [item.uuid], sub_action.params)")
-                              v-icon {{ sub_action.icon }}
+                            a.d-flex.align-center(@click.prevent="callAction(action.action, [item.uuid], sub_action.params)")
+                              CommunicationIcon(v-if="sub_action.custom_icon" :iconType="sub_action.icon")
+                              v-icon(v-else) {{ sub_action.icon }}
                               span.select-status-title {{ sub_action.text }}
 
                     a(@click.prevent="callAction(action.action, [item.uuid])" v-else)
@@ -58,7 +60,7 @@
                       span {{ action.text }}
 
 
-        template(v-slot:item.fullname="{ item }")
+        template(v-slot:item.lastname="{ item }")
           ExecutorStatus(:status_alias="item.last_active" :middlename="item.middlename" :firstname="item.firstname" :lastname="item.lastname" :link="'/performers/'+ item.uuid")
 
         template(v-slot:item.trust="{ item }")
@@ -101,6 +103,7 @@
 import Status from "@/components/pages/tasks/task/extended/Status";
 import ExecutorStatus from "@/components/pages/tasks/task/extended/ExecutorStatus";
 import Communication from "@/components/pages/tasks/task/extended/Communication";
+import CommunicationIcon from "@/components/pages/tasks/task/extended/CommunicationIcon";
 
 export default {
   props: {
@@ -114,26 +117,38 @@ export default {
     },
     options: {
       type: Object,
-      default: {},
+      default() {
+        return {}
+      }
     },
     actions: {
       type: Array,
-      default: [],
+      default() {
+        return []
+      }
     },
     isAddElement: {
       type: Boolean,
       default: false,
     },
   },
-  components: { Status, Communication, ExecutorStatus },
+  components: { Status, Communication, ExecutorStatus, CommunicationIcon },
   data() {
     return {
       newModel: [],
+      optionsFilter: {},
     }
   },
   watch: {
     newModel: function () {
       this.$emit('setSelected', this.newModel)
+    },
+    optionsFilter: {
+      handler() {
+        console.log('Serverside sorted .....');
+        this.$emit('getDataFromApi', this.optionsFilter);
+      },
+      deep: true,
     },
   },
   methods: {

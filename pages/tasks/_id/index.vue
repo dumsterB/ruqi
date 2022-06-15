@@ -69,27 +69,65 @@
 
                   v-card
                     v-list-item-content.justify-start
-                      .mx-auto.text-left
-                        .card-action(v-for="action in listAction")
-                          a(@click.prevent="selectAction(action.id)")
-                            v-icon mdi-{{ action.icon }}
-                            span {{ action.title }}
+                      .mx-auto.text-left.card-action(v-for="action in actions_tasks")
+
+                        v-menu(
+                          open-on-hover left offset-x
+                          v-if="action.sub_actions"
+                          content-class="card-actions-menu"
+                        )
+                          template(v-slot:activator="{ on, attrs }")
+                            a.d-flex.justify-space-between(v-bind="attrs" v-on="on")
+                              div
+                                v-icon {{ action.icon }}
+                                span {{ action.text }}
+                              v-icon mdi-menu-right
+                          v-card
+                            v-list-item-content.justify-start
+                              .mx-auto.text-left.card-action(v-for="(sub_action, index) in action.sub_actions" :key="index")
+                                a.select-status(@click.prevent="callActionTask(action.action, [$route.params.id], sub_action.params)")
+                                  v-icon(:color="sub_action.color") {{ sub_action.icon }}
+                                  span.select-status-title {{ sub_action.text }}
+
+                        a(@click.prevent="callActionTask(action.action, [$route.params.id])" v-else)
+                          v-icon {{ action.icon }}
+                          span {{ action.text }}
+
 
       v-row.d-flex(no-gutters)
         v-col(cols="12")
           v-window(v-model="tab")
             v-tab-item(eager)
-              Responses(:items="request_id_responses" :headers="headers" :options="optionsResponse"  :actions="actions_responses" @callAction="callAction" @setSelected="setSelected")
+              Responses(:items="request_id_responses" :headers="headers" :actions="actions_responses"
+                @callAction="callAction"
+                @setSelected="setSelected"
+                @getDataFromApi ="getDataFromApi('fetchResponseParams', 'optionsResponse', 'fetchRequestIdResponses', ...arguments)")
 
             v-tab-item(eager)
-              Responses(:items="request_id_selection" :headers="headers_selection" :options="optionsResponse" :actions="actions_selection" :isAddElement="true" @addSelection="addArtist"  @callAction="callAction"  @setSelected="setSelected")
+              Responses(:items="request_id_selection" :headers="headers_selection" :actions="actions_selection" :isAddElement="true"
+                @addSelection="addArtist"
+                @callAction="callAction"
+                @setSelected="setSelected"
+                @getDataFromApi ="getDataFromApi('fetchSelectionParams', 'optionsSelection', 'fetchRequestIdSelection', ...arguments)")
 
             v-tab-item(eager)
-              Responses(:items="request_id_invitations" :headers="headers_invitations" :options="optionsResponse"  :actions="actions_invitations"  @callAction="callAction"  @setSelected="setSelected")
+              Responses(:items="request_id_invitations" :headers="headers_invitations" :actions="actions_invitations"
+                @callAction="callAction"
+                @setSelected="setSelected"
+                @getDataFromApi ="getDataFromApi('fetchInvitationsParams', 'optionsInvitations', 'fetchRequestIdInvitations', ...arguments)")
 
             v-tab-item(eager)
-              Responses(:items="request_id_assigned" :headers="headers_assigned" :options="optionsResponse"  :actions="actions_assigned"  @callAction="callAction"  @setSelected="setSelected")
+              Responses(:items="request_id_assigned" :headers="headers_assigned" :actions="actions_assigned"
+                @callAction="callAction"
+                @setSelected="setSelected"
+                @getDataFromApi ="getDataFromApi('fetchAssignedParams', 'optionsAssigned', 'fetchRequestIdAssigned', ...arguments)")
 
+
+    Confirm(
+      :isConfirmModal="isConfirmModal",
+      :content="confirmModalContent",
+      @confirmRemove="confirmRemove"
+    )
 
 </template>
 
@@ -106,66 +144,7 @@ export default {
   props: [],
   data() {
     return {
-      title: "Нужны кладовщики в Леруа",
-      title_size: "large",
-      title_create: false,
-      title_page_create: "",
       tab: null,
-      selectStatus: null,
-      selectStatusOptions: [
-        {
-          id: "active",
-          title: "Активна",
-        },
-        {
-          id: "open",
-          title: "Открыта",
-        },
-        {
-          id: "close",
-          title: "Закрыта",
-        },
-      ],
-      avatarColor: "#36B368",
-      avatarColorManager: "#D6D0FE",
-      avatarRounded: "rounded",
-      selectAction: [
-        {
-          id: "edit",
-          title: "Редактировать",
-        },
-        {
-          id: "copy",
-          title: "Копировать",
-        },
-        {
-          id: "delete",
-          title: "Удалить",
-        },
-        {
-          id: "close",
-          title: "Закрыть",
-        },
-        {
-          id: "open",
-          title: "Открыть",
-        },
-        {
-          id: "active",
-          title: "Активная",
-        },
-      ],
-      activeAction: null,
-      itemSortStatus: ["Все", "Работает", "Готов к работе", "Неактивен"],
-      itemSort: ["По рейтингу", "По дате"],
-      page: 1,
-      pageCount: 0,
-      itemsPerPage: 5,
-      selected: [],
-      property1: true,
-      property2: true,
-      searchText: "",
-      avatarBorderRadius: "rounded",
       headers: [
         {
           text: "",
@@ -175,13 +154,13 @@ export default {
           class: "actions",
           align: "center",
         },
-        {text: "фио", align: "start", value: "fullname"},
+        {text: "фио", align: "start", value: "lastname"},
         {text: "Возраст", value: "age", width: '112px'},
         {text: "%БН", value: "trust", width: '112px'},
         {text: "ранг", value: "rank", width: '112px'},
         {text: "на объекте", value: "on_object", width: '112px'},
         {text: "Статус", value: "status", width: '150px'},
-        {text: "профессия", value: "professions"},
+        {text: "профессия", value: "professions", sortable: false},
       ],
       headers_selection: [
         {
@@ -192,7 +171,7 @@ export default {
           class: "actions",
           align: "center",
         },
-        {text: "фио", align: "start", value: "fullname"},
+        {text: "фио", align: "start", value: "lastname"},
         {text: "Возраст", value: "age", width: '112px'},
         {text: "ранг", value: "rank", width: '112px'},
         {text: "%БН", value: "trust", width: '112px'},
@@ -208,7 +187,7 @@ export default {
           class: "actions",
           align: "center",
         },
-        {text: "фио", align: "start", value: "fullname", width: '300px'},
+        {text: "фио", align: "start", value: "lastname", width: '300px'},
         {text: "Возраст", value: "age", width: '107px'},
         {text: "%БН", value: "trust", width: '128px'},
         {text: "ранг", value: "rank", width: '107px'},
@@ -224,7 +203,7 @@ export default {
           class: "actions",
           align: "center",
         },
-        {text: "фио", align: "start", value: "fullname", width: '300px'},
+        {text: "фио", align: "start", value: "lastname", width: '300px'},
         {text: "Возраст", value: "age", width: '107px'},
         {text: "рейтинг", value: "trust", width: '128px'},
         {text: "ранг", value: "rank", width: '107px'},
@@ -246,10 +225,11 @@ export default {
       ],
 
       actions_selection: [
-        {text: "Отправить приглашение", icon: "mdi-email-outline", action: 'invite',
+        {
+          text: "Отправить приглашение", icon: "mdi-email-outline", action: 'invite',
           sub_actions: [
-            { text: "SMS", icon: "mdi-message-processing", params: 'sms', },
-            { text: "Telegram", icon: "mdi-message-processing", params: 'telegram', }
+            {text: "SMS", icon: "sms", params: 'sms', custom_icon: true},
+            {text: "Telegram", icon: "telegram", params: 'telegram', custom_icon: true}
           ],
         },
         {text: "В карточку исполнителя", icon: "mdi-clipboard-account-outline", action: 'openDetails'},
@@ -259,10 +239,11 @@ export default {
       actions_invitations: [
         {text: "В назначенные", icon: "mdi-check", action: 'appoint'},
         {text: "В карточку исполнителя", icon: "mdi-clipboard-account-outline", action: 'openDetails'},
-        {text: "Отправить приглашение", icon: "mdi-email-outline", action: 'invite',
+        {
+          text: "Отправить приглашение", icon: "mdi-email-outline", action: 'invite',
           sub_actions: [
-            { text: "SMS", icon: "mdi-message-processing", params: 'sms', },
-            { text: "Telegram", icon: "mdi-message-processing", params: 'telegram', }
+            {text: "SMS", icon: "sms", params: 'sms', custom_icon: true},
+            {text: "Telegram", icon: "telegram", params: 'telegram', custom_icon: true}
           ],
         },
       ],
@@ -289,16 +270,23 @@ export default {
         {field: 'rank', translit: 'Ранг',},
         {field: 'status', translit: 'Статус',},
       ],
-      listAction: [
+      actions_tasks: [
+        {text: "Закрепить", icon: "mdi-pin-outline", action: 'onPinTabClicked'},
+        {text: "Создать копию", icon: "mdi-content-copy", action: 'copyTask'},
+        {text: "Перейти к объекту", icon: "mdi-exit-to-app", action: 'goToObject'},
+        {text: "Пометить на удаление", icon: "mdi-close-box-outline", action: 'markForDeletion'},
+        {text: "История изменений", icon: "mdi-timer-sand-empty", action: 'goToHistory'},
+        {text: "Редактировать", icon: "mdi-pencil-outline", action: 'editTask'},
         {
-          id: "edit",
-          title: "Редактировать",
-          icon: "pencil-outline",
-        },
-        {
-          id: "delete",
-          title: "Удалить",
-          icon: "close-box-outline",
+          text: "Изменить статус", icon: "mdi-email-outline", action: 'editStatus',
+          sub_actions: [
+            {text: "Ведется набор", icon: "mdi-circle", params: 'isRecruiting', color: '#F4D150'},
+            {text: "Набор завершен", icon: "mdi-circle", params: 'recruitmentCompleted', color: '#71D472'},
+            {text: "В работе", icon: "mdi-circle", params: 'working', color: '#D7D7D7'},
+            {text: "Подтверждение", icon: "mdi-circle", params: 'confirmation', color: '#7B61FF'},
+            {text: "Не подтверждена", icon: "mdi-circle", params: 'notConfirmed', color: '#EB4D3D'},
+            {text: "Подтверждена", icon: "mdi-circle", params: 'confirmed', color: '#71D472'},
+          ],
         },
       ],
       optionsResponse: {},
@@ -321,6 +309,13 @@ export default {
         "page": 1,
         "per_page": 15
       },
+      isConfirmModal: false,
+      confirmModalContent: {
+        title: "Удалить эту заявку?",
+        description: "",
+        text_btn_ok: "Удалить",
+        text_btn_cancel: "Отмена",
+      },
 
     };
   },
@@ -342,13 +337,6 @@ export default {
 
     user() {
       return this.$store.getters["user/user"];
-    },
-    itemsPerPageTable() {
-      if (this.itemsPerPage) {
-        return parseInt(this.itemsPerPage, 10);
-      } else {
-        return 1;
-      }
     },
     request_id() {
       return this.$store.getters["request_id/request_id"];
@@ -380,16 +368,6 @@ export default {
     request_id_history() {
       return this.$store.getters["request_id_dispatchers/request_id_history"];
     },
-    tabContent() {
-      if (this.tab < 4) {
-        return 0;
-      } else if (this.tab == 4) {
-        return 1;
-      } else if (this.tab == 5) {
-        return 2;
-      }
-    },
-
     tabs_list() {
       return [
         {title: "Отклики", count: this.request_id_responses.length},
@@ -432,13 +410,6 @@ export default {
     ...mapActions("request_id", ["fetchRequestId", "putStatus"]),
     ...mapActions("request_id_dispatchers", ["fetchRequestIdResponses", "fetchRequestIdSelection", "fetchRequestIdInvitations", "fetchRequestIdAssigned", "fetchRequestIdHistory"]),
     ...mapActions("request_id_dispatchers", ["acceptRequest", "rejectRequest", "appointExecutor", "rejectExecutor", "inviteExecutor", "deleteExecutor", "refuseExecutor", "acceptedExecutor"]),
-    ...mapActions("contractors", [
-      "getContractors",
-      "setFilterRegion",
-      "setFilterSpecialization",
-      "setFilterProfessions",
-      "setFilterPayments",
-    ]),
     ...mapActions("requests", ["copyRequest", "removeRequest"]),
     ...mapActions("rqTabs", [
       'addRqTabsTaskNew',
@@ -457,24 +428,8 @@ export default {
       this.unPinRqTabTasks({rqTabTasks: this.rqTab});
     },
 
-    updateSearchText(value) {
-      this.searchText = value;
-      this.fetchRequestIdResponses({
-        requestId: this.$route.params.id,
-        params: {name: value},
-      });
-    },
-
     openTimesheet() {
       this.$router.push("/tasks/" + this.request_id.uuid + "/timesheet");
-    },
-
-    changeStatus(status) {
-      this.putStatus({requestId: this.request_id.uuid, status: status});
-    },
-
-    setItemsPerPage(value) {
-      this.itemsPerPage = value;
     },
 
     setCurrentPage(value) {
@@ -485,21 +440,6 @@ export default {
       this.$router.push("/tasks/" + this.request_id.uuid + "/selection");
     },
 
-    closePerformersOverlay() {
-
-      this.addPerformersOverlay = false;
-
-      this.fetchRequestIdSelection({
-        requestId: this.$route.params.id,
-      });
-      this.fetchRequestId(this.$route.params.id);
-
-      this.setFilterRegion("");
-      this.setFilterSpecialization("");
-      this.setFilterProfessions("");
-      this.setFilterPayments("");
-    },
-
     applyFilter(fetchParams, watcherParams, filter, search) {
       this[fetchParams].value = search;
       this[fetchParams].filters = filter;
@@ -507,21 +447,21 @@ export default {
       let params = {
         "settings": {
           "value": search,
-          /*"sort": this[watcherParams].sortBy[0],
-          "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',*/
+          //"sort": this[watcherParams].sortBy[0],
+          //"order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": filter
         }
       };
 
       console.log('params-----', filter, params);
 
-      if (this.tab == 0) {
+      if (fetchParams == 'fetchResponseParams') {
         this.fetchRequestIdResponses({requestId: this.$route.params.id, params: params, concat: false, unit: false})
-      } else if (this.tab == 1) {
+      } else if (fetchParams == 'fetchSelectionParams') {
         this.fetchRequestIdSelection({requestId: this.$route.params.id, params: params, concat: false, unit: false})
-      } else if (this.tab == 2) {
+      } else if (fetchParams == 'fetchInvitationsParams') {
         this.fetchRequestIdInvitations({requestId: this.$route.params.id, params: params, concat: false, unit: false})
-      }else if (this.tab == 3) {
+      } else if (fetchParams == 'fetchAssignedParams') {
         this.fetchRequestIdAssigned({requestId: this.$route.params.id, params: params, concat: false, unit: false})
       }
     },
@@ -540,6 +480,10 @@ export default {
 
     callAction({action, uuids, params}) {
       console.log('callAction ------', action, uuids);
+      this[action](uuids, params);
+    },
+
+    callActionTask(action, uuids, params) {
       this[action](uuids, params);
     },
 
@@ -579,30 +523,63 @@ export default {
     accepted(uuids) {
       console.log('Можно приезжать ------');
       this.acceptedExecutor({task_uuid: this.$route.params.id, user_uuids: uuids});
-    }
+    },
+
+    goToObject() {
+      this.$router.push("/objects/" + this.request_id.object.uuid);
+    },
+
+    confirmRemove(confirm) {
+      if (confirm) {
+        //this.$router.push("/tasks/");
+        //this.removeRequest(this.$route.params.id);
+        console.log('Удаляю');
+      }
+      this.isConfirmModal = false;
+    },
+
+    markForDeletion() {
+      this.isConfirmModal = true;
+    },
+
+    editTask(TaskId) {
+      this.$router.push("/tasks/" + TaskId[0] + "/edit");
+    },
+
+    editStatus(uuids, status) {
+      this.putStatus({requestId: this.$route.params.id, status: status});
+    },
+
+    goToHistory() {
+      console.log('История');
+    },
+
+    getDataFromApi(fetchParams, watcherParams, action, options) {
+
+      this[watcherParams] = options;
+
+      const params = {
+        "settings": {
+          "value": this[fetchParams].value,
+          "sort": this[watcherParams].sortBy[0],
+          "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
+          "filters": this[fetchParams].filters,
+        }
+      };
+
+      this[action]({
+        requestId: this.$route.params.id,
+        params: params,
+        concat: false,
+        unit: false
+      }).then(data => {
+        this[fetchParams].page = 1;
+        console.log('пришел ответ')
+      })
+    },
 
   },
-  watch: {
-    activeAction: function (val) {
-      if (val == "edit") {
-        this.$router.push("/tasks/" + this.$route.params.id + "/edit");
-      } else if (val == "delete") {
-        this.$router.push("/tasks/");
-        this.removeRequest(this.$route.params.id);
-      } else if (val == "copy") {
-        this.copyRequest(this.$route.params.id);
-      } else {
-        this.changeStatus(val);
-        this.selectStatus = val;
-      }
-    },
-    optionsResponse: {
-      handler() {
-        //this.getDataFromApi('fetchServiceParams', 'options', 'fetchObjectIdServices');
-      },
-      deep: true,
-    },
-  },
+  watch: {},
 
   async created() {
     await this.fetchRequestId(this.$route.params.id);
@@ -631,8 +608,6 @@ export default {
       unit: true
     });
     await this.fetchRequestIdHistory({requestId: this.$route.params.id});
-
-    this.selectStatus = this.request_id.status;
 
     this.$route.meta.title = this.request_id.name;
 

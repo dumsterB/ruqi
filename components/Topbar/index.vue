@@ -1,6 +1,6 @@
 <template lang="pug">
 .rq-topbar
-  v-app-bar(
+  v-app-bar(v-if="$route.name != 'tasks-id-selection'"
     app
     elevation="0"
     height="60"

@@ -50,7 +50,7 @@
 
                       v-card
                         v-list-item-content.justify-start
-                          .mx-auto.text-left.card-action(v-for="action in returnActionsList(item.status)")
+                          .mx-auto.text-left.card-action(v-for="action in actions_tasks")
 
                             v-menu(
                               open-on-hover right offset-x
@@ -67,7 +67,7 @@
                                 v-list-item-content.justify-start
                                   .mx-auto.text-left.card-action(v-for="(sub_action, index) in action.sub_actions" :key="index")
                                     a.select-status(@click.prevent="callAction(action.action, [item.uuid], sub_action.params)")
-                                      v-icon {{ sub_action.icon }}
+                                      v-icon(:color="sub_action.color") {{ sub_action.icon }}
                                       span.select-status-title {{ sub_action.text }}
 
                             a(@click.prevent="callAction(action.action, [item.uuid])" v-else)
@@ -176,7 +176,7 @@ export default {
         "per_page": 15
       },
       actions_tasks: [
-        {text: "Закрепить", icon: "mdi-pin-outline", action: 'pinTask'},
+        {text: "Закрепить", icon: "mdi-pin-outline", action: 'onPinTabClicked'},
         {text: "Создать копию", icon: "mdi-content-copy", action: 'copyTask'},
         {text: "Перейти к объекту", icon: "mdi-exit-to-app", action: 'goToObject'},
         {text: "Пометить на удаление", icon: "mdi-close-box-outline", action: 'markForDeletion'},
@@ -185,19 +185,14 @@ export default {
         {
           text: "Изменить статус", icon: "mdi-email-outline", action: 'editStatus',
           sub_actions: [
-            {text: "Ведется набор", icon: "mdi-circle", params: 'isRecruiting',},
-            {text: "Набор завершен", icon: "mdi-circle", params: 'recruitmentCompleted',},
-            {text: "В работе", icon: "mdi-circle", params: 'working',},
-            {text: "Подтверждение", icon: "mdi-circle", params: 'confirmation',},
-            {text: "Не подтверждена", icon: "mdi-circle", params: 'notConfirmed',},
-            {text: "Подтверждена", icon: "mdi-circle", params: 'confirmed',},
+            {text: "Ведется набор", icon: "mdi-circle", params: 'isRecruiting', color: '#F4D150'},
+            {text: "Набор завершен", icon: "mdi-circle", params: 'recruitmentCompleted', color: '#71D472'},
+            {text: "В работе", icon: "mdi-circle", params: 'working', color: '#D7D7D7'},
+            {text: "Подтверждение", icon: "mdi-circle", params: 'confirmation', color: '#7B61FF'},
+            {text: "Не подтверждена", icon: "mdi-circle", params: 'notConfirmed', color: '#EB4D3D'},
+            {text: "Подтверждена", icon: "mdi-circle", params: 'confirmed', color: '#71D472'},
           ],
         },
-      ],
-      actions_remove_tasks: [
-        {text: "Восстановить", icon: "mdi-redo", action: 'redoTask'},
-        {text: "Перейти к объекту", icon: "mdi-exit-to-app", action: 'goToObject'},
-        {text: "История изменений", icon: "mdi-timer-sand-empty", action: 'goToHistory'},
       ],
       meta_filters: [
         {
@@ -228,9 +223,14 @@ export default {
     };
   },
   computed: {
+    ...mapGetters("rqTabs", [
+      'RQ_TABS_TASKS',
+    ]),
+
     user() {
       return this.$store.getters["user/user"];
     },
+
     isCreate() {
       if (this.user.type == "superManager" || this.user.type == "manager") {
         return true;
@@ -238,15 +238,19 @@ export default {
         return false;
       }
     },
+
     requests() {
       return this.$store.getters["requests/requests"];
     },
+
     tasks_filters() {
       return this.$store.getters["requests/tasks_filters"];
     },
+
     objects() {
       return this.$store.getters["objects/objects"];
     },
+
     itemsPerPageTable() {
       if (this.itemsPerPage) {
         return parseInt(this.itemsPerPage, 10);
@@ -254,6 +258,7 @@ export default {
         return 1;
       }
     },
+
     postBody() {
       let object = this.selectObject;
       console.log(object);
@@ -277,7 +282,6 @@ export default {
       }
 
       return JSON.stringify(uuids);
-
     },
 
   },
@@ -293,26 +297,37 @@ export default {
   },
 
   methods: {
-    ...mapActions("requests", ['fetch', 'copyRequest', 'removeRequest', 'putStatus']),
+    ...mapActions("requests", ['fetch', 'copyRequest', 'removeRequest',]),
+    ...mapActions("request_id", ["putStatus"]),
     ...mapActions("objects", ['fetchObjects']),
-    ...mapActions("rqTabs", ['setRqTabsTaskActive',]),
+    ...mapActions("rqTabs", [
+      'addRqTabsTaskNew',
+      'setRqTabsTaskActive',
+      'pinRqTabTasks',
+      'unPinRqTabTasks',
+    ]),
 
     openRequest(id) {
       this.$router.push("/tasks/" + id);
     },
+
     setItemsPerPage(value) {
       this.itemsPerPage = value;
     },
+
     setCurrentPage(value) {
       this.page = value;
     },
+
     filter() {
       const newRequet = this.postBody;
       this.fetch({params: newRequet});
     },
+
     addTask() {
       this.$router.push(this.$route.name + '/create');
     },
+
     applyFilter(fetchParams, watcherParams, filter, search) {
       this[fetchParams].value = search;
       this[fetchParams].filters = filter;
@@ -415,30 +430,26 @@ export default {
       }
     },
 
-
-    returnActionsList(status) {
-      if (status == 'close') {
-        return this.actions_remove_tasks;
-      } else {
-        return this.actions_tasks;
-      }
-    },
-
-    callAction(action, uuids) {
+    callAction(action, uuids, params) {
       console.log(action, uuids);
-      this[action](uuids);
+      this[action](uuids, params);
     },
 
     editTask(TaskId) {
       this.$router.push("/tasks/" + TaskId[0] + "/edit");
     },
 
-    editStatus(uuids, status) {
-      this.putStatus({requestId: uuids, status: status});
+    async editStatus(uuids, status) {
+      await this.putStatus({requestId: uuids, status: status});
+      this.fetch({params: {}, concat: false, unit: true});
     },
 
     copyTask(uuids) {
       this.copyRequest(uuids[0]);
+    },
+
+    onPinTabClicked(uuids) {
+      this.pinRqTabTasks({rqTabTasks: uuids[0]});
     },
 
 
@@ -491,6 +502,15 @@ export default {
   border-radius: 6px;
   font-size: 14px;
   font-weight: 700;
+}
+
+.select-status{
+  display: flex;
+  align-items: center;
+
+  .v-icon{
+    font-size: 11px;
+  }
 }
 
 </style>

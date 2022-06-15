@@ -1,6 +1,6 @@
 <template lang="pug">
   .inner-task-page-selections
-    div(@click="onBackToAppClick()") Вернуться к заявке
+    SelectionHeader(@onBackToAppClick="onBackToAppClick")
 
     SelectionFilter
 
@@ -11,13 +11,14 @@
 <script>
 import {mapState, mapActions, mapGetters, mapMutations} from 'vuex';
 import SelectionFilter from "@/components/pages/tasks/task/extended/SelectionFilter";
+import SelectionHeader from "@/components/pages/tasks/task/extended/SelectionHeader";
 import Responses from "@/components/pages/tasks/task/extended/Responses";
 
 export default {
   meta: {
     title: 'Подбор'
   },
-  components: {SelectionFilter, Responses},
+  components: {SelectionFilter, Responses, SelectionHeader},
   data() {
     return {
       headers: [
