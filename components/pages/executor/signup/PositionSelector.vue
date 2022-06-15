@@ -47,7 +47,7 @@
         </div>
       </div>
       <v-btn  elevation="0" class="btn-secondary" @click="back(3)"> <span class="btn-title">Назад</span> </v-btn>
-      <v-btn dark elevation="0" class="btn-primary" :disableHandler="!disableHandler" @click="next( 5 )"><span class="btn-title">Далее</span> </v-btn>
+      <v-btn dark elevation="0" class="btn-primary" :disabled="!disableHandler.length > 0" @click="next( 5 )"><span class="btn-title">Далее</span> </v-btn>
     </div>
   </div>
 </v-container>
@@ -61,7 +61,8 @@ export default {
   name: "PositionSelector",
   data(){
     return{
-      copySpec:[]
+      copySpec:[],
+      checker:[],
     }
   },
   methods:{
@@ -85,6 +86,7 @@ export default {
       this.$emit('pageHandler',val , 'back')
     },
     setStatus(work){
+      this.checker.push(work)
       if(work.active === false){
         work.active = true
       }else{
@@ -101,17 +103,8 @@ export default {
       return JSON.parse(JSON.stringify(this.$store.getters['executor/specializations']))
     },
     disableHandler(){
-      let specializationCopy = (this.specializationCopy || []).map((ell) => {
-        return {
-          ...ell,
-          professions: (ell.professions || []).filter((ell) => {
-            ell.active === true
-          }),
-        };
-      })
-      return specializationCopy
-    }
-
+     return this.checker.filter(ell=> ell.active !== true)
+    },
   },
  async mounted() {
     await this.loadSpecializations()
@@ -180,5 +173,9 @@ export default {
   .mobile{
     display: block!important;
   }
+}
+.theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
+  color: lightgrey !important;
+  background: #0082de !important;
 }
 </style>

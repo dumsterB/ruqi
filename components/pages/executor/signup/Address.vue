@@ -106,4 +106,8 @@ export default {
   height: 100%;
   padding: 30px;
 }
+.theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
+  color: lightgrey !important;
+  background: #0082de !important;
+}
 </style>
