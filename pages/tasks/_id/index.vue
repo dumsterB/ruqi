@@ -45,7 +45,7 @@
               .filter-col-after-left
                 TableGroupAction(v-if="selectedItems.length > 0"
                   :actions="groupListAction" :selected="selectedItems"
-                  @selectAction="callActionTask" @clearSelected="clearSelected")
+                  @selectAction="callGroupAction" @clearSelected="clearSelected")
 
             .filter-row-right.d-flex
               v-btn.btn-blue.add(
@@ -512,7 +512,20 @@ export default {
     },
 
     callActionTask(action, uuids, params) {
+      console.log('callActionTask------', uuids);
       this[action](uuids, params);
+    },
+
+    callGroupAction(action){
+      let sendUuids = [];
+      for (let i = 0; i < this.selectedItems.length; i++) {
+        sendUuids.push(this.selectedItems[0].uuid);
+      }
+
+      console.log(action, sendUuids)
+      this[action](sendUuids);
+
+      this.selectedItems = [];
     },
 
     setSelected(selected) {
@@ -521,7 +534,6 @@ export default {
     },
 
     appoint(uuids) {
-      console.log('В назначенные ------');
       this.appointExecutor({task_uuid: this.$route.params.id, user_uuids: uuids});
     },
 
