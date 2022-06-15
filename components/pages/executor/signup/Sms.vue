@@ -50,7 +50,7 @@ export default {
       codeId:['first','second','third','forth','fifth'],
       interval:0,
       timerEnabled: true,
-      countDown: 10
+      countDown: 60
     }
   },
   methods:{

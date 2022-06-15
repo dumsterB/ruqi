@@ -8,7 +8,7 @@
     </div>
     <div class="actions">
       <v-btn dark elevation="0" class="btn-primary" @click="register"><span class="btn-title">зарегистрироваться</span> </v-btn>
-      <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Войти</span> </v-btn>
+      <v-btn  elevation="0" class="btn-secondary" @click="login"> <span class="btn-title">Войти</span> </v-btn>
       <p class="signin-text">Уже зарегистрировались? Нажимайте войти</p>
     </div>
   </div>
@@ -25,6 +25,9 @@ export default {
   methods:{
     register(){
       this.$router.push('/auth/signup/executor/steps')
+    },
+    login(){
+      this.$router.push('/auth/signin/executor/recover')
     }
   }
 }

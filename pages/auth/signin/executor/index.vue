@@ -6,21 +6,17 @@
       </div>
     </header>
     <main>
-      <tabs></tabs>
+      <auth></auth>
     </main>
   </div>
 </template>
 
 <script>
-import tabs from "@/components/pages/executor/signup/Tabs";
-
+import auth from "@/components/pages/executor/auth/Auth";
 export default {
   layout: "empty",
   components: {
-    tabs,
-  },
-  data() {
-    return {};
+    auth,
   },
 };
 </script>
@@ -30,12 +26,10 @@ export default {
   height: 96px;
   background: #006edf;
 }
-
 .logo {
   display: flex;
   justify-content: center;
 }
-
 .img {
   height: 50px;
   margin-top: 20px;
