@@ -47,7 +47,7 @@ export const getters = {
 
 export const actions = {
   async fetchRequestIdResponses({commit}, {requestId, params, concat, unit}) {
-    const request_id_responses = await this.$axios.get('/manager/tasks/'+requestId+'/responses', {
+    const request_id_responses = await this.$axios.get('/tasks/'+requestId+'/responses', {
       params: params
     });
     commit('setRequestIdResponses', {request_id_responses: request_id_responses, concat: concat, unit: unit});
@@ -55,7 +55,7 @@ export const actions = {
 
   async fetchRequestIdSelection( { commit }, { requestId, params, concat, unit } ){
 
-    const request_id_selection = await this.$axios.get( '/manager/tasks/'+requestId+'/selection', {
+    const request_id_selection = await this.$axios.get( '/tasks/'+requestId+'/selection', {
       params: params
     } );
 
@@ -63,21 +63,21 @@ export const actions = {
   },
 
   async fetchRequestIdInvitations({commit}, {requestId, params, concat, unit}) {
-    const request_id_invitations = await this.$axios.get('/manager/tasks/'+requestId+'/invitations', {
+    const request_id_invitations = await this.$axios.get('/tasks/'+requestId+'/invitations', {
       params: params
     });
     commit('setRequestIdInvitations', {request_id_invitations: request_id_invitations, concat: concat, unit: unit});
   },
 
   async fetchRequestIdAssigned({commit}, {requestId, params, concat, unit}) {
-    const request_id_assigned = await this.$axios.get('/manager/tasks/'+requestId+'/assigned', {
+    const request_id_assigned = await this.$axios.get('/tasks/'+requestId+'/assigned', {
       params: params
     });
     commit('setRequestIdAssigned', {request_id_assigned: request_id_assigned, concat: concat, unit: unit});
   },
 
   async fetchRequestIdHistory({commit}, {requestId}) {
-    const request_id_history= await this.$axios.get('/manager/tasks/'+requestId+'/history', {
+    const request_id_history= await this.$axios.get('/tasks/'+requestId+'/history', {
     });
     commit('setRequestIdHistory', request_id_history);
   },
