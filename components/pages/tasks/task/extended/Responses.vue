@@ -76,9 +76,9 @@
           Communication(:communications="item.communication")
 
         template(v-slot:item.phone="{ item }")
-          .wrap-phone
+          a.wrap-phone(href="tel:item.phone")
             v-icon(color="#263043") mdi-phone
-            a.phone(href="tel:item.phone") {{ item.phone }}
+            span.phone {{ item.phone }}
 
         template(v-slot:item.professions="{ item }")
           v-menu(
@@ -211,6 +211,7 @@ export default {
     border-radius: 30px;
     color: #263043;
     font-weight: 600;
+    text-decoration: none;
 
     .v-icon {
       font-size: 20px;
@@ -218,8 +219,6 @@ export default {
 
     .phone {
       margin-left: 8px;
-      text-decoration: none;
-      color: #263043;
     }
   }
 
