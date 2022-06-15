@@ -113,7 +113,6 @@
                 class="mt-2"
                 type="number"
                 :rules="phoneRules"
-                @change="phoneNumberChanges"
                 outlined
                 name="phone"
                 placeholder="+7"
