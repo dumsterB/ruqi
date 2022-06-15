@@ -1,21 +1,26 @@
 export const state = () => ({
   requests: [],
+  tasks_filters: [],
 })
 
 export const getters = {
   requests(state) {
     return state.requests;
   },
+  tasks_filters(state) {
+    return state.tasks_filters;
+  },
 }
 
 
 export const actions = {
-  async fetch({commit}, params) {
+  async fetch({commit}, {params, concat, unit}) {
     const requests = await this.$axios.get('/tasks', {
       params: params
     });
-    commit('setRequest', requests)
+    commit('setRequest', {requests,  concat, unit})
   },
+
   async createRequest({commit, dispatch}, newRequest) {
     let self= this;
     commit('response/setAwait', null, { root: true });
@@ -46,6 +51,7 @@ export const actions = {
       });
 
   },
+
   async copyRequest({commit, dispatch}, requestID) {
     let self= this;
     const requests = await this.$axios.post('/tasks/'+requestID+'/copy',
@@ -72,6 +78,7 @@ export const actions = {
       });
 
   },
+
   async removeRequest({commit, dispatch}, requestID) {
 
     await this.$axios.delete('/tasks/'+requestID)
@@ -89,6 +96,7 @@ export const actions = {
       });
 
   },
+
   async putRequest({commit, dispatch}, {uuid, body}) {
     let self= this;
     await this.$axios.put('/tasks/'+uuid,
@@ -114,8 +122,18 @@ export const actions = {
 }
 
 export const mutations = {
-  setRequest(state, requests) {
-    state.requests = requests.data.data;
+  setRequest(state, {requests, concat, unit}) {
+
+    if (concat) {
+      state.requests = state.requests.concat(requests.data.data);
+    } else {
+      state.requests = requests.data.data;
+    }
+
+    if (unit) {
+      state.tasks_filters = requests.data.meta.filters;
+    }
+
   },
 }
 

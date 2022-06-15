@@ -1,61 +1,62 @@
 <template lang="pug">
-  .ruqi-table-filter.d-flex.align-center
-    v-menu(
-      bottom,
-      offset-y,
-      nudge-bottom="10",
-      content-class="filters-menu"
-      :close-on-content-click="false"
-      v-model="isOpened"
-      z-index="500"
-    )
-      template(v-slot:activator="{ on }")
-        v-btn.filter-btn(icon, v-on="on" :class="{ active: isApplyFilter }")
-          v-badge(color="#EB4D3D" dot :value="isApplyFilter" offset-y="8" offset-x="8")
-            v-icon(color="#7A91A9") mdi-filter-outline
+  .ruqi-table-filter
+    .d-flex.align-center
+      v-menu(
+        bottom,
+        offset-y,
+        nudge-bottom="10",
+        content-class="filters-menu"
+        :close-on-content-click="false"
+        v-model="isOpened"
+        z-index="500"
+      )
+        template(v-slot:activator="{ on }")
+          v-btn.filter-btn(icon, v-on="on" :class="{ active: isApplyFilter }")
+            v-badge(color="#EB4D3D" dot :value="isApplyFilter" offset-y="8" offset-x="8")
+              v-icon(color="#7A91A9") mdi-filter-outline
 
-      v-card
-        v-list-item-content.pa-0.elevation-0
-          .filter-container
-            .filter-header.d-flex.align-center.pa-6.justify-space-between
-              .header Фильтр
-              .actions
-                a(@click.prevent="clearFields") Очистить все
-                a(@click.prevent="saveFilter") Сохранить
+        v-card
+          v-list-item-content.pa-0.elevation-0
+            .filter-container
+              .filter-header.d-flex.align-center.pa-6.justify-space-between
+                .header Фильтр
+                .actions
+                  a(@click.prevent="clearFields") Очистить все
+                  a(@click.prevent="saveFilter") Сохранить
 
-            .filter-content
-              v-form(ref="form" v-model="valid" lazy-validation)
-                v-expansion-panels(accordion multiple v-model="panel")
-                  v-expansion-panel(v-for="( item, index ) in selected_fields" :key="index")
-                    v-expansion-panel-header {{ fieldHeader(item.field) }}
-                    v-expansion-panel-content
-                      component(
-                        :is="nameComponent(item.type)"
-                        :name="item.field + '_' + index"
-                        :params="item"
-                        :label = "fieldHeader(item.field)"
-                        @input="updateFiled(item.field , $event, index, 'selected_fields')"
-                      )
+              .filter-content
+                v-form(ref="form" v-model="valid" lazy-validation)
+                  v-expansion-panels(accordion multiple v-model="panel")
+                    v-expansion-panel(v-for="( item, index ) in selected_fields" :key="index")
+                      v-expansion-panel-header {{ fieldHeader(item.field) }}
+                      v-expansion-panel-content
+                        component(
+                          :is="nameComponent(item.type)"
+                          :name="item.field + '_' + index"
+                          :params="item"
+                          :label = "fieldHeader(item.field)"
+                          @input="updateFiled(item.field , $event, index, 'selected_fields')"
+                        )
 
-                  v-expansion-panel(v-if="check_fields.length>0")
-                    v-expansion-panel-header Ограничения
-                    v-expansion-panel-content
-                      component(
-                        v-for="( item, index ) in check_fields" :key="index"
-                        :is="nameComponent(item.type)"
-                        :name="item.field + '_' + index"
-                        :params="item"
-                        :label = "fieldHeader(item.field)"
-                        @input="updateFiled(item.field , $event, index, 'check_fields')"
-                      )
+                    v-expansion-panel(v-if="check_fields.length>0")
+                      v-expansion-panel-header Ограничения
+                      v-expansion-panel-content
+                        component(
+                          v-for="( item, index ) in check_fields" :key="index"
+                          :is="nameComponent(item.type)"
+                          :name="item.field + '_' + index"
+                          :params="item"
+                          :label = "fieldHeader(item.field)"
+                          @input="updateFiled(item.field , $event, index, 'check_fields')"
+                        )
 
-            .filter-footer.d-flex.justify-space-between.pa-6
-              v-btn.add(text height="48" outlined @click="cancelFilter")
-                span отмена
-              v-btn.btn-blue.add.ml-4(text height="48" outlined @click="applyFilter(false)")
-                span применить
+              .filter-footer.d-flex.justify-space-between.pa-6
+                v-btn.add(text height="48" outlined @click="cancelFilter")
+                  span отмена
+                v-btn.btn-blue.add.ml-4(text height="48" outlined @click="applyFilter(false)")
+                  span применить
 
-    Search(:searchText="searchText" @updateSearchText="updateSearchText" @blurSearch="$emit('blurSearch')" @focusSearch="$emit('focusSearch')")
+      Search(:searchText="searchText" @updateSearchText="updateSearchText" @blurSearch="$emit('blurSearch')" @focusSearch="$emit('focusSearch')")
 
 
 </template>
@@ -273,12 +274,14 @@ export default {
     for (let i = 0; i < this.filter.length; i++) {
       if (this.filter[i].type != 'string' && this.filter[i].type != 'text' && this.filter[i].type != 'boolean') {
         this.selected_fields.push(this.filter[i]);
+        this.lastSelected_fields.push(this.filter[i]);
       }
     }
 
     for (let i = 0; i < this.filter.length; i++) {
       if (this.filter[i].type == 'boolean') {
         this.check_fields.push(this.filter[i]);
+        this.lastCheck_fields.push(this.filter[i]);
       }
     }
 
@@ -305,7 +308,12 @@ export default {
 
 .ruqi-table-filter {
   flex: 1;
+  display: flex;
+  align-items: center;
 
+  >div{
+    flex: 1;
+  }
 }
 
 .filters-menu {
