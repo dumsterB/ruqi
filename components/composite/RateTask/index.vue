@@ -28,6 +28,7 @@
                 append-icon="mdi-format-list-bulleted"
                 v-bind="attrs"
                 v-on="on"
+                @click:append="menu = true"
                 filled
                 outlined
                 hide-details="true"

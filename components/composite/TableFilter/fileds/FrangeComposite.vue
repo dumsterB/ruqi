@@ -1,5 +1,5 @@
 <template lang="pug">
-  .ruqi-table-filter-list
+  .ruqi-table-filter-range
     .d-flex.align-center.text-group
       .time-title от
       v-text-field(
@@ -69,7 +69,7 @@ export default {
 
 <style lang="scss">
 
-.ruqi-table-filter-list {
+.ruqi-table-filter-range{
 
   .text-group {
     align-items: center;

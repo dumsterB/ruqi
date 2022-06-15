@@ -10,8 +10,8 @@
       v-select(
         v-model="select"
         :items="actions"
-        item-text="title"
-        item-value="uuid"
+        item-text="text"
+        item-value="action"
         single-line
         outlined
         filled
@@ -19,7 +19,6 @@
         hide-details
         label="Выберите действие"
       )
-
 
 
 </template>
@@ -46,31 +45,28 @@ export default {
     items_count() {
       if (this.selected.length == 1) {
         return 'запись';
-      } else if (this.selected.length > 1 && this.selected.length < 5){
+      } else if (this.selected.length > 1 && this.selected.length < 5) {
         return 'записи';
-      } else{
+      } else {
         return 'записей';
       }
     },
   },
   watch: {
     selected: function () {
-
       this.new_count = this.selected.length;
-
     },
   },
   methods: {
-    clearSelected(){
+    clearSelected() {
       this.$emit('clearSelected', {array: '', value: []})
     },
-    selectAction(){
+    selectAction() {
       this.$emit('selectAction');
     }
   },
-  async created() {
-
-
+  created() {
+    this.new_count = this.selected.length;
   },
   mounted() {
 
@@ -80,15 +76,15 @@ export default {
 
 <style lang="scss">
 
-.ruqi-table-group-action{
+.ruqi-table-group-action {
   display: flex;
   align-items: center;
 
-  .group-action-title{
+  .group-action-title {
     font-weight: 600;
   }
 
-  .group-action-clear-handler{
+  .group-action-clear-handler {
     margin: 0 22px 0 12px;
   }
 
