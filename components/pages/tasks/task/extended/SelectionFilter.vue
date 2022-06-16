@@ -1,24 +1,50 @@
 <template lang="pug">
   .selection-filter
     .wrap-form-filter
-      v-form
-        .form-part
-          FormBuilder(:meta="meta.meta_filter_row_1" @updateFiled="updateFiled")
-          .selected-city
-            .city-item(v-for="(city, index) in cities" :key="index" @click="removeCity")
-              .city-name {{ city }}
-              v-icon mdi-delete
+      v-form(ref="form")
+        .header Подбор исполнителей
+        .form-part.form-part-1
+          div.mr-6(v-for="(filed, index) in meta.meta_filter_row_1" :key="index" :style="{maxWidth: filed.max_width + 'px' }")
+            component(:is="filed.type"
+              :name="filed.name"
+              :icon="filed.icon"
+              :params="filed.params"
+              :validation="filed.validation"
+              :value = "filed.value"
+              @input="updateFiled(filed.name, $event, index, filed.parent_array)")
 
-          .form-part-2(v-show="formValues.show_filter")
+          div.mr-6(style="max-width: 230px;")
+            FTypeButton.toggle_filter(
+              name="show_filter"
+              :params="buttonSubmitParams"
+              @input="sendFilter()"
+            )
 
-            v-divider.my-6
 
-            FormBuilder(:meta="meta.meta_filter_row_2" @updateFiled="updateFiled")
+        v-divider.my-6(v-show="isShowFilter")
 
-            a.clear-filter.mt-6(@click.prevent="")
-              v-icon(size="20") mdi-trash-can-outline
-              span сбросить все фильтры
+        .form-part.form-part-2.align-end.mb-12(v-show="isShowFilter")
+          div.mr-6(v-for="(filed, index) in meta.meta_filter_row_2" :key="index" :style="{maxWidth: filed.max_width + 'px' }")
+            .form-part-label(:class="filed.type") {{ filed.label }}
+            component(:is="filed.type"
+              :name="filed.name"
+              :icon="filed.icon"
+              :params="filed.params"
+              :validation="filed.validation"
+              :value = "filed.value"
+              @input="updateFiled(filed.name, $event, index, filed.parent_array)")
 
+          a.clear-filter.mb-3(@click.prevent="clearFields")
+            v-icon(size="20") mdi-trash-can-outline
+            span сбросить все
+
+        .wrap-toggle-filter
+          v-divider.my-6
+          FTypeButton.toggle_filter(
+            name="show_filter"
+            :params="buttonToggleFilterParams"
+            @input="isShowFilter = $event"
+          )
 
 
 </template>
@@ -40,71 +66,77 @@ export default {
         meta_filter_row_1: [
           {
             type: 'FTypeText',
-            label: 'География',
-            col: 4,
-            name: 'city',
+            label: '',
+            col: 3,
+            name: 'region',
             validation: [],
             value: '',
-            icon: 'mdi-magnify'
+            icon: 'mdi-magnify',
+            params: {
+              placeholder: 'Выберите регион',
+              clearable: true,
+            },
+            max_width: '240'
           },
           {
             type: 'FTypeSelect',
             label: 'Радиус',
-            col: 2,
+            col: 1,
             name: 'radius',
             params: {
               options: [1, 3, 5, 10, 15],
-              label: 'Не выбрано'
+              label: 'Не выбрано',
+              readonly: false
             },
             validation: [],
-            value: 1
+            value: 1,
+            max_width: '110'
+          },
+          {
+            type: 'FTypeText',
+            label: '',
+            col: 3,
+            name: 'city',
+            validation: [],
+            value: '',
+            icon: 'mdi-magnify',
+            params: {
+              placeholder: 'Поиск по фамилии',
+              clearable: true,
+            },
+            max_width: '240'
           },
           {
             type: 'FTypeCheckBox',
             label: '',
-            col: 0,
+            col: 2,
             name: 'subscribe',
             params: {
-              label: 'Подписан',
+              label: 'Подписан на объект',
             },
             validation: [],
-            value: ''
+            value: '',
+            max_width: '178'
           },
           {
             type: 'FTypeCheckBox',
             label: '',
-            col: 0,
-            name: 'worked',
+            col: 2,
+            name: 'working',
             params: {
-              label: 'Работал',
+              label: 'Работал на объекте',
             },
             validation: [],
-            value: ''
+            value: '',
+            max_width: '178'
           },
-          {
-            type: 'FTypeButton',
-            label: '',
-            col: 0,
-            name: 'show_filter',
-            params: {
-              icon: 'mdi-chevron-double-down',
-              icon_action: 'mdi-chevron-double-up',
-              text: 'показать фильтры',
-              text_action: 'скрыть фильтры',
-              is_apply: true,
-              style: 'outline'
-            },
-            validation: [],
-            value: false
-          },
-
         ],
         meta_filter_row_2: [
           {
             type: 'FTypeSelectUIID',
             label: 'Профессия',
             col: 2,
-            name: 'profession',
+            name: 'professions',
             params: {
               options: [
                 {uuid: 1, name: 'Профессия 1'},
@@ -117,7 +149,8 @@ export default {
               hideDetails: true
             },
             validation: [],
-            value: ''
+            value: '',
+            max_width: '264'
           },
           {
             type: 'FTypeSelectUIID',
@@ -136,7 +169,8 @@ export default {
               hideDetails: true
             },
             validation: [],
-            value: ''
+            value: '',
+            max_width: '197'
           },
           {
             type: 'FTypeText',
@@ -145,12 +179,13 @@ export default {
             name: 'rate',
             validation: [],
             value: '',
+            max_width: '128'
           },
           {
             type: 'FTypeSelectUIID',
             label: 'Ранг',
             col: 1,
-            name: 'rang',
+            name: 'rank',
             params: {
               options: [
                 {uuid: 1, name: 'Ранг 1'},
@@ -163,15 +198,17 @@ export default {
               hideDetails: true
             },
             validation: [],
-            value: ''
+            value: '',
+            max_width: '148'
           },
           {
             type: 'FTypeText',
             label: 'Благонадежность от',
             col: 2,
-            name: 'trustworthiness',
+            name: 'trust',
             validation: [],
             value: '',
+            max_width: '162'
           },
           {
             type: 'FTypeText',
@@ -180,6 +217,7 @@ export default {
             name: 'age_from',
             validation: [],
             value: '',
+            max_width: '48'
           },
           {
             type: 'FTypeText',
@@ -188,24 +226,92 @@ export default {
             name: 'age_to',
             validation: [],
             value: '',
+            max_width: '48'
           },
         ]
       },
-      cities: [
-        'Подольск (Московская обл.)',
-        'Подольск (Московская обл.)',
-        'Подольск (Московская обл.)'
-      ]
+      buttonToggleFilterParams: {
+        icon: 'mdi-chevron-double-down',
+        icon_action: 'mdi-chevron-double-up',
+        text: 'показать фильтры',
+        text_action: 'скрыть фильтры',
+        is_apply: true,
+        style: 'grey-noborder'
+      },
+      buttonSubmitParams: {
+        icon: '',
+        icon_action: '',
+        text: 'Найти',
+        text_action: '',
+        is_apply: true,
+        style: 'filled'
+      },
+      isShowFilter: false,
     }
+  },
+  computed: {
+    postBody() {
+
+      let postBody = {
+        "region": this.formValues.region,
+        "radius": this.formValues.radius,
+        "subscribe": this.formValues.subscribe,
+        "working": this.formValues.working,
+        "professions": this.formValues.professions,
+        settings: {
+          "filters": [
+            {
+              "field": "rate",
+              "type": "range",
+              "value": { to: this.formValues.rate }
+            },
+            {
+              "field": "trust",
+              "type": "range",
+              "value": { from: this.formValues.trust }
+            },
+            {
+              "field": "age",
+              "type": "range",
+              "value": { from: this.formValues.age_from, to: this.formValues.age_to }
+            },
+          ]
+        }
+
+      };
+
+      return postBody;
+    },
   },
   methods: {
     updateFiled(field, value) {
       this.formValues[field] = value;
+
+      if (field == 'region'){
+        if(value){
+          this.meta.meta_filter_row_1[1].params.readonly = true;
+          this.meta.meta_filter_row_1[1].value = '-';
+        }else{
+          this.meta.meta_filter_row_1[1].params.readonly = false;
+          this.meta.meta_filter_row_1[1].value = 5;
+        }
+      }
       console.log(field, value);
     },
-    removeCity(){
+    sendFilter() {
+        console.log('Отправляю------- ', this.postBody);
+    },
+    clearFields() {
+      this.$refs.form.reset();
 
-    }
+      this.meta.meta_filter_row_1.map(f => {
+        Vue.set(this.formValues, f.name, null);
+      })
+      this.meta.meta_filter_row_2.map(f => {
+        Vue.set(this.formValues, f.name, null);
+      })
+
+    },
   },
   created() {
     this.meta.meta_filter_row_1.map(f => {
@@ -221,60 +327,48 @@ export default {
 
 <style lang="scss">
 
-.selection-filter{
+.selection-filter {
   padding: 24px;
   background: #F7F7F7;
 
-  .wrap-form-filter{
+  .header {
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
 
-    .row{
-      align-items: flex-end;
-      margin: 0;
+  .wrap-form-filter {
 
-      >div {
-        padding: 0 !important;
-        margin-right: 16px;
+    .form-part {
+      display: flex;
+      align-items: center;
+
+      > div {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+      }
+
+      .form-part-label {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 16px;
       }
     }
-    .form-part-label{
-      font-weight: 600;
-      font-size: 16px;
-      margin-bottom: 16px;
-    }
 
-    .v-text-field{
-      .v-input__control{
+    .v-text-field {
+      .v-input__control {
         background: #fff;
       }
     }
 
-    .v-input--checkbox{
+    .v-input--checkbox {
       font-weight: 600;
       margin-bottom: 10px;
     }
 
 
-
-    .selected-city{
-      display: flex;
-      flex-wrap: wrap;
-      margin-top: 16px;
-
-      .city-item{
-        background: #EBECEE;
-        border-radius: 4px;
-        padding: 7px;
-        display: flex;
-        align-items: center;
-        font-weight: 600;
-        font-size: 14px;
-        margin-right: 10px;
-        cursor: pointer;
-      }
-    }
-
-
-    .clear-filter{
+    .clear-filter {
       font-weight: 700;
       font-size: 14px;
       color: #7A91A9;
@@ -284,12 +378,24 @@ export default {
       box-shadow: none;
       padding: 0;
 
-      .v-icon{
+      .v-icon {
         margin-right: 9px;
       }
 
-      &:hover{
+      &:hover {
         color: #263043;
+      }
+    }
+
+    .wrap-toggle-filter {
+      position: relative;
+
+      .toggle_filter {
+        position: absolute;
+        top: -24px;
+        background: #f7f7f7;
+        left: 50%;
+        margin-left: -110px;
       }
     }
 

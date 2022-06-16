@@ -146,6 +146,7 @@ export const actions = {
         console.log(response);
         dispatch('fetchRequestIdResponses', {requestId: task_uuid, params: {}, concat: false, unit: false});
         dispatch('fetchRequestIdAssigned', {requestId: task_uuid, params: {}, concat: false, unit: false});
+        dispatch('fetchRequestIdInvitations', {requestId: task_uuid, params: {}, concat: false, unit: false});
         commit('response/setSuccess', {type: 'success', text: 'Исполнитель назначен', }, {root: true});
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
@@ -220,7 +221,7 @@ export const actions = {
   },
 
   async refuseExecutor({commit, dispatch}, {task_uuid, user_uuids}) {
-    await this.$axios.put('/tasks/'+task_uuid+'/contractors/refuse',
+    await this.$axios.put('/tasks/'+task_uuid+'/contractors/refused',
       user_uuids,
       { headers: {
           'Content-Type': 'application/json',

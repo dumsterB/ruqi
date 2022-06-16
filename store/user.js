@@ -74,14 +74,15 @@ export const actions = {
 
     commit('updateUserTasks', response?.data?.data);
   },
-  async fetchSearchTasks({ commit }) {
-    console.debug('fetchSearchTasks'); // DELETE
+  async fetchSearchTasks({ commit }, filter) {
+    console.debug('fetchSearchTasks', filter); // DELETE
 
     try {
       const response = await this.$axios.get(
         'user/tasks/search',
         {
           params: {
+            ...filter,
             mode: 'map',
           }
         }

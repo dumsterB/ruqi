@@ -39,6 +39,12 @@ export default {
   align-items: center;
   margin-right: 8px;
 
+  .communication{
+    display: flex;
+    align-items: center;
+    min-width: 20px;
+  }
+
 }
 
 

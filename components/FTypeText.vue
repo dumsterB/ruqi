@@ -13,6 +13,8 @@
         :rules="validation_array"
         :class="{'number': validation && validation[0] == 'number'}"
         :readonly="readonly"
+        :placeholder="placeholder"
+        :clearable="clearable"
     ></v-text-field>
     <div class="note" v-if="params && params.note">{{params.note}}</div>
   </div>
@@ -138,6 +140,20 @@ export default {
     readonly(){
       if (this.params && this.params.readonly) {
         return true;
+      } else {
+        return false;
+      }
+    },
+    placeholder(){
+      if (this.params && this.params.placeholder) {
+        return this.params.placeholder;
+      } else {
+        return '';
+      }
+    },
+    clearable(){
+      if (this.params && this.params.clearable) {
+        return true
       } else {
         return false;
       }

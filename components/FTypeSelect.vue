@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="ftype-select">
     <v-select
       v-model="select"
       :id="id"
@@ -23,37 +23,59 @@ export default {
     options() {
       return this.params.options
     },
-    readonly(){
-      if (this.params && this.params.readonly) {
-        return true;
-      } else {
-        return false;
-      }
-    },
   },
   data() {
     return {
       select: null,
+      readonly: false,
     }
   },
-  methods: {},
+  methods: {
+    setReadonly() {
+      if (this.params && this.params.readonly) {
+        this.readonly = this.params.readonly;
+      } else {
+        this.readonly = false;
+      }
+    },
+  },
   watch: {
     value: function () {
       this.select = this.value;
     },
+    params: {
+      handler(){
+        this.setReadonly();
+      },
+      deep: true
+    },
   },
-  created () {
+  created() {
     if (this.value) {
       this.select = this.value;
     } else {
       this.select = this.params.options[0];
     }
 
-    this.$emit( 'input', this.select );
+    this.setReadonly();
+
+    this.$emit('input', this.select);
   }
 }
 </script>
 
-<style>
+<style lang="scss">
+.ruqi {
+
+  .ftype-select {
+    .v-input {
+      &.v-input--is-readonly {
+        .v-input__control{
+          background: #f5f5f5;
+        }
+      }
+    }
+  }
+}
 
 </style>
