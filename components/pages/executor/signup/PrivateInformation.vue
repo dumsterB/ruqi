@@ -111,9 +111,10 @@
             <v-text-field
                 v-model="form.phone"
                 class="mt-2"
-                type="tel"
-                :rules="inputRules"
+                type="number"
+                :rules="phoneRules"
                 outlined
+                name="phone"
                 placeholder="+7"
                 dense
             ></v-text-field>
@@ -142,7 +143,7 @@
             <p class="text-grey-checkbox">
               Выбрав эту опцию вам будет предложено <br>  связаться с менеджером для регистрации по телефону
             </p>
-            <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">Назад</span> </v-btn>
+            <v-btn  elevation="0" class="btn-secondary" @click="$router.push('/auth/signup/executor/')"> <span class="btn-title">Назад</span> </v-btn>
             <v-btn dark elevation="0" class="btn-primary" @click="next(1)"><span class="btn-title">Далее</span> </v-btn>
             <p class="text-grey text-center mt-3">Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют</p>
           </div>
@@ -178,6 +179,10 @@ export default {
       inputRules: [
         v => !!v || 'Заполните поля',
       ],
+      phoneRules: [
+        v => !!v || 'Заполните поля',
+        (v) => (!!v && v.length == 12) || 'Номер не корректный',
+      ]
     }
   },
   methods:{

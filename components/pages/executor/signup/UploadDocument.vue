@@ -73,6 +73,7 @@
                     :rules="inputRules"
                     v-model="passport_date"
                     dense
+                    readonly
                     v-bind="attrs"
                     v-on="on"
                     single-line
@@ -113,6 +114,7 @@
                     :rules="inputRules"
                     v-model="passport_term"
                     dense
+                    readonly
                     v-bind="attrs"
                     v-on="on"
                     single-line

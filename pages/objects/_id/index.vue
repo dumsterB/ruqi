@@ -334,8 +334,8 @@
                         span.request-i
                         span.color-black {{ item.name }}
 
-                    template(v-slot:item.pay="{ item }")
-                      span.request-pay {{ item.payment.value }} {{ item.payment.current }} / {{ item.payment.period }}
+                    template(v-slot:item.rate="{ item }")
+                      span.request-pay {{ item.rate }} р. / смену
 
                     template(v-slot:item.date="{ item }")
                       div(v-if="item.end_date") {{ parseDate({ date: item.end_date.substr(0, 10), type: 'date' }) }}
@@ -549,8 +549,8 @@ export default {
       avatarBorderRadius: "rounded",
       headers: [
         {text: "", value: "actions", sortable: false},
-        {text: "Название", align: "start", value: "name"},
-        {text: "Ставка", value: "pay"},
+        {text: "Название", align: "start", value: "name", width: "300px"},
+        {text: "Ставка", value: "rate"},
         {text: "Статус", value: "status", width: "184px"},
         {text: "Набор до", value: "date", width: "132px"},
         {text: "Наполнение", value: "completion", width: "152px"},
@@ -661,7 +661,7 @@ export default {
       selectedTasks: [],
       selectedItems: [],
       groupListAction: [
-        {title: 'Удалить', uuid: 'delete'},
+        {text: 'Удалить', action: 'delete'},
       ],
     };
   },

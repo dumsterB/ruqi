@@ -1,19 +1,25 @@
-<template>
-  <div class="wrapp-occupation">
-    <div class="occupation-bar">
-      <div class="occupation-item active"></div>
-      <div class="occupation-item" :class="{ 'active' : occupation2}"></div>
-      <div class="occupation-item" :class="{ 'active' : occupation3}"></div>
-    </div>
-    <div class="occupation-num">{{ completed }} / {{ total }}</div>
-  </div>
+<template lang="pug">
+  .wrapp-occupation
+    .occupation-bar(:class="priorityProp[priority].class")
+      .occupation-item.active
+      .occupation-item(:class="{ 'active' : occupation2}")
+      .occupation-item(:class="{ 'active' : occupation3}")
+
+    .occupation-num {{ completed }} / {{ total }}
+
 </template>
 
 <script>
 export default {
   props: ['completed', 'total'],
   data() {
-    return {}
+    return {
+      priorityProp: [
+        {text: 'низкий', color: '#6EC7A4', class: 'low'},
+        {text: 'средний', color: '#EFCD4F', class: 'medium'},
+        {text: 'высокий', color: '#F68A6E', class: 'high'},
+      ]
+    }
   },
   computed: {
     occupation2: function () {
@@ -26,11 +32,22 @@ export default {
         return true
       }
     },
+    priority: function () {
+      if (this.occupation3) {
+        return 2;
+      }
+      if (this.occupation2) {
+        return 1;
+      }
+      else{
+        return 0;
+      }
+    },
   },
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .wrapp-occupation {
   display: flex;
   align-items: center;
@@ -55,9 +72,22 @@ export default {
   }
 
   .occupation-item.active {
-    background: #F4D150;
+    background: #F25E5E;
     opacity: 1;
   }
+
+}
+
+.low .occupation-item.active {
+  background: #F25E5E;
+}
+
+.medium .occupation-item.active {
+  background: #F4D150;
+}
+
+.high .occupation-item.active {
+  background: #71D472;
 }
 
 .occupation-num {

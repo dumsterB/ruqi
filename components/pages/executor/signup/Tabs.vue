@@ -106,13 +106,13 @@
 <script>
 import PrivateInformation from "./PrivateInformation";
 import Sms from "./Sms";
-import CreatePassword from "@/components/pages/executor/tabs/CreatePassword";
-import ElectronicDocument from "@/components/pages/executor/tabs/ElectronicDocument";
-import PositionSelector from "@/components/pages/executor/tabs/PositionSelector";
-import UploadDocument from "@/components/pages/executor/tabs/UploadDocument";
-import paymentInformation from "@/components/pages/executor/tabs/PaymentInformation";
-import Finish from "@/components/pages/executor/tabs/Finish";
-import Address from "@/components/pages/executor/tabs/Address";
+import CreatePassword from "@/components/pages/executor/signup/CreatePassword";
+import ElectronicDocument from "@/components/pages/executor/signup/ElectronicDocument";
+import PositionSelector from "@/components/pages/executor/signup/PositionSelector";
+import UploadDocument from "@/components/pages/executor/signup/UploadDocument";
+import paymentInformation from "@/components/pages/executor/signup/PaymentInformation";
+import Finish from "@/components/pages/executor/signup/Finish";
+import Address from "@/components/pages/executor/signup/Address";
 
 export default {
   props: {},

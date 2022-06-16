@@ -380,8 +380,22 @@ h1.large {
     }
   }
 
+  .wrap-tabs{
+    .v-tab{
+      .count{
+        color: #263043;
+        display: inline-block;
+        margin-left: 8px;
+      }
+    }
+  }
+
   .theme--light.v-tabs > .v-tabs-bar .v-tab:not(.v-tab--active) {
-    color: $dark-grey;
+    color: #7A91A9;
+
+    .count{
+      color: #263043;
+    }
   }
 
   .theme--light.v-tabs > .v-tabs-bar {
@@ -394,6 +408,7 @@ h1.large {
     width: auto;
     border: 1px solid $table-border-color;
     border-radius: 4px;
+    flex: 0;
 
     .v-tabs-bar {
       border: none;
@@ -466,16 +481,20 @@ h1.large {
 
     &.search-is-focus {
       .filter-row-right {
-        display: none;
+        display: none !important;
       }
 
       .filter-col-after-left{
-        display: none;
+        display: none !important;
       }
 
       .filter-row-left {
         flex: 1;
       }
+    }
+
+    .card-actions {
+      margin-left: 12px;
     }
 
   }
@@ -1127,6 +1146,8 @@ h1.large {
             padding: 5px 12px !important;
             white-space: nowrap;
             border-bottom: 1px solid #F7F7F7 !important;
+            font-size: 16px;
+            font-width: 600;
 
             &:first-child {
               width: 30px;
@@ -1158,8 +1179,16 @@ h1.large {
               .rate-title{
                 min-width: 50px;
               }
+            }
 
+            .professions{
+              color: #263043;
 
+              .count{
+                color: #AEAEAE;
+                display: inline-block;
+                margin-left: 4px;
+              }
             }
           }
 
