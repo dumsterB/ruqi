@@ -14,13 +14,30 @@
       @input_change="setters().setFirstName({ event: $event })"
     )
 
-    selectSingle.rqtes-taskfilter__select-radius.rqtes-taskfilter__row-item(
-      :id="'payment-type'"
-      :items="items"
-      title="Ищу не далее"
-      :value="items[0]"
-      @change="setters().onPaymentTypeSelectChange({ $event })"
-    )
+    //- selectSingle.rqtes-taskfilter__select-radius.rqtes-taskfilter__row-item(
+    //-   :id="'payment-type'"
+    //-   :items="radiusItems"
+    //-   title="Ищу не далее"
+    //-   @change="setRadius"
+    //- )
+
+    .select-single.rqtes-taskfilter__select-radius.rqtes-taskfilter__row-item
+      .select-single_titel {{ "Ищу не далее" }}
+      v-select(
+        :value="''"
+        :id="id"
+        :items="radiusItems"
+        item-text="name"
+        item-value="uuid"
+        :rules="[v => !!v || 'Выберите вариант']"
+        required
+        single-line
+        outlined
+        filled
+        @change="setRadius"
+        hide-details="true"
+        :item-color="'#000000'"
+      )
 
     .rqtes-taskfilter__confirm.rqtes-taskfilter__row-item
       v-btn(
@@ -41,19 +58,6 @@
       value="01.01.2022"
       @date_change="setters().setBirthday({ event: $event })"
     )
-
-    //- Input.mix-input.rqtes-taskfilter__row-item.rqtes-taskfilter__input(
-    //-   :params="{ ...textInputDefaultSettings, hauptTitel: 'Зарплата от', ref: 'personaldatatab_firstname', }"
-    //-   @input_change="setters().setFirstName({ event: $event })"
-    //- )
-
-    //- selectSingle.rqtes-taskfilter__select.rqtes-taskfilter__select-salary.rqtes-taskfilter__row-item(
-    //-   :id="'payment-type'"
-    //-   :items="items"
-    //-   title="##"
-    //-   :value="items[0]"
-    //-   @change="setters().onPaymentTypeSelectChange({ $event })"
-    //- )
 
     .rqtes-taskfilter__salary
       Input.mix-input.rqtes-taskfilter__salary-item.rqtes-taskfilter__input(
@@ -114,12 +118,36 @@ export default {
   methods: {
     /* GETTERS */
     /* SETTERS */
+    setRadius(payload = null) {
+      if (!payload) return;
+
+      console.debug('setRadius', payload); // DELETE
+    },
+
     /* HANDLERS */
     /* HELPERS */
   },
 
   data: () => ({
     items: ['Foo', 'Bar', 'Fizz', 'Buzz'],
+    radiusItems: [
+      {
+        uuid: '1km',
+        name: '1км',
+        value: '1',
+      },
+      {
+        uuid: '10km',
+        name: '10км',
+        value: '10',
+      },
+      {
+        uuid: '15km',
+        name: '15км',
+        value: '15',
+      },
+    ],
+
     loader: null,
     loading4: false,
     textInputDefaultSettings: {
@@ -156,6 +184,7 @@ export default {
       display: none;
     }
   }
+
   &__select {
     &-salary {
       width: 116px;
@@ -177,6 +206,7 @@ export default {
         }
       }
     }
+
     &-pofession {
       width: 507px;
 
@@ -193,6 +223,7 @@ export default {
         }
       }
     }
+
     &-radius {
       width: 98px;
 
@@ -210,6 +241,7 @@ export default {
       }
     }
   }
+
   &__row {
     display: flex;
     flex-direction: row;
@@ -220,6 +252,7 @@ export default {
     &:first-child {
       margin-top: 0 !important;
     }
+
     &-item {
       margin-left: 20px;
 
@@ -228,6 +261,7 @@ export default {
       }
     }
   }
+
   &__confirm {
     display: flex;
     align-items: flex-end;
@@ -238,6 +272,7 @@ export default {
       width: 270px !important;
     }
   }
+
   &__checkbox {
     display: flex;
     flex-direction: row;
@@ -249,6 +284,7 @@ export default {
       margin-top: 30px;
     }
   }
+
   &__salary {
     display: flex;
     flex-direction: row;
@@ -264,10 +300,24 @@ export default {
       }
     }
   }
+
+  .select-single {
+    .select-single_titel {
+      font-style: normal;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 125%;
+      color: #263043;
+      margin-bottom: 16px;
+      white-space: nowrap;
+    }
+  }
+
   .custom-loader {
     animation: loader 1s infinite;
     display: flex;
   }
+
   @-moz-keyframes loader {
     from {
       transform: rotate(0);
@@ -277,6 +327,7 @@ export default {
       transform: rotate(360deg);
     }
   }
+
   @-webkit-keyframes loader {
     from {
       transform: rotate(0);
@@ -286,6 +337,7 @@ export default {
       transform: rotate(360deg);
     }
   }
+
   @-o-keyframes loader {
     from {
       transform: rotate(0);
@@ -295,6 +347,7 @@ export default {
       transform: rotate(360deg);
     }
   }
+
   @keyframes loader {
     from {
       transform: rotate(0);
@@ -316,6 +369,7 @@ export default {
         display: none;
       }
     }
+
     &__select {
       &-salary {
         width: 100%;
@@ -337,6 +391,7 @@ export default {
           }
         }
       }
+
       &-pofession {
         width: 100%;
 
@@ -353,6 +408,7 @@ export default {
           }
         }
       }
+
       &-radius {
         width: 100%;
 
@@ -369,6 +425,7 @@ export default {
         }
       }
     }
+
     &__row {
       display: flex;
       flex-direction: column;
@@ -380,10 +437,12 @@ export default {
       &:first-child {
         margin-top: 0 !important;
       }
+
       &-item {
         margin-left: 0;
       }
     }
+
     &__confirm {
       display: flex;
       align-items: flex-end;
@@ -395,6 +454,7 @@ export default {
         width: 100% !important;
       }
     }
+
     &__checkbox {
       display: flex;
       flex-direction: row;
@@ -406,6 +466,7 @@ export default {
         margin-top: 30px;
       }
     }
+
     &__salary {
       display: flex;
       flex-direction: row;
@@ -423,6 +484,7 @@ export default {
         }
       }
     }
+
     &__date {
       width: 100%;
     }
