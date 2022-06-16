@@ -53,26 +53,20 @@ export const mutations = {
 
 export const actions = {
   async fetchRegions(ctx) {
-    const regions = await this.$axios.get(
-      `/dictionary/regions`,
-
-      {
-        headers: {
-          "Authorization": "Bearer a1c7c07794281f1ff168e19116c2d66b011bd61437dba46655a2cf581b90eb68", //FIXME need refactoring ( Rasulov )
-        },
-      },
-    );
+    const regions = await this.$axios.get(`/dictionary/regions`,);
 
     ctx.commit('setRegions', regions.data.data);
+
+    return regions.data.data;
   },
 
   async fetchSpecializations(ctx) {
-    const specializations = await this.$axios.get( `/dictionary/specializations` );
+    const specializations = await this.$axios.get(`/dictionary/specializations`);
 
     ctx.commit('setSpecializations', specializations.data.data);
   },
 
-  async fetchClients({commit}) {
+  async fetchClients({ commit }) {
 
     const clients = await this.$axios.get('/dictionary/accounts', {
       headers: {
@@ -82,7 +76,7 @@ export const actions = {
     commit('setClients', clients)
   },
 
-  async fetchOrganizations({commit}) {
+  async fetchOrganizations({ commit }) {
 
     const organizations = await this.$axios.get('/dictionary/organizations', {
       headers: {
@@ -92,7 +86,7 @@ export const actions = {
     commit('setOrganizations', organizations)
   },
 
-  async fetchObjectType({commit}) {
+  async fetchObjectType({ commit }) {
 
     const objectType = await this.$axios.get('/dictionary/object-type', {
       headers: {
@@ -102,7 +96,7 @@ export const actions = {
     commit('setObjectType', objectType)
   },
 
-  async fetchDispatchers({commit}) {
+  async fetchDispatchers({ commit }) {
 
     const dispatchers = await this.$axios.get('/dictionary/dispatchers', {
       headers: {
@@ -112,7 +106,7 @@ export const actions = {
     commit('setDispatchers', dispatchers)
   },
 
-  async fetchManagers({commit}) {
+  async fetchManagers({ commit }) {
 
     const managers = await this.$axios.get('/dictionary/managers', {
       headers: {
@@ -122,17 +116,15 @@ export const actions = {
     commit('setManagers', managers)
   },
 
-  async fetcProfessions({commit}) {
+  async fetcProfessions({ commit }) {
+    const professions = await this.$axios.get('/dictionary/professions');
 
-    const professions = await this.$axios.get( '/dictionary/professions' );
+    commit('setProfessions', professions.data.data);
 
-    console.debug('store : professions');
-    console.debug(professions);
-
-    commit( 'setProfessions', professions.data.data );
+    return professions.data.data;
   },
 
-  async fetcPayments({commit}) {
+  async fetcPayments({ commit }) {
 
     const payments = await this.$axios.get(
       '/dictionary/payments',
@@ -141,7 +133,7 @@ export const actions = {
     console.debug('store : payments');
     console.debug(payments);
 
-    commit( 'setPayments', payments.data.data );
+    commit('setPayments', payments.data.data);
   },
 }
 

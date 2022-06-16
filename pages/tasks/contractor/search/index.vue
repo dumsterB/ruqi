@@ -7,7 +7,24 @@
       mSearchLine.tasks-executor-search--mobile__header-search
       mContentDisplayController.tasks-executor-search--mobile__header-display-ctrl
 
-    mTasksFilter
+    mTasksFilter(
+      :isFilterShowed="mFilterVisibility"
+      :loader="loaderFilter"
+      :regions="regions"
+      :region="region"
+      :professions="professions"
+      :radii="radii"
+      :radius="radius"
+      :salary="salary"
+      @showFilter="showMobFilter"
+      @hideFilter="hideMobFilter"
+      @selectRegion="selectRegion"
+      @selectProfession="selectProfession"
+      @selectRadius="selectRadius"
+      @setSalary="setSalary"
+      @apply="applyFilter"
+      @reset="resetFilter"
+    )
 
   .tasks-executor-search--desktop
     h1 Поиск работы
@@ -37,7 +54,38 @@ export default {
   },
 
   props: {},
-  data: () => ({}),
+  data: () => ({
+    mFilterVisibility: false,
+    loaderFilter: false,
+    region: null,
+    radius: null,
+    salary: null,
+    medicalBook: false,
+    driverLicense: false,
+    startDate: null,
+    selectedProfessions: [],
+
+    /* DICTIONARY */
+    radii: [
+      {
+        uuid: '1km',
+        name: '1км',
+        value: '1',
+      },
+      {
+        uuid: '10km',
+        name: '10км',
+        value: '10',
+      },
+      {
+        uuid: '15km',
+        name: '15км',
+        value: '15',
+      },
+    ],
+    regions: [],
+    professions: [],
+  }),
   computed: {
     ...mapGetters('user', [
       'searchTasks',
@@ -49,14 +97,86 @@ export default {
     ...mapActions('user', [
       'fetchSearchTasks',
     ]),
+    ...mapActions('dictionary', [
+      'fetchRegions',
+      'fetcProfessions',
+    ]),
 
     /* GETTERS */
     /* SETTERS */
     /* HANDLERS */
+    showMobFilter() {
+      this.mFilterVisibility = true;
+    },
+    hideMobFilter() {
+      this.mFilterVisibility = false;
+    },
+    selectRegion(payload = null) {
+      if (payload) this.region = payload;
+    },
+    selectProfession(payload = null) {
+      if (!payload) return;
+
+      if (this.selectedProfessions.findIndex(profession => profession.uuid === payload.uuid) !== -1) {
+        this.selectedProfessions = this.selectedProfessions.filter(profession => profession.uuid !== payload.uuid);
+      } else {
+        this.selectedProfessions.push(payload);
+      }
+    },
+    selectRadius(payload = null) {
+      if (payload) this.radius = payload;
+    },
+    setSalary(payload = null) {
+      this.salary = payload;
+    },
+    async applyFilter() {
+      this.loaderFilter = true;
+
+      const FILTER = {
+        region: this.region ? this.region.name : null,
+        radius: this.radius ? this.radius.value : null,
+        salary: this.salary,
+        medicalBook: this.medicalBook,
+        driverLicense: this.driverLicense,
+        startDate: this.startDate,
+        selectedProfessions: this.selectedProfessions.length
+          ? this.selectedProfessions.map(profession => profession.name)
+          : null,
+      };
+
+      console.debug("applyFilter", FILTER); // DELETE
+
+      await this.fetchSearchTasks({ filter: FILTER })
+
+      this.loaderFilter = false;
+      this.mFilterVisibility = false;
+    },
+    resetFilter() {
+      this.region = null;
+      this.radius = null;
+      this.salary = null;
+      this.medicalBook = false;
+      this.driverLicense = false;
+      this.startDate = null;
+      this.selectedProfessions = [];
+      this.professions = this.professions.map((profession) => ({
+        ...profession,
+        selected: false,
+      }));
+    }
+
     /* HELPERS */
   },
 
-  created() {
+  async created() {
+    this.regions = await this.fetchRegions();
+    await this.fetcProfessions().then((professions) => {
+      this.professions = professions.map((profession) => ({
+        ...profession,
+        selected: false,
+      }));
+    });
+
     this.fetchSearchTasks()
   },
   mounted() { },
