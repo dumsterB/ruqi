@@ -17,8 +17,9 @@
             v-model="menu"
             transition="scale-transition"
             bottom,
-            offset-y,
+            offset-x,
             nudge-bottom="10",
+            nudge-left="-16",
             content-class="rate-menu"
           )
             template(v-slot:activator="{ on, attrs }")
