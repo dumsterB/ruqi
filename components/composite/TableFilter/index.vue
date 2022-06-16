@@ -219,23 +219,29 @@ export default {
 
     cancelFilter() {
 
-      this.selected_fields = [];
-      this.check_fields = [];
+      if(this.isApplyFilter){
 
-      for (let i = 0; i < this.lastSelected_fields.length; i++) {
+        this.selected_fields = [];
+        this.check_fields = [];
 
-        let lastState = {}
-        Object.assign(lastState, this.lastSelected_fields[i]);
-        this.selected_fields.push(lastState);
+        console.log('есть фильтр', this.lastSelected_fields.length, this.lastCheck_fields.length );
+        for (let i = 0; i < this.lastSelected_fields.length; i++) {
 
-      }
+          let lastState = {}
+          Object.assign(lastState, this.lastSelected_fields[i]);
+          this.selected_fields.push(lastState);
 
-      for (let i = 0; i < this.lastCheck_fields.length; i++) {
+        }
 
-        let lastState = {}
-        Object.assign(lastState, this.lastCheck_fields[i]);
-        this.check_fields.push(lastState);
+        for (let i = 0; i < this.lastCheck_fields.length; i++) {
 
+          let lastState = {}
+          Object.assign(lastState, this.lastCheck_fields[i]);
+          this.check_fields.push(lastState);
+
+        }
+      }else{
+        this.$refs.form.reset();
       }
 
       this.isOpened = false;
