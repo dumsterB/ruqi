@@ -22,7 +22,7 @@
               .selected-item-title.mr-1 Выбрано:
               .selected-item-count  {{ selected_count }} чел.
 
-            v-btn.add.btn-blue(text height="48" outlined @click="")
+            v-btn.add.btn-blue(text height="48" outlined @click="$emit('addToSelection')")
               span добавить в подбор
 
 

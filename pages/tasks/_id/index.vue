@@ -600,7 +600,7 @@ export default {
     },
 
     goToHistory() {
-      console.log('История');
+      this.$router.push("/tasks/" + this.$route.params.id + "/history");
     },
 
     getDataFromApi(fetchParams, watcherParams, action, options) {
@@ -610,7 +610,7 @@ export default {
       const params = {
         "settings": {
           "value": this[fetchParams].value,
-          "sort": this[watcherParams].sortBy[0],
+          "sort": this[watcherParams].sortBy[0] ? this[watcherParams].sortBy[0]  : 'lastname',
           "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": this[fetchParams].filters,
         }

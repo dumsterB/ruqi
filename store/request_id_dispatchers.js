@@ -9,6 +9,9 @@ export const state = () => ({
   request_id_invitations_filters: [],
   request_id_assigned_filters: [],
   request_id_search: [],
+  request_id_filter_professions: [],
+  request_id_filter_rank: [],
+  request_id_filter_active: [],
 })
 
 export const getters = {
@@ -41,6 +44,15 @@ export const getters = {
   },
   request_id_search(state) {
     return state.request_id_search;
+  },
+  request_id_filter_professions(state) {
+    return state.request_id_filter_professions;
+  },
+  request_id_filter_rank(state) {
+    return state.request_id_filter_rank;
+  },
+  request_id_filter_active(state) {
+    return state.request_id_filter_active;
   },
 }
 
@@ -76,13 +88,16 @@ export const actions = {
     commit('setRequestIdAssigned', {request_id_assigned: request_id_assigned, concat: concat, unit: unit});
   },
 
-  async fetchRequestIdHistory({commit}, {requestId}) {
-    const request_id_history= await this.$axios.get('/tasks/'+requestId+'/history', {
+  async fetchRequestIdHistory({commit},  {requestId, params, concat}) {
+    const request_id_history = await this.$axios.get('/tasks/' + requestId + '/history',{
+      params: params
     });
-    commit('setRequestIdHistory', request_id_history);
+    commit('setRequestIdHistory', {request_id_history: request_id_history, concat: concat,} );
   },
 
   async fetchRequestIdSearch({commit}, {requestId, params, concat, unit}) {
+    console.log('fetchRequestIdSearch ---', params)
+    console.log(typeof params);
     const request_id_search = await this.$axios.get('/tasks/'+requestId+'/contractors/search', {
       params: params
     });
@@ -249,7 +264,7 @@ export const actions = {
       })
       .then((response) => {
         console.log(response);
-        dispatch('fetchRequestIdAssigned', {requestId: task_uuid, params: {}, concat: false, unit: false});
+        dispatch('fetchRequestIdSearch', {requestId: task_uuid, params: {}, concat: false, unit: false});
         commit('response/setSuccess', {type: 'success', text: 'Исполнителю можно приезжать', }, {root: true});
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
@@ -260,12 +275,43 @@ export const actions = {
       });
   },
 
+  async localExecutor({commit, dispatch}, {task_uuid, user_uuids}) {
+    let self= this
+    await this.$axios.post('/tasks/'+task_uuid+'/contractors/local',
+      user_uuids,
+      { headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        dispatch('fetchRequestIdAssigned', {requestId: task_uuid, params: {}, concat: false, unit: false});
+        commit('response/setSuccess', {type: 'success', text: 'Исполнители добавлены в подбор', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+        /*setTimeout(function() {
+          self.$router.push('/tasks/' + task_uuid);
+        }, 1000);*/
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+
 
 }
 
 export const mutations = {
-  setRequestIdHistory(state, request_id_history) {
+  setRequestIdHistory(state, {request_id_history, concat}) {
+
     state.request_id_history = request_id_history.data.data;
+    if (concat) {
+      state.request_id_history = state.request_id_history.concat(request_id_history.data.data);
+    } else {
+      state.request_id_history = request_id_history.data.data;
+    }
+
   },
 
   setRequestIdSearch(state, {request_id_search, concat, unit}) {
@@ -273,6 +319,12 @@ export const mutations = {
       state.request_id_search = state.request_id_search.concat(request_id_search.data.data);
     } else {
       state.request_id_search = request_id_search.data.data;
+    }
+
+    if (unit) {
+      state.request_id_filter_professions = request_id_search.data.meta.filters.filter(obj => obj.field == 'profession')[0].options;
+      state.request_id_filter_rank = request_id_search.data.meta.filters.filter(obj => obj.field == 'rank')[0].options;
+      state.request_id_filter_active = request_id_search.data.meta.filters.filter(obj => obj.field == 'last_active')[0].options;
     }
   },
 

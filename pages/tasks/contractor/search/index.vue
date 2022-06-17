@@ -28,7 +28,29 @@
 
   .tasks-executor-search--desktop
     h1 Поиск работы
-    TasksFilter
+    TasksFilter(
+      :isFilterShowed="mFilterVisibility"
+      :loader="loaderFilter"
+      :regions="regions"
+      :region="region"
+      :professions="professions"
+      :radii="radii"
+      :radius="radius"
+      :salary="salary"
+      :medicalBook="medicalBook"
+      :driverLicense="driverLicense"
+      @showFilter="showMobFilter"
+      @hideFilter="hideMobFilter"
+      @selectRegion="selectRegion"
+      @selectProfessionDesktop="selectProfessionDesktop"
+      @selectRadius="selectRadius"
+      @setSalary="setSalary"
+      @setMedicalBook="setMedicalBook"
+      @setDriverLicense="setDriverLicense"
+      @setStartDate="setStartDate"
+      @apply="applyFilter"
+      @reset="resetFilter"
+    )
     ContentDisplayController.tasks-executor-search--desktop__content-display-ctrl
 
   TasksList.tasks-executor-search--task-list(:tasks="searchTasks")
@@ -123,11 +145,25 @@ export default {
         this.selectedProfessions.push(payload);
       }
     },
+    selectProfessionDesktop(payload = null) {
+      if (!payload) return;
+
+      this.selectedProfessions = payload;
+    },
     selectRadius(payload = null) {
       if (payload) this.radius = payload;
     },
     setSalary(payload = null) {
       this.salary = payload;
+    },
+    setMedicalBook(payload = null) {
+      this.medicalBook = payload;
+    },
+    setDriverLicense(payload = null) {
+      this.driverLicense = payload;
+    },
+    setStartDate(payload = null) {
+      this.startDate = payload;
     },
     async applyFilter() {
       this.loaderFilter = true;

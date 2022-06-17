@@ -9,7 +9,7 @@
                 v-icon mdi-plus
                 span новая заявка
 
-              TasksFilter.ml-8
+              TasksFilter.ml-8(:status_list="status_list" v-if="status_list" @applyFilter="applyFilter('fetch', 'headerOptionsTask', ...arguments)")
 
               TableFilter.ml-8.mr-5(v-if="tasks_filters.length"
                 :fields="tasks_filters"
@@ -21,7 +21,7 @@
               .filter-col-after-left
                 TableGroupAction(v-if="selectedItems.length"
                   :actions="groupListAction" :selected="selectedItems"
-                  @selectAction="isConfirmModalAny = true" @clearSelected="clearSelected")
+                  @selectAction="isConfirmModal = true" @clearSelected="clearSelected")
 
           .table-row(v-infinite-scroll="loadMore")
             .table-list-style.minify-header
@@ -157,8 +157,8 @@ export default {
         {text: "Наполнение", value: "completion", width: "152px"},
       ],
       headers_tasks_filter: [
-        {field: 'start_date', translit: 'Период'},
-        {field: 'status', translit: 'Статус'},
+        {field: 'rate', translit: 'Ставка', unit: 'р.'},
+        {field: 'filling', translit: 'Наполнена', unit: '%'},
       ],
       headerOptionsTask: {},
       groupListAction: [
@@ -168,9 +168,9 @@ export default {
       isSearchFocus: 0,
       isConfirmModal: false,
       confirmModalContent: {
-        title: "Удалить эту заявку?",
+        title: "Удалить?",
         description: "",
-        text_btn_ok: "Удалить",
+        text_btn_ok: "Да",
         text_btn_cancel: "Отмена",
       },
       removedUUID: '',
@@ -246,8 +246,26 @@ export default {
       return this.$store.getters["requests/requests"];
     },
 
-    tasks_filters() {
+    tasks_filters_server() {
       return this.$store.getters["requests/tasks_filters"];
+    },
+
+    tasks_filters() {
+      const filters = this.tasks_filters_server,
+        new_filters = filters.filter(obj => obj.field != 'status' && obj.field != 'until_date');
+
+      return new_filters;
+    },
+
+    status_list(){
+      const filters = this.tasks_filters_server,
+      status_list = filters.filter(obj => obj.field == 'status');
+
+       if(status_list.length > 0){
+         return status_list[0].options;
+       }else{
+         return [];
+       }
     },
 
     objects() {
@@ -338,13 +356,13 @@ export default {
       let params = {
         "settings": {
           "value": search,
-          "sort": this[watcherParams].sortBy[0],
+          "sort": this[watcherParams].sortBy[0]  ? this[watcherParams].sortBy[0] : 'name',
           "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": filter
         }
       };
 
-      console.log('params-----', filter, params);
+      console.log('params-----', filter, params, );
 
       this.fetch({params: params, concat: false, unit: false});
     },
@@ -440,6 +458,23 @@ export default {
 
     editTask(TaskId) {
       this.$router.push("/tasks/" + TaskId[0] + "/edit");
+    },
+
+    markForDeletion(TaskId){
+      this.removeRequest([TaskId]);
+    },
+
+    goToObject(uuids){
+
+      let task = this.requests.filter(obj => obj.uuid == uuids);
+      if(task.length > 0){
+        let object_uuid = task[0].object.uuid;
+        this.$router.push("/objects/" + object_uuid);
+      }
+    },
+
+    goToHistory(uuids){
+      this.$router.push("/tasks/" + uuids[0] + "/history");
     },
 
     async editStatus(uuids, status) {

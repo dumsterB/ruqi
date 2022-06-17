@@ -3,13 +3,13 @@
     v-select(
       name="task_status"
       v-model="select"
-      :items="options"
+      :items="status_list"
       item-text="name"
       item-value="stub"
       single-line
       outlined
       filled
-      @input="updateFiled('task_status', select)"
+      @input="updateFiled('status', select)"
       hide-details
       label="Статус"
     )
@@ -60,9 +60,11 @@
 
 export default {
   props: {
-    status_alias: {
-      type: String,
-      default: '',
+    status_list: {
+      type: Array,
+      default() {
+        return []
+      }
     },
   },
   data() {
@@ -78,11 +80,49 @@ export default {
         this.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
       ],
       menu: false,
+      formValues: {
+        status: '',
+        until_date: {
+          from: '',
+          to: '',
+        }
+      },
     }
   },
   computed: {
     dateRangeText() {
-      return this.dateFormatted.join(' - ')
+      return this.dateFormatted.sort().join(' - ')
+    },
+    postBody() {
+
+      let postBody = [];
+
+      if (this.formValues.status.length > 0) {
+        postBody.push(
+          {
+            "field": "status",
+            "type": "list",
+            "value": this.formValues.status
+          },
+        );
+      }
+
+      if (this.formValues.until_date.length > 0) {
+        postBody.push(
+          {
+            "field": "until_date",
+            "type": "datetime",
+            "value": this.formValues.until_date
+          }
+        );
+      }
+
+      return postBody;
+    },
+  },
+  watch: {
+    dates() {
+      this.dateFormatted = [this.formatDate(this.dates[0]), this.formatDate(this.dates[1])];
     },
   },
   methods: {
@@ -102,10 +142,20 @@ export default {
 
     updateDate() {
       this.menu = false;
-      this.updateFiled('task_period', this.dates);
+      this.updateFiled('until_date', this.dates);
     },
 
-    updateFiled() {
+    updateFiled(field, value) {
+      if (field == 'until_date') {
+
+        let sort_dates = value.sort();
+
+        this.formValues.until_date.from = sort_dates[0];
+        this.formValues.until_date.to = sort_dates[1];
+      } else {
+        this.formValues[field] = [value];
+      }
+      this.$emit('applyFilter', this.postBody);
 
     }
   },
@@ -117,6 +167,10 @@ export default {
 .tasks-filter {
   display: flex;
   align-items: center;
+
+  .v-text-field--filled {
+    max-width: 220px;
+  }
 
   .v-input__control {
     .v-input__slot {
