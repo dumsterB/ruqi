@@ -37,12 +37,16 @@
       :radii="radii"
       :radius="radius"
       :salary="salary"
+      :medicalBook="medicalBook"
+      :driverLicense="driverLicense"
       @showFilter="showMobFilter"
       @hideFilter="hideMobFilter"
       @selectRegion="selectRegion"
       @selectProfessionDesktop="selectProfessionDesktop"
       @selectRadius="selectRadius"
       @setSalary="setSalary"
+      @setMedicalBook="setMedicalBook"
+      @setDriverLicense="setDriverLicense"
       @setStartDate="setStartDate"
       @apply="applyFilter"
       @reset="resetFilter"
@@ -151,6 +155,12 @@ export default {
     },
     setSalary(payload = null) {
       this.salary = payload;
+    },
+    setMedicalBook(payload = null) {
+      this.medicalBook = payload;
+    },
+    setDriverLicense(payload = null) {
+      this.driverLicense = payload;
     },
     setStartDate(payload = null) {
       this.startDate = payload;

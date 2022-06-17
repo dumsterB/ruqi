@@ -84,19 +84,19 @@
 
     .rqtes-taskfilter__row-item.rqtes-taskfilter__checkbox
       v-checkbox.rqtes-taskfilter__checkbox-property(
-        v-model="ex4"
         label="Без мед. книжки"
         color="info"
-        value="info"
+        :value="medicalBook"
+        @change="setMedicalBook"
         hide-details
       )
 
     .rqtes-taskfilter__row-item.rqtes-taskfilter__checkbox
       v-checkbox.rqtes-taskfilter__checkbox-property(
-        v-model="ex4"
         label="Без водительских прав"
         color="info"
-        value="info"
+        :value="driverLicense"
+        @change="setDriverLicense"
         hide-details
       )
 </template>
@@ -145,6 +145,14 @@ export default {
       type: String,
       default: "",
     },
+    medicalBook: {
+      type: Boolean,
+      default: false,
+    },
+    driverLicense: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {},
   watch: {},
@@ -173,6 +181,12 @@ export default {
     },
     setSalary(payload = null) {
       this.$emit('setSalary', payload);
+    },
+    setMedicalBook(payload = null) {
+      this.$emit('setMedicalBook', payload);
+    },
+    setDriverLicense(payload = null) {
+      this.$emit('setDriverLicense', payload);
     },
     selectRegion(payload = null) {
       if (payload) {
