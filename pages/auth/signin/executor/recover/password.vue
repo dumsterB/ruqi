@@ -7,7 +7,7 @@
           .wrapper
             .login-logo
               img.auth-logo( src="@/assets/img/auth-logo.png" )
-            v-form
+            v-form(v-model="valid", lazy-validation ref="form" )
               .auth-form
                 .wrapper
                   .haupt-titel
@@ -50,6 +50,8 @@
 </template>
 
 <script>
+import {mapActions, mapGetters} from "vuex";
+
 export default {
   layout: "empty",
   components: {},
@@ -58,6 +60,7 @@ export default {
     return {
       password:'',
       confirm_password:'',
+      valid:false,
       error: false,
       show1:false,
       show:false,
@@ -73,11 +76,24 @@ export default {
   },
 
   methods: {
-    submit() {
-
+    ...mapActions('executor',['createPassword']),
+   async submit() {
+      let obj ={
+        phone: this.recover_sms_phone,
+        password: this.password
+      }
+      await  this.createPassword(obj);
+     console.log(this.requestSuccess)
+      if (this.requestSuccess.type === "success") {
+        this.$router.push('/')
+      } else {
+        this.validate();
+      }
     },
   },
   computed:{
+    ...mapGetters("response", ["requestSuccess"]),
+    ...mapGetters("executor", ["recover_sms_phone"]),
     disableHandler() {
       return this.password && this.password  === this.confirm_password;
     },

@@ -7,15 +7,15 @@
             .wrapper
               .login-logo
                 img.auth-logo( src="@/assets/img/auth-logo.png" )
-              .auth-form
+              v-form.auth-form(v-model="valid" lazy-validation ref="form" )
                 .wrapper
                   .haupt-titel
                     .txt Восстановление пароля
 
-                    p.text-grey Мы отправили SMS с кодом <br /> на номер {{phone_or_email}}
+                    p.text-grey Мы отправили SMS с кодом <br /> на номер {{recover_sms_phone}}
                     .input-line.email-num
                       .titel
-                        v-otp-input.item.mt-4(  length='4' v-model='sms'   :class="{ 'error-by-signin' : error }" )
+                        v-otp-input.item.mt-4(  length='4' v-model='sms'   :rules="inputRules" )
                   .actions
                     .action
                       .signin-btn( @click="submit" )
@@ -38,6 +38,7 @@ export default {
       sms: "",
       error: false,
       countDown: "60",
+      inputRules: [(v) => !!v || "Заполните поля", !this.valid || 'поля не правильное'],
     };
   },
 
@@ -45,6 +46,11 @@ export default {
     ...mapActions('executor',['sigInInConfirmPassword']),
     submit() {
       this.sigInInConfirmPassword(this.sms)
+      if (this.requestSuccess.type === "success") {
+        this.$router.push({name:'auth-signin-executor-recover-password'});
+      } else {
+        this.$refs.form.validate()
+      }
     },
     sendAgain() {
       this.countDown = 60;
@@ -64,7 +70,8 @@ export default {
     },
   },
   computed:{
-    ...mapGetters('executor',['phone_or_email'])
+    ...mapGetters('executor',['recover_sms_phone']),
+    ...mapGetters("response", ["requestSuccess"]),
   },
   created() {
     this.countDownTimer();

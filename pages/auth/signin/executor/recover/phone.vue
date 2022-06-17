@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
   layout: "empty",
   components: {},
@@ -54,8 +56,10 @@ export default {
   },
 
   methods: {
-    submit() {
-
+    ...mapActions('executor',['recoverExecutorPhone']),
+   async submit() {
+      await this.recoverExecutorPhone(this.phone);
+        this.$router.push({name:'auth-signin-executor-recover-sms'});
     },
   },
   computed:{

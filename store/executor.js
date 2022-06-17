@@ -8,13 +8,14 @@ export const state = () => ({
   error: "",
   passport_main_spread: null,
   phone_or_email: "",
+  recover_sms_phone: ''
 });
 export const getters = {
   specializations(state) {
     return state.specializations;
   },
-  phone_or_email(state) {
-    return state.phone_or_email;
+  recover_sms_phone(state) {
+    return state.recover_sms_phone;
   },
 };
 export const actions = {
@@ -81,7 +82,35 @@ export const actions = {
         console.log(error);
       });
   },
-
+  async recoverExecutorPhone({ commit }, params) {
+    await this.$axios
+        .post("auth/signup", {
+          phone: params,
+          type: "contractor",
+        })
+        .then((response) => {
+          commit('SET_PHONE_RECOVER',params)
+          commit(
+              "response/setSuccess",
+              { type: "success", text: "Исполнитель успешно создан" },
+              { root: true }
+          );
+          setTimeout(function () {
+            commit("response/removeSuccess", null, { root: true });
+          }, 2000);
+        })
+        .catch((error) => {
+          commit(
+              "response/setSuccess",
+              { type: "error", text: "Заполните поля" },
+              { root: true }
+          );
+          setTimeout(function () {
+            commit("response/removeSuccess", null, { root: true });
+          }, 3000);
+          console.log(error);
+        });
+  },
   async confirmPassword({ commit }, params) {
     await this.$axios
       .put("auth/confirm", params)
@@ -110,7 +139,7 @@ export const actions = {
   async sigInInConfirmPassword({ commit, state }, params) {
     await this.$axios
       .put("auth/confirm", {
-        phone_or_email: state.phone_or_email,
+        phone: state.recover_sms_phone,
         code_confirm: params,
       })
       .then((response) => {
@@ -451,6 +480,9 @@ export const actions = {
 export const mutations = {
   SET_SPECIALIZATIONS(state, payload) {
     state.specializations = payload.data.data;
+  },
+  SET_PHONE_RECOVER(state,payload){
+    state.recover_sms_phone = payload
   },
   SET_SIGN_IN(state, payload) {
     state.phone_or_email = payload;

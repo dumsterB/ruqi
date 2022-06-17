@@ -39,7 +39,7 @@
         </v-btn>
       </div>
     </v-container>
-    <div>{{ requestSuccess }}</div>
+    <div class="d-none">{{ requestSuccess }}</div>
   </div>
 </template>
 
