@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="form-select-uuid">
     <v-select
       v-model="select"
       :id="id"
       :items="options"
       :item-text="item_text_v"
-      item-value="uuid"
+      :item-value="item_value"
       :rules="[v => !!v || 'Выберите вариант']"
       required
       single-line
@@ -57,6 +57,13 @@ export default {
     item_text_v() {
       return this.params.item_text
     },
+    item_value() {
+      if (this.params && this.params.item_value) {
+        return this.params.item_value;
+      } else {
+        return 'uuid';
+      }
+    },
     icon_code() {
       if (this.icon) {
         return this.icon;
@@ -64,21 +71,21 @@ export default {
         return null;
       }
     },
-    readonly(){
+    readonly() {
       if (this.params && this.params.readonly) {
         return true;
       } else {
         return false;
       }
     },
-    multiple(){
+    multiple() {
       if (this.params && this.params.multiple) {
         return true;
       } else {
         return false;
       }
     },
-    hideDetails(){
+    hideDetails() {
       if (this.params && this.params.hideDetails) {
         return this.params.hideDetails;
       } else {
@@ -97,16 +104,17 @@ export default {
     },
   },
   methods: {
-    toggle () {
+    toggle() {
       this.$nextTick(() => {
         if (this.select.length != this.options.length) {
           this.select = this.options.slice();
         } else {
           this.select = [];
         }
+        this.$emit('input', this.select);
       })
     },
-    close(){
+    close() {
       const searchEl = this.$refs.vSelect;
       if (searchEl) {
         searchEl.blur();
@@ -123,15 +131,32 @@ export default {
 
 <style lang="scss">
 .ruqi {
+
+  .form-select-uuid {
+
+    .v-select__selections{
+      flex-wrap: nowrap;
+    }
+
+    .theme--light.v-chip {
+      background: transparent;
+      padding: 0;
+
+      &:before{
+        display: none;
+      }
+    }
+  }
+
   .v-input__prepend-inner {
     margin-top: 10px;
   }
 
-  .v-select__selection--comma{
+  .v-select__selection--comma {
     color: #263043;
   }
 
-  .list-actions{
+  .list-actions {
     display: flex;
     flex-direction: column;
     padding: 8px;
@@ -155,14 +180,12 @@ export default {
         background: #fff;
       }
 
-      &:last-child{
+      &:last-child {
         margin-bottom: 0;
       }
     }
 
   }
-
-
 
 }
 

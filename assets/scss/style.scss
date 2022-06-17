@@ -245,11 +245,21 @@ h1.large {
     top: 18px;
   }
 
-  .v-menu__content a {
-    text-decoration: none;
-    text-transform: uppercase;
-    color: $grey;
-    padding: 0 16px;
+  .v-menu__content {
+    a {
+      text-decoration: none;
+      text-transform: uppercase;
+      color: $grey;
+      padding: 0 16px;
+    }
+
+    .v-list-item {
+
+      .v-list-item__action {
+        margin-right: 6px;
+      }
+
+    }
   }
 
   .v-subheader {
@@ -380,9 +390,9 @@ h1.large {
     }
   }
 
-  .wrap-tabs{
-    .v-tab{
-      .count{
+  .wrap-tabs {
+    .v-tab {
+      .count {
         color: #263043;
         display: inline-block;
         margin-left: 8px;
@@ -393,7 +403,7 @@ h1.large {
   .theme--light.v-tabs > .v-tabs-bar .v-tab:not(.v-tab--active) {
     color: #7A91A9;
 
-    .count{
+    .count {
       color: #263043;
     }
   }
@@ -484,7 +494,7 @@ h1.large {
         display: none !important;
       }
 
-      .filter-col-after-left{
+      .filter-col-after-left {
         display: none !important;
       }
 
@@ -765,7 +775,7 @@ h1.large {
         }
 
         tbody {
-          box-shadow: 0 6px 73px rgb(0 0 0 / 7%);
+         // box-shadow: 0 6px 73px rgb(0 0 0 / 7%);
           border-radius: 14px;
 
           tr {
@@ -932,7 +942,6 @@ h1.large {
     background: #f5f5f5;
     padding: 0 24px;
     position: relative;
-
 
     .minify-header-substrate {
       background: #fff;
@@ -1176,15 +1185,15 @@ h1.large {
               display: flex;
               align-items: center;
 
-              .rate-title{
+              .rate-title {
                 min-width: 50px;
               }
             }
 
-            .professions{
+            .professions {
               color: #263043;
 
-              .count{
+              .count {
                 color: #AEAEAE;
                 display: inline-block;
                 margin-left: 4px;
@@ -1292,7 +1301,7 @@ h1.large {
 
   }
 
-  &.rate-menu{
+  &.rate-menu {
     border-radius: 10px;
   }
 }
@@ -1472,7 +1481,7 @@ h1.large {
     }
   }
 
-  .remove-field{
+  .remove-field {
     display: inline-block;
     font-weight: 600;
     font-size: 14px;

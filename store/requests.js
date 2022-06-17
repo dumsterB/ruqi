@@ -18,12 +18,12 @@ export const actions = {
     const requests = await this.$axios.get('/tasks', {
       params: params
     });
-    commit('setRequest', {requests,  concat, unit})
+    commit('setRequest', {requests, concat, unit})
   },
 
   async createRequest({commit, dispatch}, newRequest) {
-    let self= this;
-    commit('response/setAwait', null, { root: true });
+    let self = this;
+    commit('response/setAwait', null, {root: true});
     const requests = await this.$axios.post('/tasks',
       newRequest,
       {
@@ -35,17 +35,17 @@ export const actions = {
       .then((response) => {
         console.log(response);
         dispatch('fetch');
-        commit('response/setSuccess', {type: 'success', text: 'Ваша заявка успешно создана', }, {root: true});
+        commit('response/setSuccess', {type: 'success', text: 'Ваша заявка успешно создана',}, {root: true});
         self.$router.push('/tasks/' + response.data.uuid + '/edit');
-        setTimeout(function() {
-          commit('response/removeSuccess', null, { root: true });
+        setTimeout(function () {
+          commit('response/removeSuccess', null, {root: true});
         }, 2000);
 
       })
       .catch((error) => {
-        commit('response/setSuccess', {type: 'error', text: 'Заполните поля заявки', }, {root: true});
-        setTimeout(function() {
-          commit('response/removeSuccess', null, { root: true });
+        commit('response/setSuccess', {type: 'error', text: 'Заполните поля заявки',}, {root: true});
+        setTimeout(function () {
+          commit('response/removeSuccess', null, {root: true});
         }, 3000);
         console.log(error);
       });
@@ -53,8 +53,8 @@ export const actions = {
   },
 
   async copyRequest({commit, dispatch}, requestID) {
-    let self= this;
-    const requests = await this.$axios.post('/tasks/'+requestID+'/copy',
+    let self = this;
+    const requests = await this.$axios.post('/tasks/' + requestID + '/copy',
       '',
       {
         headers: {
@@ -63,14 +63,14 @@ export const actions = {
 
       })
       .then((response) => {
-        console.log('--------',response.data.data);
-        dispatch('fetch');
-        commit('response/setSuccess', {type: 'success', text: 'Заявка успешно скопирована', }, {root: true});
-        setTimeout(function() {
-          commit('response/removeSuccess', null, { root: true });
+        console.log('--------', response.data.data);
+        dispatch('fetch',  {params: {}, concat: false, unit: false});
+        commit('response/setSuccess', {type: 'success', text: 'Заявка успешно скопирована',}, {root: true});
+        setTimeout(function () {
+          commit('response/removeSuccess', null, {root: true});
         }, 2000);
-        setTimeout(function() {
-          self.$router.push('/tasks/'+response.data.data+'/edit');
+        setTimeout(function () {
+          self.$router.push('/tasks/' + response.data.data + '/edit');
         }, 3000);
       })
       .catch((error) => {
@@ -79,15 +79,18 @@ export const actions = {
 
   },
 
-  async removeRequest({commit, dispatch}, requestID) {
+  async removeRequest({commit, dispatch}, uuids) {
 
-    await this.$axios.delete('/tasks/'+requestID)
+    await this.$axios.delete('/tasks/', {
+      headers: { 'Content-Type': 'application/json', },
+      data: uuids
+    })
       .then((response) => {
         console.log(response);
-        dispatch('fetch');
-        commit('response/setSuccess', {type: 'success', text: 'Заявка удалена', }, {root: true});
-        setTimeout(function() {
-          commit('response/removeSuccess', null, { root: true });
+        dispatch('fetch',  {params: {}, concat: false, unit: false});
+        commit('response/setSuccess', {type: 'success', text: 'Удаление прошло успешно',}, {root: true});
+        setTimeout(function () {
+          commit('response/removeSuccess', null, {root: true});
         }, 2000);
 
       })
@@ -98,8 +101,8 @@ export const actions = {
   },
 
   async putRequest({commit, dispatch}, {uuid, body}) {
-    let self= this;
-    await this.$axios.put('/tasks/'+uuid,
+    let self = this;
+    await this.$axios.put('/tasks/' + uuid,
       body,
       {
         headers: {
@@ -110,9 +113,9 @@ export const actions = {
       .then((response) => {
         console.log(response);
         dispatch('fetch');
-        commit('response/setSuccess', {type: 'success', text: 'Ваша заявка успешно обновлена', }, {root: true});
-        setTimeout(function() {
-          commit('response/removeSuccess', null, { root: true });
+        commit('response/setSuccess', {type: 'success', text: 'Ваша заявка успешно обновлена',}, {root: true});
+        setTimeout(function () {
+          commit('response/removeSuccess', null, {root: true});
         }, 2000);
       })
       .catch((error) => {

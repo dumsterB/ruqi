@@ -1,8 +1,9 @@
 <template lang="pug">
   .inner-task-page-selections
-    SelectionHeader(@onBackToAppClick="onBackToAppClick" :task_name="request_id.name" :selected_count="selectedItems.length")
+    SelectionHeader(@onBackToAppClick="onBackToAppClick" @addToSelection="addToSelection" :task_name="request_id.name" :selected_count="selectedItems.length")
 
-    SelectionFilter
+    SelectionFilter(@sendFilter="sendFilter" :filter_professions="filter_professions" :filter_rank="filter_rank" :filter_active="filter_active"
+    v-if="filter_professions.length > 0")
 
     Responses(:items="contractors" :headers="headers" @callAction="callAction" @setSelected="setSelected")
 
@@ -22,38 +23,51 @@ export default {
   data() {
     return {
       headers: [
-        { text: "фио", align: "start", value: "shortname", width: '200px' },
-        { text: "Лет", value: "age", width: '112px' },
-        { text: "география", value: "location", width: '286px' },
-        { text: "%БН", value: "trust", width: '112px' },
-        { text: "ранг", value: "rank", width: '112px' },
-        { text: "ставка", value: "rate", width: '112px'},
-        { text: "профессия", value: "professions" },
-        { text: "Работал", value: "on_object" },
+        {text: "фио", align: "start", value: "shortname", width: '200px'},
+        {text: "Лет", value: "age", width: '112px'},
+        {text: "география", value: "location", width: '286px'},
+        {text: "%БН", value: "trust", width: '112px'},
+        {text: "ранг", value: "rank", width: '112px'},
+        {text: "ставка", value: "rate", width: '112px'},
+        {text: "профессия", value: "professions", width: '180px'},
+        {text: "Работал", value: "on_object"},
       ],
       options: {},
       selectedItems: [],
     }
   },
-  computed : {
+  computed: {
     ...mapGetters("breadcrumbs", ["BREADCRUMBS"]),
 
     request_id() {
       return this.$store.getters["request_id/request_id"];
     },
 
-    contractors () {
-      return this.$store.getters[ 'request_id_dispatchers/request_id_search' ];
+    contractors() {
+      return this.$store.getters['request_id_dispatchers/request_id_search'];
     },
+
+    filter_professions() {
+      return this.$store.getters['request_id_dispatchers/request_id_filter_professions'];
+    },
+
+    filter_rank() {
+      return this.$store.getters['request_id_dispatchers/request_id_filter_rank'];
+    },
+
+    filter_active() {
+      return this.$store.getters['request_id_dispatchers/request_id_filter_active'];
+    },
+
 
   },
   methods: {
     ...mapActions("request_id", ["fetchRequestId",]),
-    ...mapActions( 'contractors', [ 'getContractors', 'inviteContractorsToVacancy', 'setSortColumn', 'setSortOrder' ] ),
+    ...mapActions('contractors', ['getContractors', 'inviteContractorsToVacancy', 'setSortColumn', 'setSortOrder']),
     ...mapActions("breadcrumbs", ["initBreadcrumbs", "setBreadcrumbs"]),
-    ...mapActions("request_id_dispatchers", ["fetchRequestIdSearch",]),
+    ...mapActions("request_id_dispatchers", ["fetchRequestIdSearch", "localExecutor"]),
 
-    onBackToAppClick(){
+    onBackToAppClick() {
       this.$router.go(-1);
     },
 
@@ -65,6 +79,52 @@ export default {
     setSelected(selected) {
       console.log(selected);
       this.selectedItems = selected;
+    },
+
+    addToSelection() {
+
+      let sendUuids = [];
+      for (let i = 0; i < this.selectedItems.length; i++) {
+        sendUuids.push(this.selectedItems[0].uuid);
+      }
+
+      console.log('localExecutor ----- ', sendUuids)
+
+      this.localExecutor({task_uuid: this.$route.params.id, user_uuids: sendUuids});
+    },
+
+    sendFilter(postBody) {
+
+      this.fetchRequestIdSearch({
+        requestId: this.$route.params.id,
+        params: postBody,
+        concat: false,
+        unit: false
+      });
+    },
+
+    getDataFromApi(fetchParams, watcherParams, action, options) {
+
+      this[watcherParams] = options;
+
+      const params = {
+        "settings": {
+          "value": this[fetchParams].value,
+          "sort": this[watcherParams].sortBy[0],
+          "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
+          "filters": this[fetchParams].filters,
+        }
+      };
+
+      this[action]({
+        requestId: this.$route.params.id,
+        params: params,
+        concat: false,
+        unit: false
+      }).then(data => {
+        this[fetchParams].page = 1;
+        console.log('пришел ответ')
+      })
     },
 
   },
@@ -108,7 +168,7 @@ export default {
 
     background: #fff;
 
-    >.container {
+    > .container {
       padding: 0;
     }
   }

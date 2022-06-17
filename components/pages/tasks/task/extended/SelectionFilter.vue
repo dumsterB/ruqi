@@ -54,9 +54,23 @@ import Vue from "vue";
 
 export default {
   props: {
-    status_alias: {
-      type: String,
-      default: '',
+    filter_professions: {
+      type: Array,
+      default() {
+        return {}
+      }
+    },
+    filter_rank: {
+      type: Array,
+      default() {
+        return {}
+      }
+    },
+    filter_active: {
+      type: Array,
+      default() {
+        return []
+      }
     },
   },
   data() {
@@ -96,7 +110,7 @@ export default {
             type: 'FTypeText',
             label: '',
             col: 3,
-            name: 'city',
+            name: 'lastname',
             validation: [],
             value: '',
             icon: 'mdi-magnify',
@@ -144,6 +158,7 @@ export default {
                 {uuid: 3, name: 'Профессия 3'},
               ],
               item_text: 'name',
+              item_value: 'stub',
               label: 'Не выбрано',
               multiple: true,
               hideDetails: true
@@ -164,6 +179,7 @@ export default {
                 {uuid: 3, name: 'Любой 3'},
               ],
               item_text: 'name',
+              item_value: 'stub',
               label: 'Не выбрано',
               multiple: true,
               hideDetails: true
@@ -193,6 +209,7 @@ export default {
                 {uuid: 3, name: 'Ранг 3'},
               ],
               item_text: 'name',
+              item_value: 'stub',
               label: 'Не выбрано',
               multiple: true,
               hideDetails: true
@@ -252,33 +269,78 @@ export default {
   computed: {
     postBody() {
 
-      let postBody = {
-        "region": this.formValues.region,
-        "radius": this.formValues.radius,
-        "subscribe": this.formValues.subscribe,
-        "working": this.formValues.working,
-        "professions": this.formValues.professions,
-        settings: {
-          "filters": [
-            {
-              "field": "rate",
-              "type": "range",
-              "value": { to: this.formValues.rate }
-            },
-            {
-              "field": "trust",
-              "type": "range",
-              "value": { from: this.formValues.trust }
-            },
-            {
-              "field": "age",
-              "type": "range",
-              "value": { from: this.formValues.age_from, to: this.formValues.age_to }
-            },
-          ]
-        }
 
-      };
+      let postBody = {
+          "settings": {
+            "filters": []
+          },
+        },
+        list_params = ['region', 'radius', 'subscribe', 'working',];
+
+      for (let i = 0; i < list_params.length; i++) {
+        if (this.formValues[list_params[i]]) {
+          postBody[list_params[i]] = this.formValues[list_params[i]];
+        }
+      }
+
+      if(this.formValues.lastname){
+        postBody.settings.value = this.formValues.lastname;
+      }
+
+      if(this.formValues.professions && this.formValues.professions.length > 0) {
+        postBody.professions = JSON.stringify(this.formValues.professions);
+      }
+
+
+        if(this.formValues.rate){
+        postBody.settings.filters.push(
+          {
+            "field": "rate",
+            "type": "range",
+            "value": { to: this.formValues.rate }
+          }
+        )
+      }
+
+      if(this.formValues.trust){
+        postBody.settings.filters.push(
+          {
+            "field": "trust",
+            "type": "range",
+            "value": { from: this.formValues.trust }
+          },
+        )
+      }
+
+      if(this.formValues.age_from || this.formValues.age_to){
+        postBody.settings.filters.push(
+          {
+            "field": "age",
+            "type": "range",
+            "value": { from: this.formValues.age_from, to: this.formValues.age_to }
+          },
+        )
+      }
+
+      if(this.formValues.activity  && this.formValues.activity.length > 0){
+        postBody.settings.filters.push(
+          {
+            "field": "last_active",
+            "type": "list",
+            "value":  this.formValues.activity
+          },
+        )
+      }
+
+      if(this.formValues.rank && this.formValues.rank.length > 0){
+        postBody.settings.filters.push(
+          {
+            "field": "rank",
+            "type": "list",
+            "value":  this.formValues.rank
+          },
+        )
+      }
 
       return postBody;
     },
@@ -290,16 +352,22 @@ export default {
       if (field == 'region'){
         if(value){
           this.meta.meta_filter_row_1[1].params.readonly = true;
-          this.meta.meta_filter_row_1[1].value = '-';
+          this.meta.meta_filter_row_1[1].value = null;
+          this.formValues.radius = null;
         }else{
           this.meta.meta_filter_row_1[1].params.readonly = false;
           this.meta.meta_filter_row_1[1].value = 5;
+          this.formValues.radius = 5;
         }
       }
       console.log(field, value);
     },
     sendFilter() {
-        console.log('Отправляю------- ', this.postBody);
+
+      console.log(this.postBody);
+
+     this.$emit('sendFilter', this.postBody);
+
     },
     clearFields() {
       this.$refs.form.reset();
@@ -314,6 +382,11 @@ export default {
     },
   },
   created() {
+
+    this.meta.meta_filter_row_2[0].params.options = this.filter_professions;
+    this.meta.meta_filter_row_2[1].params.options = this.filter_active;
+    this.meta.meta_filter_row_2[3].params.options = this.filter_rank;
+
     this.meta.meta_filter_row_1.map(f => {
       Vue.set(this.formValues, f.name, f.value);
     })

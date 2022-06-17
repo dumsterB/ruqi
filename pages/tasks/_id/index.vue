@@ -600,7 +600,7 @@ export default {
     },
 
     goToHistory() {
-      console.log('История');
+      this.$router.push("/tasks/" + this.$route.params.id + "/history");
     },
 
     getDataFromApi(fetchParams, watcherParams, action, options) {
