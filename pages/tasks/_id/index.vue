@@ -37,7 +37,7 @@
               TableFilter.ml-8(v-if="request_id_assigned_filters.length > 0"
                 v-show="tab == 3"
                 :fields="request_id_assigned_filters"
-                :headers="headers_response_filter"
+                :headers="headers_assigned_filter"
                 name="filter_assigned"
                 :page_uuid="request_id.uuid"
                 @applyFilter="applyFilter('fetchAssignedParams', 'optionsAssigned', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
@@ -191,7 +191,7 @@ export default {
         {text: "Возраст", value: "age", width: '107px'},
         {text: "%БН", value: "trust", width: '128px'},
         {text: "ранг", value: "rank", width: '107px'},
-        {text: "Приглашен", value: "communication", width: '184px'},
+        {text: "Приглашен", value: "communication", width: '184px', sortable: false},
         {text: "Статус", value: "status", width: '150px'},
       ],
       headers_assigned: [
@@ -229,7 +229,8 @@ export default {
           text: "Отправить приглашение", icon: "mdi-email-outline", action: 'invite',
           sub_actions: [
             {text: "SMS", icon: "sms", params: 'sms', custom_icon: true},
-            {text: "Telegram", icon: "telegram", params: 'telegram', custom_icon: true}
+            {text: "Telegram", icon: "telegram", params: 'telegram', custom_icon: true},
+            {text: "Email", icon: "email", params: 'email', custom_icon: true}
           ],
         },
         {text: "В карточку исполнителя", icon: "mdi-clipboard-account-outline", action: 'openDetails'},
@@ -243,7 +244,8 @@ export default {
           text: "Отправить приглашение", icon: "mdi-email-outline", action: 'invite',
           sub_actions: [
             {text: "SMS", icon: "sms", params: 'sms', custom_icon: true},
-            {text: "Telegram", icon: "telegram", params: 'telegram', custom_icon: true}
+            {text: "Telegram", icon: "telegram", params: 'telegram', custom_icon: true},
+            {text: "Email", icon: "email", params: 'email', custom_icon: true}
           ],
         },
       ],
@@ -264,11 +266,19 @@ export default {
 
       selectedItems: [],
       headers_response_filter: [
-        {field: 'trust', translit: 'Благонадежность'},
+        {field: 'trust', translit: 'Благонадежность', unit: '%'},
         {field: 'age', translit: 'Возраст',},
         {field: 'on_object', translit: 'На объекте',},
         {field: 'rank', translit: 'Ранг',},
         {field: 'status', translit: 'Статус',},
+      ],
+      headers_assigned_filter: [
+        {field: 'trust', translit: 'Рейтинг', unit: '%'},
+        {field: 'rank', translit: 'Ранг',},
+        {field: 'rate', translit: 'Ставка', unit: 'р.'},
+        {field: 'age', translit: 'Возраст',},
+        {field: 'on_object', translit: 'На объекте',},
+        {field: 'status', translit: 'Статус выхода',},
       ],
       actions_tasks: [
         {text: "Закрепить", icon: "mdi-pin-outline", action: 'onPinTabClicked', display: true},

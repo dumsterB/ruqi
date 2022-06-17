@@ -10,9 +10,9 @@
         <div class="form-part">
           <p class="input_label">Пароль</p>
           <v-text-field
-            v-model="password"
-            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-            :rules="[rules.required, rules.min]"
+              v-model="password"
+              :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+              :rules="[rules.required, rules.min,rules.password]"
             outlined
             :type="show1 ? 'text' : 'password'"
             name="input-10-1"
@@ -79,6 +79,10 @@ export default {
         required: (value) => !!value || "Заполнития поля",
         min: (v) => v.length >= 8 || "Минимум 8 симболов",
         emailMatch: () => `Пароль не совподает`,
+        password : value => {
+          const pattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+          return pattern.test(value) || 'Не корректный пароль'
+        }
       },
       valid: false,
       confirm_password: null,
