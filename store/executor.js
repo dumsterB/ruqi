@@ -1,4 +1,3 @@
-
 export const state = () => ({
   executors: [],
   specializations: [],
@@ -8,10 +7,14 @@ export const state = () => ({
   driver_media: "",
   error: "",
   passport_main_spread: null,
+  phone_or_email: "",
 });
 export const getters = {
   specializations(state) {
     return state.specializations;
+  },
+  phone_or_email(state) {
+    return state.phone_or_email;
   },
 };
 export const actions = {
@@ -49,9 +52,67 @@ export const actions = {
         console.log(error);
       });
   },
+  async signIn({ commit }, params) {
+    await this.$axios
+      .post("auth/login", {
+        phone_or_email: params.phone_or_email,
+        password: params.password,
+      })
+      .then((response) => {
+        commit("SET_SIGN_IN", params.phone_or_email);
+        commit(
+          "response/setSuccess",
+          { type: "success", text: "Исполнитель успешно зашел" },
+          { root: true }
+        );
+        setTimeout(function () {
+          commit("response/removeSuccess", null, { root: true });
+        }, 2000);
+      })
+      .catch((error) => {
+        commit(
+          "response/setSuccess",
+          { type: "error", text: "Заполните поля" },
+          { root: true }
+        );
+        setTimeout(function () {
+          commit("response/removeSuccess", null, { root: true });
+        }, 3000);
+        console.log(error);
+      });
+  },
+
   async confirmPassword({ commit }, params) {
     await this.$axios
       .put("auth/confirm", params)
+      .then((response) => {
+        commit(
+          "response/setSuccess",
+          { type: "success", text: "Исполнитель успешно создан" },
+          { root: true }
+        );
+        setTimeout(function () {
+          commit("response/removeSuccess", null, { root: true });
+        }, 2000);
+      })
+      .catch((error) => {
+        commit(
+          "response/setSuccess",
+          { type: "error", text: "Заполните поля" },
+          { root: true }
+        );
+        setTimeout(function () {
+          commit("response/removeSuccess", null, { root: true });
+        }, 3000);
+        console.log(error);
+      });
+  },
+  async sigInInConfirmPassword({ commit, state }, params) {
+    await this.$axios
+      .put("auth/confirm", {
+        phone_or_email: state.phone_or_email,
+        code_confirm: params,
+      })
       .then((response) => {
         commit(
           "response/setSuccess",
@@ -390,6 +451,9 @@ export const actions = {
 export const mutations = {
   SET_SPECIALIZATIONS(state, payload) {
     state.specializations = payload.data.data;
+  },
+  SET_SIGN_IN(state, payload) {
+    state.phone_or_email = payload;
   },
   SET_DOCUMENT(state, payload) {
     state.document = payload.data.uuid;

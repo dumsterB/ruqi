@@ -6,17 +6,17 @@
       </div>
     </header>
     <main>
-      <auth></auth>
+      <index></index>
     </main>
   </div>
 </template>
 
 <script>
-import auth from "@/components/pages/executor/auth/Auth";
+import index from "@/components/pages/executor/auth/index";
 export default {
   layout: "empty",
   components: {
-    auth,
+    index,
   },
 };
 </script>

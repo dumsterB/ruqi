@@ -24,13 +24,15 @@
                         input.item( type="password" v-model="login.password" :class="{ 'error-by-signin' : error }" )
                   .actions
                     .action
-                      .signin-btn( @click="handlers().signin()" )
+                      .signin-btn( @click="signinHandler" )
                         .titel Войти в систему
 
               .password-forgot( @click="forgot()" ) Забыли пароль?  Восстановить
 </template>
 
 <script>
+import {mapActions, mapMutations} from "vuex";
+
 export default {
   layout: "empty",
   components: {},
@@ -47,30 +49,14 @@ export default {
   },
 
   methods: {
-    getters() {
-      return {};
-    },
+   ...mapActions('executor',['signIn']),
 
-    setters() {
-      return {};
-    },
-
-    handlers() {
-      return {
-        signin: async () => {},
-      };
+  async signinHandler() {
+    await this.signIn(this.login)
     },
     forgot(){
       this.$router.push({name: '/recover/phone'})
     },
-
-    helpers() {
-      return {};
-    },
-
-    init() {},
-
-    bindActions() {},
   },
 };
 </script>

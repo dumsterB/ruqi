@@ -6,18 +6,18 @@
       </div>
     </header>
     <main>
-      <tabs></tabs>
+      <index></index>
     </main>
   </div>
 </template>
 
 <script>
-import tabs from "@/components/pages/executor/signup/Tabs";
+import index from "@/components/pages/executor/auth/signup";
 
 export default {
   layout: "empty",
   components: {
-    tabs,
+    index,
   },
   data() {
     return {};

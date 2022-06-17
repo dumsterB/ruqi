@@ -222,7 +222,7 @@ export default {
       if (this.requestSuccess.type === "success") {
         this.$emit("pageHandler", value);
       } else {
-        this.validate();
+        this.$refs.form.validate()
       }
     },
     checkboxHandler() {
