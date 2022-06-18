@@ -6,7 +6,7 @@ const settings = {
   lang: 'ru_RU',
   coordorder: 'latlong',
   enterprise: false,
-  version: '2.1'
+  version: '2.1',
 }
 
 Vue.use(YmapPlugin, settings);

@@ -1,19 +1,10 @@
 <template>
-  <div class="map-container" :style="{height: height + 'px'}">
-    <yandex-map
-      :coords="center_coords"
-      :zoom="zoom"
-    >
+  <div class="map-container" :style="{ height: height + 'px' }">
+    <yandex-map :coords="center_coords" :zoom="zoom">
       <template v-for="(item, index) in markers">
-        <ymap-marker
-          v-if="item"
-          :key="item.uuid"
-          :coords="item.geometry.coordinates"
-          :marker-id="item.uuid"
-          :hint-content="item.properties.hintContent"
-          marker-type="placemark"
-          :balloon-template="balloonTemplate( item.info, item.uuid )"
-        />
+        <ymap-marker v-if="item" :key="item.uuid" :coords="item.geometry.coordinates" :marker-id="item.uuid"
+          :hint-content="item.properties.hintContent" marker-type="placemark"
+          :balloon-template="balloonTemplate(item.info, item.uuid)" />
       </template>
     </yandex-map>
   </div>
@@ -32,25 +23,22 @@ export default {
   data() {
     return {}
   },
-  methods : {
-    balloonTemplate ( info, uuid )
-    {
-      if ( this.entity === 'contractor' )
-      {
+  methods: {
+    balloonTemplate(info, uuid) {
+      if (this.entity === 'contractor') {
         return `
           <h2 class="balloon-header">${info.name}</h2>
           <p>Рейтинг: ${info.raiting}</p>
           <p>Описание: ${info.description}</p>
-          <a href="/tasks/contractor/${ uuid }">Перейти</a>
+          <a href="/tasks/contractor/${uuid}">Перейти</a>
         `;
       }
-      else
-      {
+      else {
         return `
           <h2 class="balloon-header">${info.name}</h2>
           <p>Рейтинг: ${info.raiting}</p>
           <p>Описание: ${info.description}</p>
-          <a href="/objects/${ uuid }">Перейти</a>
+          <a href="/objects/${uuid}">Перейти</a>
         `;
       }
     }
@@ -59,7 +47,6 @@ export default {
 </script>
 
 <style lang="scss">
-
 @import '/assets/scss/colors.scss';
 
 .ruqi {
@@ -68,9 +55,8 @@ export default {
     height: 100%;
   }
 
-  .balloon-header{
+  .balloon-header {
     padding-bottom: 10px;
   }
 }
-
 </style>

@@ -51,9 +51,22 @@
       @apply="applyFilter"
       @reset="resetFilter"
     )
-    ContentDisplayController.tasks-executor-search--desktop__content-display-ctrl
+    ContentDisplayController.tasks-executor-search--desktop__content-display-ctrl(
+      @clickOnTab="setTasksView"
+    )
 
-  TasksList.tasks-executor-search--task-list(:tasks="searchTasks")
+    v-tabs-items(v-model="tasksTab")
+      v-tab-item
+        TasksList.tasks-executor-search--task-list(:tasks="searchTasks")
+
+      v-tab-item
+        Map(
+          :center_coords="coords"
+          :markers="searchTasks"
+          :entity="'contractor'"
+          zoom="8"
+          height="546"
+        )
 </template>
 
 <script>
@@ -64,6 +77,7 @@ import TasksFilter from '@/components/pages/tasks/executor/search/TasksFilter/de
 import mTasksFilter from '@/components/pages/tasks/executor/search/TasksFilter/mobile';
 import TasksList from '@/components/pages/tasks/executor/search/TasksList';
 import mSearchLine from '@/components/pages/tasks/executor/search/SearchLine';
+import Map from '@/components/Map';
 
 export default {
   components: {
@@ -73,6 +87,7 @@ export default {
     mTasksFilter,
     TasksList,
     mSearchLine,
+    Map,
   },
 
   props: {},
@@ -107,6 +122,10 @@ export default {
     ],
     regions: [],
     professions: [],
+    coords: [45.04, 38.98],
+
+    /* COUNTERS */
+    tasksTab: 0,
   }),
   computed: {
     ...mapGetters('user', [
@@ -199,7 +218,10 @@ export default {
         ...profession,
         selected: false,
       }));
-    }
+    },
+    setTasksView(tab) {
+      this.tasksTab = tab;
+    },
 
     /* HELPERS */
   },

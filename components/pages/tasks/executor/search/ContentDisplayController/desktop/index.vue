@@ -6,6 +6,7 @@
       hide-slider
       active-class="rq-tcdc__tabs-item_active"
       height="43px"
+      v-model="tab"
     )
       v-tab.rq-tcdc__tabs-item(style="padding: 0 !important;")
         svg.rq-tcdc__tabs-item-icon(
@@ -62,6 +63,7 @@ export default {
   data() {
     return {
       active: '',
+      tab: 0,
       sortActive: [
         {
           id: 0,
@@ -81,7 +83,11 @@ export default {
 
   computed: {},
 
-  watch: {},
+  watch: {
+    tab(newTab) {
+      this.$emit('clickOnTab', newTab);
+    },
+  },
 
   methods: {
     /* GETTERS */
