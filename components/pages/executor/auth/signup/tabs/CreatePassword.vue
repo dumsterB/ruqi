@@ -97,7 +97,7 @@ export default {
   async next(value) {
       let data = {
         password: this.password,
-        phone: '+4554355345435',
+        phone: this.phone,
         email: this.email,
       };
       if (this.agree) {

@@ -7,7 +7,7 @@
           .wrapper
             .login-logo
               img.auth-logo( src="@/assets/img/auth-logo.png" )
-            v-form
+            v-form(v-model="valid", lazy-validation ref="form" )
               .auth-form
                 .wrapper
                   .haupt-titel
@@ -20,7 +20,7 @@
                         v-text-field(
                           v-model="password"
                           :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                          :rules="[rules.required, rules.min]"
+                          :rules="[rules.required, rules.min, rules.password]"
                           outlined
                           :type="show ? 'text' : 'password'"
                           name="input-10-1"
@@ -45,11 +45,13 @@
                 p.requirements Требования к паролю: <br /> длина — не менее 8 символов; <br /> заглавные буквы; <br />  строчные буквы; <br /> цифры или специальные символы: %, #, $ <br /> и другие.
                 .actions
                   .action
-                     v-btn.btn_singup(elevation="0" @click="handlers().signin()"  :disabled="!disableHandler") обновить пароль
+                     v-btn.btn_singup(elevation="0" @click="submit"  :disabled="!disableHandler") обновить пароль
 
 </template>
 
 <script>
+import {mapActions, mapGetters} from "vuex";
+
 export default {
   layout: "empty",
   components: {},
@@ -58,46 +60,42 @@ export default {
     return {
       password:'',
       confirm_password:'',
+      valid:false,
       error: false,
       show1:false,
       show:false,
       rules: {
         required: (value) => !!value || "Заполнития поля",
         min: (v) => v.length >= 8 || "Минимум 8 симболов",
-        emailMatch: () => `Пароль не совподает`,
+        password : value => {
+          const pattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+          return pattern.test(value) || 'Не корректный пароль'
+        }
       },
     };
   },
 
   methods: {
-    getters() {
-      return {};
+    ...mapActions('executor',['createPassword']),
+   async submit() {
+      let obj ={
+        phone: this.recover_sms_phone,
+        password: this.password
+      }
+      await  this.createPassword(obj);
+     console.log(this.requestSuccess)
+      if (this.requestSuccess.type === "success") {
+        this.$router.push('/')
+      } else {
+        this.validate();
+      }
     },
-
-    setters() {
-      return {};
-    },
-
-    handlers() {
-      return {
-        signin: async () => {},
-      };
-    },
-    forgot(){
-      this.$router.push({name: '/recover/phone'})
-    },
-
-    helpers() {
-      return {};
-    },
-
-    init() {},
-
-    bindActions() {},
   },
   computed:{
+    ...mapGetters("response", ["requestSuccess"]),
+    ...mapGetters("executor", ["recover_sms_phone"]),
     disableHandler() {
-      return this.password === this.confirm_password;
+      return this.password && this.password  === this.confirm_password;
     },
   }
 };

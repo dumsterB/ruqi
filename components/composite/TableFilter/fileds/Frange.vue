@@ -55,12 +55,16 @@ export default {
   },
   methods: {
     updateFiled() {
-      let value;
+      let value = {};
       if (this.params.type == 'range') {
-        value = {
-          "from": this.value_from,
-          "to": this.value_to
+        if(this.value_from){
+          value.from = this.value_from
         }
+
+        if(this.value_to){
+          value.to = this.value_to
+        }
+
       } else if (this.params.type == 'range_composit') {
         value = [
           {

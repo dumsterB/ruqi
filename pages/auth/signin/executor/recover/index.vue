@@ -7,7 +7,7 @@
             .wrapper
               .login-logo
                 img.auth-logo( src="@/assets/img/auth-logo.png" )
-              .auth-form
+              v-form.auth-form(v-model="valid" lazy-validation ref="form" )
                 .wrapper
                   .haupt-titel
                     .txt Войти в систему
@@ -16,21 +16,23 @@
                       .titel
                         .txt Email или номер телефона
                       .input
-                        input.item( type="text" v-model="login.phone_or_email" :class="{ 'error-by-signin' : error }" )
+                        v-text-field( outlined type="text" :rules="inputRules" v-model="login.phone_or_email"  )
                     .input-line.password
                       .titel
                         .txt Пароль
                       .input
-                        input.item( type="password" v-model="login.password" :class="{ 'error-by-signin' : error }" )
+                        v-text-field( outlined type="password" :rules="inputRules" v-model="login.password"  )
                   .actions
                     .action
-                      .signin-btn( @click="handlers().signin()" )
+                      v-btn.btn_singup( @click="signinHandler" elevation="0" :disabled="!disableHandler" )
                         .titel Войти в систему
 
               .password-forgot( @click="forgot()" ) Забыли пароль?  Восстановить
 </template>
 
 <script>
+import { mapActions, mapGetters, mapMutations } from "vuex";
+
 export default {
   layout: "empty",
   components: {},
@@ -41,36 +43,32 @@ export default {
         phone_or_email: "",
         password: "",
       },
-
-      error: false,
+      valid: false,
+      inputRules: [(v) => !!v || "Заполните поля"],
     };
   },
-
+  computed: {
+    ...mapGetters("response", ["requestSuccess"]),
+    disableHandler() {
+      return this.login.phone_or_email && this.login.password;
+    },
+  },
   methods: {
-    getters() {
-      return {};
-    },
+    ...mapActions("executor", ["signIn"]),
 
-    setters() {
-      return {};
+    async signinHandler() {
+      await this.signIn(this.login);
+      console.log(this.requestSuccess)
+      if (this.requestSuccess.type === "success") {
+        this.$router.push('/');
+      } else {
+        this.$refs.form.validate()
+        this.login.password = ''
+      }
     },
-
-    handlers() {
-      return {
-        signin: async () => {},
-      };
+    forgot() {
+      this.$router.push({name:'auth-signin-executor-recover-phone'});
     },
-    forgot(){
-      this.$router.push({name: '/recover/phone'})
-    },
-
-    helpers() {
-      return {};
-    },
-
-    init() {},
-
-    bindActions() {},
   },
 };
 </script>
@@ -208,6 +206,23 @@ export default {
 /* MIXINS STYLES START */
 .error-by-signin {
   border-color: red !important;
+}
+.btn_singup{
+  width: 100%;
+  background: #0082de!important;
+  color: white;
+  border-radius: 8px;
+  height: 50px!important;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+.theme--light.v-btn.v-btn--disabled.v-btn--has-bg {
+  color: lightgrey !important;
+  background: #0082de !important;
 }
 /* MIXINS STYLES END */
 </style>

@@ -104,15 +104,15 @@
 </template>
 
 <script>
-import PrivateInformation from "./PrivateInformation";
-import Sms from "./Sms";
-import CreatePassword from "@/components/pages/executor/signup/CreatePassword";
-import ElectronicDocument from "@/components/pages/executor/signup/ElectronicDocument";
-import PositionSelector from "@/components/pages/executor/signup/PositionSelector";
-import UploadDocument from "@/components/pages/executor/signup/UploadDocument";
-import paymentInformation from "@/components/pages/executor/signup/PaymentInformation";
-import Finish from "@/components/pages/executor/signup/Finish";
-import Address from "@/components/pages/executor/signup/Address";
+import PrivateInformation from "./tabs/PrivateInformation";
+import Sms from "./tabs/Sms";
+import CreatePassword from "./tabs/CreatePassword";
+import ElectronicDocument from "./tabs/ElectronicDocument";
+import PositionSelector from "./tabs/PositionSelector";
+import UploadDocument from "./tabs/UploadDocument";
+import paymentInformation from "./tabs/PaymentInformation";
+import Finish from "./tabs/Finish";
+import Address from "./tabs/Address";
 
 export default {
   props: {},

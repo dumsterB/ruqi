@@ -63,6 +63,14 @@ export default {
     },
     selectAction() {
       this.$emit('selectAction', this.select);
+
+      let self = this;
+
+      setTimeout(function() {
+        self.select = null;
+        this.$emit('clearSelected', {array: '', value: []})
+      }, 1000);
+
     }
   },
   created() {

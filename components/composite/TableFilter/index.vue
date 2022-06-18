@@ -242,6 +242,7 @@ export default {
         }
       }else{
         this.$refs.form.reset();
+        this.panel = [];
       }
 
       this.isOpened = false;

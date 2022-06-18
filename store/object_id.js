@@ -151,7 +151,6 @@ export const mutations = {
     }
   },
   setObjectIdHistory(state,  {object_id_history, concat}) {
-    state.object_id_history = object_id_history.data.data;
     if (concat) {
       state.object_id_history = state.object_id_history.concat(object_id_history.data.data);
     } else {

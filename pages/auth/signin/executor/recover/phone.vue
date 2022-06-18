@@ -7,7 +7,7 @@
             .wrapper
               .login-logo
                 img.auth-logo( src="@/assets/img/auth-logo.png" )
-              .auth-form
+              v-form.auth-form(ref="form" v-model="valid" lazy-validation)
                 .wrapper
                   .haupt-titel
                     .txt Восстановление пароля
@@ -17,56 +17,56 @@
                       .titel
                         .txt Номер телефона
                       .input
-                        input.item( type="text" placeholder="+7" v-model="login.phone" :class="{ 'error-by-signin' : error }" )
+                        v-text-field(
+                          v-model="phone"
+                          class="mt-2"
+                          type="tel"
+                          :rules="phoneRules"
+                          outlined
+                          name="phone"
+                          placeholder="+7")
                   .actions
                     .action
-                      .signin-btn( @click="handlers().signin()" )
-                        .titel.btn-text отправить код
+                      v-btn.btn_singup( @click="submit" elevation="0" :disabled="!disableHandler" ) отправить код
 
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
   layout: "empty",
   components: {},
 
   data() {
     return {
-      login: {
-        phone_or_email: "",
-        password: "",
-      },
-
+      phone:'',
       error: false,
-    };
+      valid:false,
+      phoneRules: [
+        (v) => !!v || "Заполните поля",
+        (v) => (!!v && v.length == 12) || "Номер не корректный",
+        (value) => {
+          const pattern =
+              /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+          return pattern.test(value) || "Не корректный номер";
+        }],
+    }
+
   },
 
   methods: {
-    getters() {
-      return {};
+    ...mapActions('executor',['recoverExecutorPhone']),
+   async submit() {
+      await this.recoverExecutorPhone(this.phone);
+        this.$router.push({name:'auth-signin-executor-recover-sms'});
     },
-
-    setters() {
-      return {};
-    },
-
-    handlers() {
-      return {
-        signin: async () => {},
-      };
-    },
-    forgot(){
-      this.$router.push({name: '/recover/phone'})
-    },
-
-    helpers() {
-      return {};
-    },
-
-    init() {},
-
-    bindActions() {},
   },
+  computed:{
+    disableHandler(){
+      return this.phone && this.valid
+    }
+  }
 };
 </script>
 
@@ -179,7 +179,6 @@ export default {
   background: #0082de;
   border-radius: 8px;
   height: 50px;
-
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -212,5 +211,27 @@ export default {
 .btn-text{
   text-transform: uppercase;
 }
-/* MIXINS STYLES END */
+.requirements{
+  color: #7A91A9;
+}
+.v-btn__content{
+  width: 100%;
+}
+.btn_singup{
+  width: 100%;
+  background: #0082de!important;
+  color: white;
+  border-radius: 8px;
+  height: 50px!important;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+.theme--light.v-btn.v-btn--disabled.v-btn--has-bg {
+  color: lightgrey !important;
+  background: #0082de !important;
+}
 </style>

@@ -7,66 +7,79 @@
             .wrapper
               .login-logo
                 img.auth-logo( src="@/assets/img/auth-logo.png" )
-              .auth-form
+              v-form.auth-form(v-model="valid" lazy-validation ref="form" )
                 .wrapper
                   .haupt-titel
                     .txt Восстановление пароля
 
-                    p.text-grey Мы отправили SMS с кодом <br /> на номер 8(888)888 88 88
+                    p.text-grey Мы отправили SMS с кодом <br /> на номер {{recover_sms_phone}}
                     .input-line.email-num
                       .titel
-                        v-otp-input.item.mt-4(  length='4' v-model='sms'   :class="{ 'error-by-signin' : error }" )
+                        v-otp-input.item.mt-4(  length='4' v-model='sms'   :rules="inputRules" )
                   .actions
                     .action
-                      .signin-btn( @click="handlers().signin()" )
+                      .signin-btn( @click="submit" )
                         .titel.btn-text ПРОДОЛЖИТЬ
-                      .send-again( @click="handlers().signin()" )
-                        .titel.btn-again Отправить повторно через 30 сек
+                      .send-again
+                        .titel.btn-again(v-if="countDown > 0" ) Отправить повторно через {{countDown}} сек
+                        .titel.btn-again(v-else @click="sendAgain" ) Отправить код повторно
 
 </template>
 
 <script>
+import {mapActions, mapGetters} from "vuex";
+
 export default {
   layout: "empty",
   components: {},
 
   data() {
     return {
-      sms:'',
+      sms: "",
       error: false,
+      countDown: "60",
+      inputRules: [(v) => !!v || "Заполните поля", !this.valid || 'поля не правильное'],
     };
   },
 
   methods: {
-    getters() {
-      return {};
+    ...mapActions('executor',['sigInInConfirmPassword']),
+    submit() {
+      this.sigInInConfirmPassword(this.sms)
+      if (this.requestSuccess.type === "success") {
+        this.$router.push({name:'auth-signin-executor-recover-password'});
+      } else {
+        this.$refs.form.validate()
+      }
     },
-
-    setters() {
-      return {};
+    sendAgain() {
+      this.countDown = 60;
+      this.countDownTimer();
     },
-
-    handlers() {
-      return {
-        signin: async () => {},
-      };
+    countDownTimer() {
+      if (this.countDown > 0) {
+        setTimeout(() => {
+          this.countDown -= 1;
+          this.countDownTimer();
+        }, 1000);
+      }
     },
-    forgot(){
-      this.$router.push({name: '/recover/phone'})
+    smsHandler() {
+      this.countDown = 60;
+      this.countDownTimer();
     },
-
-    helpers() {
-      return {};
-    },
-
-    init() {},
-
-    bindActions() {},
+  },
+  computed:{
+    ...mapGetters('executor',['recover_sms_phone']),
+    ...mapGetters("response", ["requestSuccess"]),
+  },
+  created() {
+    this.countDownTimer();
   },
 };
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 /* OBJECTS STYLES START */
 
 .login-page {
@@ -163,7 +176,7 @@ export default {
     .item {
       height: 50px;
       margin-top: 10px;
-      border: 1px solid lightgrey!important;
+      border: 1px solid lightgrey !important;
       box-sizing: border-box;
       border-radius: 8px;
       padding-left: 16px;
@@ -192,11 +205,11 @@ export default {
     color: #ffffff;
   }
 }
-.send-again{
+.send-again {
   background: white;
   border-radius: 8px;
   height: 50px;
-  border: 1px solid #7A91A9;
+  border: 1px solid #7a91a9;
   margin-top: 15px;
   display: flex;
   flex-direction: column;
@@ -213,12 +226,12 @@ export default {
 .error-by-signin {
   border-color: red !important;
 }
-.text-grey{
-  color: #7A91A9;
+.text-grey {
+  color: #7a91a9;
   font-size: 16px;
   text-align: center;
 }
-.btn-text{
+.btn-text {
   text-transform: uppercase;
   align-items: center;
   text-align: center;
@@ -227,8 +240,8 @@ export default {
   font-size: 14px;
   line-height: 24px;
 }
-.btn-again{
-  color: #7A91A9;
+.btn-again {
+  color: #7a91a9;
   text-transform: uppercase;
   align-items: center;
   text-align: center;
@@ -237,9 +250,23 @@ export default {
   font-size: 14px;
   line-height: 24px;
 }
-.sms .theme--light.v-input input, .theme--light.v-input textarea{
-  color: #0082DE!important;
+.sms .theme--light.v-input input,
+.theme--light.v-input textarea {
+  color: #0082de !important;
   font-size: 45px;
+}
+.btn_singup {
+  width: 100%;
+  background: #0082de !important;
+  color: white;
+  border-radius: 8px;
+  height: 50px !important;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
 }
 /* MIXINS STYLES END */
 </style>
