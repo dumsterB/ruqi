@@ -26,7 +26,6 @@
 
   .task-search-filter__desktop
     dTasksFilter(
-      :isFilterShowed="mFilterVisibility"
       :loader="loaderFilter"
       :regions="regions"
       :region="region"
@@ -36,8 +35,6 @@
       :salary="salary"
       :medicalBook="medicalBook"
       :driverLicense="driverLicense"
-      @showFilter="showMobFilter"
-      @hideFilter="hideMobFilter"
       @selectRegion="selectRegion"
       @selectProfessionDesktop="selectProfessionDesktop"
       @selectRadius="selectRadius"
@@ -114,10 +111,10 @@ export default {
     /* SETTERS */
     /* HANDLERS */
     showMobFilter() {
-      this.mFilterVisibility = true;
+      this.$emit('showMobFilter', true);
     },
     hideMobFilter() {
-      this.mFilterVisibility = false;
+      this.$emit('hideMobFilter', false);
     },
     selectRegion(payload = null) {
       if (payload) this.region = payload;

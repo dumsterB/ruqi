@@ -18,6 +18,8 @@
     :professions="professions"
     :loaderFilter="loaderFilter"
     :mFilterVisibility="mFilterVisibility"
+    @showMobFilter="showMobFilter"
+    @hideMobFilter="hideMobFilter"
     @apply="applyFilter"
     @reset="resetFilter"
   )
@@ -109,6 +111,14 @@ export default {
     /* HANDLERS */
     setTasksView(tab) {
       this.tasksTab = tab;
+    },
+    showMobFilter() {
+      console.debug('showMobFilter'); // DELETE
+
+      this.mFilterVisibility = true;
+    },
+    hideMobFilter() {
+      this.mFilterVisibility = false;
     },
     async applyFilter(payload = null) {
       if (!payload) return;

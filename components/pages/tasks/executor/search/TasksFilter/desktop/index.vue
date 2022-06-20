@@ -117,10 +117,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    isFilterShowed: {
-      type: Boolean,
-      default: false,
-    },
     regions: {
       type: Array,
       default: () => ([]),
