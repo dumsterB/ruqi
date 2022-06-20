@@ -5,7 +5,9 @@
       .tasks-executor-search--mobile__header-title Поиск работы
 
       mSearchLine.tasks-executor-search--mobile__header-search
-      mContentDisplayController.tasks-executor-search--mobile__header-display-ctrl
+      mContentDisplayController.tasks-executor-search--mobile__header-display-ctrl(
+        @clickOnTab="setTasksView"
+      )
 
   .tasks-executor-search--desktop
     h1 Поиск работы
@@ -29,7 +31,8 @@
       TasksList.tasks-executor-search--task-list(:tasks="searchTasks")
 
     v-tab-item
-      Map.tasks-executor-search--map(
+      Map(
+        :class="[{'tasks-executor-search--map': !isMobile && !isTablet }, {'tasks-executor-search--map_mobile': isMobile || isTablet },]"
         :center_coords="coords"
         :markers="searchTasks"
         :entity="'contractor'"
@@ -94,6 +97,21 @@ export default {
     ...mapGetters('user', [
       'searchTasks',
     ]),
+    isMobile() {
+      return this.$store.getters["platformDetection/IS_MOBILE"];
+    },
+    isTablet() {
+      return this.$store.getters["platformDetection/IS_TABLET"];
+    },
+    isSmallScreen() {
+      return this.$store.getters["platformDetection/IS_SMALL_SCREEN"];
+    },
+    isLargeScreen() {
+      return this.$store.getters["platformDetection/IS_LARGE_SCREEN"];
+    },
+    isExtraLargeScreen() {
+      return this.$store.getters["platformDetection/IS_EXTRA_LARGE_SCREEN"];
+    },
   },
 
   watch: {},
