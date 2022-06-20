@@ -5,7 +5,8 @@
     SelectionFilter(@sendFilter="sendFilter" :filter_professions="filter_professions" :filter_rank="filter_rank" :filter_active="filter_active"
     v-if="filter_professions.length > 0")
 
-    Responses(:items="contractors" :headers="headers" @callAction="callAction" @setSelected="setSelected")
+    Responses(:items="contractors" :headers="headers" @callAction="callAction" @setSelected="setSelected"
+      @getDataFromApi ="getDataFromApi('fetchParams', 'options', 'fetchRequestIdSearch', ...arguments)")
 
 </template>
 
@@ -25,7 +26,7 @@ export default {
       headers: [
         {text: "фио", align: "start", value: "shortname", width: '200px'},
         {text: "Лет", value: "age", width: '112px'},
-        {text: "география", value: "location", width: '286px'},
+        {text: "география", value: "location", width: '286px', sortable: false},
         {text: "%БН", value: "trust", width: '112px'},
         {text: "ранг", value: "rank", width: '112px'},
         {text: "ставка", value: "rate", width: '112px'},
@@ -33,6 +34,10 @@ export default {
         {text: "Работал", value: "on_object"},
       ],
       options: {},
+      fetchParams: {
+        "page": 1,
+        "per_page": 15
+      },
       selectedItems: [],
     }
   },
@@ -107,10 +112,17 @@ export default {
 
       this[watcherParams] = options;
 
+      let sortNameField = this[watcherParams].sortBy[0];
+      if (this[watcherParams].sortBy[0] == 'shortname'){
+        sortNameField = 'lastname';
+      }
+
+      console.log('sortNameField---', sortNameField);
+
       const params = {
         "settings": {
           "value": this[fetchParams].value,
-          "sort": this[watcherParams].sortBy[0],
+          "sort": sortNameField,
           "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": this[fetchParams].filters,
         }
