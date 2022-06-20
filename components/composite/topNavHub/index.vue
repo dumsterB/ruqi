@@ -130,6 +130,18 @@ export default {
   align-items: center;
   width: calc(100% - 300px);
 
+  .v-tabs{
+
+    .v-tabs-slider-wrapper{
+      bottom: 0;
+    }
+
+    .v-tab{
+      padding: 0 24px;
+    }
+
+  }
+
   &__title {
     font-family: "Source Sans Pro";
     font-style: normal;
@@ -153,6 +165,10 @@ export default {
 
     &__item {
       margin-right: 10px;
+      text-transform: none;
+      font-weight: 600;
+      font-size: 16px;
+      color: #263043;
     }
   }
 }
