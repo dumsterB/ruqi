@@ -93,12 +93,20 @@ export default {
             max_width: '240'
           },
           {
-            type: 'FTypeSelect',
+            type: 'FTypeSelectUIID',
             label: 'Радиус',
             col: 1,
             name: 'radius',
             params: {
-              options: [1, 3, 5, 10, 15],
+              options: [
+                {uuid: 1, name: '1 км'},
+                {uuid: 3, name: '3 км'},
+                {uuid: 5, name: '5 км'},
+                {uuid: 10, name: '10 км'},
+                {uuid: 15, name: '15 км'},
+              ],
+              item_text: 'name',
+              item_value: 'uuid',
               label: 'Не выбрано',
               readonly: false
             },
@@ -195,7 +203,10 @@ export default {
             name: 'rate',
             validation: [],
             value: '',
-            max_width: '128'
+            max_width: '128',
+            params: {
+              placeholder: 'руб',
+            },
           },
           {
             type: 'FTypeSelectUIID',
@@ -225,7 +236,10 @@ export default {
             name: 'trust',
             validation: [],
             value: '',
-            max_width: '162'
+            max_width: '162',
+            params: {
+              placeholder: '%',
+            },
           },
           {
             type: 'FTypeText',
@@ -234,7 +248,10 @@ export default {
             name: 'age_from',
             validation: [],
             value: '',
-            max_width: '48'
+            max_width: '48',
+            params: {
+              placeholder: '18',
+            },
           },
           {
             type: 'FTypeText',
