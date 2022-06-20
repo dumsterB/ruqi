@@ -20,7 +20,11 @@ export default function access_rights({ route, store, redirect }) {
       && route.name !== 'auth-signin-executor-login'
       && route.name !== 'auth-signin-executor-recover-phone'
       && route.name !== 'auth-signin-executor-recover-sms'
-        && route.name !== 'auth-signin-executor-recover-password'
+      && route.name !== 'auth-signin-executor-recover-password'
+      && route.name !== 'auth-signin-super-manager'
+      && route.name !== 'auth-signin-super-manager-recover-email'
+      && route.name !== 'auth-signin-super-manager-recover-sms'
+      && route.name !== 'auth-signin-super-manager-recover-password'
       && !(user.visibility_sections.includes(route.name) || subroute)
     ) {
       redirect('/');
