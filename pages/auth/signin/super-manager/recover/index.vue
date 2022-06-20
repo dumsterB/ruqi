@@ -22,6 +22,7 @@
                         .txt Пароль
                       .input
                         v-text-field( outlined type="password" :rules="passwordRules" v-model="login.password"  )
+                      input(:value="requestHandler")
                   .actions
                     .action
                       v-btn.btn_singup( @click="signinHandler" elevation="0" :disabled="!disableHandler" )

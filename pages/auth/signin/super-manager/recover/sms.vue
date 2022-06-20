@@ -1,5 +1,5 @@
 <template lang="pug">
-  .login-page
+  .login-page.sms
     .wrapper
       .wrapper-x
         .wraper-y
@@ -10,28 +10,24 @@
               v-form.auth-form(v-model="valid" lazy-validation ref="form" )
                 .wrapper
                   .haupt-titel
-                    .txt Войти в систему
-                  .inputs-group
+                    .txt Восстановление пароля
+
+                    p.text-grey Мы отправили SMS с кодом <br /> на номер {{recover_sms_phone}}
                     .input-line.email-num
                       .titel
-                        .txt Email или номер телефона
-                      .input
-                        v-text-field( outlined type="text" :rules="inputRules" v-model="login.phone_or_email"  )
-                    .input-line.password
-                      .titel
-                        .txt Пароль
-                      .input
-                        v-text-field( outlined type="password" :rules="passwordRules" v-model="login.password"  )
+                        v-otp-input.item.mt-4(  length='4' v-model='sms'   :rules="inputRules" )
                   .actions
                     .action
-                      v-btn.btn_singup( @click="signinHandler" elevation="0" :disabled="!disableHandler" )
-                        .titel Войти в систему
+                      .signin-btn( @click="submit" )
+                        .titel.btn-text ПРОДОЛЖИТЬ
+                      .send-again
+                        .titel.btn-again(v-if="countDown > 0" ) Отправить повторно через {{countDown}} сек
+                        .titel.btn-again(v-else @click="sendAgain" ) Отправить код повторно
 
-              .password-forgot( @click="forgot()" ) Забыли пароль?  Восстановить
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations } from "vuex";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
   layout: "empty",
@@ -39,43 +35,52 @@ export default {
 
   data() {
     return {
-      login: {
-        phone_or_email: "",
-        password: "",
-      },
-      requestHandler: '',
-      valid: false,
-      inputRules: [(v) => !!v || "Заполните поля"],
-      passwordRules: [(v) => !!v || "Заполните поля"]
+      sms: "",
+      error: false,
+      countDown: "60",
+      inputRules: [(v) => !!v || "Заполните поля", !this.valid || 'поля не правильное'],
     };
   },
-  computed: {
-    ...mapGetters("response", ["requestSuccess"]),
-    disableHandler() {
-      return this.login.phone_or_email && this.login.password;
-    },
-  },
-  methods: {
-    ...mapActions("executor", ["signIn"]),
 
-    async signinHandler() {
-      await this.signIn(this.login);
-      console.log(this.requestSuccess)
+  methods: {
+    ...mapActions('executor',['sigInInConfirmPassword']),
+   async submit() {
+    await  this.sigInInConfirmPassword(this.sms)
       if (this.requestSuccess.type === "success") {
-        this.$router.push('/');
+        this.$router.push({name:'auth-signin-executor-recover-password'});
       } else {
         this.$refs.form.validate()
-        this.login.password = ''
+        this.sms = ''
       }
     },
-    forgot() {
-      this.$router.push({name:'auth-signin-executor-recover-phone'});
+    sendAgain() {
+      this.countDown = 60;
+      this.countDownTimer();
     },
+    countDownTimer() {
+      if (this.countDown > 0) {
+        setTimeout(() => {
+          this.countDown -= 1;
+          this.countDownTimer();
+        }, 1000);
+      }
+    },
+    smsHandler() {
+      this.countDown = 60;
+      this.countDownTimer();
+    },
+  },
+  computed:{
+    ...mapGetters('executor',['recover_sms_phone']),
+    ...mapGetters("response", ["requestSuccess"]),
+  },
+  created() {
+    this.countDownTimer();
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 /* OBJECTS STYLES START */
 
 .login-page {
@@ -170,9 +175,9 @@ export default {
 
   .input {
     .item {
-      width: 100%;
       height: 50px;
-      border: 1px solid rgba(86, 103, 137, 0.26);
+      margin-top: 10px;
+      border: 1px solid lightgrey !important;
       box-sizing: border-box;
       border-radius: 8px;
       padding-left: 16px;
@@ -184,7 +189,6 @@ export default {
   background: #0082de;
   border-radius: 8px;
   height: 50px;
-
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -202,29 +206,68 @@ export default {
     color: #ffffff;
   }
 }
-
-/* OBJECTS STYLES END */
-
-/* MIXINS STYLES START */
-.error-by-signin {
-  border-color: red !important;
-}
-.btn_singup{
-  width: 100%;
-  background: #0082de!important;
-  color: white;
+.send-again {
+  background: white;
   border-radius: 8px;
-  height: 50px!important;
+  height: 50px;
+  border: 1px solid #7a91a9;
+  margin-top: 15px;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
   align-content: center;
   justify-content: center;
   align-items: center;
+
+  cursor: pointer;
 }
-.theme--light.v-btn.v-btn--disabled.v-btn--has-bg {
-  color: lightgrey !important;
+/* OBJECTS STYLES END */
+
+/* MIXINS STYLES START */
+.error-by-signin {
+  border-color: red !important;
+}
+.text-grey {
+  color: #7a91a9;
+  font-size: 16px;
+  text-align: center;
+}
+.btn-text {
+  text-transform: uppercase;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 24px;
+}
+.btn-again {
+  color: #7a91a9;
+  text-transform: uppercase;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 24px;
+}
+.sms .theme--light.v-input input,
+.theme--light.v-input textarea {
+  color: #0082de !important;
+  font-size: 45px;
+}
+.btn_singup {
+  width: 100%;
   background: #0082de !important;
+  color: white;
+  border-radius: 8px;
+  height: 50px !important;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
 }
 /* MIXINS STYLES END */
 </style>

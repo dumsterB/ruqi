@@ -7,31 +7,32 @@
             .wrapper
               .login-logo
                 img.auth-logo( src="@/assets/img/auth-logo.png" )
-              v-form.auth-form(v-model="valid" lazy-validation ref="form" )
+              v-form.auth-form(ref="form" v-model="valid" lazy-validation)
                 .wrapper
                   .haupt-titel
-                    .txt Войти в систему
+                    .txt Восстановление пароля
                   .inputs-group
+                    p.text-grey Введите ваш номер телефона, который вы указывали при регистрации в системе
                     .input-line.email-num
                       .titel
-                        .txt Email или номер телефона
+                        .txt Email
                       .input
-                        v-text-field( outlined type="text" :rules="inputRules" v-model="login.phone_or_email"  )
-                    .input-line.password
-                      .titel
-                        .txt Пароль
-                      .input
-                        v-text-field( outlined type="password" :rules="passwordRules" v-model="login.password"  )
+                        v-text-field(
+                          v-model="phone"
+                          class="mt-2"
+                          type="tel"
+                          :rules="emailRules"
+                          outlined
+                          name="phone"
+                          placeholder="+7")
                   .actions
                     .action
-                      v-btn.btn_singup( @click="signinHandler" elevation="0" :disabled="!disableHandler" )
-                        .titel Войти в систему
+                      v-btn.btn_singup( @click="submit" elevation="0" :disabled="!disableHandler" ) отправить код
 
-              .password-forgot( @click="forgot()" ) Забыли пароль?  Восстановить
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations } from "vuex";
+import {mapActions} from "vuex";
 
 export default {
   layout: "empty",
@@ -39,39 +40,29 @@ export default {
 
   data() {
     return {
-      login: {
-        phone_or_email: "",
-        password: "",
-      },
-      requestHandler: '',
-      valid: false,
-      inputRules: [(v) => !!v || "Заполните поля"],
-      passwordRules: [(v) => !!v || "Заполните поля"]
-    };
-  },
-  computed: {
-    ...mapGetters("response", ["requestSuccess"]),
-    disableHandler() {
-      return this.login.phone_or_email && this.login.password;
-    },
-  },
-  methods: {
-    ...mapActions("executor", ["signIn"]),
+      phone:'',
+      error: false,
+      valid:false,
+      emailRules: [
+        v => !!v || 'Заполните поля',
+        v => /.+@.+\..+/.test(v) || 'E-mail должен быть валидным',
+      ],
+    }
 
-    async signinHandler() {
-      await this.signIn(this.login);
-      console.log(this.requestSuccess)
-      if (this.requestSuccess.type === "success") {
-        this.$router.push('/');
-      } else {
-        this.$refs.form.validate()
-        this.login.password = ''
-      }
-    },
-    forgot() {
-      this.$router.push({name:'auth-signin-executor-recover-phone'});
+  },
+
+  methods: {
+    ...mapActions('executor',['recoverExecutorPhone']),
+   async submit() {
+      await this.recoverExecutorPhone(this.phone);
+        this.$router.push({name:'auth-signin-executor-recover-sms'});
     },
   },
+  computed:{
+    disableHandler(){
+      return this.phone && this.valid
+    }
+  }
 };
 </script>
 
@@ -184,7 +175,6 @@ export default {
   background: #0082de;
   border-radius: 8px;
   height: 50px;
-
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -209,6 +199,20 @@ export default {
 .error-by-signin {
   border-color: red !important;
 }
+.text-grey{
+  color: #7A91A9;
+  font-size: 16px;
+  text-align: center;
+}
+.btn-text{
+  text-transform: uppercase;
+}
+.requirements{
+  color: #7A91A9;
+}
+.v-btn__content{
+  width: 100%;
+}
 .btn_singup{
   width: 100%;
   background: #0082de!important;
@@ -226,5 +230,4 @@ export default {
   color: lightgrey !important;
   background: #0082de !important;
 }
-/* MIXINS STYLES END */
 </style>
