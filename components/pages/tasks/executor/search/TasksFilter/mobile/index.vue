@@ -122,10 +122,13 @@
         )
 
       v-badge.m-task-search-filter--bbar__container--badge(
+        v-show="isFilterActive()"
         dot
         color="#EB4D3D"
       )
         .m-task-search-filter--bbar__container--title Фильтры
+
+      .m-task-search-filter--bbar__container--title(v-show="!isFilterActive()") Фильтры
 </template>
 
 <script>
@@ -225,6 +228,14 @@ export default {
     },
 
     /* HELPERS */
+    isFilterActive() {
+      return this.region ||
+        this.radius ||
+        this.salary ||
+        this.medicalBook ||
+        this.driverLicense ||
+        this.professions.filter(profession => profession.selected).length;
+    }
   },
 
   data() {
