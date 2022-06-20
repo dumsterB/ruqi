@@ -67,6 +67,24 @@
                   @input="setSalary"
                 )
 
+      .m-task-search-filter__filter-content--items.m-task-search-filter__checkbox
+        v-checkbox.m-task-search-filter__filter-content--item.m-task-search-filter__checkbox-property(
+          label="Без мед. книжки"
+          color="info"
+          :value="medicalBook"
+          @change="setMedicalBook"
+          hide-details
+        )
+
+      .m-task-search-filter__filter-content--items.m-task-search-filter__checkbox
+        v-checkbox.m-task-search-filter__filter-content--item.m-task-search-filter__checkbox-property(
+          label="Без водительских прав"
+          color="info"
+          :value="driverLicense"
+          @change="setDriverLicense"
+          hide-details
+        )
+
     .m-task-search-filter--component__actions
       v-btn.m-task-search-filter--component__cancel(
         elevation="0"
@@ -146,6 +164,14 @@ export default {
       type: String,
       default: "",
     },
+    medicalBook: {
+      type: Boolean,
+      default: false,
+    },
+    driverLicense: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {},
   watch: {},
@@ -184,6 +210,12 @@ export default {
     },
     setSalary(payload = null) {
       this.$emit('setSalary', payload);
+    },
+    setMedicalBook(payload = null) {
+      this.$emit('setMedicalBook', payload);
+    },
+    setDriverLicense(payload = null) {
+      this.$emit('setDriverLicense', payload);
     },
     apply() {
       this.$emit('apply');
@@ -378,6 +410,19 @@ export default {
           display: none;
         }
       }
+    }
+  }
+
+  &__checkbox {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    align-content: center;
+
+    &-property {
+      margin: 0 !important;
     }
   }
 
