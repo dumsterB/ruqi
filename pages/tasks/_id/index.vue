@@ -271,6 +271,7 @@ export default {
         {field: 'on_object', translit: 'На объекте',},
         {field: 'rank', translit: 'Ранг',},
         {field: 'status', translit: 'Статус',},
+        {field: 'profession', translit: 'Профессии',},
       ],
       headers_assigned_filter: [
         {field: 'trust', translit: 'Рейтинг', unit: '%'},
@@ -478,9 +479,10 @@ export default {
       this.$router.push("/tasks/" + this.request_id.uuid + "/selection");
     },
 
-    applyFilter(fetchParams, watcherParams, filter, search) {
+    applyFilter(fetchParams, watcherParams, filter, search, professions) {
       this[fetchParams].value = search;
       this[fetchParams].filters = filter;
+      this[fetchParams].profession = professions;
 
       let params = {
         "settings": {
@@ -490,6 +492,10 @@ export default {
           "filters": filter
         }
       };
+
+      if (professions){
+        params.profession = professions;
+      }
 
       console.log('params-----', filter, params);
 

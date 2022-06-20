@@ -159,7 +159,8 @@ export default {
 
     applyFilter(isClosePopup) {
 
-      const sentFilter = [];
+      let sentFilter = [],
+        professions = [];
 
       this.lastSelected_fields = [];
       this.lastCheck_fields = [];
@@ -168,14 +169,19 @@ export default {
         if (this.selected_fields[i].value) {
           if (!Array.isArray(this.selected_fields[i].value) || Array.isArray(this.selected_fields[i].value) && this.selected_fields[i].value.length) {
 
-            let sentField = {};
-            Object.assign(sentField, this.selected_fields[i]);
+            if (this.selected_fields[i].field != 'profession') {
+              let sentFieldObj = {};
+              Object.assign(sentFieldObj, this.selected_fields[i]);
 
-            if (sentField.options) {
-              delete sentField.options;
+              if (sentFieldObj.options) {
+                delete sentFieldObj.options;
+              }
+
+              sentFilter.push(sentFieldObj);
+            } else {
+              professions = this.selected_fields[i].value;
             }
 
-            sentFilter.push(sentField);
           }
         }
 
@@ -196,7 +202,7 @@ export default {
 
       }
 
-      this.$emit('applyFilter', sentFilter, this.searchText);
+      this.$emit('applyFilter', sentFilter, this.searchText, JSON.stringify(professions));
 
       this.isOpened = isClosePopup;
 
@@ -219,12 +225,12 @@ export default {
 
     cancelFilter() {
 
-      if(this.isApplyFilter){
+      if (this.isApplyFilter) {
 
         this.selected_fields = [];
         this.check_fields = [];
 
-        console.log('есть фильтр', this.lastSelected_fields.length, this.lastCheck_fields.length );
+        console.log('есть фильтр', this.lastSelected_fields.length, this.lastCheck_fields.length);
         for (let i = 0; i < this.lastSelected_fields.length; i++) {
 
           let lastState = {}
@@ -240,7 +246,7 @@ export default {
           this.check_fields.push(lastState);
 
         }
-      }else{
+      } else {
         this.$refs.form.reset();
         this.panel = [];
       }
@@ -318,7 +324,7 @@ export default {
   display: flex;
   align-items: center;
 
-  >div{
+  > div {
     flex: 1;
   }
 }
@@ -367,6 +373,8 @@ export default {
 
         .v-expansion-panel-content {
           background: #F7F7F7;
+          max-height: 220px;
+          overflow: auto;
 
           .v-expansion-panel-content__wrap {
             padding: 16px 24px;
