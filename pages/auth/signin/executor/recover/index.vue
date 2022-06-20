@@ -21,7 +21,8 @@
                       .titel
                         .txt Пароль
                       .input
-                        v-text-field( outlined type="password" :rules="inputRules" v-model="login.password"  )
+                        v-text-field( outlined type="password" :rules="passwordRules" v-model="login.password"  )
+                      input(:value="requestHandler")
                   .actions
                     .action
                       v-btn.btn_singup( @click="signinHandler" elevation="0" :disabled="!disableHandler" )
@@ -43,8 +44,10 @@ export default {
         phone_or_email: "",
         password: "",
       },
+      requestHandler: '',
       valid: false,
       inputRules: [(v) => !!v || "Заполните поля"],
+      passwordRules: [(v) => !!v || "Заполните поля"]
     };
   },
   computed: {

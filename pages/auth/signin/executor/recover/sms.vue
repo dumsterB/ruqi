@@ -44,12 +44,13 @@ export default {
 
   methods: {
     ...mapActions('executor',['sigInInConfirmPassword']),
-    submit() {
-      this.sigInInConfirmPassword(this.sms)
+   async submit() {
+    await  this.sigInInConfirmPassword(this.sms)
       if (this.requestSuccess.type === "success") {
         this.$router.push({name:'auth-signin-executor-recover-password'});
       } else {
         this.$refs.form.validate()
+        this.sms = ''
       }
     },
     sendAgain() {
