@@ -11,9 +11,6 @@
 
   .tasks-executor-search--desktop
     h1 Поиск работы
-    ContentDisplayController.tasks-executor-search--desktop__content-display-ctrl(
-      @clickOnTab="setTasksView"
-    )
 
   TasksFilter(
     :regions="regions"
@@ -26,13 +23,18 @@
     @reset="resetFilter"
   )
 
+  .tasks-executor-search--desktop
+    ContentDisplayController.tasks-executor-search--desktop__content-display-ctrl(
+      @clickOnTab="setTasksView"
+    )
+
   v-tabs-items(v-model="tasksTab")
     v-tab-item
       TasksList.tasks-executor-search--task-list(:tasks="searchTasks")
 
     v-tab-item
       Map(
-        :class="[{'tasks-executor-search--map': !isMobile && !isTablet }, {'tasks-executor-search--map_mobile': isMobile || isTablet },]"
+        :class="[{ 'tasks-executor-search--map': !isMobile && !isTablet }, { 'tasks-executor-search--map_mobile': isMobile || isTablet },]"
         :center_coords="coords"
         :markers="searchTasks"
         :entity="'contractor'"
