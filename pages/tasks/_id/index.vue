@@ -489,15 +489,15 @@ export default {
       let params = {
         "settings": {
           "value": search,
-          //"sort": this[watcherParams].sortBy[0],
-          //"order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
+          "sort": this[watcherParams].sortBy[0],
+          "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": filter
         }
       };
 
       if (sorting){
-        params.sort = this[watcherParams].sortBy[0];
-        params.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
+        params.settings.sort = this[watcherParams].sortBy[0];
+        params.settings.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
       }
 
       if (professions){
@@ -622,7 +622,7 @@ export default {
 
       let sorting = this[watcherParams].sortBy[0];
 
-      const params = {
+      let params = {
         "settings": {
           "value": this[fetchParams].value,
           //"sort": this[watcherParams].sortBy[0] ? this[watcherParams].sortBy[0]  : 'lastname',
@@ -632,8 +632,8 @@ export default {
       };
 
       if (sorting){
-        params.sort = this[watcherParams].sortBy[0];
-        params.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
+        params.settings.sort = this[watcherParams].sortBy[0];
+        params.settings.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
       }
 
       this[action]({

@@ -16,7 +16,7 @@
                 :headers="headers_tasks_filter"
                 name="filter_tasks"
                 page_uuid="tasks"
-                @applyFilter="applyFilter('fetch', 'headerOptionsTask', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
+                @applyFilter="applyFilter('fetchTaskParams', 'headerOptionsTask', ...arguments)" @blurSearch="blurSearch" @focusSearch="focusSearch")
 
               .filter-col-after-left
                 TableGroupAction(v-if="selectedItems.length"
@@ -368,8 +368,8 @@ export default {
       };
 
       if (sorting){
-        params.sort = this[watcherParams].sortBy[0];
-        params.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
+        params.settings.sort = this[watcherParams].sortBy[0];
+        params.settings.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
       }
 
       console.log('params-----', filter, params, );
@@ -381,7 +381,9 @@ export default {
 
       let sorting = this[watcherParams].sortBy[0];
 
-      const params = {
+      console.log('"filters": this[fetchParams].filters', this[fetchParams].filters);
+
+      let params = {
         "settings": {
           "value": this[fetchParams].value,
           //"sort": this[watcherParams].sortBy[0],
@@ -391,8 +393,8 @@ export default {
       };
 
       if (sorting){
-        params.sort = this[watcherParams].sortBy[0];
-        params.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
+        params.settings.sort = this[watcherParams].sortBy[0];
+        params.settings.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
       }
 
       this[action]({

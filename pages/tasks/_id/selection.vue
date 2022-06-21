@@ -2,7 +2,7 @@
   .inner-task-page-selections
     SelectionHeader(@onBackToAppClick="onBackToAppClick" @addToSelection="addToSelection" :task_name="request_id.name" :selected_count="selectedItems.length")
 
-    SelectionFilter(@sendFilter="sendFilter" :filter_professions="filter_professions" :filter_rank="filter_rank" :filter_active="filter_active"
+    SelectionFilter(@sendFilter="sendFilter('fetchParams', 'options', ...arguments)" :filter_professions="filter_professions" :filter_rank="filter_rank" :filter_active="filter_active"
     v-if="filter_professions.length > 0")
 
     Responses(:items="contractors" :headers="headers" @callAction="callAction" @setSelected="setSelected"
@@ -93,40 +93,68 @@ export default {
         sendUuids.push(this.selectedItems[0].uuid);
       }
 
-      console.log('localExecutor ----- ', sendUuids)
-
       this.localExecutor({task_uuid: this.$route.params.id, user_uuids: sendUuids});
     },
 
-    sendFilter(postBody) {
+    sendFilter(fetchParams, watcherParams, postBody) {
+
+      this[fetchParams].value = postBody.settings.value;
+      this[fetchParams].filters = postBody.settings.filters;
+
+      this[fetchParams].professions = postBody.professions;
+      this[fetchParams].region = postBody.region;
+      this[fetchParams].radius = postBody.radius;
+      this[fetchParams].subscribe = postBody.subscribe;
+      this[fetchParams].working = postBody.working;
 
       this.fetchRequestIdSearch({
         requestId: this.$route.params.id,
         params: postBody,
         concat: false,
         unit: false
-      });
+      }).then(data => {
+        this[fetchParams].page = 1;
+        console.log('пришел ответ')
+      })
     },
 
     getDataFromApi(fetchParams, watcherParams, action, options) {
 
       this[watcherParams] = options;
 
-      let sortNameField = this[watcherParams].sortBy[0];
-      if (this[watcherParams].sortBy[0] == 'shortname'){
-        sortNameField = 'lastname';
-      }
+      let sorting = this[watcherParams].sortBy[0];
 
-      console.log('sortNameField---', sortNameField);
-
-      const params = {
+      let params = {
         "settings": {
           "value": this[fetchParams].value,
-          "sort": sortNameField,
-          "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": this[fetchParams].filters,
-        }
+        },
       };
+
+      if(this[fetchParams].professions && this[fetchParams].professions.length){
+        params.professions = this[fetchParams].professions;
+      }
+      if(this[fetchParams].region){
+        params.region = this[fetchParams].region;
+      }
+      if(this[fetchParams].radius){
+        params.radius = this[fetchParams].radius;
+      }
+      if(this[fetchParams].subscribe){
+        params.subscribe = this[fetchParams].subscribe;
+      }
+      if(this[fetchParams].working){
+        params.working = this[fetchParams].working;
+      }
+
+      if (sorting){
+        if (sorting == 'shortname'){
+          sorting = 'lastname';
+        }
+
+        params.settings.sort = sorting;
+        params.settings.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
+      }
 
       this[action]({
         requestId: this.$route.params.id,
