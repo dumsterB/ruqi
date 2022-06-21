@@ -9,7 +9,7 @@
                 v-icon mdi-plus
                 span новая заявка
 
-              TasksFilter.ml-8(:status_list="status_list" v-if="status_list" @applyFilter="applyFilter('fetch', 'headerOptionsTask', ...arguments)")
+              TasksFilter.ml-8(:status_list="status_list" v-if="status_list" @applyFilter="applyFilter('fetchTaskParams', 'headerOptionsTask', ...arguments)")
 
               TableFilter.ml-8.mr-5(v-if="tasks_filters.length"
                 :fields="tasks_filters"
