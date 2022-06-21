@@ -95,7 +95,7 @@ export default {
   },
   data() {
     return {
-      select: '',
+      select: [],
     }
   },
   watch: {
@@ -107,7 +107,13 @@ export default {
     toggle() {
       this.$nextTick(() => {
         if (this.select.length != this.options.length) {
-          this.select = this.options.slice();
+          let selectedAll = [];
+
+          for (let i = 0; i < this.options.length; i++) {
+            selectedAll.push(this.options[i][this.item_value]);
+          }
+
+          this.select = selectedAll;
         } else {
           this.select = [];
         }
@@ -130,9 +136,18 @@ export default {
 </script>
 
 <style lang="scss">
+
 .ruqi {
 
   .form-select-uuid {
+
+    .v-input {
+      &.v-input--is-readonly {
+        .v-input__control{
+          background: #f5f5f5;
+        }
+      }
+    }
 
     .v-select__selections{
       flex-wrap: nowrap;

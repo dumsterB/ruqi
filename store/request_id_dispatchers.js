@@ -322,7 +322,7 @@ export const mutations = {
     }
 
     if (unit) {
-      state.request_id_filter_professions = request_id_search.data.meta.filters.filter(obj => obj.field == 'profession')[0].options;
+      state.request_id_filter_professions = request_id_search.data.meta.filters.filter(obj => obj.field == 'professions')[0].options;
       state.request_id_filter_rank = request_id_search.data.meta.filters.filter(obj => obj.field == 'rank')[0].options;
       state.request_id_filter_active = request_id_search.data.meta.filters.filter(obj => obj.field == 'last_active')[0].options;
     }

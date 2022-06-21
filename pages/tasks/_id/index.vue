@@ -271,7 +271,7 @@ export default {
         {field: 'on_object', translit: 'На объекте',},
         {field: 'rank', translit: 'Ранг',},
         {field: 'status', translit: 'Статус',},
-        {field: 'profession', translit: 'Профессии',},
+        {field: 'professions', translit: 'Профессии',},
       ],
       headers_assigned_filter: [
         {field: 'trust', translit: 'Рейтинг', unit: '%'},
@@ -482,7 +482,9 @@ export default {
     applyFilter(fetchParams, watcherParams, filter, search, professions) {
       this[fetchParams].value = search;
       this[fetchParams].filters = filter;
-      this[fetchParams].profession = professions;
+      this[fetchParams].professions = professions;
+
+      let sorting = this[watcherParams].sortBy[0];
 
       let params = {
         "settings": {
@@ -493,8 +495,13 @@ export default {
         }
       };
 
+      if (sorting){
+        params.sort = this[watcherParams].sortBy[0];
+        params.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
+      }
+
       if (professions){
-        params.profession = professions;
+        params.professions = professions;
       }
 
       console.log('params-----', filter, params);
@@ -613,14 +620,21 @@ export default {
 
       this[watcherParams] = options;
 
+      let sorting = this[watcherParams].sortBy[0];
+
       const params = {
         "settings": {
           "value": this[fetchParams].value,
-          "sort": this[watcherParams].sortBy[0] ? this[watcherParams].sortBy[0]  : 'lastname',
-          "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
+          //"sort": this[watcherParams].sortBy[0] ? this[watcherParams].sortBy[0]  : 'lastname',
+          //"order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": this[fetchParams].filters,
         }
       };
+
+      if (sorting){
+        params.sort = this[watcherParams].sortBy[0];
+        params.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
+      }
 
       this[action]({
         requestId: this.$route.params.id,

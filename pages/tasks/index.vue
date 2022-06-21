@@ -52,29 +52,29 @@
 
                       v-card
                         v-list-item-content.justify-start
-                          .mx-auto.text-left.card-action(v-for="action in actions_tasks")
+                          .mx-auto.text-left.card-action.card-action-task(v-for="action in actions_tasks")
+                            div(v-if="detectedPin(action.action, item.uuid)")
+                              v-menu(
+                                open-on-hover right offset-x
+                                v-if="action.sub_actions"
+                                content-class="card-actions-menu"
+                              )
+                                template(v-slot:activator="{ on, attrs }")
+                                  a.d-flex.justify-space-between(v-bind="attrs" v-on="on")
+                                    div
+                                      v-icon {{ action.icon }}
+                                      span {{ action.text }}
+                                    v-icon mdi-menu-right
+                                v-card
+                                  v-list-item-content.justify-start
+                                    .mx-auto.text-left.card-action(v-for="(sub_action, index) in action.sub_actions" :key="index")
+                                      a.select-status(@click.prevent="callAction(action.action, [item.uuid], sub_action.params)")
+                                        v-icon(:color="sub_action.color") {{ sub_action.icon }}
+                                        span.select-status-title {{ sub_action.text }}
 
-                            v-menu(
-                              open-on-hover right offset-x
-                              v-if="action.sub_actions"
-                              content-class="card-actions-menu"
-                            )
-                              template(v-slot:activator="{ on, attrs }")
-                                a.d-flex.justify-space-between(v-bind="attrs" v-on="on")
-                                  div
-                                    v-icon {{ action.icon }}
-                                    span {{ action.text }}
-                                  v-icon mdi-menu-right
-                              v-card
-                                v-list-item-content.justify-start
-                                  .mx-auto.text-left.card-action(v-for="(sub_action, index) in action.sub_actions" :key="index")
-                                    a.select-status(@click.prevent="callAction(action.action, [item.uuid], sub_action.params)")
-                                      v-icon(:color="sub_action.color") {{ sub_action.icon }}
-                                      span.select-status-title {{ sub_action.text }}
-
-                            a(@click.prevent="callAction(action.action, [item.uuid])" v-else)
-                              v-icon {{ action.icon }}
-                              span {{ action.text }}
+                              a(@click.prevent="callAction(action.action, [item.uuid])" v-else)
+                                v-icon {{ action.icon }}
+                                span {{ action.text }}
 
                 template(v-slot:item.name="{ item }")
                   div.d-flex.align-center(@click="openRequest(item.uuid)")
@@ -158,7 +158,7 @@ export default {
       ],
       headers_tasks_filter: [
         {field: 'rate', translit: 'Ставка', unit: 'р.'},
-        {field: 'filling', translit: 'Наполнена', unit: '%'},
+        {field: 'percent', translit: 'Наполнение', unit: '%'},
       ],
       headerOptionsTask: {},
       groupListAction: [
@@ -180,6 +180,7 @@ export default {
       },
       actions_tasks: [
         {text: "Закрепить", icon: "mdi-pin-outline", action: 'onPinTabClicked'},
+        {text: "Открепить", icon: "mdi-pin-off-outline", action: 'onUnpinTabClicked'},
         {text: "Создать копию", icon: "mdi-content-copy", action: 'copyTask'},
         {text: "Перейти к объекту", icon: "mdi-exit-to-app", action: 'goToObject'},
         {text: "Пометить на удаление", icon: "mdi-close-box-outline", action: 'markForDeletion'},
@@ -326,7 +327,8 @@ export default {
       'setRqTabsTaskActive',
       'pinRqTabTasks',
       'unPinRqTabTasks',
-      'setRqTabTasksList'
+      'setRqTabTasksList',
+      'closeRqTabTasks'
     ]),
 
     openRequest(id) {
@@ -354,14 +356,21 @@ export default {
       this[fetchParams].value = search;
       this[fetchParams].filters = filter;
 
+      let sorting = this[watcherParams].sortBy[0];
+
       let params = {
         "settings": {
           "value": search,
-          "sort": this[watcherParams].sortBy[0]  ? this[watcherParams].sortBy[0] : 'name',
-          "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
+          //"sort": this[watcherParams].sortBy[0]  ? this[watcherParams].sortBy[0] : 'name',
+          //"order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": filter
         }
       };
+
+      if (sorting){
+        params.sort = this[watcherParams].sortBy[0];
+        params.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
+      }
 
       console.log('params-----', filter, params, );
 
@@ -370,14 +379,21 @@ export default {
 
     getDataFromApi(fetchParams, watcherParams, action) {
 
+      let sorting = this[watcherParams].sortBy[0];
+
       const params = {
         "settings": {
           "value": this[fetchParams].value,
-          "sort": this[watcherParams].sortBy[0],
-          "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
+          //"sort": this[watcherParams].sortBy[0],
+          //"order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": this[fetchParams].filters,
         }
       };
+
+      if (sorting){
+        params.sort = this[watcherParams].sortBy[0];
+        params.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
+      }
 
       this[action]({
         params: params,
@@ -487,10 +503,68 @@ export default {
       this.copyRequest(uuids[0]);
     },
 
-    onPinTabClicked(uuids) {
-      this.pinRqTabTasks({rqTabTasks: uuids[0]});
+    async onPinTabClicked(uuids) {
+      let fullPath = '/tasks/' + uuids[0],
+        name = this.requests.filter(obj => obj.uuid == uuids[0])[0].name;
+
+      let route = {
+        path: fullPath,
+        meta: {
+          title: name
+        },
+        name: 'tasks-id',
+        params: {
+          id: uuids[0]
+        },
+        isPinned: false,
+        isActive: true,
+      }
+
+      await this.addRqTabsTaskNew({route: route});
+      await this.setRqTabsTaskActive({route: route});
+      await this.pinRqTabTasks({rqTabTasks: uuids[0]});
     },
 
+    async onUnpinTabClicked(uuids) {
+
+      let fullPath = '/tasks/' + uuids[0],
+        name = this.requests.filter(obj => obj.uuid == uuids[0])[0].name;
+
+      let route = {
+        path: fullPath,
+        meta: {
+          title: name
+        },
+        name: 'tasks-id',
+        params: {
+          id: uuids[0]
+        },
+        isPinned: false,
+        isActive: true,
+      }
+
+      await this.unPinRqTabTasks({rqTabTasks: route});
+      await this.closeRqTabTasks();
+
+    },
+
+    detectedPin(action, uuid){
+      if(action != 'onPinTabClicked' && action != 'onUnpinTabClicked'){
+        return true;
+      }else{
+        let isPinTask = this.RQ_TABS_TASKS.filter(obj => obj.params.id == uuid);
+
+        if (action == 'onPinTabClicked' && isPinTask.length){
+          return false;
+        }else if(action == 'onPinTabClicked' && !isPinTask.length){
+          return true;
+        }
+
+        if (action == 'onUnpinTabClicked' && isPinTask.length){
+          return true;
+        }
+      }
+    }
 
   },
 
@@ -534,6 +608,17 @@ export default {
       padding: 0;
     }
   }
+
+  .card-actions-menu {
+    .card-action-task{
+      margin-bottom: 0;
+
+      > div {
+        margin-bottom: 12px;
+      }
+    }
+  }
+
 }
 
 .request-pay {

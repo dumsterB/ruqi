@@ -11,7 +11,8 @@
               :params="filed.params"
               :validation="filed.validation"
               :value = "filed.value"
-              @input="updateFiled(filed.name, $event, index, filed.parent_array)")
+              @input="updateFiled(filed.name, $event, index, filed.parent_array)"
+              @setItemsList="setRegionList")
 
           div.mr-6(style="max-width: 230px;")
             FTypeButton.toggle_filter(
@@ -51,6 +52,7 @@
 
 <script>
 import Vue from "vue";
+import {mapActions} from "vuex";
 
 export default {
   props: {
@@ -79,7 +81,7 @@ export default {
       meta: {
         meta_filter_row_1: [
           {
-            type: 'FTypeText',
+            type: 'FTypeAutocomplete',
             label: '',
             col: 3,
             name: 'region',
@@ -89,8 +91,10 @@ export default {
             params: {
               placeholder: 'Выберите регион',
               clearable: true,
+              states: [],
+              loading: false,
             },
-            max_width: '240'
+            max_width: '240',
           },
           {
             type: 'FTypeSelectUIID',
@@ -108,10 +112,11 @@ export default {
               item_text: 'name',
               item_value: 'uuid',
               label: 'Не выбрано',
-              readonly: false
+              readonly: false,
+              hideDetails: true,
             },
             validation: [],
-            value: 1,
+            value: 5,
             max_width: '110'
           },
           {
@@ -286,7 +291,6 @@ export default {
   computed: {
     postBody() {
 
-
       let postBody = {
           "settings": {
             "filters": []
@@ -300,90 +304,106 @@ export default {
         }
       }
 
-      if(this.formValues.lastname){
+      if (this.formValues.lastname) {
         postBody.settings.value = this.formValues.lastname;
       }
 
-      if(this.formValues.professions && this.formValues.professions.length > 0) {
+      if (this.formValues.professions && this.formValues.professions.length > 0) {
         postBody.professions = JSON.stringify(this.formValues.professions);
       }
 
 
-        if(this.formValues.rate){
+      if (this.formValues.rate) {
         postBody.settings.filters.push(
           {
             "field": "rate",
             "type": "range",
-            "value": { to: this.formValues.rate }
+            "value": {to: this.formValues.rate}
           }
         )
       }
 
-      if(this.formValues.trust){
+      if (this.formValues.trust) {
         postBody.settings.filters.push(
           {
             "field": "trust",
             "type": "range",
-            "value": { from: this.formValues.trust }
+            "value": {from: this.formValues.trust}
           },
         )
       }
 
-      if(this.formValues.age_from || this.formValues.age_to){
+      if (this.formValues.age_from || this.formValues.age_to) {
         postBody.settings.filters.push(
           {
             "field": "age",
             "type": "range",
-            "value": { from: this.formValues.age_from, to: this.formValues.age_to }
+            "value": {from: this.formValues.age_from, to: this.formValues.age_to}
           },
         )
       }
 
-      if(this.formValues.activity  && this.formValues.activity.length > 0){
+      if (this.formValues.activity && this.formValues.activity.length > 0) {
         postBody.settings.filters.push(
           {
             "field": "last_active",
             "type": "list",
-            "value":  this.formValues.activity
+            "value": this.formValues.activity
           },
         )
       }
 
-      if(this.formValues.rank && this.formValues.rank.length > 0){
+      if (this.formValues.rank && this.formValues.rank.length > 0) {
         postBody.settings.filters.push(
           {
             "field": "rank",
             "type": "list",
-            "value":  this.formValues.rank
+            "value": this.formValues.rank
           },
         )
       }
 
       return postBody;
     },
+
+    addresses() {
+      return this.$store.getters["dictionary/address"];
+    },
   },
   methods: {
+    ...mapActions("dictionary", ["fetchAddress",]),
+
+    async setRegionList(region) {
+
+      this.meta.meta_filter_row_1[0].params.loading = true;
+
+      await this.fetchAddress({"region": region});
+
+      this.meta.meta_filter_row_1[0].params.states = this.addresses;
+      this.meta.meta_filter_row_1[0].params.loading = false;
+
+    },
+
     updateFiled(field, value) {
       this.formValues[field] = value;
 
-      if (field == 'region'){
-        if(value){
+      if (field == 'region') {
+        if (value) {
           this.meta.meta_filter_row_1[1].params.readonly = true;
-          this.meta.meta_filter_row_1[1].value = null;
           this.formValues.radius = null;
-        }else{
+        } else {
           this.meta.meta_filter_row_1[1].params.readonly = false;
-          this.meta.meta_filter_row_1[1].value = 5;
           this.formValues.radius = 5;
         }
       }
       console.log(field, value);
     },
+
     sendFilter() {
 
       console.log(this.postBody);
 
-     this.$emit('sendFilter', this.postBody);
+      this.$emit('sendFilter', this.postBody);
 
     },
     clearFields() {
