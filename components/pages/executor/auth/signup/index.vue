@@ -130,14 +130,14 @@ export default {
   data() {
     return {
       power: 78,
-      current_page: 0,
+      current_page: 6,
       form: {
         name: "",
         surname: "",
         middle_name: "",
         sex: "",
         birth_date: "",
-        phone: "",
+        phone: "+7",
         email: null,
         agree: false,
       },

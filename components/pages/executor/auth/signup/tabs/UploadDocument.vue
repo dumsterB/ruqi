@@ -53,7 +53,7 @@
               ></v-text-field>
             </div>
           </v-col>
-          <v-col cols="6" md="3" lg="3">
+          <v-col cols="12" md="3" lg="3">
             <div class="form-part">
               <p class="input_label">Дата выдачи</p>
 
@@ -95,7 +95,7 @@
               </v-menu>
             </div>
           </v-col>
-          <v-col cols="6" md="3" lg="3">
+          <v-col cols="12" md="3" lg="3">
             <div class="form-part">
               <p class="input_label">Срок действия</p>
               <v-menu
@@ -120,7 +120,7 @@
                     single-line
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="passport_term" no-title scrollable>
+                <v-date-picker  v-model="passport_term" no-title scrollable>
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="menu = false">
                     Cancel

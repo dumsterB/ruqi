@@ -85,6 +85,7 @@
               <v-date-picker
                 v-model="form.birth_date"
                 :rules="inputRules"
+                :max="new Date().toISOString().slice(0,10)"
                 no-title
                 required
                 scrollable
@@ -110,10 +111,10 @@
               v-model="form.phone"
               class="mt-2"
               type="tel"
+              placeholder="+7"
               :rules="phoneRules"
               outlined
               name="phone"
-              placeholder="+7"
               dense
             ></v-text-field>
           </div>
@@ -204,6 +205,11 @@ export default {
         (v) => !!v || "Заполните поля",
         (v) => /.+@.+/.test(v) || "E-mail должен быть валидным",
       ],
+      nowDate: new Date().toISOString().slice(0,10),
+      date: new Date(),
+      picker: new Date().toISOString().substr(0, 10),
+      landscape: false,
+      reactive: false
     };
   },
   methods: {
@@ -232,6 +238,10 @@ export default {
   },
   computed: {
     ...mapGetters("response", ["requestSuccess"]),
+    getEndDate() {
+      var endDate = new Date(this.date.getFullYear(), this.date.getMonth() + 1, 10);
+      return endDate.toISOString().slice(0,10)
+    },
     executors() {
       return this.$store.getters["executor/executors"];
     },
