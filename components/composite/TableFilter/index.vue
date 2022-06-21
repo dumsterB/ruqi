@@ -206,7 +206,9 @@ export default {
 
       this.isOpened = isClosePopup;
 
-      if (sentFilter.length) {
+      console.log(sentFilter);
+
+      if (sentFilter.length || professions.length) {
         this.isApplyFilter = true;
       }
 
