@@ -67,6 +67,24 @@
                   @input="setSalary"
                 )
 
+      .m-task-search-filter__filter-content--items.m-task-search-filter__checkbox
+        v-checkbox.m-task-search-filter__filter-content--item.m-task-search-filter__checkbox-property(
+          label="Без мед. книжки"
+          color="info"
+          :value="medicalBook"
+          @change="setMedicalBook"
+          hide-details
+        )
+
+      .m-task-search-filter__filter-content--items.m-task-search-filter__checkbox
+        v-checkbox.m-task-search-filter__filter-content--item.m-task-search-filter__checkbox-property(
+          label="Без водительских прав"
+          color="info"
+          :value="driverLicense"
+          @change="setDriverLicense"
+          hide-details
+        )
+
     .m-task-search-filter--component__actions
       v-btn.m-task-search-filter--component__cancel(
         elevation="0"
@@ -104,10 +122,13 @@
         )
 
       v-badge.m-task-search-filter--bbar__container--badge(
+        v-show="isFilterActive()"
         dot
         color="#EB4D3D"
       )
         .m-task-search-filter--bbar__container--title Фильтры
+
+      .m-task-search-filter--bbar__container--title(v-show="!isFilterActive()") Фильтры
 </template>
 
 <script>
@@ -145,6 +166,14 @@ export default {
     salary: {
       type: String,
       default: "",
+    },
+    medicalBook: {
+      type: Boolean,
+      default: false,
+    },
+    driverLicense: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {},
@@ -185,6 +214,12 @@ export default {
     setSalary(payload = null) {
       this.$emit('setSalary', payload);
     },
+    setMedicalBook(payload = null) {
+      this.$emit('setMedicalBook', payload);
+    },
+    setDriverLicense(payload = null) {
+      this.$emit('setDriverLicense', payload);
+    },
     apply() {
       this.$emit('apply');
     },
@@ -193,6 +228,14 @@ export default {
     },
 
     /* HELPERS */
+    isFilterActive() {
+      return this.region ||
+        this.radius ||
+        this.salary ||
+        this.medicalBook ||
+        this.driverLicense ||
+        this.professions.filter(profession => profession.selected).length;
+    }
   },
 
   data() {
@@ -378,6 +421,19 @@ export default {
           display: none;
         }
       }
+    }
+  }
+
+  &__checkbox {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    align-content: center;
+
+    &-property {
+      margin: 0 !important;
     }
   }
 

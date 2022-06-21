@@ -1,6 +1,7 @@
 <template lang="pug">
 .executor-mcdc
   v-tabs.executor-mcdc__tabs(
+    v-model="tab"
     hide-slider
     active-class="executor-mcdc__tabs-item_active"
     height="43px"
@@ -19,7 +20,11 @@ export default {
   components: {},
   props: {},
   computed: {},
-  watch: {},
+  watch: {
+    tab(newTab) {
+      this.$emit('clickOnTab', newTab);
+    },
+  },
   methods: {
     /* GETTERS */
     /* SETTERS */
@@ -28,7 +33,9 @@ export default {
   },
 
   data() {
-    return {}
+    return {
+      tab: 0,
+    };
   },
   created() { },
   mounted() { },
@@ -72,6 +79,7 @@ export default {
     .v-tabs-bar {
       border: 0 !important;
     }
+
     .v-tab {
       padding: 12px 50px !important;
       text-transform: none !important;
@@ -79,9 +87,11 @@ export default {
       @media screen and (max-width: 425px) {
         padding: 12px 40px !important;
       }
+
       @media screen and (max-width: 385px) {
         padding: 12px 35px !important;
       }
+
       @media screen and (max-width: 370px) {
         padding: 12px 30px !important;
       }

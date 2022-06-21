@@ -5,76 +5,49 @@
       .tasks-executor-search--mobile__header-title Поиск работы
 
       mSearchLine.tasks-executor-search--mobile__header-search
-      mContentDisplayController.tasks-executor-search--mobile__header-display-ctrl
-
-    mTasksFilter(
-      :isFilterShowed="mFilterVisibility"
-      :loader="loaderFilter"
-      :regions="regions"
-      :region="region"
-      :professions="professions"
-      :radii="radii"
-      :radius="radius"
-      :salary="salary"
-      @showFilter="showMobFilter"
-      @hideFilter="hideMobFilter"
-      @selectRegion="selectRegion"
-      @selectProfession="selectProfession"
-      @selectRadius="selectRadius"
-      @setSalary="setSalary"
-      @apply="applyFilter"
-      @reset="resetFilter"
-    )
+      mContentDisplayController.tasks-executor-search--mobile__header-display-ctrl(
+        @clickOnTab="setTasksView"
+      )
 
   .tasks-executor-search--desktop
     h1 Поиск работы
-    TasksFilter(
-      :isFilterShowed="mFilterVisibility"
-      :loader="loaderFilter"
-      :regions="regions"
-      :region="region"
-      :professions="professions"
-      :radii="radii"
-      :radius="radius"
-      :salary="salary"
-      :medicalBook="medicalBook"
-      :driverLicense="driverLicense"
-      @showFilter="showMobFilter"
-      @hideFilter="hideMobFilter"
-      @selectRegion="selectRegion"
-      @selectProfessionDesktop="selectProfessionDesktop"
-      @selectRadius="selectRadius"
-      @setSalary="setSalary"
-      @setMedicalBook="setMedicalBook"
-      @setDriverLicense="setDriverLicense"
-      @setStartDate="setStartDate"
-      @apply="applyFilter"
-      @reset="resetFilter"
-    )
+
+  TasksFilter(
+    :regions="regions"
+    :professions="professions"
+    :loaderFilter="loaderFilter"
+    :mFilterVisibility="mFilterVisibility"
+    @showMobFilter="showMobFilter"
+    @hideMobFilter="hideMobFilter"
+    @apply="applyFilter"
+    @reset="resetFilter"
+  )
+
+  .tasks-executor-search--desktop
     ContentDisplayController.tasks-executor-search--desktop__content-display-ctrl(
       @clickOnTab="setTasksView"
     )
 
-    v-tabs-items(v-model="tasksTab")
-      v-tab-item
-        TasksList.tasks-executor-search--task-list(:tasks="searchTasks")
+  v-tabs-items(v-model="tasksTab")
+    v-tab-item
+      TasksList.tasks-executor-search--task-list(:tasks="searchTasks")
 
-      v-tab-item
-        Map(
-          :center_coords="coords"
-          :markers="searchTasks"
-          :entity="'contractor'"
-          zoom="8"
-          height="546"
-        )
+    v-tab-item
+      Map(
+        :class="[{ 'tasks-executor-search--map': !isMobile && !isTablet }, { 'tasks-executor-search--map_mobile': isMobile || isTablet },]"
+        :center_coords="coords"
+        :markers="searchTasks"
+        :entity="'contractor'"
+        zoom="8"
+        height="546"
+      )
 </template>
 
 <script>
 import { mapActions, mapGetters, } from 'vuex';
 import ContentDisplayController from '@/components/pages/tasks/executor/search/ContentDisplayController/desktop';
 import mContentDisplayController from '@/components/pages/tasks/executor/search/ContentDisplayController/mobile';
-import TasksFilter from '@/components/pages/tasks/executor/search/TasksFilter/desktop';
-import mTasksFilter from '@/components/pages/tasks/executor/search/TasksFilter/mobile';
+import TasksFilter from '@/components/pages/tasks/executor/search/TasksFilter';
 import TasksList from '@/components/pages/tasks/executor/search/TasksList';
 import mSearchLine from '@/components/pages/tasks/executor/search/SearchLine';
 import Map from '@/components/Map';
@@ -84,7 +57,6 @@ export default {
     ContentDisplayController,
     mContentDisplayController,
     TasksFilter,
-    mTasksFilter,
     TasksList,
     mSearchLine,
     Map,
@@ -92,16 +64,6 @@ export default {
 
   props: {},
   data: () => ({
-    mFilterVisibility: false,
-    loaderFilter: false,
-    region: null,
-    radius: null,
-    salary: null,
-    medicalBook: false,
-    driverLicense: false,
-    startDate: null,
-    selectedProfessions: [],
-
     /* DICTIONARY */
     radii: [
       {
@@ -124,6 +86,12 @@ export default {
     professions: [],
     coords: [45.04, 38.98],
 
+    /* LOADERS */
+    loaderFilter: false,
+
+    /* VISIBILITITY STATES */
+    mFilterVisibility: false,
+
     /* COUNTERS */
     tasksTab: 0,
   }),
@@ -131,6 +99,21 @@ export default {
     ...mapGetters('user', [
       'searchTasks',
     ]),
+    isMobile() {
+      return this.$store.getters["platformDetection/IS_MOBILE"];
+    },
+    isTablet() {
+      return this.$store.getters["platformDetection/IS_TABLET"];
+    },
+    isSmallScreen() {
+      return this.$store.getters["platformDetection/IS_SMALL_SCREEN"];
+    },
+    isLargeScreen() {
+      return this.$store.getters["platformDetection/IS_LARGE_SCREEN"];
+    },
+    isExtraLargeScreen() {
+      return this.$store.getters["platformDetection/IS_EXTRA_LARGE_SCREEN"];
+    },
   },
 
   watch: {},
@@ -146,96 +129,51 @@ export default {
     /* GETTERS */
     /* SETTERS */
     /* HANDLERS */
+    setTasksView(tab) {
+      this.tasksTab = tab;
+    },
     showMobFilter() {
+      console.debug('showMobFilter'); // DELETE
+
       this.mFilterVisibility = true;
     },
     hideMobFilter() {
       this.mFilterVisibility = false;
     },
-    selectRegion(payload = null) {
-      if (payload) this.region = payload;
-    },
-    selectProfession(payload = null) {
+    async applyFilter(payload = null) {
       if (!payload) return;
 
-      if (this.selectedProfessions.findIndex(profession => profession.uuid === payload.uuid) !== -1) {
-        this.selectedProfessions = this.selectedProfessions.filter(profession => profession.uuid !== payload.uuid);
-      } else {
-        this.selectedProfessions.push(payload);
-      }
-    },
-    selectProfessionDesktop(payload = null) {
-      if (!payload) return;
-
-      this.selectedProfessions = payload;
-    },
-    selectRadius(payload = null) {
-      if (payload) this.radius = payload;
-    },
-    setSalary(payload = null) {
-      this.salary = payload;
-    },
-    setMedicalBook(payload = null) {
-      this.medicalBook = payload;
-    },
-    setDriverLicense(payload = null) {
-      this.driverLicense = payload;
-    },
-    setStartDate(payload = null) {
-      this.startDate = payload;
-    },
-    async applyFilter() {
       this.loaderFilter = true;
 
-      const FILTER = {
-        region: this.region ? this.region.name : null,
-        radius: this.radius ? this.radius.value : null,
-        salary: this.salary,
-        medicalBook: this.medicalBook,
-        driverLicense: this.driverLicense,
-        startDate: this.startDate,
-        selectedProfessions: this.selectedProfessions.length
-          ? this.selectedProfessions.map(profession => profession.name)
-          : null,
-      };
+      console.debug("applyFilter[CMP]", payload); // DELETE
 
-      console.debug("applyFilter", FILTER); // DELETE
-
-      await this.fetchSearchTasks({ filter: FILTER })
+      await this.fetchSearchTasks({ filter: payload })
 
       this.loaderFilter = false;
       this.mFilterVisibility = false;
     },
     resetFilter() {
-      this.region = null;
-      this.radius = null;
-      this.salary = null;
-      this.medicalBook = false;
-      this.driverLicense = false;
-      this.startDate = null;
-      this.selectedProfessions = [];
       this.professions = this.professions.map((profession) => ({
         ...profession,
         selected: false,
       }));
     },
-    setTasksView(tab) {
-      this.tasksTab = tab;
-    },
+
 
     /* HELPERS */
   },
 
   async created() {
-    this.regions = await this.fetchRegions();
+    await this.fetchRegions().then((regions) => {
+      this.regions = regions;
+    });
     await this.fetcProfessions().then((professions) => {
       this.professions = professions.map((profession) => ({
         ...profession,
         selected: false,
       }));
     });
-
-    this.fetchSearchTasks()
+    this.fetchSearchTasks();
   },
   mounted() { },
 }
@@ -294,6 +232,10 @@ export default {
   }
 
   &--task-list {
+    margin-top: 24px;
+  }
+
+  &--map {
     margin-top: 24px;
   }
 

@@ -326,6 +326,7 @@ export default {
       'setRqTabsTaskActive',
       'pinRqTabTasks',
       'unPinRqTabTasks',
+      'setRqTabTasksList'
     ]),
 
     openRequest(id) {
@@ -495,12 +496,14 @@ export default {
 
 
   created() {
-    this.setRqTabsTaskActive({route: this.$route});
+   // this.setRqTabsTaskActive({route: this.$route});
+    this.setRqTabTasksList();
   },
 
   async mounted() {
     await this.fetch({params: {}, concat: false, unit: true});
     await this.fetchObjects();
+
 
     this.sortObject = this.defSort.concat(this.objects);
   },

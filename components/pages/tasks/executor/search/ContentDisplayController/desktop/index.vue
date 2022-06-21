@@ -113,7 +113,14 @@ export default {
     align-items: center;
   }
 
-  &__title {}
+  &__title {
+    font-family: 'Source Sans Pro';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 125%;
+    color: #263043;
+  }
 
   &__tabs {
     width: max-content;

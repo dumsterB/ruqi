@@ -183,6 +183,14 @@ export const actions = {
 
     return getters.RQ_TABS_TASKS[getters.RQ_TABS_TASKS.length - 1].path;
   },
+
+  async setRqTabTasksList({ commit, state, getters, }) {
+
+    commit('updateRqTabsTasksNew', []);
+
+    return getters.RQ_TABS_TASKS[getters.RQ_TABS_TASKS.length - 1].path;
+  },
+
 };
 export const mutations = {
   updateRqTabsTasksNode(state, rqTabsTasksNode) {
