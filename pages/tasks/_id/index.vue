@@ -271,7 +271,7 @@ export default {
         {field: 'on_object', translit: 'На объекте',},
         {field: 'rank', translit: 'Ранг',},
         {field: 'status', translit: 'Статус',},
-        {field: 'profession', translit: 'Профессии',},
+        {field: 'professions', translit: 'Профессии',},
       ],
       headers_assigned_filter: [
         {field: 'trust', translit: 'Рейтинг', unit: '%'},
@@ -482,7 +482,7 @@ export default {
     applyFilter(fetchParams, watcherParams, filter, search, professions) {
       this[fetchParams].value = search;
       this[fetchParams].filters = filter;
-      this[fetchParams].profession = professions;
+      this[fetchParams].professions = professions;
 
       let params = {
         "settings": {
@@ -494,7 +494,7 @@ export default {
       };
 
       if (professions){
-        params.profession = professions;
+        params.professions = professions;
       }
 
       console.log('params-----', filter, params);

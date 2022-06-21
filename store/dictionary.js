@@ -9,6 +9,7 @@ export const state = () => (
     managers: [],
     professions: [],
     payments: [],
+    address: []
   }
 )
 
@@ -47,6 +48,10 @@ export const mutations = {
 
   setPayments(state, payments) {
     state.payments = payments;
+  },
+
+  setAddress(state, address) {
+    state.address = address;
   },
 }
 
@@ -135,6 +140,15 @@ export const actions = {
 
     commit('setPayments', payments.data.data);
   },
+
+  async fetchAddress({ commit }, params) {
+
+    const address = await this.$axios.get('/dictionary/address', {
+      params: params
+    });
+
+    commit('setAddress', address.data.data);
+  },
 }
 
 export const getters = {
@@ -172,5 +186,9 @@ export const getters = {
 
   payments(state) {
     return state.payments;
+  },
+
+  address(state) {
+    return state.address;
   },
 }

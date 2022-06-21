@@ -158,7 +158,7 @@ export default {
       ],
       headers_tasks_filter: [
         {field: 'rate', translit: 'Ставка', unit: 'р.'},
-        {field: 'filling', translit: 'Наполнена', unit: '%'},
+        {field: 'percent', translit: 'Наполнение', unit: '%'},
       ],
       headerOptionsTask: {},
       groupListAction: [
