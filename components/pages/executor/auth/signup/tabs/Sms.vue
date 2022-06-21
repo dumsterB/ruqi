@@ -100,10 +100,12 @@ export default {
         };
         await this.confirmPassword(obj);
       }
+      console.log(this.requestSuccess.type)
       if (this.requestSuccess.type === "success") {
         console.log(this.requestSuccess)
         this.$emit("pageHandler", value);
       } else {
+        this.smsCode = ''
         this.$refs.form.validate()
       }
     },

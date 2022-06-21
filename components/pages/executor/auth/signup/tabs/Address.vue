@@ -77,8 +77,8 @@ export default {
   data() {
     return {
       address: "",
-      address_extra: null,
-      address_extra_2: null,
+      address_extra: "",
+      address_extra_2: "",
       valid: false,
       inputRules: [(v) => !!v || "Заполните поля"],
     };
@@ -91,9 +91,13 @@ export default {
     back(value) {
       this.$emit("pageHandler", value, "back");
     },
-    next(value) {
-      let data = [this.address, this.address_extra, this.address_extra_2];
-      this.setAddress(data);
+    async next(value) {
+     let data = [
+         this.address, this.address_extra, this.address_extra_2
+     ]
+     let params = data.filter(ell=> ell.length > 1)
+      await this.setAddress(params);
+      console.log(params)
       if (this.requestSuccess.type === "success") {
         this.$emit("pageHandler", value);
       } else {

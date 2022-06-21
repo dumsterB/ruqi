@@ -78,7 +78,6 @@ export default {
   opacity: 0.4;
   text-align: center;
   margin-top: 15px;
-  cursor: pointer;
 }
 .text-grey{
   color: #8692A6;
