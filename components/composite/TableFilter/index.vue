@@ -233,6 +233,8 @@ export default {
         this.check_fields = [];
 
         console.log('есть фильтр', this.lastSelected_fields.length, this.lastCheck_fields.length);
+        console.log('lastSelected_fields --- ', this.lastSelected_fields);
+
         for (let i = 0; i < this.lastSelected_fields.length; i++) {
 
           let lastState = {}

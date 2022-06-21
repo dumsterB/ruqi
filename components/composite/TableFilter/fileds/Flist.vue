@@ -40,8 +40,10 @@ export default {
   watch: {
     params: {
       handler(val){
+        this.selected = [];
         if(Array.isArray(this.params.value)){
           this.selected = this.params.value;
+          console.log('this.selected -----', this.selected )
         }
         else{
           if(this.params.value){
