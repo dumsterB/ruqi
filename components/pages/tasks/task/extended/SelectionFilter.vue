@@ -416,6 +416,8 @@ export default {
         Vue.set(this.formValues, f.name, null);
       })
 
+      this.$emit('sendFilter', this.postBody);
+
     },
   },
   created() {
