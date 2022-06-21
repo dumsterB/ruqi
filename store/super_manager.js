@@ -14,7 +14,7 @@ export const actions = {
             .then((response) => {
                 commit(
                     "response/setSuccess",
-                    { type: "success", text: "Исполнитель успешно зашел" },
+                    { type: "success", text: "Супер манаджер успешно зашел" },
                     { root: true }
                 );
                 setTimeout(function () {

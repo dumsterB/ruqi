@@ -22,7 +22,6 @@
                         .txt Пароль
                       .input
                         v-text-field( outlined type="password" :rules="passwordRules" v-model="login.password"  )
-                      input(:value="requestHandler")
                   .actions
                     .action
                       v-btn.btn_singup( @click="signinHandler" elevation="0" :disabled="!disableHandler" )
@@ -57,7 +56,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions("executor", ["signIn"]),
+    ...mapActions("super_manager", ["signIn"]),
 
     async signinHandler() {
       await this.signIn(this.login);
