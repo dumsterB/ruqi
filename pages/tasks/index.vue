@@ -354,14 +354,21 @@ export default {
       this[fetchParams].value = search;
       this[fetchParams].filters = filter;
 
+      let sorting = this[watcherParams].sortBy[0];
+
       let params = {
         "settings": {
           "value": search,
-          "sort": this[watcherParams].sortBy[0]  ? this[watcherParams].sortBy[0] : 'name',
-          "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
+          //"sort": this[watcherParams].sortBy[0]  ? this[watcherParams].sortBy[0] : 'name',
+          //"order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": filter
         }
       };
+
+      if (sorting){
+        params.sort = this[watcherParams].sortBy[0];
+        params.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
+      }
 
       console.log('params-----', filter, params, );
 
@@ -370,14 +377,21 @@ export default {
 
     getDataFromApi(fetchParams, watcherParams, action) {
 
+      let sorting = this[watcherParams].sortBy[0];
+
       const params = {
         "settings": {
           "value": this[fetchParams].value,
-          "sort": this[watcherParams].sortBy[0],
-          "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
+          //"sort": this[watcherParams].sortBy[0],
+          //"order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": this[fetchParams].filters,
         }
       };
+
+      if (sorting){
+        params.sort = this[watcherParams].sortBy[0];
+        params.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
+      }
 
       this[action]({
         params: params,

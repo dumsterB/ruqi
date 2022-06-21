@@ -484,6 +484,8 @@ export default {
       this[fetchParams].filters = filter;
       this[fetchParams].professions = professions;
 
+      let sorting = this[watcherParams].sortBy[0];
+
       let params = {
         "settings": {
           "value": search,
@@ -492,6 +494,11 @@ export default {
           "filters": filter
         }
       };
+
+      if (sorting){
+        params.sort = this[watcherParams].sortBy[0];
+        params.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
+      }
 
       if (professions){
         params.professions = professions;
@@ -613,14 +620,21 @@ export default {
 
       this[watcherParams] = options;
 
+      let sorting = this[watcherParams].sortBy[0];
+
       const params = {
         "settings": {
           "value": this[fetchParams].value,
-          "sort": this[watcherParams].sortBy[0] ? this[watcherParams].sortBy[0]  : 'lastname',
-          "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
+          //"sort": this[watcherParams].sortBy[0] ? this[watcherParams].sortBy[0]  : 'lastname',
+          //"order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": this[fetchParams].filters,
         }
       };
+
+      if (sorting){
+        params.sort = this[watcherParams].sortBy[0];
+        params.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
+      }
 
       this[action]({
         requestId: this.$route.params.id,

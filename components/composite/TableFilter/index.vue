@@ -169,7 +169,7 @@ export default {
         if (this.selected_fields[i].value) {
           if (!Array.isArray(this.selected_fields[i].value) || Array.isArray(this.selected_fields[i].value) && this.selected_fields[i].value.length) {
 
-            if (this.selected_fields[i].field != 'profession') {
+            if (this.selected_fields[i].field != 'professions') {
               let sentFieldObj = {};
               Object.assign(sentFieldObj, this.selected_fields[i]);
 
