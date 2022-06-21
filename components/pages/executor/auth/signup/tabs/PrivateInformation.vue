@@ -228,6 +228,12 @@ export default {
       if (this.requestSuccess.type === "success") {
         this.$emit("pageHandler", value);
       } else {
+        this.form.name  = ''
+        this.form.surname  = ''
+        this.form.email = ''
+        this.form.phone  = ''
+        this.form.sex  = ''
+        this.form.date  = ''
         this.$refs.form.validate()
       }
     },

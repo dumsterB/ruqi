@@ -130,7 +130,7 @@ export default {
   data() {
     return {
       power: 78,
-      current_page: 5,
+      current_page: 0,
       form: {
         name: "",
         surname: "",

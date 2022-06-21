@@ -109,6 +109,8 @@ export default {
       if (this.requestSuccess.type === "success") {
         this.$emit("pageHandler", value);
       } else {
+        this.password = ''
+        this.confirm_password = ''
         this.validate();
       }
     },
