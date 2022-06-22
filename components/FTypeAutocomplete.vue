@@ -13,6 +13,7 @@
       :label="params.placeholder"
       hide-details
       :prepend-inner-icon="icon_code"
+      clearable
       @input="$emit('input', select)")
 </template>
 

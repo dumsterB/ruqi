@@ -1310,7 +1310,7 @@ h1.large {
 /* Pagination */
 
 .ruqi {
-  .v-application .primary {
+  .v-application .primary:not(.v-progress-linear__background) {
     color: $blue !important;
     border-color: $blue !important;
     background: #fff !Important;
