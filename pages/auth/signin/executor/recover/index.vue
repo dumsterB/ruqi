@@ -43,10 +43,10 @@ export default {
         phone_or_email: "",
         password: "",
       },
-      requestHandler: '',
+      requestHandler: "",
       valid: false,
       inputRules: [(v) => !!v || "Заполните поля"],
-      passwordRules: [(v) => !!v || "Заполните поля"]
+      passwordRules: [(v) => !!v || "Заполните поля"],
     };
   },
   computed: {
@@ -60,16 +60,16 @@ export default {
 
     async signinHandler() {
       await this.signIn(this.login);
-      console.log(this.requestSuccess)
+      console.log(this.requestSuccess);
       if (this.requestSuccess.type === "success") {
-        this.$router.push('/');
+        this.$router.push("/");
       } else {
-        this.$refs.form.validate()
-        this.login.password = ''
+        this.$refs.form.validate();
+        this.login.password = "";
       }
     },
     forgot() {
-      this.$router.push({name:'auth-signin-executor-recover-phone'});
+      this.$router.push({ name: "auth-signin-executor-recover-phone" });
     },
   },
 };
@@ -209,12 +209,12 @@ export default {
 .error-by-signin {
   border-color: red !important;
 }
-.btn_singup{
+.btn_singup {
   width: 100%;
-  background: #0082de!important;
+  background: #0082de !important;
   color: white;
   border-radius: 8px;
-  height: 50px!important;
+  height: 50px !important;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -227,4 +227,10 @@ export default {
   background: #0082de !important;
 }
 /* MIXINS STYLES END */
+@media (max-width: 1000px) {
+  .auth-form{
+    width: 340px!important;
+  }
+}
+
 </style>

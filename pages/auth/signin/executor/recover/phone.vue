@@ -234,4 +234,9 @@ export default {
   color: lightgrey !important;
   background: #0082de !important;
 }
+@media (max-width: 1000px) {
+  .auth-form{
+    width: 340px!important;
+  }
+}
 </style>

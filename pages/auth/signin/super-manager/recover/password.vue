@@ -87,7 +87,9 @@ export default {
       if (this.requestSuccess.type === "success") {
         this.$router.push('/')
       } else {
-        this.validate();
+        this.password = ''
+        this.confirm_password = ''
+        this.$refs.form.validate();
       }
     },
   },
@@ -263,4 +265,9 @@ export default {
   background: #0082de !important;
 }
 /* MIXINS STYLES END */
+@media (max-width: 1000px) {
+  .auth-form{
+    width: 340px!important;
+  }
+}
 </style>

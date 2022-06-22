@@ -271,4 +271,9 @@ export default {
   align-items: center;
 }
 /* MIXINS STYLES END */
+@media (max-width: 1000px) {
+  .auth-form{
+    width: 340px!important;
+  }
+}
 </style>

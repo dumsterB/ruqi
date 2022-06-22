@@ -263,4 +263,9 @@ export default {
   background: #0082de !important;
 }
 /* MIXINS STYLES END */
+@media (max-width: 1000px) {
+  .auth-form{
+    width: 340px!important;
+  }
+}
 </style>
