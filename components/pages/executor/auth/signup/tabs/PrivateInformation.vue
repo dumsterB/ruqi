@@ -180,11 +180,11 @@ export default {
       inputRules: [(v) => !!v || "Заполните поля"],
       phoneRules: [
         (v) => !!v || "Заполните поля",
-        (v) => (!!v && v.length == 12) || "Номер не корректный",
+        (v) => (!!v && v.length == 12) || "Некорректный  номер",
         (value) => {
           const pattern =
             /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-          return pattern.test(value) || "Не корректный номер";
+          return pattern.test(value) || "Некорректный  номер";
         },
       ],
       emailRules: [
