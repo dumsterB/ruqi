@@ -81,7 +81,7 @@ export default {
       meta: {
         meta_filter_row_1: [
           {
-            type: 'FTypeAutocomplete',
+            type: 'FTypeSearchAutocomplete',
             label: '',
             col: 3,
             name: 'region',
@@ -374,6 +374,8 @@ export default {
     ...mapActions("dictionary", ["fetchAddress",]),
 
     async setRegionList(region) {
+
+      this.formValues.region = region;
 
       this.meta.meta_filter_row_1[0].params.loading = true;
 
