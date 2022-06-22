@@ -83,7 +83,7 @@ export default {
       }
     },
     smsHandler() {
-      this.countDown = 10;
+      this.countDown = 60;
       this.countDownTimer();
     },
     async next(value) {
