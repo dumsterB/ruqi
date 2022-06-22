@@ -10,7 +10,7 @@
       filled
       clearable
       hide-details
-      prepend-inner-icon="mdi-magnify"
+      :prepend-inner-icon="icon_code"
       @input="setItemsList"
     )
 
@@ -35,7 +35,11 @@ export default {
       default() {
         return {}
       }
-    }
+    },
+    icon: {
+      type: String,
+      default: '',
+    },
   },
 
   data() {
@@ -45,6 +49,16 @@ export default {
       newSearchText: '',
       isShowList: false,
     }
+  },
+
+  computed:{
+    icon_code() {
+      if (this.icon) {
+        return this.icon;
+      } else {
+        return null;
+      }
+    },
   },
 
   watch: {
