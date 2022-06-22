@@ -105,6 +105,9 @@ export default {
             this.value_from = this.params.value[0].value;
             this.value_to = this.params.value[1].value;
           }
+        }else{
+          this.value_from = null;
+          this.value_to = null;
         }
 
       },
