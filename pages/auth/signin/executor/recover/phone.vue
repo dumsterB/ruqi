@@ -6,7 +6,7 @@
           .login-container
             .wrapper
               .login-logo
-                img.auth-logo( src="@/assets/img/auth-logo.png" )
+                img.auth-logo( src="@/assets/img/logoRecover.svg" )
               v-form.auth-form(ref="form" v-model="valid" lazy-validation)
                 .wrapper
                   .haupt-titel
@@ -40,7 +40,7 @@ export default {
 
   data() {
     return {
-      phone:'',
+      phone:'+7',
       error: false,
       valid:false,
       phoneRules: [

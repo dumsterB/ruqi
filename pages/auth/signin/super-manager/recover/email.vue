@@ -18,13 +18,13 @@
                         .txt Email
                       .input
                         v-text-field(
-                          v-model="phone"
+                          v-model="email"
                           class="mt-2"
-                          type="tel"
+                          type="email"
                           :rules="emailRules"
                           outlined
-                          name="phone"
-                          placeholder="+7")
+                          name="email"
+                        )
                   .actions
                     .action
                       v-btn.btn_singup( @click="submit" elevation="0" :disabled="!disableHandler" ) отправить код
@@ -40,7 +40,7 @@ export default {
 
   data() {
     return {
-      phone:'',
+      email:'',
       error: false,
       valid:false,
       emailRules: [
@@ -52,15 +52,15 @@ export default {
   },
 
   methods: {
-    ...mapActions('executor',['recoverExecutorPhone']),
+    ...mapActions('super_manager',['recoverEmail']),
    async submit() {
-      await this.recoverExecutorPhone(this.phone);
-        this.$router.push({name:'auth-signin-executor-recover-sms'});
+      await this.recoverEmail(this.email);
+        this.$router.push({name:'auth-signin-super-manager-recover-sms'});
     },
   },
   computed:{
     disableHandler(){
-      return this.phone && this.valid
+      return this.email && this.valid
     }
   }
 };

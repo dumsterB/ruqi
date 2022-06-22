@@ -6,7 +6,7 @@
           .login-container
             .wrapper
               .login-logo
-                img.auth-logo( src="@/assets/img/auth-logo.png" )
+                img.auth-logo( src="@/assets/img/logoRecover.svg" )
               v-form.auth-form(v-model="valid" lazy-validation ref="form" )
                 .wrapper
                   .haupt-titel
@@ -21,7 +21,7 @@
                       .signin-btn( @click="submit" )
                         .titel.btn-text ПРОДОЛЖИТЬ
                       .send-again
-                        .titel.btn-again(v-if="countDown > 0" ) Отправить повторно через {{countDown}} сек
+                        .titel.btn-again(v-if="countDown > 0" ) Отправить повторно можно будет через {{countDown}} сек
                         .titel.btn-again(v-else @click="sendAgain" ) Отправить код повторно
 
 </template>
@@ -36,26 +36,27 @@ export default {
   data() {
     return {
       sms: "",
-      error: false,
-      countDown: "60",
+      valid: false,
+      countDown: "30",
       inputRules: [(v) => !!v || "Заполните поля", !this.valid || 'поля не правильное'],
     };
   },
 
   methods: {
-    ...mapActions('executor',['sigInInConfirmPassword']),
-   async submit() {
-    await  this.sigInInConfirmPassword(this.sms)
+    ...mapActions('super_manager',['confirmPassword']),
+    async submit() {
+      await  this.confirmPassword(this.sms)
       if (this.requestSuccess.type === "success") {
-        this.$router.push({name:'auth-signin-executor-recover-password'});
+        this.$router.push({name:'auth-signin-super-manager-recover-password'});
       } else {
         this.$refs.form.validate()
         this.sms = ''
       }
     },
     sendAgain() {
-      this.countDown = 60;
+      this.countDown = 30;
       this.countDownTimer();
+      this.recoverExecutorPhone(this.recover_sms_phone)
     },
     countDownTimer() {
       if (this.countDown > 0) {

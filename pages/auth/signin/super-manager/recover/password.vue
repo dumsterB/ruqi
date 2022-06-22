@@ -1,51 +1,51 @@
 <template lang="pug">
-.login-page
-  .wrapper
-    .wrapper-x
-      .wraper-y
-        .login-container
-          .wrapper
-            .login-logo
-              img.auth-logo( src="@/assets/img/auth-logo.png" )
-            v-form(v-model="valid", lazy-validation ref="form" )
-              .auth-form
-                .wrapper
-                  .haupt-titel
-                    .txt Придумайте новый пароль
-                  .inputs-group
-                    .input-line.email-num.mt-5
-                      .titel
-                        .txt Введите новый пароль
-                      .input
-                        v-text-field(
-                          v-model="password"
-                          :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                          :rules="[rules.required, rules.min, rules.password]"
-                          outlined
-                          :type="show ? 'text' : 'password'"
-                          name="input-10-1"
-                          hint="Минимум 8 символов"
-                          counter
-                          @click:append="show = !show"  )
-                    .input-line.password-num
-                      .titel
-                        .txt Введите новый пароль повторно
-                      .input
-                        v-text-field(
-                          v-model="confirm_password"
-                          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                          :rules="[password === confirm_password || 'Пароль не совподает']"
-                          :type="show1 ? 'text' : 'password'"
-                          name="input-10-1"
-                          outlined
-                          hint="Минимум 8 символов"
-                          counter
-                          @click:append="show1 = !show1"
-                        )
-                p.requirements Требования к паролю: <br /> длина — не менее 8 символов; <br /> заглавные буквы; <br />  строчные буквы; <br /> цифры или специальные символы: %, #, $ <br /> и другие.
-                .actions
-                  .action
-                     v-btn.btn_singup(elevation="0" @click="submit"  :disabled="!disableHandler") обновить пароль
+  .login-page
+    .wrapper
+      .wrapper-x
+        .wraper-y
+          .login-container
+            .wrapper
+              .login-logo
+                img.auth-logo( src="@/assets/img/logoRecover.svg" )
+              v-form(v-model="valid", lazy-validation ref="form" )
+                .auth-form
+                  .wrapper
+                    .haupt-titel
+                      .txt Придумайте новый пароль
+                    .inputs-group
+                      .input-line.email-num.mt-5
+                        .titel
+                          .txt Введите новый пароль
+                        .input
+                          v-text-field(
+                            v-model="password"
+                            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                            :rules="[rules.required, rules.min, rules.password]"
+                            outlined
+                            :type="show ? 'text' : 'password'"
+                            name="input-10-1"
+                            hint="Минимум 8 символов"
+                            counter
+                            @click:append="show = !show"  )
+                      .input-line.password-num
+                        .titel
+                          .txt Введите новый пароль повторно
+                        .input
+                          v-text-field(
+                            v-model="confirm_password"
+                            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                            :rules="[password === confirm_password || 'Пароль не совподает']"
+                            :type="show1 ? 'text' : 'password'"
+                            name="input-10-1"
+                            outlined
+                            hint="Минимум 8 символов"
+                            counter
+                            @click:append="show1 = !show1"
+                          )
+                  p.requirements Требования к паролю: <br /> длина — не менее 8 символов; <br /> заглавные буквы; <br />  строчные буквы; <br /> цифры или специальные символы: %, #, $ <br /> и другие.
+                  .actions
+                    .action
+                      v-btn.btn_singup(elevation="0" @click="submit"  :disabled="!disableHandler") обновить пароль
 
 </template>
 
@@ -76,14 +76,14 @@ export default {
   },
 
   methods: {
-    ...mapActions('executor',['createPassword']),
-   async submit() {
+    ...mapActions('super_manager',['createPassword']),
+    async submit() {
       let obj ={
-        phone: this.recover_sms_phone,
+        phone: this.recover_sms_email,
         password: this.password
       }
       await  this.createPassword(obj);
-     console.log(this.requestSuccess)
+      console.log(this.requestSuccess)
       if (this.requestSuccess.type === "success") {
         this.$router.push('/')
       } else {
@@ -93,7 +93,7 @@ export default {
   },
   computed:{
     ...mapGetters("response", ["requestSuccess"]),
-    ...mapGetters("executor", ["recover_sms_phone"]),
+    ...mapGetters("super_manager", ["recover_sms_email"]),
     disableHandler() {
       return this.password && this.password  === this.confirm_password;
     },

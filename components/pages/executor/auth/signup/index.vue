@@ -136,7 +136,7 @@ export default {
         surname: "",
         middle_name: "",
         sex: "",
-        birth_date: "",
+        birth_date: '',
         phone: "+7",
         email: null,
         agree: false,

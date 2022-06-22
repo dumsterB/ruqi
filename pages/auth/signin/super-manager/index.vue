@@ -70,7 +70,7 @@ export default {
       }
     },
     forgot() {
-      this.$router.push({name:'auth-signin-executor-recover-phone'});
+      this.$router.push({name:'auth-signin-super-manager-recover-email'});
     },
   },
 };

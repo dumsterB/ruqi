@@ -165,7 +165,6 @@ export const actions = {
       });
   },
   async createPassword({ commit }, params) {
-    console.log(params);
     await this.$axios
       .put("auth/password", params)
       .then((response) => {

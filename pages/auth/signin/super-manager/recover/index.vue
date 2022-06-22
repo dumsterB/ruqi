@@ -6,7 +6,7 @@
           .login-container
             .wrapper
               .login-logo
-                img.auth-logo( src="@/assets/img/auth-logo.png" )
+                img.auth-logo( src="@/assets/img/logoRecover.svg" )
               v-form.auth-form(v-model="valid" lazy-validation ref="form" )
                 .wrapper
                   .haupt-titel
@@ -56,7 +56,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions("super_manager", ["signIn"]),
+    ...mapActions("executor", ["signIn"]),
 
     async signinHandler() {
       await this.signIn(this.login);
@@ -69,7 +69,7 @@ export default {
       }
     },
     forgot() {
-      this.$router.push({name:'auth-signin-executor-recover-phone'});
+      this.$router.push({name:'auth-signin-super-manager-recover-phone'});
     },
   },
 };

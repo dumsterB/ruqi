@@ -60,48 +60,32 @@
           <div class="form-part">
             <p class="input_label">Дата рождения</p>
             <v-menu
-              ref="menu"
-              v-model="menu"
-              :close-on-content-click="false"
-              :return-value.sync="form.date"
-              transition="scale-transition"
-              offset-y
-              min-width="auto"
+                ref="menu1"
+                v-model="menu1"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="auto"
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
-                  v-model="form.birth_date"
-                  :rules="inputRules"
-                  label="ДД.ММ.ГГГГ"
-                  required
-                  class="mt-2"
-                  readonly
-                  v-bind="attrs"
-                  outlined
-                  dense
-                  v-on="on"
+                    v-model="dateFormatted"
+                    :rules="inputRules"
+                    label="ДД.ММ.ГГГГ"
+                    persistent-hint
+                    dense
+                    outlined
+                    v-bind="attrs"
+                    @blur="date = parseDate(dateFormatted)"
+                    v-on="on"
                 ></v-text-field>
               </template>
               <v-date-picker
-                v-model="form.birth_date"
-                :rules="inputRules"
-                :max="new Date().toISOString().slice(0,10)"
-                no-title
-                required
-                scrollable
-              >
-                <v-spacer></v-spacer>
-                <v-btn text color="primary" @click="menu = false">
-                  Cancel
-                </v-btn>
-                <v-btn
-                  text
-                  color="primary"
-                  @click="$refs.menu.save(form.birth_date)"
-                >
-                  OK
-                </v-btn>
-              </v-date-picker>
+                  v-model="date"
+                  no-title
+                  @input="menu1 = false"
+              ></v-date-picker>
             </v-menu>
           </div>
           <div class="form-part" v-if="!agree">
@@ -187,6 +171,8 @@ export default {
   data() {
     return {
       valid: false,
+      date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      dateFormatted:'',
       phoneNumber: "",
       menu: "",
       sex_options: ["мужской", "женский"],
@@ -206,10 +192,10 @@ export default {
         (v) => /.+@.+/.test(v) || "E-mail должен быть валидным",
       ],
       nowDate: new Date().toISOString().slice(0,10),
-      date: new Date(),
       picker: new Date().toISOString().substr(0, 10),
       landscape: false,
-      reactive: false
+      reactive: false,
+      menu1:false,
     };
   },
   methods: {
@@ -223,8 +209,8 @@ export default {
       } else {
         delete this.form.email;
       }
+      this.form.birth_date = this.dateFormatted
       await this.createExecutor(this.form);
-      console.log(this.requestSuccess);
       if (this.requestSuccess.type === "success") {
         this.$emit("pageHandler", value);
       } else {
@@ -241,12 +227,28 @@ export default {
       this.switcher = !this.switcher;
       this.$emit("checkboxHandler", this.switcher);
     },
+    formatDate (date) {
+      if (!date) return null
+
+      const [year, month, day] = date.split('-')
+      return `${month}.${day}.${year}`
+    },
+    parseDate (date) {
+      if (!date) return null
+
+      const [month, day, year] = date.split('.')
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+    },
+  },
+  watch: {
+    date (val) {
+      this.dateFormatted = this.formatDate(this.date)
+    },
   },
   computed: {
     ...mapGetters("response", ["requestSuccess"]),
-    getEndDate() {
-      var endDate = new Date(this.date.getFullYear(), this.date.getMonth() + 1, 10);
-      return endDate.toISOString().slice(0,10)
+    computedDateFormatted () {
+      return this.formatDate(this.date)
     },
     executors() {
       return this.$store.getters["executor/executors"];
@@ -258,7 +260,7 @@ export default {
           this.form.surname &&
           this.form.email &&
           this.form.sex &&
-          this.form.date &&
+          this.dateFormatted &&
           this.valid
         );
       } else {
@@ -267,7 +269,7 @@ export default {
           this.form.surname &&
           this.form.phone &&
           this.form.sex &&
-          this.form.date &&
+          this.dateFormatted &&
           this.valid
         );
       }

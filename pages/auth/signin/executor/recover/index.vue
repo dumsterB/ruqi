@@ -6,7 +6,7 @@
           .login-container
             .wrapper
               .login-logo
-                img.auth-logo( src="@/assets/img/auth-logo.png" )
+                img.auth-logo( src="@/assets/img/logoRecover.svg" )
               v-form.auth-form(v-model="valid" lazy-validation ref="form" )
                 .wrapper
                   .haupt-titel
