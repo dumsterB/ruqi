@@ -12,7 +12,7 @@
                   .haupt-titel
                     .txt Восстановление пароля
 
-                    p.text-grey Мы отправили SMS с кодом <br /> на номер {{recover_sms_phone}}
+                    p.text-grey Мы отправили SMS с кодом <br /> на номер {{recover_sms_email}}
                     .input-line.email-num
                       .titel
                         v-otp-input.item.mt-4(  length='4' v-model='sms'   :rules="inputRules" )
@@ -43,7 +43,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('super_manager',['confirmPassword']),
+    ...mapActions('super_manager',['confirmPassword','codeRepeat']),
     async submit() {
       await  this.confirmPassword(this.sms)
       if (this.requestSuccess.type === "success") {
@@ -56,7 +56,7 @@ export default {
     sendAgain() {
       this.countDown = 30;
       this.countDownTimer();
-      this.recoverExecutorPhone(this.recover_sms_phone)
+      this.codeRepeat(this.recover_sms_email)
     },
     countDownTimer() {
       if (this.countDown > 0) {
@@ -72,7 +72,7 @@ export default {
     },
   },
   computed:{
-    ...mapGetters('executor',['recover_sms_phone']),
+    ...mapGetters('super_manager',['recover_sms_email']),
     ...mapGetters("response", ["requestSuccess"]),
   },
   created() {
