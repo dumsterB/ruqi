@@ -12,7 +12,7 @@
                   .haupt-titel
                     .txt Восстановление пароля
 
-                    p.text-grey Мы отправили SMS с кодом <br /> на номер {{recover_sms_email}}
+                    p.text-grey Мы отправили SMS с кодом <br /> на почту {{recover_sms_email}}
                     .input-line.email-num
                       .titel
                         v-otp-input.item.mt-4(  length='4' v-model='sms'   :rules="inputRules" )

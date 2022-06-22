@@ -6,7 +6,7 @@
           .login-container
             .wrapper
               .login-logo
-                img.auth-logo( src="@/assets/img/auth-logo.png" )
+                img.auth-logo( src="@/assets/img/logoRecover.svg" )
               v-form.auth-form(ref="form" v-model="valid" lazy-validation)
                 .wrapper
                   .haupt-titel
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import {mapActions} from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   layout: "empty",
@@ -40,29 +40,36 @@ export default {
 
   data() {
     return {
-      email:'',
+      email: "",
       error: false,
-      valid:false,
+      valid: false,
+      isUser: false,
       emailRules: [
-        v => !!v || 'Заполните поля',
-        v => /.+@.+\..+/.test(v) || 'E-mail должен быть валидным',
+        (v) => !!v || "Заполните поля",
+        (v) => /.+@.+\..+/.test(v) || "E-mail должен быть валидным",
       ],
-    }
-
+    };
   },
 
   methods: {
-    ...mapActions('super_manager',['recoverEmail']),
-   async submit() {
+    ...mapActions("super_manager", ["recoverEmail"]),
+    async submit() {
       await this.recoverEmail(this.email);
-        this.$router.push({name:'auth-signin-super-manager-recover-sms'});
+      if (this.requestSuccess.type === "success") {
+        this.$router.push({ name: "auth-signin-super-manager-recover-sms" });
+      } else {
+        this.email = "";
+        this.isUser = true;
+        this.$refs.form.validate();
+      }
     },
   },
-  computed:{
-    disableHandler(){
-      return this.email && this.valid
-    }
-  }
+  computed: {
+    ...mapGetters("response", ["requestSuccess"]),
+    disableHandler() {
+      return this.email && this.valid;
+    },
+  },
 };
 </script>
 
@@ -199,26 +206,26 @@ export default {
 .error-by-signin {
   border-color: red !important;
 }
-.text-grey{
-  color: #7A91A9;
+.text-grey {
+  color: #7a91a9;
   font-size: 16px;
   text-align: center;
 }
-.btn-text{
+.btn-text {
   text-transform: uppercase;
 }
-.requirements{
-  color: #7A91A9;
+.requirements {
+  color: #7a91a9;
 }
-.v-btn__content{
+.v-btn__content {
   width: 100%;
 }
-.btn_singup{
+.btn_singup {
   width: 100%;
-  background: #0082de!important;
+  background: #0082de !important;
   color: white;
   border-radius: 8px;
-  height: 50px!important;
+  height: 50px !important;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -231,8 +238,8 @@ export default {
   background: #0082de !important;
 }
 @media (max-width: 1000px) {
-  .auth-form{
-    width: 340px!important;
+  .auth-form {
+    width: 340px !important;
   }
 }
 </style>
