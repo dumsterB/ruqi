@@ -93,6 +93,8 @@ export default {
               clearable: true,
               states: [],
               loading: false,
+              filled: true,
+              dense: true
             },
             max_width: '240',
           },
