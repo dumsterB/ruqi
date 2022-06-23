@@ -101,6 +101,7 @@ export default {
       isApplyFilter: false,
       lastSelected_fields: [],
       lastCheck_fields: [],
+      lastPanel: [],
     }
   },
   computed: {
@@ -202,6 +203,8 @@ export default {
 
       }
 
+      this.lastPanel = this.panel;
+
       this.$emit('applyFilter', sentFilter, this.searchText, JSON.stringify(professions));
 
       this.isOpened = isClosePopup;
@@ -250,6 +253,9 @@ export default {
           this.check_fields.push(lastState);
 
         }
+
+        this.panel = this.lastPanel;
+
       } else {
         this.$refs.form.reset();
         this.panel = [];
