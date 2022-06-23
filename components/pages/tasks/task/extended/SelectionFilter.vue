@@ -411,6 +411,8 @@ export default {
     clearFields() {
       this.$refs.form.reset();
 
+      this.meta.meta_filter_row_1[1].params.readonly = false;
+
       this.meta.meta_filter_row_1.map(f => {
         Vue.set(this.formValues, f.name, null);
       })

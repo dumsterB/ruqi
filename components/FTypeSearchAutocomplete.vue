@@ -81,6 +81,7 @@ export default {
 
     setItemsList: _.debounce(
       function () {
+        this.$emit('input', this.newSearchText);
         if (this.newSearchText) {
           this.$emit('setItemsList', this.newSearchText);
         } else {
@@ -98,6 +99,7 @@ export default {
 
     onClickOutside() {
       this.isShowList = false;
+      this.$emit('input', this.newSearchText);
     }
   },
 }
