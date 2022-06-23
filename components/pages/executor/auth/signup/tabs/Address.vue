@@ -10,16 +10,21 @@
         <div class="mt-5">
           <h3>Укажите место проживания</h3>
           <p class="input_label">Место основного проживания</p>
-          <v-text-field
-            outlined
-            class="mt-2"
-            placeholder="Введите адрес"
-            :rules="inputRules"
-            v-model="address"
-            dense
-            single-line
-          ></v-text-field>
-          <h3>Укажите место проживания</h3>
+          <div
+            v-for="(filed, index) in meta.meta_filter_row_1"
+            :key="index"
+            :style="{ maxWidth: filed.max_width + 'px' }"
+          >
+            <FTypeSearchAutocomplete
+              :name="filed.name"
+              :icon="filed.icon"
+              :params="filed.params"
+              :validation="filed.validation"
+              :value="filed.value"
+              @setItemsList="setRegionList"
+            ></FTypeSearchAutocomplete>
+          </div>
+          <h3 class="mt-5">Укажите место проживания</h3>
           <p>
             Введите название населенного пункта город с районом или метро,
             откуда хотели бы получать предложения о работе
@@ -43,7 +48,7 @@
             dense
             single-line
           ></v-text-field>
-          <a href="" class="link">Добавить адрес</a>
+          <!--          <a href="" class="link">Добавить адрес</a>-->
           <div class="access-content d-flex mt-5">
             <img src="@/assets/img/attention.svg" alt="" />
             <strong class="ml-2" style="font-weight: 600; margin-bottom: -10px"
@@ -72,8 +77,13 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import FTypeSearchAutocomplete from "@/components/FTypeSearchAutocomplete";
+import Vue from "vue";
 
 export default {
+  components: {
+    "f-type-search-autocomplete": FTypeSearchAutocomplete,
+  },
   data() {
     return {
       address: "",
@@ -81,10 +91,47 @@ export default {
       address_extra_2: "",
       valid: false,
       inputRules: [(v) => !!v || "Заполните поля"],
+      formValues: {},
+      meta: {
+        meta_filter_row_1: [
+          {
+            type: "FTypeSearchAutocomplete",
+            label: "",
+            col: 3,
+            name: "region",
+            validation: [],
+            value: "",
+            icon: "mdi-magnify",
+            params: {
+              placeholder: "Выберите регион",
+              clearable: true,
+              dense: true,
+              filled: false,
+              v_model: "",
+              states: [],
+              loading: false,
+              label: "",
+            },
+            max_width: "100%",
+          },
+        ],
+      },
     };
   },
   methods: {
     ...mapActions("executor", ["setAddress"]),
+    ...mapActions("dictionary", ["fetchAddress"]),
+
+    async setRegionList(region) {
+      this.formValues.region = region;
+
+      this.meta.meta_filter_row_1[0].params.loading = true;
+
+      await this.fetchAddress({ region: region });
+
+      this.meta.meta_filter_row_1[0].params.states = this.addresses;
+      this.meta.meta_filter_row_1[0].params.loading = false;
+    },
     validate() {
       this.$refs.form.validate();
     },
@@ -92,17 +139,32 @@ export default {
       this.$emit("pageHandler", value, "back");
     },
     async next(value) {
-     let data = [
-         this.address, this.address_extra, this.address_extra_2
-     ]
-     let params = data.filter(ell=> ell.length > 1)
+      let data = [this.address, this.address_extra, this.address_extra_2];
+      let params = data.filter((ell) => ell.length > 1);
       await this.setAddress(params);
-      console.log(params)
       if (this.requestSuccess.type === "success") {
         this.$emit("pageHandler", value);
       } else {
         this.validate();
       }
+    },
+
+    sendFilter() {
+      console.log(this.postBody);
+
+      this.$emit("sendFilter", this.postBody);
+    },
+    clearFields() {
+      this.$refs.form.reset();
+
+      this.meta.meta_filter_row_1.map((f) => {
+        Vue.set(this.formValues, f.name, null);
+      });
+      this.meta.meta_filter_row_2.map((f) => {
+        Vue.set(this.formValues, f.name, null);
+      });
+
+      this.$emit("sendFilter", this.postBody);
     },
   },
   computed: {
@@ -110,6 +172,82 @@ export default {
     disableHandler() {
       return this.address;
     },
+    postBody() {
+      let postBody = {
+          settings: {
+            filters: [],
+          },
+        },
+        list_params = ["region", "radius", "subscribe", "working"];
+
+      for (let i = 0; i < list_params.length; i++) {
+        if (this.formValues[list_params[i]]) {
+          postBody[list_params[i]] = this.formValues[list_params[i]];
+        }
+      }
+
+      if (this.formValues.lastname) {
+        postBody.settings.value = this.formValues.lastname;
+      }
+
+      if (
+        this.formValues.professions &&
+        this.formValues.professions.length > 0
+      ) {
+        postBody.professions = JSON.stringify(this.formValues.professions);
+      }
+
+      if (this.formValues.rate) {
+        postBody.settings.filters.push({
+          field: "rate",
+          type: "range",
+          value: { to: this.formValues.rate },
+        });
+      }
+
+      if (this.formValues.trust) {
+        postBody.settings.filters.push({
+          field: "trust",
+          type: "range",
+          value: { from: this.formValues.trust },
+        });
+      }
+
+      if (this.formValues.age_from || this.formValues.age_to) {
+        postBody.settings.filters.push({
+          field: "age",
+          type: "range",
+          value: { from: this.formValues.age_from, to: this.formValues.age_to },
+        });
+      }
+
+      if (this.formValues.activity && this.formValues.activity.length > 0) {
+        postBody.settings.filters.push({
+          field: "last_active",
+          type: "list",
+          value: this.formValues.activity,
+        });
+      }
+
+      if (this.formValues.rank && this.formValues.rank.length > 0) {
+        postBody.settings.filters.push({
+          field: "rank",
+          type: "list",
+          value: this.formValues.rank,
+        });
+      }
+
+      return postBody;
+    },
+
+    addresses() {
+      return this.$store.getters["dictionary/address"];
+    },
+  },
+  created() {
+    this.meta.meta_filter_row_1.map((f) => {
+      Vue.set(this.formValues, f.name, f.value);
+    });
   },
 };
 </script>

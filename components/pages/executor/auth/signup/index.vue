@@ -113,30 +113,29 @@ import UploadDocument from "./tabs/UploadDocument";
 import paymentInformation from "./tabs/PaymentInformation";
 import Finish from "./tabs/Finish";
 import Address from "./tabs/Address";
-
 export default {
   props: {},
   components: {
     "private-information": PrivateInformation,
-    sms: Sms,
     "create-password": CreatePassword,
     "electronic-document": ElectronicDocument,
     "position-selector": PositionSelector,
     "upload-document": UploadDocument,
     "payment-information": paymentInformation,
-    finish: Finish,
     "address-page": Address,
+    finish: Finish,
+    sms: Sms,
   },
   data() {
     return {
       power: 78,
-      current_page: 6,
+      current_page: 5,
       form: {
         name: "",
         surname: "",
         middle_name: "",
         sex: "",
-        birth_date: '',
+        birth_date: "",
         phone: "+7",
         email: null,
         agree: false,
@@ -160,7 +159,6 @@ export default {
     };
   },
   methods: {
-
     pageHandler(val, helper) {
       if (helper === "back") {
         this.current_page = val;

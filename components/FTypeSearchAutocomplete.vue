@@ -7,13 +7,13 @@
       :placeholder="params.placeholder"
       single-line
       outlined
-      filled
+      :filled="params.filled"
+      :dense="params.dense"
       clearable
       hide-details
       :prepend-inner-icon="icon_code"
       @input="setItemsList"
     )
-
     .search-results(v-if="isShowList" v-click-outside="onClickOutside")
       .item-result(v-for="item in items" @click="selectItem(item)") {{ item }}
 
