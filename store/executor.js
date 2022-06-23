@@ -8,7 +8,7 @@ export const state = () => ({
   error: "",
   passport_main_spread: null,
   phone_or_email: "",
-  recover_sms_phone: ''
+  recover_sms_phone: '',
 });
 export const getters = {
   specializations(state) {

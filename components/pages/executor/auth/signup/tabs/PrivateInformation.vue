@@ -84,8 +84,24 @@
               <v-date-picker
                   v-model="date"
                   no-title
-                  @input="menu1 = false"
-              ></v-date-picker>
+                  scrollable
+              >
+                <v-spacer></v-spacer>
+                <v-btn
+                    text
+                    color="primary"
+                    @click="menu1 = false"
+                >
+                  Cancel
+                </v-btn>
+                <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.menu1.save(date)"
+                >
+                  OK
+                </v-btn>
+              </v-date-picker>
             </v-menu>
           </div>
           <div class="form-part" v-if="!agree">
@@ -114,7 +130,7 @@
               dense
             ></v-text-field>
           </div>
-
+          <p class="text-danger">{{requestSuccess.text === 'Заполните поля' ? 'Email уже существует!' : ''}}</p>
           <div class="form-part-checkbox">
             <div class="d-flex">
               <v-checkbox
@@ -211,6 +227,7 @@ export default {
       }
       this.form.birth_date = this.dateFormatted
       await this.createExecutor(this.form);
+      console.log(this.requestSuccess,'request')
       if (this.requestSuccess.type === "success") {
         this.$emit("pageHandler", value);
       } else {
@@ -311,5 +328,8 @@ export default {
 .theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
   color: lightgrey !important;
   background: #0082de !important;
+}
+.text-danger{
+  color: #ff5252;
 }
 </style>

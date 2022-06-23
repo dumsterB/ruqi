@@ -25,6 +25,7 @@
                           outlined
                           name="email"
                         )
+                  p(class="text-danger") {{requestSuccess.text === 'Заполните поля' ? 'Email уже существует!' : ''}}
                   .actions
                     .action
                       v-btn.btn_singup( @click="submit" elevation="0" :disabled="!disableHandler" ) отправить код
@@ -241,5 +242,8 @@ export default {
   .auth-form {
     width: 340px !important;
   }
+}
+.text-danger{
+  color: #ff5252;
 }
 </style>
