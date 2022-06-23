@@ -37,7 +37,7 @@
       <v-row>
         <v-col cols="5">
           <p class="input_label">ИНН</p>
-          <v-text-field v-model="settings.inn" dense outlined></v-text-field>
+          <v-text-field :rules="[(v) => (!!v && v.length === 12) || 'Некорректный  ИНН']" v-model="settings.inn" dense outlined></v-text-field>
         </v-col>
       </v-row>
       <v-row>
@@ -57,7 +57,7 @@
         </v-col>
         <v-col col="4">
           <p class="input_label">БИК</p>
-          <v-text-field  v-model="settings.bik" placeholder="044521234" dense outlined></v-text-field>
+          <v-text-field :rules="[(v) => (!!v && v.length === 9) || 'Некорректный  БИК']"  v-model="settings.bik" placeholder="044521234" dense outlined></v-text-field>
         </v-col>
       </v-row>
       <v-row v-if="settings.type_payment != 'Банковская карта'">
