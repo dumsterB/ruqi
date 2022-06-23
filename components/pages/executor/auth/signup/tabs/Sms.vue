@@ -18,6 +18,7 @@
 
           <v-otp-input
               length="4"
+              placeholder="-"
               v-model="smsCode"
               :rules="inputRules"
           ></v-otp-input>
