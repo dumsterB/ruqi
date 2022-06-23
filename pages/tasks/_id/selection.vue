@@ -30,7 +30,7 @@ export default {
         {text: "%БН", value: "trust", width: '112px'},
         {text: "ранг", value: "rank", width: '112px'},
         {text: "ставка", value: "rate", width: '112px'},
-        {text: "профессия", value: "professions", width: '180px'},
+        {text: "профессия", value: "professions", width: '180px', sortable: false},
         {text: "Работал", value: "on_object"},
       ],
       options: {},
