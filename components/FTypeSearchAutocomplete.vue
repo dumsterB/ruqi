@@ -81,6 +81,7 @@ export default {
 
     setItemsList: _.debounce(
       function () {
+        this.$emit('input', this.newSearchText);
         if (this.newSearchText) {
           this.$emit('setItemsList', this.newSearchText);
         } else {
@@ -98,6 +99,7 @@ export default {
 
     onClickOutside() {
       this.isShowList = false;
+      this.$emit('input', this.newSearchText);
     }
   },
 }
@@ -109,7 +111,7 @@ export default {
   position: relative;
 
   .v-input {
-    z-index: 100;
+    z-index: 2;
   }
 
   .search-results {
@@ -123,7 +125,7 @@ export default {
     padding: 12px 0;
     max-height: 300px;
     overflow: auto;
-    z-index: 50;
+    z-index: 1;
     box-shadow: 0 0 73px 5px rgba(0, 0, 0, 0.1);
 
     .item-result {
