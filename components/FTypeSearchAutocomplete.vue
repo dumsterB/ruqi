@@ -12,10 +12,11 @@
       clearable
       hide-details
       :prepend-inner-icon="icon_code"
-      @input="setItemsList"
+      @input="setItemsListYandex"
+      id="suggest"
     )
     .search-results(v-if="isShowList" v-click-outside="onClickOutside")
-      .item-result(v-for="item in items" @click="selectItem(item)") {{ item }}
+      .item-result(v-for="item in items" @click="selectItem(item.displayName)") {{ item.displayName }}
 
 
 </template>
@@ -23,6 +24,7 @@
 <script>
 
 import _ from 'lodash';
+import { loadYmap } from 'vue-yandex-maps';
 
 export default {
   props: {
@@ -91,6 +93,22 @@ export default {
       400
     ),
 
+    async setItemsListYandex(){
+
+      this.$emit('input', this.newSearchText);
+
+      let self = this;
+
+      ymaps.suggest(this.newSearchText).then(function (items) {
+        self.items = items;
+        if(items.length){
+          self.isShowList = true;
+        }else{
+          self.isShowList = false;
+        }
+      });
+    },
+
     selectItem(item) {
       this.newSearchText = item;
       this.isShowList = false;
@@ -102,6 +120,10 @@ export default {
       this.$emit('input', this.newSearchText);
     }
   },
+
+  async mounted() {
+    await loadYmap({ debug: true });
+  }
 }
 </script>
 
