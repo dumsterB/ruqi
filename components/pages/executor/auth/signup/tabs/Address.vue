@@ -107,7 +107,6 @@ export default {
               clearable: true,
               dense: true,
               filled: false,
-              v_model: "",
               states: [],
               loading: false,
               label: "",
@@ -139,7 +138,8 @@ export default {
       this.$emit("pageHandler", value, "back");
     },
     async next(value) {
-      let data = [this.address, this.address_extra, this.address_extra_2];
+
+      let data = [this.meta.meta_filter_row_1[0].params.states[0], this.address_extra, this.address_extra_2];
       let params = data.filter((ell) => ell.length > 1);
       await this.setAddress(params);
       if (this.requestSuccess.type === "success") {
@@ -170,7 +170,7 @@ export default {
   computed: {
     ...mapGetters("response", ["requestSuccess"]),
     disableHandler() {
-      return this.address;
+      return this.meta.meta_filter_row_1[0].params.states[0];
     },
     postBody() {
       let postBody = {
