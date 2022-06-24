@@ -70,8 +70,8 @@ export const actions = {
           commit('response/removeSuccess', null, {root: true});
         }, 2000);
         setTimeout(function () {
-          self.$router.push('/tasks/' + response.data.data + '/edit');
-        }, 3000);
+          self.$router.push('/tasks/' + response.data + '/edit');
+        }, 2000);
       })
       .catch((error) => {
         console.log(error);
