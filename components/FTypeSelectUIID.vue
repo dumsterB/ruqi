@@ -95,7 +95,7 @@ export default {
   },
   data() {
     return {
-      select: [],
+      select: null,
     }
   },
   watch: {
@@ -106,7 +106,7 @@ export default {
   methods: {
     toggle() {
       this.$nextTick(() => {
-        if (this.select.length != this.options.length) {
+        if (this.select && (this.select.length != this.options.length)) {
           let selectedAll = [];
 
           for (let i = 0; i < this.options.length; i++) {
@@ -130,6 +130,10 @@ export default {
   created() {
     if (this.value) {
       this.select = this.value;
+    }
+
+    if(this.multiple){
+      this.select = [];
     }
   }
 }
