@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap-search-filter">
+  <div class="wrap-search-filter" :class="{ active: newSearchText }">
     <v-text-field
       v-model="newSearchText"
       prepend-inner-icon="mdi-magnify"
@@ -84,6 +84,7 @@ export default {
       color: #7A91A9;
     }
 
+
   }
 
   .filter-row {
@@ -94,6 +95,32 @@ export default {
       }
 
     }
+
+    &:not(.search-is-focus) {
+      .wrap-search-filter {
+        &.active {
+
+          .v-input__icon {
+            position: relative;
+
+            &:after {
+              content: '';
+              display: block;
+              border-radius: 4.5px;
+              height: 9px;
+              min-width: 0;
+              padding: 0;
+              width: 9px;
+              background: #eb4d3d;
+              position: absolute;
+              right: 0;
+              top: 0;
+            }
+          }
+        }
+      }
+    }
+
 
   }
 }

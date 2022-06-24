@@ -1,5 +1,6 @@
 <template lang="pug">
-  .tasks-filter
+v-form(ref="form")
+  .tasks-filter(:class="{ active: isApplyFilter }")
     v-select(
       name="task_status"
       v-model="select"
@@ -53,6 +54,10 @@
             color="primary"
             @click="updateDate") ОК
 
+    .group-action-clear-handler(v-if="isApplyFilter")
+      a(@click.prevent="clearFilter")
+        v-icon(color="#7A91A9") mdi-close
+
 </template>
 
 <script>
@@ -87,6 +92,7 @@ export default {
           to: '',
         }
       },
+      isApplyFilter: false,
     }
   },
   computed: {
@@ -105,6 +111,7 @@ export default {
             "value": this.formValues.status
           },
         );
+
       }
 
       if (this.formValues.until_date && this.formValues.until_date.from) {
@@ -115,6 +122,12 @@ export default {
             "value": this.formValues.until_date
           }
         );
+      }
+
+      if(this.formValues.status.length > 0 || this.formValues.until_date && this.formValues.until_date.from){
+        this.isApplyFilter = true;
+      }else{
+        this.isApplyFilter = false;
       }
 
       return postBody;
@@ -157,6 +170,22 @@ export default {
       }
       this.$emit('applyFilter', this.postBody);
 
+    },
+
+    clearFilter(){
+      this.$refs.form.reset();
+
+      this.formValues = {
+        status: '',
+        until_date: {
+          from: '',
+          to: '',
+        }
+      }
+
+      this.isApplyFilter = false;
+
+      this.$emit('applyFilter', this.postBody);
     }
   },
 }
@@ -167,6 +196,7 @@ export default {
 .tasks-filter {
   display: flex;
   align-items: center;
+  position: relative;
 
   .v-text-field--filled {
     max-width: 220px;
@@ -194,6 +224,10 @@ export default {
     .v-input__prepend-inner {
       margin-top: 12px !Important;
     }
+  }
+
+  .group-action-clear-handler {
+    margin-left: 16px;
   }
 
 
