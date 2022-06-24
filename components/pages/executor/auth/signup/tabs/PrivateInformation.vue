@@ -284,7 +284,7 @@ export default {
         return (
           this.form.name &&
           this.form.surname &&
-          this.form.phone &&
+          this.form.phone.length === 12 &&
           this.form.sex &&
           this.dateFormatted &&
           this.valid

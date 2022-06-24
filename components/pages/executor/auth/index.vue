@@ -1,7 +1,7 @@
 <template>
 <div class="auth">
   <div class="content">
-    <img class="img" src="@/assets/img/rocket.svg" alt="">
+    <img class="img" src="@/assets/img/rocket.png" alt="">
     <div class="information">
       <h1>Стать исполнителем</h1>
       <h4 class="text-grey">Ruqi.ru – сервис быстрого поиска работы на любой промежуток времени. <br> Тут рыбный текст про преимущества сервиса руки</h4>

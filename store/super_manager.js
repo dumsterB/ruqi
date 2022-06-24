@@ -37,7 +37,7 @@ export const actions = {
     },
     async recoverEmail({ commit }, params) {
         await this.$axios
-            .post("auth/signup", {
+            .put("auth/forgot", {
                 email: params,
                 type: "super-manager",
             })

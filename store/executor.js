@@ -84,7 +84,7 @@ export const actions = {
   },
   async recoverExecutorPhone({ commit }, params) {
     await this.$axios
-        .post("auth/signup", {
+        .put("auth/forgot", {
           phone: params,
           type: "contractor",
         })

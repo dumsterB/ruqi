@@ -12,7 +12,7 @@
                   .haupt-titel
                     .txt Восстановление пароля
                   .inputs-group
-                    p.text-grey Введите ваш номер телефона, который вы указывали при регистрации в системе
+                    p.text-grey Введите ваш email, который вы указывали при регистрации в системе
                     .input-line.email-num
                       .titel
                         .txt Email
