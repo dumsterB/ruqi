@@ -608,6 +608,10 @@ export default {
       this.$router.push("/tasks/" + TaskId[0] + "/edit");
     },
 
+    copyTask(TaskId) {
+      this.copyRequest(TaskId[0]);
+    },
+
     editStatus(uuids, status) {
       this.putStatus({requestId: this.$route.params.id, status: status});
     },
