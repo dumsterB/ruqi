@@ -11,7 +11,7 @@
         <p class="mt-5">Пока документы проходят проверку Вы можете перейти в <a href="" class="link"> личный кабинет</a>   исполнителя и указать больше данных о себе. Это поможет нам более точно предлагать Вам интересные вакансии.</p>
         <p> Также в личином кабинете можно видеть состояние выпуска Вашей электронной цифровой подписи.</p>
       </div>
-      <v-btn dark elevation="0" class="btn-primary"  @click="submit"><span class="btn-title">перейти в личный кабинет</span> </v-btn>
+      <v-btn dark elevation="0" class="btn-primary" @click="submit"><span  style="color: white"  class="btn-title">перейти в личный кабинет</span> </v-btn>
       <v-btn  elevation="0" class="btn-secondary"> <span class="btn-title">искать заявки</span> </v-btn>
     </v-container>
   </div>
@@ -51,5 +51,8 @@ export default {
   width: 100%;
   border: 1px solid lightgrey;
   margin-top: 15px;
+}
+.btn-title{
+  font-weight: 700;
 }
 </style>

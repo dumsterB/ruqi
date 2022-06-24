@@ -25,7 +25,7 @@
                           outlined
                           name="email"
                         )
-                  p(class="text-danger") {{requestSuccess.text === 'Заполните поля' ? 'Email уже существует!' : ''}}
+                  p(class="text-danger") {{requestSuccess.text === 'Заполните поля' ? 'Пользователь не найден!' : ''}}
                   .actions
                     .action
                       v-btn.btn_singup( @click="submit" elevation="0" :disabled="!disableHandler" ) отправить код

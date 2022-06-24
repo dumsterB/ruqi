@@ -47,7 +47,7 @@
         </div>
       </div>
       <v-btn  elevation="0" class="btn-secondary" @click="back(3)"> <span class="btn-title">Назад</span> </v-btn>
-      <v-btn dark elevation="0" class="btn-primary" :disabled="!disableHandler.length > 0" @click="next( 5 )"><span class="btn-title">Далее</span> </v-btn>
+      <v-btn dark elevation="0" class="btn-primary"  :disabled="!disableHandler.length > 0" @click="next( 5 )"><span style="color: white"  class="btn-title">Далее</span> </v-btn>
     </div>
   </div>
 </v-container>
@@ -177,5 +177,8 @@ export default {
 .theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
   color: lightgrey !important;
   background: #0082de !important;
+}
+.btn-title{
+  font-weight: 700;
 }
 </style>

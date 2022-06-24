@@ -25,6 +25,7 @@
                           outlined
                           name="phone"
                           placeholder="+7")
+                  p(class="text-danger") {{requestSuccess.text === 'Заполните поля' ? 'Пользователь не найден!' : ''}}
                   .actions
                     .action
                       v-btn.btn_singup( @click="submit" elevation="0" :disabled="!disableHandler" ) отправить код
@@ -32,7 +33,7 @@
 </template>
 
 <script>
-import {mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
   layout: "empty",
@@ -42,6 +43,7 @@ export default {
     return {
       phone:'+7',
       error: false,
+      isUser:false,
       valid:false,
       phoneRules: [
         (v) => !!v || "Заполните поля",
@@ -59,10 +61,17 @@ export default {
     ...mapActions('executor',['recoverExecutorPhone']),
    async submit() {
       await this.recoverExecutorPhone(this.phone);
+     if (this.requestSuccess.type === "success") {
         this.$router.push({name:'auth-signin-executor-recover-sms'});
-    },
+    }else{
+       this.phone = "+7";
+       this.isUser = true;
+       this.$refs.form.validate();
+     }
+   }
   },
   computed:{
+    ...mapGetters("response", ["requestSuccess"]),
     disableHandler(){
       return this.phone && this.valid
     }
@@ -238,5 +247,8 @@ export default {
   .auth-form{
     width: 340px!important;
   }
+}
+.text-danger{
+  color: #ff5252;
 }
 </style>

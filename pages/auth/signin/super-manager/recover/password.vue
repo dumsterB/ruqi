@@ -79,7 +79,7 @@ export default {
     ...mapActions('super_manager',['createPassword']),
     async submit() {
       let obj ={
-        phone: this.recover_sms_email,
+        email: this.recover_sms_email,
         password: this.password
       }
       await  this.createPassword(obj);

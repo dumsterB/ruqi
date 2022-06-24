@@ -68,7 +68,7 @@ export default {
   margin-top: 15px;
 }
 .btn-title{
-  font-weight: 700;
+  font-weight: 900!important;
   font-size: 14px;
   line-height: 125%;
 }

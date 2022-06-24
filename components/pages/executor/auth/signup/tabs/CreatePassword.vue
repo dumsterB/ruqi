@@ -53,7 +53,7 @@
           class="btn-primary"
           :disabled="!disableHandler"
           @click="next(3)"
-          ><span class="btn-title">Далее</span>
+          ><span class="btn-title" style="color: white">Далее</span>
         </v-btn>
         <div class="d-none">{{requestSuccess}}</div>
       </v-form>
@@ -134,5 +134,8 @@ export default {
 .theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
   color: lightgrey !important;
   background: #0082de !important;
+}
+.btn-title{
+  font-weight: 700;
 }
 </style>

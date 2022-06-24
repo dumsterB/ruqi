@@ -65,7 +65,7 @@
           <p class="input_label">Банк</p>
           <v-text-field v-model="settings.bank" placeholder="Московский банк ПАО Сбербанк г. Москва" dense outlined></v-text-field>
           <p class="input_label">ФИО получателя</p>
-          <v-text-field v-model="settings.payment_fullname" placeholder="Московский банк ПАО Сбербанк г. Москва" dense outlined></v-text-field>
+          <v-text-field v-model="settings.payment_fullname" placeholder="Иванов Иван Иванович" dense outlined></v-text-field>
         </v-col>
       </v-row>
     </div>
@@ -80,7 +80,7 @@
     </v-form>
     <v-btn  elevation="0" class="btn-secondary" @click="back(6)"> <span class="btn-title">Назад</span> </v-btn>
     <v-btn  elevation="0" class="btn-secondary" @click="next"> <span class="btn-title">Заполнить позже</span> </v-btn>
-    <v-btn dark elevation="0" class="btn-primary" @click="next"><span class="btn-title">Далее</span> </v-btn>
+    <v-btn dark elevation="0" class="btn-primary" @click="next"><span style="color: white"  class="btn-title">Далее</span> </v-btn>
   </v-container>
 </div>
 </template>
@@ -150,5 +150,8 @@ export default {
   width: 100%;
   border: 1px solid lightgrey;
   margin-top: 15px;
+}
+.btn-title{
+  font-weight: 700;
 }
 </style>

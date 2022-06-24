@@ -45,7 +45,7 @@ export const actions = {
                 commit('SET_EMAIL_RECOVER',params)
                 commit(
                     "response/setSuccess",
-                    { type: "success", text: "Исполнитель успешно создан" },
+                    { type: "success", text: "Супер манаджер успешно создан" },
                     { root: true }
                 );
                 setTimeout(function () {
@@ -69,7 +69,7 @@ export const actions = {
             .then((response) => {
                 commit(
                     "response/setSuccess",
-                    { type: "success", text: "Исполнитель успешно создан" },
+                    { type: "success", text: "Супер манаджер успешно создан" },
                     { root: true }
                 );
                 setTimeout(function () {

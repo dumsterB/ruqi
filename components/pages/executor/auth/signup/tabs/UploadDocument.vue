@@ -596,7 +596,7 @@
           class="btn-primary"
           :disabled="!disableHandler"
           @click="next(7)"
-          ><span class="btn-title">Далее</span>
+          ><span class="btn-title" style="color: white">Далее</span>
         </v-btn>
       </div>
     </v-container>

@@ -60,45 +60,38 @@
           <div class="form-part">
             <p class="input_label">Дата рождения</p>
             <v-menu
-                ref="menu1"
-                v-model="menu1"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="auto"
+              ref="menu1"
+              v-model="menu1"
+              :close-on-content-click="false"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="auto"
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
-                    v-model="dateFormatted"
-                    :rules="inputRules"
-                    label="ДД.ММ.ГГГГ"
-                    persistent-hint
-                    dense
-                    outlined
-                    v-bind="attrs"
-                    @blur="date = parseDate(dateFormatted)"
-                    v-on="on"
+                  v-model="dateFormatted"
+                  :rules="inputRules"
+                  label="ДД.ММ.ГГГГ"
+                  persistent-hint
+                  dense
+                  outlined
+                  v-bind="attrs"
+                  @blur="date = parseDate(dateFormatted)"
+                  v-on="on"
                 ></v-text-field>
               </template>
               <v-date-picker
-                  v-model="date"
-                  no-title
-                  scrollable
+                v-model="date"
+                no-title
+                max="2004-NaN-NaN"
+                scrollable
               >
                 <v-spacer></v-spacer>
-                <v-btn
-                    text
-                    color="primary"
-                    @click="menu1 = false"
-                >
-                  Cancel
+                <v-btn text color="primary" @click="menu1 = false">
+                  Отмена
                 </v-btn>
-                <v-btn
-                    text
-                    color="primary"
-                    @click="$refs.menu1.save(date)"
-                >
+                <v-btn text color="primary" @click="$refs.menu1.save(date)">
                   OK
                 </v-btn>
               </v-date-picker>
@@ -130,7 +123,13 @@
               dense
             ></v-text-field>
           </div>
-          <p class="text-danger">{{requestSuccess.text === 'Заполните поля' ? 'Email уже существует!' : ''}}</p>
+          <p class="text-danger">
+            {{
+              requestSuccess.text === "Заполните поля"
+                ? "Email уже существует!"
+                : ""
+            }}
+          </p>
           <div class="form-part-checkbox">
             <div class="d-flex">
               <v-checkbox
@@ -156,7 +155,7 @@
               class="btn-primary"
               :disabled="!disableHandler"
               @click="next(1)"
-              ><span class="btn-title">Далее</span>
+              ><span style="color: white" class="btn-title">Далее</span>
             </v-btn>
             <p class="text-grey text-center mt-3">
               Значимость этих проблем настолько очевидна, что начало
@@ -187,9 +186,12 @@ export default {
   data() {
     return {
       valid: false,
-      date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-      dateFormatted:'',
+      date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      dateFormatted: "",
       phoneNumber: "",
+      dateHelper: new Date(),
       menu: "",
       sex_options: ["мужской", "женский"],
       switcher: false,
@@ -207,11 +209,11 @@ export default {
         (v) => !!v || "Заполните поля",
         (v) => /.+@.+/.test(v) || "E-mail должен быть валидным",
       ],
-      nowDate: new Date().toISOString().slice(0,10),
+      nowDate: new Date().toISOString().slice(0, 10),
       picker: new Date().toISOString().substr(0, 10),
       landscape: false,
       reactive: false,
-      menu1:false,
+      menu1: false,
     };
   },
   methods: {
@@ -225,47 +227,47 @@ export default {
       } else {
         delete this.form.email;
       }
-      this.form.birth_date = this.dateFormatted
+      this.form.birth_date = this.dateFormatted;
       await this.createExecutor(this.form);
-      console.log(this.requestSuccess,'request')
+      console.log(this.requestSuccess, "request");
       if (this.requestSuccess.type === "success") {
         this.$emit("pageHandler", value);
       } else {
-        this.form.name  = ''
-        this.form.surname  = ''
-        this.form.email = ''
-        this.form.phone  = ''
-        this.form.sex  = ''
-        this.form.date  = ''
-        this.$refs.form.validate()
+        this.form.name = "";
+        this.form.surname = "";
+        this.form.email = "";
+        this.form.phone = "";
+        this.form.sex = "";
+        this.form.date = "";
+        this.$refs.form.validate();
       }
     },
     checkboxHandler() {
       this.switcher = !this.switcher;
       this.$emit("checkboxHandler", this.switcher);
     },
-    formatDate (date) {
-      if (!date) return null
-
-      const [year, month, day] = date.split('-')
-      return `${month}.${day}.${year}`
+    formatDate(date) {
+      if (!date) return null;
+      const [year,month, day] = date.split("-");
+        console.log(year ,new Date().toISOString().slice(0, 10))
+      return `${day}.${month}.${year}`;
     },
-    parseDate (date) {
-      if (!date) return null
+    parseDate(date) {
+      if (!date) return null;
 
-      const [month, day, year] = date.split('.')
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+      const [month, day, year] = date.split(".");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     },
   },
   watch: {
-    date (val) {
-      this.dateFormatted = this.formatDate(this.date)
+    date(val) {
+      this.dateFormatted = this.formatDate(this.date);
     },
   },
   computed: {
     ...mapGetters("response", ["requestSuccess"]),
-    computedDateFormatted () {
-      return this.formatDate(this.date)
+    computedDateFormatted() {
+      return this.formatDate(this.date);
     },
     executors() {
       return this.$store.getters["executor/executors"];
@@ -329,7 +331,10 @@ export default {
   color: lightgrey !important;
   background: #0082de !important;
 }
-.text-danger{
+.text-danger {
   color: #ff5252;
+}
+.btn-title{
+  font-weight: 700;
 }
 </style>

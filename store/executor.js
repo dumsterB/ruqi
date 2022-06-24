@@ -92,7 +92,7 @@ export const actions = {
           commit('SET_PHONE_RECOVER',params)
           commit(
               "response/setSuccess",
-              { type: "success", text: "Исполнитель успешно создан" },
+              { type: "success", text: "Исполнитель успешно зашел!" },
               { root: true }
           );
           setTimeout(function () {
@@ -190,6 +190,30 @@ export const actions = {
         console.log(error);
         return error;
       });
+  },
+  async codeRepeat({commit, state},params){
+    await this.$axios.put('/auth/signup/code-repeat',params)
+        .then((response) => {
+          commit(
+              "response/setSuccess",
+              { type: "success", text: "Супер манаджер успешно создан" },
+              { root: true }
+          );
+          setTimeout(function () {
+            commit("response/removeSuccess", null, { root: true });
+          }, 2000);
+        })
+        .catch((error) => {
+          commit(
+              "response/setSuccess",
+              { type: "error", text: "Заполните поля" },
+              { root: true }
+          );
+          setTimeout(function () {
+            commit("response/removeSuccess", null, { root: true });
+          }, 3000);
+          console.log(error);
+        });
   },
   async loadSpecializations({ commit }) {
     await this.$axios

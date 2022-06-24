@@ -8,7 +8,7 @@
         </p>
       </div>
       <div v-else>
-        <h2>Введите код из email</h2>
+        <h2 class="main_text_executor">Введите код из email</h2>
         <p>
           Мы выслали SMS с кодом на почту <strong>{{ email }}</strong>
         </p>
@@ -35,7 +35,7 @@
         <v-btn elevation="0" class="btn-secondary" @click="back(0)">
           <span class="btn-title">Назад</span>
         </v-btn>
-        <v-btn dark elevation="0" class="btn-primary" @click="next(2)"
+        <v-btn dark elevation="0" style="color: white" class="btn-primary" @click="next(2)"
           ><span class="btn-title">Далее</span>
         </v-btn>
       </div>
@@ -74,7 +74,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions("executor", ["confirmPassword"]),
+    ...mapActions("executor", ["confirmPassword","codeRepeat"]),
     countDownTimer() {
       if (this.countDown > 0) {
         setTimeout(() => {
@@ -83,9 +83,20 @@ export default {
         }, 1000);
       }
     },
-    smsHandler() {
+   async smsHandler() {
       this.countDown = 60;
       this.countDownTimer();
+      if (this.agree) {
+        let obj = {
+          email: this.email,
+        };
+        await this.codeRepeat(obj);
+      } else {
+        let obj = {
+          phone: this.phone,
+        };
+        await this.codeRepeat(obj);
+      }
     },
     async next(value) {
       if (this.agree) {
@@ -115,7 +126,8 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("response", ["requestSuccess"]),
+    ...mapGetters("response", ["requestSuccess",]),
+    ...mapGetters("executor", ["recover_sms_phone",]),
   },
   watch: {
     code: function (newValue, oldValue) {
@@ -187,4 +199,13 @@ export default {
 .text-grey {
   color: #8692a6;
 }
+@media(max-width: 900px){
+  .main_text_executor{
+    font-size: 30px;
+  }
+}
+.btn-title{
+  font-weight: 700;
+}
+
 </style>

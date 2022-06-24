@@ -19,6 +19,7 @@
               :name="filed.name"
               :icon="filed.icon"
               :params="filed.params"
+              @input="input"
               :validation="filed.validation"
               :value="filed.value"
               @setItemsList="setRegionList"
@@ -68,7 +69,7 @@
           class="btn-primary"
           :disabled="!disableHandler"
           @click="next(6)"
-          ><span class="btn-title">Далее</span>
+          ><span class="btn-title" style="color: white">Далее</span>
         </v-btn>
       </div>
     </v-container>
@@ -118,6 +119,9 @@ export default {
     };
   },
   methods: {
+    input(value) {
+      this.address = value;
+    },
     ...mapActions("executor", ["setAddress"]),
     ...mapActions("dictionary", ["fetchAddress"]),
 
@@ -138,8 +142,11 @@ export default {
       this.$emit("pageHandler", value, "back");
     },
     async next(value) {
-
-      let data = [this.meta.meta_filter_row_1[0].params.states[0], this.address_extra, this.address_extra_2];
+      let data = [
+        this.address,
+        this.address_extra,
+        this.address_extra_2,
+      ];
       let params = data.filter((ell) => ell.length > 1);
       await this.setAddress(params);
       if (this.requestSuccess.type === "success") {
@@ -170,7 +177,7 @@ export default {
   computed: {
     ...mapGetters("response", ["requestSuccess"]),
     disableHandler() {
-      return this.meta.meta_filter_row_1[0].params.states[0];
+      return this.address
     },
     postBody() {
       let postBody = {
@@ -267,5 +274,8 @@ export default {
 .theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
   color: lightgrey !important;
   background: #0082de !important;
+}
+.btn-title{
+  font-weight: 700;
 }
 </style>
