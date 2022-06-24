@@ -107,7 +107,7 @@ export default {
         );
       }
 
-      if (this.formValues.until_date.length > 0) {
+      if (this.formValues.until_date && this.formValues.until_date.from) {
         postBody.push(
           {
             "field": "until_date",
