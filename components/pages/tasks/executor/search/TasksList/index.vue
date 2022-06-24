@@ -12,14 +12,14 @@
         )
           template( v-slot:item.name="{ item }" )
             div.rq-ptestl__desktop-name
-              .rq-ptestl-title {{ item.info.name }}
+              .rq-ptestl-title.color-black.mb-1 {{ item.info.name }}
               .rq-ptestl__desktop-date {{ '01.10.2021 08:00' }}
 
           template( v-slot:item.status="{ item }" )
             Status(:status="item.my_status" :text="item.my_status_name")
 
           template( v-slot:item.payment="{ item }" )
-            div {{ item.info.payment.value || '20 000 р./смена' }}
+            .color-black {{ item.info.payment.value || '20 000 р./смена' }}
 
           template( v-slot:item.object_name="{ item }" )
             div {{ item.info.description || 'Водитель высотного электр... +2' }}
@@ -105,6 +105,30 @@ export default {
     /* SETTERS */
     /* HANDLERS */
     /* HELPERS */
+    actionsList(status){
+      let actions = [];
+
+      if(status == 'open'){
+        actions = [
+          { title: 'Участвовать', action: ''}
+        ];
+      }else if(status == 'accepted'){
+        actions = [
+          { title: 'Отменить', action: ''}
+        ];
+      }else if(status == 'invited'){
+        actions = [
+          { title: 'Принять', action: ''},
+          { title: 'Отказаться', action: ''},
+        ]
+      }else if(status == 'requested'){
+        actions = [
+          { title: 'Отменить', action: ''}
+        ];
+      }
+
+      return actions;
+    }
   },
 
   data() {

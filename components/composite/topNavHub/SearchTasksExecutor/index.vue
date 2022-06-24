@@ -58,6 +58,7 @@ export default {
     margin-left: 10px;
     user-select: none;
     cursor: pointer;
+    text-decoration: none;
   }
 }
 </style>

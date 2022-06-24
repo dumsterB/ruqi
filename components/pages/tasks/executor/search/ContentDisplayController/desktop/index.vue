@@ -1,7 +1,7 @@
 <template lang="pug">
 .rq-tcdc
-  .rq-tcdc__row
-    .rq-tcdc__title Найдено 32 заявки
+  .rq-tcdc__row.mt-8.mb-10
+    .rq-tcdc__title Найдено {{ count_tasks }} {{ countTaskTitle }}
     v-tabs.rq-tcdc__tabs(
       hide-slider
       active-class="rq-tcdc__tabs-item_active"
@@ -58,7 +58,12 @@
 export default {
   components: {},
 
-  props: {},
+  props: {
+    count_tasks: {
+      type: [String, Number],
+      default: 0,
+    },
+  },
 
   data() {
     return {
@@ -81,7 +86,18 @@ export default {
     }
   },
 
-  computed: {},
+  computed: {
+    countTaskTitle(){
+      if(this.count_tasks == 0 || this.count_tasks == 5){
+        return 'заявок';
+      }else if(this.count_tasks == 1){
+        return 'заявка';
+      }else if(this.count_tasks > 1){
+        return 'заявки';
+      }
+    }
+
+  },
 
   watch: {
     tab(newTab) {

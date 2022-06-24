@@ -10,7 +10,7 @@
       )
 
   .tasks-executor-search--desktop
-    h1 Поиск работы
+    h1.mb-8.mt-3 Поиск работы
 
   TasksFilter(
     :regions="regions"
@@ -25,6 +25,7 @@
 
   .tasks-executor-search--desktop
     ContentDisplayController.tasks-executor-search--desktop__content-display-ctrl(
+      :count_tasks="searchTasks.length"
       @clickOnTab="setTasksView"
     )
 
@@ -184,6 +185,10 @@ export default {
   &--desktop {
     display: block;
     max-width: 1272px;
+
+    h1{
+      font-size: 32px;
+    }
 
     &__content-display-ctrl {
       margin-top: 32px;
