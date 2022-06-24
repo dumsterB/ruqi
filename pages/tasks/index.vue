@@ -349,7 +349,7 @@ export default {
     },
 
     addTask() {
-      this.$router.push(this.$route.name + '/create');
+      this.$router.push('/tasks/create');
     },
 
     applyFilter(fetchParams, watcherParams, filter, search) {

@@ -465,6 +465,8 @@ export default {
         this.actions_tasks[0].display = true;
         this.actions_tasks[1].display = false;
       }
+
+      console.log('isPined---', this.isPined);
     },
 
     openTimesheet() {
@@ -608,6 +610,10 @@ export default {
       this.$router.push("/tasks/" + TaskId[0] + "/edit");
     },
 
+    copyTask(TaskId) {
+      this.copyRequest(TaskId[0]);
+    },
+
     editStatus(uuids, status) {
       this.putStatus({requestId: this.$route.params.id, status: status});
     },
@@ -680,9 +686,8 @@ export default {
 
     this.$route.meta.title = this.request_id.name;
 
-    this.addRqTabsTaskNew({route: this.$route}).then(
-      () => this.setRqTabsTaskActive({route: this.$route})
-    );
+    await this.addRqTabsTaskNew({route: this.$route});
+    await this.setRqTabsTaskActive({route: this.$route});
 
     this.detectedPin();
 
