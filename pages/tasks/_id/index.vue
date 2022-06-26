@@ -465,8 +465,6 @@ export default {
         this.actions_tasks[0].display = true;
         this.actions_tasks[1].display = false;
       }
-
-      console.log('isPined---', this.isPined);
     },
 
     openTimesheet() {
@@ -654,7 +652,11 @@ export default {
     },
 
   },
-  watch: {},
+  watch: {
+    RQ_TABS_TASKS: function () {
+      this.detectedPin();
+    },
+  },
 
   async created() {
     await this.fetchRequestId(this.$route.params.id);
