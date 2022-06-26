@@ -232,13 +232,10 @@ export default {
       console.log(this.requestSuccess, "request");
       if (this.requestSuccess.type === "success") {
         this.$emit("pageHandler", value);
+        this.$router.push({path: this.$route.fullPath, query: {tab: 'tab-1'} });
       } else {
-        this.form.name = "";
-        this.form.surname = "";
         this.form.email = "";
         this.form.phone = "";
-        this.form.sex = "";
-        this.form.date = "";
         this.$refs.form.validate();
       }
     },
@@ -296,7 +293,9 @@ export default {
   },
 };
 </script>
+<style>
 
+</style>
 <style scoped>
 .text-grey-checkbox {
   color: #8692a6 !important;
@@ -327,14 +326,12 @@ export default {
   color: #8692a6;
   font-size: 14px;
 }
-.theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
-  color: lightgrey !important;
-  background: #0082de !important;
-}
+
 .text-danger {
   color: #ff5252;
 }
 .btn-title{
   font-weight: 700;
 }
+
 </style>

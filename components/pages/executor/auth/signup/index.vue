@@ -129,6 +129,7 @@ export default {
   data() {
     return {
       power: 78,
+      current_tab: "private-information",
       current_page: 0,
       form: {
         name: "",
@@ -140,18 +141,24 @@ export default {
         email: null,
         agree: false,
       },
+      pages: {
+        tab1: "private-information",
+        tab2: "sms",
+        tab3: "create-password",
+        tab4: "create-password",
+        tab5: "electronic-document",
+        tab6: "position-selector",
+        tab7: "upload-document",
+        tab8: "payment-information",
+        tab9: "finish",
+      },
       tabs: [
         { title: "Личные данные", value: "", active: true, mobile: true },
         { title: "Создание пароля", value: "", active: false, mobile: false },
         { title: "Соглашение ЭДО", value: "", active: false, mobile: false },
         { title: "Выбор профессий", value: "", active: false, mobile: false },
         { title: "Адресса", value: "", active: false, mobile: false },
-        {
-          title: "Загрузка документов",
-          value: "",
-          active: false,
-          mobile: false,
-        },
+        {title: "Загрузка документов", value: "", active: false, mobile: false,},
         { title: "Платежные данные", value: "", active: false, mobile: false },
       ],
       agree: false,
@@ -197,6 +204,13 @@ export default {
     checkboxHandler(val) {
       this.agree = val;
     },
+    componentHandler() {
+      let tab = this.$route?.query?.tab || this.pages.tab1;
+      this.current_tab = this.pages[tab];
+    },
+  },
+  mounted() {
+    this.componentHandler();
   },
 };
 </script>
@@ -251,6 +265,10 @@ export default {
   height: 45px !important;
   width: 100%;
   margin-top: 15px;
+}
+.theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
+  color: grey !important;
+  background: lightgrey !important;
 }
 .btn-secondary {
   background: #f2f6f9 !important;
