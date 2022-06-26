@@ -14,8 +14,10 @@
               outlined
               class="mt-2"
               v-model="form.name"
+              @keypress="isLetter($event)"
               :rules="inputRules"
               dense
+              type="text"
               required
               single-line
             ></v-text-field>
@@ -27,8 +29,10 @@
               outlined
               required
               class="mt-2"
+              id="surname"
               dense
               :rules="inputRules"
+              @keypress="isLetter($event)"
               v-model="form.surname"
             ></v-text-field>
           </div>
@@ -38,8 +42,10 @@
             <v-text-field
               outlined
               required
+              id="middle_name"
               class="mt-2"
               v-model="form.middle_name"
+              @keypress="isLetter($event)"
               dense
             ></v-text-field>
           </div>
@@ -169,6 +175,8 @@
 </template>
 
 <script>
+
+
 import { mapActions, mapGetters } from "vuex";
 
 export default {
@@ -207,7 +215,7 @@ export default {
       ],
       emailRules: [
         (v) => !!v || "Заполните поля",
-        (v) => /.+@.+/.test(v) || "E-mail должен быть валидным",
+        (v) => /.+@.+/.test(v) || "",
       ],
       nowDate: new Date().toISOString().slice(0, 10),
       picker: new Date().toISOString().substr(0, 10),
@@ -220,6 +228,11 @@ export default {
     ...mapActions("executor", ["createExecutor"]),
     validate() {
       this.$refs.form.validate();
+    },
+    isLetter(e) {
+      let char = String.fromCharCode(e.keyCode);
+      if (/^[А-я]+$/.test(char)) return true;
+      else e.preventDefault();
     },
     async next(value) {
       if (this.form.agree) {

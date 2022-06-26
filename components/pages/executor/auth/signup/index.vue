@@ -130,7 +130,7 @@ export default {
     return {
       power: 78,
       current_tab: "private-information",
-      current_page: 0,
+      current_page: 7,
       form: {
         name: "",
         surname: "",

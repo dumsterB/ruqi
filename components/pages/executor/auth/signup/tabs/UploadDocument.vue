@@ -34,6 +34,7 @@
                 :rules="seriesRules"
                 v-model="passport_series"
                 class="mt-2"
+                counter="4"
                 dense
                 single-line
               ></v-text-field>
@@ -48,6 +49,7 @@
                 class="mt-2"
                 v-model="passport_number"
                 :rules="numberRules"
+                counter="6"
                 dense
                 single-line
               ></v-text-field>
@@ -82,7 +84,7 @@
                 <v-date-picker v-model="passport_date" no-title scrollable>
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="menu1 = false">
-                    Cancel
+                    Отмена
                   </v-btn>
                   <v-btn
                     text
@@ -123,7 +125,7 @@
                 <v-date-picker  v-model="passport_term" no-title scrollable>
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="menu = false">
-                    Cancel
+                    Отмена
                   </v-btn>
                   <v-btn
                     text
