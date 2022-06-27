@@ -244,6 +244,87 @@ export default {
       let tab = this.$route.query.tab || "0";
       let active = this.tabs.find((ell) => ell.tab == tab || 0);
       this.current_page = active.tab;
+      if (this.current_page === 3) {
+        this.tabs[0].value = 100;
+        this.tabs[1].value = 100;
+        this.tabs[2].value = 100;
+        this.tabs[0].active = true;
+        this.tabs[1].active = true;
+        this.tabs[2].active = true;
+        this.tabs[2].active = true;
+      }else if(this.current_page === 4){
+        this.tabs[0].value = 100;
+        this.tabs[1].value = 100;
+        this.tabs[2].value = 100;
+        this.tabs[3].value = 100;
+        this.tabs[0].active = true;
+        this.tabs[1].active = true;
+        this.tabs[2].active = true;
+        this.tabs[2].active = true;
+        this.tabs[3].active = true;
+      }else if(this.current_page === 5){
+        this.tabs[0].value = 100;
+        this.tabs[1].value = 100;
+        this.tabs[2].value = 100;
+        this.tabs[3].value = 100;
+        this.tabs[4].value = 100;
+        this.tabs[0].active = true;
+        this.tabs[1].active = true;
+        this.tabs[2].active = true;
+        this.tabs[2].active = true;
+        this.tabs[3].active = true;
+        this.tabs[4].active = true;
+      }else if(this.current_page === 6){
+        this.tabs[0].value = 100;
+        this.tabs[1].value = 100;
+        this.tabs[2].value = 100;
+        this.tabs[3].value = 100;
+        this.tabs[4].value = 100;
+        this.tabs[5].value = 100;
+        this.tabs[0].active = true;
+        this.tabs[1].active = true;
+        this.tabs[2].active = true;
+        this.tabs[2].active = true;
+        this.tabs[3].active = true;
+        this.tabs[4].active = true;
+        this.tabs[5].active = true;
+      }
+      else if(this.current_page === 7){
+        this.tabs[0].value = 100;
+        this.tabs[1].value = 100;
+        this.tabs[2].value = 100;
+        this.tabs[3].value = 100;
+        this.tabs[4].value = 100;
+        this.tabs[5].value = 100;
+        this.tabs[6].value = 100;
+        this.tabs[0].active = true;
+        this.tabs[1].active = true;
+        this.tabs[2].active = true;
+        this.tabs[2].active = true;
+        this.tabs[3].active = true;
+        this.tabs[4].active = true;
+        this.tabs[5].active = true;
+        this.tabs[6].active = true;
+      }
+      else if(this.current_page === 7){
+        this.tabs[0].value = 100;
+        this.tabs[1].value = 100;
+        this.tabs[2].value = 100;
+        this.tabs[3].value = 100;
+        this.tabs[4].value = 100;
+        this.tabs[5].value = 100;
+        this.tabs[6].value = 100;
+        this.tabs[7].value = 100;
+        this.tabs[0].active = true;
+        this.tabs[1].active = true;
+        this.tabs[2].active = true;
+        this.tabs[2].active = true;
+        this.tabs[3].active = true;
+        this.tabs[4].active = true;
+        this.tabs[5].active = true;
+        this.tabs[6].active = true;
+        this.tabs[7].active = true;
+      }
     },
   },
   mounted() {
