@@ -90,7 +90,7 @@ export default {
 
       let sendUuids = [];
       for (let i = 0; i < this.selectedItems.length; i++) {
-        sendUuids.push(this.selectedItems[0].uuid);
+        sendUuids.push(this.selectedItems[i].uuid);
       }
 
       this.localExecutor({task_uuid: this.$route.params.id, user_uuids: sendUuids});

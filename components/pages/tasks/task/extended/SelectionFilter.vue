@@ -113,7 +113,7 @@ export default {
               ],
               item_text: 'name',
               item_value: 'uuid',
-              label: 'Не выбрано',
+              label: '-',
               readonly: false,
               hideDetails: true,
             },
@@ -394,9 +394,11 @@ export default {
       if (field == 'region') {
         if (value) {
           this.meta.meta_filter_row_1[1].params.readonly = true;
+          this.meta.meta_filter_row_1[1].value = null;
           this.formValues.radius = null;
         } else {
           this.meta.meta_filter_row_1[1].params.readonly = false;
+          this.meta.meta_filter_row_1[1].value = 5;
           this.formValues.radius = 5;
         }
       }
