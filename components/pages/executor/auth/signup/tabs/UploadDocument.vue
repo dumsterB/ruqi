@@ -160,8 +160,7 @@
               class="mt-2"
               v-model="passport_code"
               :rules="codeRules"
-              counter="6"
-              mask="#####-###"
+              :prefix="currency"
               dense
               single-line
             ></v-text-field>
@@ -611,6 +610,13 @@
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapActions } from "vuex";
+function formatAsCurrency (value, dec) {
+  dec = dec || ''
+  if (value === null) {
+    return ''
+  }
+  return '' + value.toFixed(dec).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1-")
+}
 export default {
   name: "UploadDocument",
   components: {
@@ -621,10 +627,11 @@ export default {
       filelist: [],
       menu: false,
       menu1: false,
+      currency: "",
+      initialBalance: null,
       logo: "",
       passport_number: "",
       passport_info: "",
-      passport_code: "",
       passport_series: "",
       passport_given: "",
       passport_date: "",
@@ -634,7 +641,7 @@ export default {
       inputRules: [(v) => !!v || "Заполните поля"],
       seriesRules:[(v) => (!!v && v.length === 4) || 'Некорректный  серию паспорта', (v) => !!v || "Заполните поля"],
       numberRules:[(v) => (!!v && v.length === 6) || 'Некорректный  номер паспорта', (v) => !!v || "Заполните поля"],
-      codeRules:[(v) => (!!v && v.length === 6) || 'Некорректный  код подразделения', (v) => !!v || "Заполните поля"],
+      codeRules:[(v) => (!!v && v.length === 7) || 'Некорректный  код подразделения', (v) => !!v || "Заполните поля"],
       dropzoneOptions: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 200,
@@ -791,6 +798,14 @@ export default {
     },
   },
   computed: {
+    passport_code: {
+      get: function() {
+        return formatAsCurrency(this.initialBalance, 0)
+      },
+      set: function(newValue) {
+        this.initialBalance =  Number(newValue.replace(/[^0-9\.]/g, ''));
+      }
+    },
     disableHandler() {
       return (
         this.passport_number &&

@@ -42,7 +42,7 @@
           длина — не менее 8 символов; <br />
           заглавные буквы; <br />
           строчные буквы; <br />
-          цифры или специальные символы: %, #, $ и другие.
+          цифры и специальные символы: %, #, $ и другие.
         </p>
         <v-btn elevation="0" class="btn-secondary" @click="back(1)">
           <span class="btn-title">Назад</span>
@@ -127,7 +127,7 @@ export default {
   },
 };
 </script>
-
+<script></script>
 <style scoped>
 .text-grey {
   color: #9398a1;
