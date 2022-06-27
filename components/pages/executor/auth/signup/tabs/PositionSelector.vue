@@ -69,6 +69,7 @@ export default {
     ...mapActions('executor',['loadSpecializations','setSpecializations']),
     next(value){
       this.$emit('pageHandler', value)
+
     let activeSpecializations = (this.specializationCopy || []).map((ell) => {
         return {
           ...ell,
@@ -80,7 +81,7 @@ export default {
       activeSpecializations.map(ell => ell.name)
       let params = activeSpecializations.map(({professions,...rest})=>({...rest}))
       this.setSpecializations(params)
-
+      this.$router.push({path: this.$route.fullPath, query: {tab: '5'} });
     },
     back(val){
       this.$emit('pageHandler',val , 'back')
@@ -174,10 +175,7 @@ export default {
     display: block!important;
   }
 }
-.theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
-  color: lightgrey !important;
-  background: #0082de !important;
-}
+
 .btn-title{
   font-weight: 700;
 }

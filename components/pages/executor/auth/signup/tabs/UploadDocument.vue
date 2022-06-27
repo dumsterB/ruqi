@@ -691,6 +691,7 @@ export default {
       setTimeout(() => {
         this.setPassport(data);
       }, 1000);
+      this.$router.push({path: this.$route.fullPath, query: {tab: '7'} });
     },
     back(value) {
       this.$emit("pageHandler", value, "back");
@@ -883,9 +884,5 @@ export default {
   .desktop-media {
     display: none!important;
   }
-}
-.theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
-  color: lightgrey !important;
-  background: #0082de !important;
 }
 </style>

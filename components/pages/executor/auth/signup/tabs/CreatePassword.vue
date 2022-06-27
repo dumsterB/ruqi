@@ -108,6 +108,7 @@ export default {
     await  this.createPassword(data);
       if (this.requestSuccess.type === "success") {
         this.$emit("pageHandler", value);
+        this.$router.push({path: this.$route.fullPath, query: {tab: '3'} });
       } else {
         this.password = ''
         this.confirm_password = ''
@@ -131,10 +132,7 @@ export default {
 .text-grey {
   color: #9398a1;
 }
-.theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
-  color: lightgrey !important;
-  background: #0082de !important;
-}
+
 .btn-title{
   font-weight: 700;
 }

@@ -154,6 +154,7 @@ export default {
       } else {
         this.validate();
       }
+      this.$router.push({path: this.$route.fullPath, query: {tab: '6'} });
     },
 
     sendFilter() {

@@ -153,13 +153,49 @@ export default {
         tab9: "finish",
       },
       tabs: [
-        { title: "Личные данные", value: "", active: true, mobile: true },
-        { title: "Создание пароля", value: "", active: false, mobile: false },
-        { title: "Соглашение ЭДО", value: "", active: false, mobile: false },
-        { title: "Выбор профессий", value: "", active: false, mobile: false },
-        { title: "Адресса", value: "", active: false, mobile: false },
-        {title: "Загрузка документов", value: "", active: false, mobile: false,},
-        { title: "Платежные данные", value: "", active: false, mobile: false },
+        {
+          title: "Личные данные",
+          tab: 0,
+          value: "",
+          active: true,
+          mobile: true,
+        },
+        {
+          title: "Создание пароля",
+          tab: 0,
+          value: "",
+          active: false,
+          mobile: false,
+        },
+        {
+          title: "Соглашение ЭДО",
+          tab: 3,
+          value: "",
+          active: false,
+          mobile: false,
+        },
+        {
+          title: "Выбор профессий",
+          tab: 4,
+          value: "",
+          active: false,
+          mobile: false,
+        },
+        { title: "Адресса", value: "", tab: 5, active: false, mobile: false },
+        {
+          title: "Загрузка документов",
+          tab: 6,
+          value: "",
+          active: false,
+          mobile: false,
+        },
+        {
+          title: "Платежные данные",
+          tab: 7,
+          value: "",
+          active: false,
+          mobile: false,
+        },
       ],
       agree: false,
       password: "",
@@ -205,8 +241,9 @@ export default {
       this.agree = val;
     },
     componentHandler() {
-      let tab = this.$route?.query?.tab || this.pages.tab1;
-      this.current_tab = this.pages[tab];
+      let tab = this.$route.query.tab || "0";
+      let active = this.tabs.find((ell) => ell.tab == tab || 0);
+      this.current_page = active.tab;
     },
   },
   mounted() {

@@ -54,6 +54,7 @@ export default {
   methods:{
     next(value){
       this.$emit('pageHandler',value)
+      this.$router.push({path: this.$route.fullPath, query: {tab: '4'} });
     },
     back(val){
       this.$emit('pageHandler',val , 'back')
