@@ -5,7 +5,7 @@
         <p class="main_text_executor">Личные данные</p>
         <p class="mt-4 mb-4">
           Значимость этих проблем настолько очевидна, что начало повседневной
-          работы по формированию позиции требуют
+          работы по формированию позиции требует
         </p>
         <v-form ref="form" v-model="valid" lazy-validation>
           <div class="form-part">

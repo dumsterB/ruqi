@@ -372,7 +372,7 @@
           </div>
           <p style="font-weight: 600" class="mt-4">
             Следующий перечень документов требуется для участия в заявках по
-            выбранных Вами профессиям:
+            выбранным Вами профессиям:
           </p>
           <div class="access-content">
             <div class="d-flex">
@@ -884,5 +884,8 @@ export default {
   .desktop-media {
     display: none!important;
   }
+}
+.btn-title{
+  font-weight: 700;
 }
 </style>

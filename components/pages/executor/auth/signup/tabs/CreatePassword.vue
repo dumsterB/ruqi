@@ -78,7 +78,7 @@ export default {
       rules: {
         required: (value) => !!value || "Заполнития поля",
         min: (v) => v.length >= 8 || "Минимум 8 симболов",
-        emailMatch: () => `Пароль не совподает`,
+        emailMatch: () => `Пароли не совподют`,
         password : value => {
           const pattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
           return pattern.test(value) || 'Не корректный пароль'
