@@ -16,7 +16,7 @@
       id="suggest"
     )
     .search-results(v-if="isShowList" v-click-outside="onClickOutside")
-      .item-result(v-for="item in items" @click="selectItem(item.displayName)") {{ item.displayName }}
+      .item-result(v-for="item in items" @click="selectItem(item.displayName)" ) {{ item.displayName }}
 
 
 </template>

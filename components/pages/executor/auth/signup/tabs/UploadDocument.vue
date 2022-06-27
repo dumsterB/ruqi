@@ -161,6 +161,7 @@
               v-model="passport_code"
               :rules="codeRules"
               counter="6"
+              mask="#####-###"
               dense
               single-line
             ></v-text-field>
