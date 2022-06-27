@@ -160,6 +160,7 @@
               class="mt-2"
               v-model="passport_code"
               :rules="codeRules"
+              counter="6"
               dense
               single-line
             ></v-text-field>

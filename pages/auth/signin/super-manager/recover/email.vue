@@ -47,7 +47,7 @@ export default {
       isUser: false,
       emailRules: [
         (v) => !!v || "Заполните поля",
-        (v) => /.+@.+\..+/.test(v) || "E-mail должен быть валидным",
+        (v) => /.+@.+\..+/.test(v) || "",
       ],
     };
   },
