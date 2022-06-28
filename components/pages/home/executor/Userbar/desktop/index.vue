@@ -1,51 +1,73 @@
 <template lang="pug">
-.cpheu
-  .cpheu-user
-    Avatar
-    .cpheu-user__info
-      .cpheu-user__info-row
-        .cpheu-user__fullname Станислав Станиславский
-        v-icon(color="#263043" style="margin-top: 8px;") mdi-chevron-right
+div
+  .cpheu
+    .cpheu-user
+      Avatar
+      .cpheu-user__info
+        .cpheu-user__info-row
+          .cpheu-user__fullname Станислав Станиславский
+          v-icon(color="#263043" style="margin-top: 8px;") mdi-chevron-right
 
-      .cpheu-user__info-row
-        .cpheu-user__status
-          v-icon(color="#71D472" x-small) mdi-checkbox-blank-circle
-          .cpheu-user__status__title Доступен для работ
+        .cpheu-user__info-row
+          .cpheu-user__status
+            v-icon(color="#71D472" x-small) mdi-checkbox-blank-circle
+            .cpheu-user__status__title Доступен для работ
 
-        .cpheu-user__rating
-          v-icon.cpheu-user__rating__logo mdi-star-outline
-          .cpheu-user__rating__title Специалист  (ранг 1)
+          .cpheu-user__rating
+            v-icon.cpheu-user__rating__logo mdi-star-outline
+            .cpheu-user__rating__title Специалист  (ранг 1)
 
-  v-menu(
-    bottom
-    offset-y
-    left
-    min-width="343px"
-    rounded="10"
-    nudge-bottom="33"
-    :close-on-content-click="false"
-  )
-    template(v-slot:activator="{ on }")
-      v-btn.cpheu-profile(text v-on="on")
-        v-icon.cpheu-profile__logo(color="#263043") mdi-account-circle-outline
-        .cpheu-profile__title мой профиль
+    v-menu(
+      bottom
+      offset-y
+      left
+      min-width="343px"
+      rounded="10"
+      nudge-bottom="33"
+      :close-on-content-click="false"
+    )
+      template(v-slot:activator="{ on }")
+        v-btn.cpheu-profile(text v-on="on")
+          v-icon.cpheu-profile__logo(color="#263043") mdi-account-circle-outline
+          .cpheu-profile__title мой профиль
 
-    v-card.cpheu-profile-card
-      .cpheu-profile-card__item
-        v-switch(
-          inset
-          label="Доступен для работ"
-        )
+      v-card.cpheu-profile-card
+        .cpheu-profile-card__item
+          v-switch(
+            inset
+            label="Доступен для работ"
+          )
 
-      v-divider
+        v-divider
 
-      v-btn.cpheu-profile-card__item(text)
-        v-icon.cpheu-profile-card__item__logo(color="#BBBBBB") mdi-account-circle-outline
-        .cpheu-profile-card__item__title мой профиль
+        v-btn.cpheu-profile-card__item(text)
+          v-icon.cpheu-profile-card__item__logo(color="#BBBBBB") mdi-account-circle-outline
+          .cpheu-profile-card__item__title мой профиль
 
-      v-btn.cpheu-profile-card__item(text)
-        v-icon.cpheu-profile-card__item__logo(color="#BBBBBB") mdi-exit-to-app
-        .cpheu-profile-card__item__title мой профиль
+        v-btn.cpheu-profile-card__item(text)
+          v-icon.cpheu-profile-card__item__logo(color="#BBBBBB") mdi-exit-to-app
+          .cpheu-profile-card__item__title мой профиль
+  v-row(class="mt-5")
+   v-col
+     v-row( class="mt-5")
+      div()
+        v-card(class="card pa-4" width="300" max-width="300"  )
+          img(src="@/assets/img/attention_warning.svg")
+          br
+          strong(class="") У вас не загружены <br /> необходимые документы
+          br
+          br
+          a(style="text-decoration:none") Перейти документам
+      div(class="ml-5")
+        v-card(class="card pa-4" width="300" max-width="300"  )
+           img(src="@/assets/img/attention_danger.svg")
+           br
+           strong(class="") Вам необходимо подписать <br /> договор
+           br
+           br
+           a(style="text-decoration:none") Перейти к актам
+   v-col(cols="5")
+
 </template>
 
 <script>
@@ -74,6 +96,22 @@ export default {
 </script>
 
 <style lang="scss">
+.icon_card_wrapper{
+  background: #FFC400;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+.card_icon{
+  width: 50px;
+  height: 50px;
+}
+.card{
+  background: #F5FBFF!important;
+  border: 1px solid #D5DEE8!important;
+  box-shadow: 0px 4px 24px rgba(0, 10, 17, 0.04)!important;
+  border-radius: 14px!important;
+}
 .cpheu {
   font-family: 'Source Sans Pro';
   font-style: normal;
