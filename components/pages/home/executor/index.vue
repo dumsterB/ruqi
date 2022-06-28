@@ -9,9 +9,13 @@
 
   .rq-home-executor__desktop
     Userbar.rq-home-executor__desktop-userbar
-    ContentDisplayController.rq-home-executor__desktop__content-display-ctrl
+    ContentDisplayController.rq-home-executor__desktop__content-display-ctrl(
+      :count_tasks="searchTasksTotal"
+      @clickOnTab="setTasksView"
+      @sortTasks="sortTasks"
+    )
 
-  TasksList.search__task-list(:tasks="searchTasks")
+  TasksList.tasks-executor-search--task-list(:tasks="searchTasks" :actions="actions" @callAction="callAction" )
 </template>
 
 <script>
@@ -40,11 +44,29 @@ export default {
   },
 
   props: {},
-  data: () => ({}),
+  data: () => ({
+    actions: [
+      {text: "Участвовать", icon: "mdi-check", action: 'requestTaskAction'},
+      {text: "Подробнее о заявке", icon: "mdi-clipboard-account-outline", action: 'openDetails'},
+    ],
+    sortField: 'distance',
+    sortOrder: 'desc',
+    filters: {},
+    fetchTaskParams: {
+      "page": 1,
+      "per_page": 10
+    },
+  }),
   computed: {
-    ...mapGetters('user', [
-      'searchTasks',
-    ]),
+    searchTasks(){
+      return this.$store.getters["user/searchTasks"];
+    },
+    searchTasksLastPage(){
+      return this.$store.getters["user/searchTasksLastPage"];
+    },
+    searchTasksTotal(){
+      return this.$store.getters["user/searchTasksTotal"];
+    },
   },
 
   watch: {},
@@ -53,14 +75,46 @@ export default {
       'fetchSearchTasks',
     ]),
 
-    /* GETTERS */
-    /* SETTERS */
-    /* HANDLERS */
-    /* HELPERS */
+    callAction({action, uuid}) {
+      console.log('callAction ------', action, uuid);
+      this[action](uuid);
+    },
+
+    requestTaskAction(uuid){
+      this.requestTask(uuid);
+    },
+
+    openDetails(uuid) {
+      this.$router.push("/tasks/contractor/" + uuid);
+    },
+
+    setTasksView(tab) {
+      this.tasksTab = tab;
+    },
+
+    async sortTasks(sort){
+
+      this.sortField = sort;
+
+      if(sort == 'distance' || sort == 'start_date'){
+        this.sortOrder = 'desc';
+      }else if(sort == 'rate'){
+        this.sortOrder = 'asc';
+      }
+
+      this.filters.sort = this.sortField;
+      this.filters.order = this.sortOrder;
+
+      this.loaderFilter = true;
+
+      await this.fetchSearchTasks({params: this.filters, concat: false});
+
+      this.loaderFilter = false;
+    },
   },
 
   created() {
-    this.fetchSearchTasks()
+    this.fetchSearchTasks({params:{}, concat: false })
   },
   mounted() { },
 }
