@@ -160,6 +160,7 @@
               class="mt-2"
               v-model="passport_code"
               :rules="codeRules"
+              :prefix="currency"
               dense
               single-line
             ></v-text-field>
@@ -371,7 +372,7 @@
           </div>
           <p style="font-weight: 600" class="mt-4">
             Следующий перечень документов требуется для участия в заявках по
-            выбранных Вами профессиям:
+            выбранным Вами профессиям:
           </p>
           <div class="access-content">
             <div class="d-flex">
@@ -609,6 +610,13 @@
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapActions } from "vuex";
+function formatAsCurrency (value, dec) {
+  dec = dec || ''
+  if (value === null) {
+    return ''
+  }
+  return '' + value.toFixed(dec).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1-")
+}
 export default {
   name: "UploadDocument",
   components: {
@@ -619,10 +627,11 @@ export default {
       filelist: [],
       menu: false,
       menu1: false,
+      currency: "",
+      initialBalance: null,
       logo: "",
       passport_number: "",
       passport_info: "",
-      passport_code: "",
       passport_series: "",
       passport_given: "",
       passport_date: "",
@@ -632,7 +641,7 @@ export default {
       inputRules: [(v) => !!v || "Заполните поля"],
       seriesRules:[(v) => (!!v && v.length === 4) || 'Некорректный  серию паспорта', (v) => !!v || "Заполните поля"],
       numberRules:[(v) => (!!v && v.length === 6) || 'Некорректный  номер паспорта', (v) => !!v || "Заполните поля"],
-      codeRules:[(v) => (!!v && v.length === 6) || 'Некорректный  код подразделения', (v) => !!v || "Заполните поля"],
+      codeRules:[(v) => (!!v && v.length === 7) || 'Некорректный  код подразделения', (v) => !!v || "Заполните поля"],
       dropzoneOptions: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 200,
@@ -690,6 +699,7 @@ export default {
       setTimeout(() => {
         this.setPassport(data);
       }, 1000);
+      this.$router.push({path: this.$route.fullPath, query: {tab: '7'} });
     },
     back(value) {
       this.$emit("pageHandler", value, "back");
@@ -788,6 +798,14 @@ export default {
     },
   },
   computed: {
+    passport_code: {
+      get: function() {
+        return formatAsCurrency(this.initialBalance, 0)
+      },
+      set: function(newValue) {
+        this.initialBalance =  Number(newValue.replace(/[^0-9\.]/g, ''));
+      }
+    },
     disableHandler() {
       return (
         this.passport_number &&
@@ -883,8 +901,7 @@ export default {
     display: none!important;
   }
 }
-.theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
-  color: lightgrey !important;
-  background: #0082de !important;
+.btn-title{
+  font-weight: 700;
 }
 </style>

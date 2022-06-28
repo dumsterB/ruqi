@@ -14,15 +14,15 @@
             <img src="@/assets/img/schedule.svg" alt="">
             <br>
             <strong>Быстрая оплата</strong>
-            <p>Система ruqi.ru использует электроный документооборот, это эффективный способ подписывать.</p>
+            <p>Система ruqi.ru использует электроный документооборот это эффективный способ подписывать документы.</p>
           </div>
         </v-col>
         <v-col md="6" lg="6" lx="6" cols="12"  sm="12" xs="12">
           <div>
             <img src="@/assets/img/wallet.svg" alt="">
             <br>
-            <strong>Документы всегда доступны?</strong>
-            <p>Система ruqi.ru использует электроный документооборот, это эффективный способ подписывать.</p>
+            <strong>Документы всегда доступны</strong>
+            <p>Система ruqi.ru использует электроный документооборот это эффективный способ подписывать документы.</p>
           </div>
         </v-col>
         <v-col md="6" lg="6" lx="6" cols="12"  sm="12" xs="12">
@@ -37,7 +37,7 @@
     </div>
     <div class="access-content">
     <strong>Согласие на использование электронного документооборота</strong>
-      <p class="mt-3 mb-3">Нажимая кнопку далее я соглашаюсь с условиями использования моих данных в обмене документами системы руки ру.</p>
+      <p class="mt-3 mb-3">Нажимая кнопку "Принимаю условия" я соглашаюсь с условиями использования моих данных в обмене документами системы ruqi.ru</p>
       <div class="d-flex">
         <img src="@/assets/img/file_pdf.svg" alt=""> <span class="primary-text">Cоглашение на обмен персональными данными и документами посредством ЭЦП</span>
       </div>
@@ -54,6 +54,7 @@ export default {
   methods:{
     next(value){
       this.$emit('pageHandler',value)
+      this.$router.push({path: this.$route.fullPath, query: {tab: '4'} });
     },
     back(val){
       this.$emit('pageHandler',val , 'back')

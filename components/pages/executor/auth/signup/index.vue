@@ -113,6 +113,7 @@ import UploadDocument from "./tabs/UploadDocument";
 import paymentInformation from "./tabs/PaymentInformation";
 import Finish from "./tabs/Finish";
 import Address from "./tabs/Address";
+import { mapGetters, mapMutations } from "vuex";
 export default {
   props: {},
   components: {
@@ -130,7 +131,7 @@ export default {
     return {
       power: 78,
       current_tab: "private-information",
-      current_page: 7,
+      current_page: 0,
       form: {
         name: "",
         surname: "",
@@ -141,31 +142,57 @@ export default {
         email: null,
         agree: false,
       },
-      pages: {
-        tab1: "private-information",
-        tab2: "sms",
-        tab3: "create-password",
-        tab4: "create-password",
-        tab5: "electronic-document",
-        tab6: "position-selector",
-        tab7: "upload-document",
-        tab8: "payment-information",
-        tab9: "finish",
-      },
       tabs: [
-        { title: "Личные данные", value: "", active: true, mobile: true },
-        { title: "Создание пароля", value: "", active: false, mobile: false },
-        { title: "Соглашение ЭДО", value: "", active: false, mobile: false },
-        { title: "Выбор профессий", value: "", active: false, mobile: false },
-        { title: "Адресса", value: "", active: false, mobile: false },
-        {title: "Загрузка документов", value: "", active: false, mobile: false,},
-        { title: "Платежные данные", value: "", active: false, mobile: false },
+        {
+          title: "Личные данные",
+          tab: 0,
+          value: "",
+          active: true,
+          mobile: true,
+        },
+        {
+          title: "Создание пароля",
+          tab: 0,
+          value: "",
+          active: false,
+          mobile: false,
+        },
+        {
+          title: "Соглашение ЭДО",
+          tab: 3,
+          value: "",
+          active: false,
+          mobile: false,
+        },
+        {
+          title: "Выбор профессий",
+          tab: 4,
+          value: "",
+          active: false,
+          mobile: false,
+        },
+        { title: "Адресса", value: "", tab: 5, active: false, mobile: false },
+        {
+          title: "Загрузка документов",
+          tab: 6,
+          value: "",
+          active: false,
+          mobile: false,
+        },
+        {
+          title: "Платежные данные",
+          tab: 7,
+          value: "",
+          active: false,
+          mobile: false,
+        },
       ],
       agree: false,
       password: "",
     };
   },
   methods: {
+    ...mapMutations("executor", ["GET_EXECUTOR_TOKEN"]),
     pageHandler(val, helper) {
       if (helper === "back") {
         this.current_page = val;
@@ -205,9 +232,116 @@ export default {
       this.agree = val;
     },
     componentHandler() {
-      let tab = this.$route?.query?.tab || this.pages.tab1;
-      this.current_tab = this.pages[tab];
+      let tab = this.$route.query.tab || "0";
+      let active = this.tabs.find((ell) => ell.tab == tab || 0);
+      this.current_page = active.tab;
+      if (this.current_page === 3) {
+        this.tabs[0].value = 100;
+        this.tabs[1].value = 100;
+        this.tabs[2].value = 100;
+        this.tabs.map((ell) => {
+          ell.mobile = false;
+        });
+        this.tabs[2].mobile = true;
+        this.tabs[3].active = true;
+        this.tabs[0].active = true;
+        this.tabs[1].active = true;
+        this.tabs[2].active = true;
+        this.tabs[2].active = true;
+      } else if (this.current_page === 4) {
+        this.tabs.map((ell) => {
+          ell.mobile = false;
+        });
+        this.tabs[3].mobile = true;
+        this.tabs[0].value = 100;
+        this.tabs[1].value = 100;
+        this.tabs[2].value = 100;
+        this.tabs[3].value = 100;
+        this.tabs[0].active = true;
+        this.tabs[1].active = true;
+        this.tabs[2].active = true;
+        this.tabs[2].active = true;
+        this.tabs[3].active = true;
+      } else if (this.current_page === 5) {
+        this.tabs.map((ell) => {
+          ell.mobile = false;
+        });
+        this.tabs[4].mobile = true;
+        this.tabs[0].value = 100;
+        this.tabs[1].value = 100;
+        this.tabs[2].value = 100;
+        this.tabs[3].value = 100;
+        this.tabs[4].value = 100;
+        this.tabs[0].active = true;
+        this.tabs[1].active = true;
+        this.tabs[2].active = true;
+        this.tabs[2].active = true;
+        this.tabs[3].active = true;
+        this.tabs[4].active = true;
+      } else if (this.current_page === 6) {
+        this.tabs.map((ell) => {
+          ell.mobile = false;
+        });
+        this.tabs[5].mobile = true;
+        this.tabs[0].value = 100;
+        this.tabs[1].value = 100;
+        this.tabs[2].value = 100;
+        this.tabs[3].value = 100;
+        this.tabs[4].value = 100;
+        this.tabs[5].value = 100;
+        this.tabs[0].active = true;
+        this.tabs[1].active = true;
+        this.tabs[2].active = true;
+        this.tabs[2].active = true;
+        this.tabs[3].active = true;
+        this.tabs[4].active = true;
+        this.tabs[5].active = true;
+      } else if (this.current_page === 7) {
+        this.tabs.map((ell) => {
+          ell.mobile = false;
+        });
+        this.tabs[6].mobile = true;
+        this.tabs[0].value = 100;
+        this.tabs[1].value = 100;
+        this.tabs[2].value = 100;
+        this.tabs[3].value = 100;
+        this.tabs[4].value = 100;
+        this.tabs[5].value = 100;
+        this.tabs[6].value = 100;
+        this.tabs[0].active = true;
+        this.tabs[1].active = true;
+        this.tabs[2].active = true;
+        this.tabs[2].active = true;
+        this.tabs[3].active = true;
+        this.tabs[4].active = true;
+        this.tabs[5].active = true;
+        this.tabs[6].active = true;
+      } else if (this.current_page === 7) {
+        this.tabs.map((ell) => {
+          ell.mobile = false;
+        });
+        this.tabs[7].mobile = true;
+        this.tabs[0].value = 100;
+        this.tabs[1].value = 100;
+        this.tabs[2].value = 100;
+        this.tabs[3].value = 100;
+        this.tabs[4].value = 100;
+        this.tabs[5].value = 100;
+        this.tabs[6].value = 100;
+        this.tabs[7].value = 100;
+        this.tabs[0].active = true;
+        this.tabs[1].active = true;
+        this.tabs[2].active = true;
+        this.tabs[2].active = true;
+        this.tabs[3].active = true;
+        this.tabs[4].active = true;
+        this.tabs[5].active = true;
+        this.tabs[6].active = true;
+        this.tabs[7].active = true;
+      }
     },
+  },
+  computed: {
   },
   mounted() {
     this.componentHandler();

@@ -112,6 +112,7 @@ export default {
     next(){
       this.$emit('pageHandler', 'finish')
       this.setPayment(this.settings)
+      this.$router.push({path: this.$route.fullPath, query: {tab: '8'} });
     },
     back(val){
       this.$emit('pageHandler',val , 'back')
@@ -153,5 +154,9 @@ export default {
 }
 .btn-title{
   font-weight: 700;
+}
+.theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
+  color: grey !important;
+  background: lightgrey !important;
 }
 </style>

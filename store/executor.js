@@ -8,7 +8,7 @@ export const state = () => ({
   error: "",
   passport_main_spread: null,
   phone_or_email: "",
-  recover_sms_phone: '',
+  recover_sms_phone: "",
 });
 export const getters = {
   specializations(state) {
@@ -17,6 +17,7 @@ export const getters = {
   recover_sms_phone(state) {
     return state.recover_sms_phone;
   },
+
 };
 export const actions = {
   async createExecutor({ commit }, params) {
@@ -84,32 +85,32 @@ export const actions = {
   },
   async recoverExecutorPhone({ commit }, params) {
     await this.$axios
-        .put("auth/forgot", {
-          phone: params,
-          type: "contractor",
-        })
-        .then((response) => {
-          commit('SET_PHONE_RECOVER',params)
-          commit(
-              "response/setSuccess",
-              { type: "success", text: "Исполнитель успешно зашел!" },
-              { root: true }
-          );
-          setTimeout(function () {
-            commit("response/removeSuccess", null, { root: true });
-          }, 2000);
-        })
-        .catch((error) => {
-          commit(
-              "response/setSuccess",
-              { type: "error", text: "Заполните поля" },
-              { root: true }
-          );
-          setTimeout(function () {
-            commit("response/removeSuccess", null, { root: true });
-          }, 3000);
-          console.log(error);
-        });
+      .put("auth/forgot", {
+        phone: params,
+        type: "contractor",
+      })
+      .then((response) => {
+        commit("SET_PHONE_RECOVER", params);
+        commit(
+          "response/setSuccess",
+          { type: "success", text: "Исполнитель успешно зашел!" },
+          { root: true }
+        );
+        setTimeout(function () {
+          commit("response/removeSuccess", null, { root: true });
+        }, 2000);
+      })
+      .catch((error) => {
+        commit(
+          "response/setSuccess",
+          { type: "error", text: "Заполните поля" },
+          { root: true }
+        );
+        setTimeout(function () {
+          commit("response/removeSuccess", null, { root: true });
+        }, 3000);
+        console.log(error);
+      });
   },
   async confirmPassword({ commit }, params) {
     await this.$axios
@@ -168,6 +169,7 @@ export const actions = {
     await this.$axios
       .put("auth/password", params)
       .then((response) => {
+        commit("SET_EXECUTOR_TOKEN", response.data.data);
         commit(
           "response/setSuccess",
           { type: "success", text: "Пароль успешно создан" },
@@ -191,29 +193,30 @@ export const actions = {
         return error;
       });
   },
-  async codeRepeat({commit, state},params){
-    await this.$axios.put('/auth/signup/code-repeat',params)
-        .then((response) => {
-          commit(
-              "response/setSuccess",
-              { type: "success", text: "Супер манаджер успешно создан" },
-              { root: true }
-          );
-          setTimeout(function () {
-            commit("response/removeSuccess", null, { root: true });
-          }, 2000);
-        })
-        .catch((error) => {
-          commit(
-              "response/setSuccess",
-              { type: "error", text: "Заполните поля" },
-              { root: true }
-          );
-          setTimeout(function () {
-            commit("response/removeSuccess", null, { root: true });
-          }, 3000);
-          console.log(error);
-        });
+  async codeRepeat({ commit, state }, params) {
+    await this.$axios
+      .put("/auth/signup/code-repeat", params)
+      .then((response) => {
+        commit(
+          "response/setSuccess",
+          { type: "success", text: "Супер манаджер успешно создан" },
+          { root: true }
+        );
+        setTimeout(function () {
+          commit("response/removeSuccess", null, { root: true });
+        }, 2000);
+      })
+      .catch((error) => {
+        commit(
+          "response/setSuccess",
+          { type: "error", text: "Заполните поля" },
+          { root: true }
+        );
+        setTimeout(function () {
+          commit("response/removeSuccess", null, { root: true });
+        }, 3000);
+        console.log(error);
+      });
   },
   async loadSpecializations({ commit }) {
     await this.$axios
@@ -238,10 +241,12 @@ export const actions = {
         return error;
       });
   },
-  async setSpecializations({ commit }, params) {
-    console.log(params);
+  async setSpecializations({ commit, state }, params) {
     await this.$axios
-      .put("user/settings", { professions: { ...params } })
+      .put("user/settings", {
+        professions: { ...params },
+
+      })
       .then((response) => {
         commit(
           "response/setSuccess",
@@ -504,8 +509,8 @@ export const mutations = {
   SET_SPECIALIZATIONS(state, payload) {
     state.specializations = payload.data.data;
   },
-  SET_PHONE_RECOVER(state,payload){
-    state.recover_sms_phone = payload
+  SET_PHONE_RECOVER(state, payload) {
+    state.recover_sms_phone = payload;
   },
   SET_SIGN_IN(state, payload) {
     state.phone_or_email = payload;
@@ -528,4 +533,8 @@ export const mutations = {
       state.driver_media = payload.data.uuid;
     }
   },
+  SET_EXECUTOR_TOKEN(state, token) {
+    localStorage.setItem("ruqi_auth_data", JSON.stringify(token));
+  },
+
 };

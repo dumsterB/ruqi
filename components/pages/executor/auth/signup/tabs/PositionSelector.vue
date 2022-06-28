@@ -32,18 +32,18 @@
       </div>
       <div class="desktop d-block">
         <div class="d-flex">
-          <strong class="small-text ml-5">Водитель электроштабелера </strong> <span  style="margin-top: -2px" class="primary-text ml-3"> требуются права для управления</span>
+          <strong class="small-text ml-5">Водитель электроштабелера </strong> <span  style="margin-top: -2px" class="primary-text ml-3"> требуется водительское удостоверение</span>
         </div>
         <div class="d-flex">
-          <strong class="small-text ml-5">Кладовщик </strong> <span style="margin-top: -2px" class="primary-text ml-3 "> требуются медицинская книжка</span>
+          <strong class="small-text ml-5">Кладовщик </strong> <span style="margin-top: -2px" class="primary-text ml-3 "> требуется медицинская книжка</span>
         </div>
       </div>
       <div class="mobile d-block">
         <div >
-          <strong class="small-text ml-5">Водитель электроштабелера </strong> <br> <span class="primary-text ml-5"> требуются права для управления</span>
+          <strong class="small-text ml-5">Водитель электроштабелера </strong> <br> <span class="primary-text ml-5"> требуется водительское удостоверение</span>
         </div>
         <div >
-          <strong class="small-text ml-5">Кладовщик </strong> <br> <span class="primary-text ml-5"> требуются медицинская книжка</span>
+          <strong class="small-text ml-5">Кладовщик </strong> <br> <span class="primary-text ml-5"> требуется медицинская книжка</span>
         </div>
       </div>
       <v-btn  elevation="0" class="btn-secondary" @click="back(3)"> <span class="btn-title">Назад</span> </v-btn>
@@ -69,6 +69,7 @@ export default {
     ...mapActions('executor',['loadSpecializations','setSpecializations']),
     next(value){
       this.$emit('pageHandler', value)
+
     let activeSpecializations = (this.specializationCopy || []).map((ell) => {
         return {
           ...ell,
@@ -80,7 +81,7 @@ export default {
       activeSpecializations.map(ell => ell.name)
       let params = activeSpecializations.map(({professions,...rest})=>({...rest}))
       this.setSpecializations(params)
-
+      this.$router.push({path: this.$route.fullPath, query: {tab: '5'} });
     },
     back(val){
       this.$emit('pageHandler',val , 'back')
@@ -174,10 +175,7 @@ export default {
     display: block!important;
   }
 }
-.theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
-  color: lightgrey !important;
-  background: #0082de !important;
-}
+
 .btn-title{
   font-weight: 700;
 }

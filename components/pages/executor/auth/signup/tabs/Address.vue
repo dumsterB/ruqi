@@ -27,33 +27,48 @@
           </div>
           <h3 class="mt-5">Укажите место проживания</h3>
           <p>
-            Введите название населенного пункта город с районом или метро,
+            Введите название населенного пункта город, районом или метро,
             откуда хотели бы получать предложения о работе
           </p>
           <p class="input_label">Дополнительный адрес 1</p>
-          <v-text-field
-            outlined
-            class="mt-2"
-            placeholder="Например: Зеленоград, Ленинский район"
-            v-model="address_extra"
-            dense
-            single-line
-          ></v-text-field>
+          <div
+              v-for="(filed, index) in meta.meta_filter_row_1"
+              :key="index"
+              :style="{ maxWidth: filed.max_width + 'px' }"
+          >
+            <FTypeSearchAutocomplete
+                :name="filed.name"
+                :icon="filed.icon"
+                :params="filed.params"
+                @input="input2"
+                :validation="filed.validation"
+                :value="filed.value"
+                @setItemsList="setRegionList"
+            ></FTypeSearchAutocomplete>
+          </div>
+          <br>
           <v-divider></v-divider>
           <p class="mt-3 input_label">Дополнительный адрес 1</p>
-          <v-text-field
-            outlined
-            class="mt-2"
-            placeholder="Например: Зеленоград, Ленинский район"
-            v-model="address_extra_2"
-            dense
-            single-line
-          ></v-text-field>
+          <div
+              v-for="(filed, index) in meta.meta_filter_row_1"
+              :key="index"
+              :style="{ maxWidth: filed.max_width + 'px' }"
+          >
+            <FTypeSearchAutocomplete
+                :name="filed.name"
+                :icon="filed.icon"
+                :params="filed.params"
+                @input="input3"
+                :validation="filed.validation"
+                :value="filed.value"
+                @setItemsList="setRegionList"
+            ></FTypeSearchAutocomplete>
+          </div>
           <!--          <a href="" class="link">Добавить адрес</a>-->
           <div class="access-content d-flex mt-5">
             <img src="@/assets/img/attention.svg" alt="" />
             <strong class="ml-2" style="font-weight: 600; margin-bottom: -10px"
-              >Вы всегда можете добавить, удалить и изменить основной и
+              >Вы всегда можете добавить, удалить или изменить основной и
               дополнительные адреса в личном кабинете.</strong
             >
           </div>
@@ -121,6 +136,13 @@ export default {
   methods: {
     input(value) {
       this.address = value;
+      console.log(value , 'first')
+    },
+    input2(value){
+      this.address_extra = value
+    },
+    input3(value){
+      this.address_extra_2 = value
     },
     ...mapActions("executor", ["setAddress"]),
     ...mapActions("dictionary", ["fetchAddress"]),
@@ -154,6 +176,7 @@ export default {
       } else {
         this.validate();
       }
+      this.$router.push({path: this.$route.fullPath, query: {tab: '6'} });
     },
 
     sendFilter() {
@@ -277,5 +300,13 @@ export default {
 }
 .btn-title{
   font-weight: 700;
+}
+
+
+
+</style>
+<style>
+.form-search-autocomplete .v-input{
+  z-index: 0!important;
 }
 </style>
