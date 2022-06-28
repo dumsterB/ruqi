@@ -245,7 +245,6 @@ export default {
       console.log(this.requestSuccess, "request");
       if (this.requestSuccess.type === "success") {
         this.$emit("pageHandler", value);
-          this.$router.push({path: this.$route.fullPath, query: {tab: '0'} });
       } else {
         this.form.email = "";
         this.form.phone = "";

@@ -303,7 +303,10 @@ export default {
 }
 
 
+
+</style>
+<style>
 .form-search-autocomplete .v-input{
-  z-index: 1;
+  z-index: 0!important;
 }
 </style>

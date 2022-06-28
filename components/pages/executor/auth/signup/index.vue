@@ -141,17 +141,6 @@ export default {
         email: null,
         agree: false,
       },
-      pages: {
-        tab1: "private-information",
-        tab2: "sms",
-        tab3: "create-password",
-        tab4: "create-password",
-        tab5: "electronic-document",
-        tab6: "position-selector",
-        tab7: "upload-document",
-        tab8: "payment-information",
-        tab9: "finish",
-      },
       tabs: [
         {
           title: "Личные данные",
@@ -248,11 +237,20 @@ export default {
         this.tabs[0].value = 100;
         this.tabs[1].value = 100;
         this.tabs[2].value = 100;
+        this.tabs.map((ell) => {
+          ell.mobile = false;
+        });
+        this.tabs[2].mobile = true;
+        this.tabs[3].active = true;
         this.tabs[0].active = true;
         this.tabs[1].active = true;
         this.tabs[2].active = true;
         this.tabs[2].active = true;
       }else if(this.current_page === 4){
+        this.tabs.map((ell) => {
+          ell.mobile = false;
+        });
+        this.tabs[3].mobile = true;
         this.tabs[0].value = 100;
         this.tabs[1].value = 100;
         this.tabs[2].value = 100;
@@ -263,6 +261,10 @@ export default {
         this.tabs[2].active = true;
         this.tabs[3].active = true;
       }else if(this.current_page === 5){
+        this.tabs.map((ell) => {
+          ell.mobile = false;
+        });
+        this.tabs[4].mobile = true;
         this.tabs[0].value = 100;
         this.tabs[1].value = 100;
         this.tabs[2].value = 100;
@@ -275,6 +277,10 @@ export default {
         this.tabs[3].active = true;
         this.tabs[4].active = true;
       }else if(this.current_page === 6){
+        this.tabs.map((ell) => {
+          ell.mobile = false;
+        });
+        this.tabs[5].mobile = true;
         this.tabs[0].value = 100;
         this.tabs[1].value = 100;
         this.tabs[2].value = 100;
@@ -290,6 +296,10 @@ export default {
         this.tabs[5].active = true;
       }
       else if(this.current_page === 7){
+        this.tabs.map((ell) => {
+          ell.mobile = false;
+        });
+        this.tabs[6].mobile = true;
         this.tabs[0].value = 100;
         this.tabs[1].value = 100;
         this.tabs[2].value = 100;
@@ -307,6 +317,10 @@ export default {
         this.tabs[6].active = true;
       }
       else if(this.current_page === 7){
+        this.tabs.map((ell) => {
+          ell.mobile = false;
+        });
+        this.tabs[7].mobile = true;
         this.tabs[0].value = 100;
         this.tabs[1].value = 100;
         this.tabs[2].value = 100;
