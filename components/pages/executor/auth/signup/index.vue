@@ -113,6 +113,7 @@ import UploadDocument from "./tabs/UploadDocument";
 import paymentInformation from "./tabs/PaymentInformation";
 import Finish from "./tabs/Finish";
 import Address from "./tabs/Address";
+import { mapGetters, mapMutations } from "vuex";
 export default {
   props: {},
   components: {
@@ -191,6 +192,7 @@ export default {
     };
   },
   methods: {
+    ...mapMutations("executor", ["GET_EXECUTOR_TOKEN"]),
     pageHandler(val, helper) {
       if (helper === "back") {
         this.current_page = val;
@@ -246,7 +248,7 @@ export default {
         this.tabs[1].active = true;
         this.tabs[2].active = true;
         this.tabs[2].active = true;
-      }else if(this.current_page === 4){
+      } else if (this.current_page === 4) {
         this.tabs.map((ell) => {
           ell.mobile = false;
         });
@@ -260,7 +262,7 @@ export default {
         this.tabs[2].active = true;
         this.tabs[2].active = true;
         this.tabs[3].active = true;
-      }else if(this.current_page === 5){
+      } else if (this.current_page === 5) {
         this.tabs.map((ell) => {
           ell.mobile = false;
         });
@@ -276,7 +278,7 @@ export default {
         this.tabs[2].active = true;
         this.tabs[3].active = true;
         this.tabs[4].active = true;
-      }else if(this.current_page === 6){
+      } else if (this.current_page === 6) {
         this.tabs.map((ell) => {
           ell.mobile = false;
         });
@@ -294,8 +296,7 @@ export default {
         this.tabs[3].active = true;
         this.tabs[4].active = true;
         this.tabs[5].active = true;
-      }
-      else if(this.current_page === 7){
+      } else if (this.current_page === 7) {
         this.tabs.map((ell) => {
           ell.mobile = false;
         });
@@ -315,8 +316,7 @@ export default {
         this.tabs[4].active = true;
         this.tabs[5].active = true;
         this.tabs[6].active = true;
-      }
-      else if(this.current_page === 7){
+      } else if (this.current_page === 7) {
         this.tabs.map((ell) => {
           ell.mobile = false;
         });
@@ -340,6 +340,8 @@ export default {
         this.tabs[7].active = true;
       }
     },
+  },
+  computed: {
   },
   mounted() {
     this.componentHandler();
