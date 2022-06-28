@@ -49,8 +49,8 @@ div
           .cpheu-profile-card__item__title мой профиль
   v-row(class="mt-5")
    v-col
-     v-row( class="mt-5")
-      div()
+     v-row(class="mt-5")
+      div
         v-card(class="card pa-4" width="300" max-width="300"  )
           img(src="@/assets/img/attention_warning.svg")
           br

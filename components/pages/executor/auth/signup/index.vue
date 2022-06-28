@@ -341,8 +341,8 @@ export default {
   margin-right: 8px;
 }
 .tab-content {
-  padding-left: 300px;
-  padding-right: 250px;
+  padding-left: 20%;
+  padding-right: 20%;
 }
 .mobile {
   display: none;
