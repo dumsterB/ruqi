@@ -92,7 +92,7 @@ export const actions = {
 
   },
 
-  async requestTask({commit, dispatch}, task_uuid) {
+  async requestTask({commit, dispatch}, {task_uuid, params, concat}) {
     await this.$axios.post('/user/tasks/'+task_uuid+'/request',
       { headers: {
           'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ export const actions = {
       })
       .then((response) => {
         console.log(response);
-        dispatch('fetchSearchTasks', {params: {}, concat: false});
+        dispatch('fetchSearchTasks', {params: params, concat: concat});
         commit('response/setSuccess', {type: 'success', text: 'Вы откликнулись на заявку', }, {root: true});
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });

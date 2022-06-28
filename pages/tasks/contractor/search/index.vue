@@ -203,7 +203,7 @@ export default {
     },
 
     requestTaskAction(uuid){
-      this.requestTask(uuid);
+      this.requestTask({task_uuid: uuid, params: this.filters, concat: false});
     },
 
     openDetails(uuid) {
