@@ -13,15 +13,17 @@
   )
     template( v-slot:activator="{ on, attrs }" )
       v-text-field(
-        :value="value"
+        v-model="fullDate"
         v-bind="attrs"
         v-on="on"
         hide-details="true"
         single-line
         outlined
+        height="48px"
         background-color="#FFFFFF"
+        append-icon="mdi-calendar-blank-outline"
+        prefix="c "
       )
-        v-icon.calendar-symbol( slot="prepend-inner" role="img")
 
     v-date-picker(
       v-model="date"
@@ -110,6 +112,7 @@ export default {
 
 .date-input-with-title
 {
+  width: 216px;
   /* OBJECTS STYLES START */
     .date__haupt-titel
     {
@@ -123,14 +126,10 @@ export default {
     }
   /* OBJECTS STYLES END */
 
-  /* MIXINS STYLES START */
-    .calendar-symbol
-    {
-      width: 30px;
-      height: 30px;
-      background: url( '@/assets/img/calendar-start_date.svg' ) no-repeat;
-    }
-  /* MIXINS STYLES END */
+  .v-text-field__prefix{
+    color: #263043;
+  }
+
 }
 
 </style>

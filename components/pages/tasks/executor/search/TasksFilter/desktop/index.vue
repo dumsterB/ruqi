@@ -1,104 +1,94 @@
 <template lang="pug">
-.rqtes-taskfilter
-  .rqtes-taskfilter__row
-    .select-single.rqtes-taskfilter__select-pofession.rqtes-taskfilter__row-item
-      .select-single_titel {{ "Профессии" }}
-      v-select(
-        v-model="selectedProfessions"
-        item-text="name"
-        item-value="uuid"
-        required
-        single-line
-        outlined
-        filled
-        multiple
-        hide-details="true"
-        :items="professions"
-        :item-color="'#000000'"
-        @change="selectProfession"
-      )
-        template(v-slot:selection="{ item, index }")
-          span(v-if="index === 0") {{ item.name }}
-          span(
-            v-if="index === 1"
-            class="grey--text text-caption"
-          ) (+{{ selectedProfessions.length - 1 }} others)
+  .rqtes-taskfilter
+    .rqtes-taskfilter__row
+      .select-single.rqtes-taskfilter__select-pofession.rqtes-taskfilter__row-item
+        .select-single_titel {{ "Профессии" }}
+        v-select(
+          v-model="selectedProfessions"
+          item-text="name"
+          item-value="uuid"
+          required
+          single-line
+          outlined
+          filled
+          multiple
+          hide-details="true"
+          :items="professions"
+          :item-color="'#000000'"
+          @change="selectProfession"
+        )
+          template(v-slot:selection="{ item, index }")
+            span(v-if="index === 0") {{ item.name }}
+            span(
+              v-if="index === 1"
+              class="grey--text text-caption"
+            ) (+{{ selectedProfessions.length - 1 }} других)
 
-    .select-single.rqtes-taskfilter__select--regions.rqtes-taskfilter__row-item
-      .select-single_titel {{ "Район поиска" }}
-      v-select(
-        :value="''"
-        :items="regions"
-        item-text="name"
-        item-value="uuid"
-        required
-        single-line
-        outlined
-        filled
-        hide-details="true"
-        :item-color="'#000000'"
-        @change="selectRegion"
-      )
+      .select-single.rqtes-taskfilter__select--regions.rqtes-taskfilter__row-item
+        .select-single_titel {{ "Район поиска" }}
 
-    .select-single.rqtes-taskfilter__select-radius.rqtes-taskfilter__row-item
-      .select-single_titel {{ "Ищу не далее" }}
-      v-select(
-        item-text="name"
-        item-value="uuid"
-        required
-        single-line
-        outlined
-        filled
-        hide-details="true"
-        :item-color="'#000000'"
-        :items="radii"
-        @change="selectRadius"
-      )
+        FTypeSearchAutocomplete(name="region" icon="mdi-magnify" :params="regionParams" @input="selectRegion")
 
-    .rqtes-taskfilter__confirm.rqtes-taskfilter__row-item
-      v-btn(
-        class="ma-2 rqtes-taskfilter__confirm-btn"
-        color="info"
-        style="margin: 0 !important; margin-top: 16px !important;"
-        :loading="loader"
-        :disabled="loader"
-        @click="apply"
-      ) показать заявки
-        template(v-slot:loader)
-          span.custom-loader
-            v-icon(style="color: rgba(0,0,0,.26) !important") mdi-cached
+      .select-single.rqtes-taskfilter__select-radius.rqtes-taskfilter__row-item
+        .select-single_titel {{ "Ищу не далее" }}
+        v-select(
+          item-text="name"
+          item-value="uuid"
+          required
+          single-line
+          outlined
+          filled
+          hide-details="true"
+          :item-color="'#000000'"
+          :items="radii"
+          @change="selectRadius"
+          :readonly="radiusReadonly"
+          label="-"
+        )
 
-  .rqtes-taskfilter__row
-    dateInputWithTitle.rqtes-taskfilter__row-item.rqtes-taskfilter__date(
-      title="Дата работ"
-      value="01.01.2022"
-      @date_change="setStartDate"
-    )
+      .rqtes-taskfilter__confirm.rqtes-taskfilter__row-item
+        v-btn.elevation-0.btn-blue(
+          class="rqtes-taskfilter__confirm-btn"
+          color="#0082DE"
+          :loading="loader"
+          :disabled="loader"
+          @click="apply"
+        ) показать заявки
+          template(v-slot:loader)
+            span.custom-loader
+              v-icon(style="color: rgba(0,0,0,.26) !important") mdi-cached
 
-    .rqtes-taskfilter__row-item
-      .rqtes-taskfilter__input--title Зарплата от
-      v-text-field.mix-input.rqtes-taskfilter__input--salary(
-        solo
-        @input="setSalary"
+    .rqtes-taskfilter__row
+      dateInputWithTitle.rqtes-taskfilter__row-item.rqtes-taskfilter__date(
+        title="Дата работ"
+        value="01.01.2022"
+        @date_change="setStartDate"
       )
 
-    .rqtes-taskfilter__row-item.rqtes-taskfilter__checkbox
-      v-checkbox.rqtes-taskfilter__checkbox-property(
-        label="Без мед. книжки"
-        color="info"
-        :value="medicalBook"
-        @change="setMedicalBook"
-        hide-details
-      )
+      .rqtes-taskfilter__row-item
+        .rqtes-taskfilter__input--title Зарплата от
+        v-text-field.mix-input.rqtes-taskfilter__input--salary(
+          solo
+          @input="setSalary"
+        )
 
-    .rqtes-taskfilter__row-item.rqtes-taskfilter__checkbox
-      v-checkbox.rqtes-taskfilter__checkbox-property(
-        label="Без водительских прав"
-        color="info"
-        :value="driverLicense"
-        @change="setDriverLicense"
-        hide-details
-      )
+      .rqtes-taskfilter__row-item.rqtes-taskfilter__checkbox
+        v-checkbox.rqtes-taskfilter__checkbox-property(
+          label="Без мед. книжки"
+          color="info"
+          :value="medicalBook"
+          @change="setMedicalBook"
+          hide-details
+        )
+
+      .rqtes-taskfilter__row-item.rqtes-taskfilter__checkbox
+        v-checkbox.rqtes-taskfilter__checkbox-property(
+          label="Без водительских прав"
+          color="info"
+          :value="driverLicense"
+          @change="setDriverLicense"
+          hide-details
+        )
 </template>
 
 <script>
@@ -122,7 +112,7 @@ export default {
       default: () => ([]),
     },
     region: {
-      type: Object,
+      type: String,
       default: null,
     },
     professions: {
@@ -185,13 +175,13 @@ export default {
       this.$emit('setDriverLicense', payload);
     },
     selectRegion(payload = null) {
+
+      this.$emit('selectRegion', payload);
+
       if (payload) {
-        this.$emit(
-          'selectRegion',
-          this.regions.find(
-            region => region.uuid === payload
-          )
-        );
+        this.radiusReadonly = true;
+      }else{
+        this.radiusReadonly = false;
       }
     },
     setStartDate(payload) {
@@ -217,9 +207,19 @@ export default {
       solo: true,
       hint: '',
     },
+    regionParams: {
+      placeholder: 'Выберите регион',
+      clearable: true,
+      loading: false,
+      filled: true,
+      dense: true
+    },
+    radiusReadonly: false
   }),
-  created() { },
-  mounted() { },
+  created() {
+  },
+  mounted() {
+  },
 }
 </script>
 
@@ -250,7 +250,7 @@ export default {
     }
 
     &--salary {
-      width: 200px;
+      width: 100px;
 
       .v-input__slot {
         box-shadow: none !important;
@@ -334,10 +334,13 @@ export default {
         box-shadow: none !important;
 
         fieldset {
-          background: #FFFFFF;
           border: 1px solid #E2E4E5;
           box-sizing: border-box;
           border-radius: 4px !important;
+        }
+
+        .v-input__prepend-inner {
+          margin-top: 12px !important;
         }
       }
     }
@@ -360,6 +363,11 @@ export default {
       &:first-child {
         margin-left: 0;
       }
+
+      .v-btn {
+        border-radius: 8px;
+        font-weight: 700;
+      }
     }
   }
 
@@ -380,6 +388,7 @@ export default {
     flex-wrap: nowrap;
     align-items: center;
     align-content: center;
+    font-weight: 600;
 
     &-property {
       margin-top: 30px;

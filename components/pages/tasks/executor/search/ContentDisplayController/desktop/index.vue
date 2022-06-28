@@ -46,11 +46,12 @@
       v-select.rq-tcdc__sort-select(
         :items="sortActive"
         v-model="active"
-        prefix="Порядок:"
+        prefix="Сортировать:"
         outlined
         hide-details="true"
         item-text="name"
         item-value="id"
+        @change="sortTasks"
       )
 </template>
 
@@ -71,15 +72,15 @@ export default {
       tab: 0,
       sortActive: [
         {
-          id: 0,
+          id: 'distance',
           name: 'Сначала ближайшие (по локации)',
         },
         {
-          id: 1,
+          id: 'rate_sort',
           name: 'Сначала дорогие (по стоимости ставки)',
         },
         {
-          id: 2,
+          id: 'start_date_sort',
           name: 'Сначала ближайший старт работ (по дате старта)',
         },
       ],
@@ -88,13 +89,15 @@ export default {
 
   computed: {
     countTaskTitle(){
-      if(this.count_tasks == 0 || this.count_tasks == 5){
-        return 'заявок';
-      }else if(this.count_tasks == 1){
-        return 'заявка';
-      }else if(this.count_tasks > 1){
-        return 'заявки';
+      let title = 'заявка';
+
+      if(this.count_tasks > 1 && this.count_tasks < 5){
+        title =  'заявки';
+      }else{
+        title = 'заявок';
       }
+
+      return title;
     }
 
   },
@@ -106,10 +109,9 @@ export default {
   },
 
   methods: {
-    /* GETTERS */
-    /* SETTERS */
-    /* HANDLERS */
-    /* HELPERS */
+    sortTasks(){
+      this.$emit('sortTasks', this.active);
+    }
   },
 
   created() { },

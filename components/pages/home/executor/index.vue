@@ -22,7 +22,7 @@ import TasksFilter from '@/components/pages/tasks/executor/search/TasksFilter/de
 import mTasksFilter from '@/components/pages/tasks/executor/search/TasksFilter/mobile';
 import mSearchLine from '@/components/pages/tasks/executor/search/SearchLine';
 
-import TasksList from './TasksList';
+import TasksList from '@/components/pages/tasks/executor/search/TasksList';
 import Userbar from './Userbar/desktop';
 import mUserbar from './Userbar/mobile';
 

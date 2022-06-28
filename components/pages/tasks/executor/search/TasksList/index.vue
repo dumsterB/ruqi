@@ -1,85 +1,119 @@
 <template lang="pug">
-.rq-ptestl
-  TasksList
-    template( v-slot:desktop )
-      .table-list-style
-        v-data-table(
-          :headers="headers"
-          :items="tasks"
-          item-key="uuid"
-          hide-default-footer
-          hide-default-header
+  .rq-ptestl
+    TasksList
+      template( v-slot:desktop )
+        .table-list-style
+          v-data-table(
+            :headers="headers"
+            :items="tasks"
+            item-key="uuid"
+            hide-default-footer
+            hide-default-header
+            disable-pagination
+            :options.sync="optionsFilter"
+          )
+            template( v-slot:item.name="{ item }" )
+              div.rq-ptestl__desktop-name
+                .rq-ptestl-title.color-black.mb-1 {{ item.name }}
+                .rq-ptestl__desktop-date(v-if="item.start_date") {{ parseDate({ date: item.start_date.substr(0, 10), type: 'date' }) }} {{ item.start_date.substring(11, 16) }}
+
+            template( v-slot:item.status="{ item }" )
+              Status(status="open")
+
+            template( v-slot:item.rate="{ item }" )
+              .color-black(v-if="item.rate") {{ item.rate }} р./смена
+
+            template( v-slot:item.object="{ item }" )
+              .object-task-info
+                .object-task-info-subscribe
+                  v-icon(v-if="item.subscribe" color="#F4D150") mdi-star
+                  v-icon(v-if="!item.subscribe" color="#F4D150") mdi-star-outline
+                .object-task-info-name {{ item.object.name}}
+
+            template(v-slot:item.professions="{ item }")
+              v-menu(
+                bottom,
+                rounded="10",
+                offset-y,
+                nudge-bottom="10",
+                content-class="card-actions-menu"
+                v-if="item.professions && item.professions.length > 0"
+              )
+                template(v-slot:activator="{ on }")
+                  a.professions(v-on="on" @click.prevent) {{ item.professions[0] }}
+                    span.count(v-if="item.professions && item.professions.length > 1") + {{item.professions.length - 1}}
+
+                v-card.pa-5(v-if="item.professions && item.professions.length > 1")
+                  .simple-list
+                    div(v-for="(profession, index) in item.professions.slice(1)", :key="index") {{ profession }}
+
+            template(v-slot:item.actions="{ item }")
+              .d-flex.justify-end.card-actions
+                v-menu(
+                  bottom,
+                  rounded="10",
+                  offset-y,
+                  nudge-bottom="10",
+                  content-class="card-actions-menu"
+                )
+                  template(v-slot:activator="{ on }")
+                    v-btn.actions-btn(icon, v-on="on")
+                      v-icon mdi-dots-horizontal
+
+                  v-card
+                    v-list-item-content.justify-start
+                      .mx-auto.text-left.card-action(v-for="action in actions")
+
+                        a(@click.prevent="callAction(action.action, [item.uuid])")
+                          v-icon {{ action.icon }}
+                          span {{ action.text }}
+
+
+      template( v-slot:mobile )
+
+        div(
+          v-for="item in tasks"
+          class="rq-ctwsr__mobile-card rq-ptestl-card"
         )
-          template( v-slot:item.name="{ item }" )
-            div.rq-ptestl__desktop-name
-              .rq-ptestl-title.color-black.mb-1 {{ item.info.name }}
-              .rq-ptestl__desktop-date {{ '01.10.2021 08:00' }}
+          .rq-ptestl-card__fields(v-if="item.name")
+            .rq-ptestl-card__fields-item.rq-ptestl__mobile-title {{ item.name }}
+            .rq-ptestl-card__fields-item
+              Status(status="open")
+            .d-flex.rq-ptestl-card__fields-item
+              .rq-ptestl__mobile-title-payment {{ item.rate }} р./смена
+              .rq-ptestl__mobile-title-date.d-flex
+                v-icon(size="18" color="#263043").mr-2 mdi-calendar-blank-outline
+                .date {{ parseDate({ date: item.start_date.substr(0, 10), type: 'date' }) }} {{ item.start_date.substring(11, 16) }}
+            .rq-ptestl-card__fields-item.rq-ptestl__mobile-title-text(v-for="profession in item.professions") {{ profession }}
+            .rq-ptestl-card__fields-item.rq-ptestl__mobile-title-object
+              .object-task-info
+                .object-task-info-subscribe
+                  v-icon(v-if="item.subscribe" color="#F4D150") mdi-star
+                  v-icon(v-if="!item.subscribe" color="#F4D150") mdi-star-outline
+                .object-task-info-name {{ item.object.name}}
 
-          template( v-slot:item.status="{ item }" )
-            Status(:status="item.my_status" :text="item.my_status_name")
-
-          template( v-slot:item.payment="{ item }" )
-            .color-black {{ item.info.payment.value || '20 000 р./смена' }}
-
-          template( v-slot:item.object_name="{ item }" )
-            div {{ item.info.description || 'Водитель высотного электр... +2' }}
-
-          template( v-slot:item.start_date="{ item }" )
-            div {{ item.info.object.name || 'test_string' }}
-
-          template( v-slot:item.actions="{ item }" )
+          .rq-ptestl-card__actions
             v-menu(
               bottom
               rounded="10"
               offset-y
               nudge-bottom="10"
               left
+              content-class="card-actions-menu"
             )
               template(v-slot:activator="{ on }")
-                v-btn(icon v-on="on")
-                  v-icon mdi-dots-vertical
-
-              v-card
-                v-list-item-content.justify-start
-                  .mx-auto.text-left
-                    .actions
-                      .action
-                        .action-item {{ 'action-item' }}
-                        .action-item {{ 'action-item' }}
-                        .action-item {{ 'action-item' }}
-    template( v-slot:mobile )
-      div(
-        v-for="task in tasks"
-        class="rq-ctwsr__mobile-card rq-ptestl-card"
-      )
-        .rq-ptestl-card__fields
-          .rq-ptestl-card__fields-item.rq-ptestl__mobile-title {{ 'Нужны кладовщики в Леруа длинное название заявки' }}
-          .rq-ptestl-card__fields-item
-            Status(:status="task.my_status" :text="task.my_status_name")
-          .rq-ptestl-card__fields-item.rq-ptestl__mobile-title-payment {{ '20 000 р./смена' }}
-          .rq-ptestl-card__fields-item.rq-ptestl__mobile-title-text {{ 'Водитель высотного электроштабелера' }}
-          .rq-ptestl-card__fields-item.rq-ptestl__mobile-title-text {{ 'Грузчик' }}
-          .rq-ptestl-card__fields-item.rq-ptestl__mobile-title-object {{ 'Озон  Мытищи' }}
-        .rq-ptestl-card__actions
-          v-menu(
-              bottom
-              rounded="10"
-              offset-y
-              nudge-bottom="10"
-              left
-            )
-              template(v-slot:activator="{ on }")
-                v-btn(icon v-on="on")
+                v-btn.actions-btn(icon, v-on="on")
                   v-icon mdi-dots-horizontal
 
               v-card
                 v-list-item-content.justify-start
-                  .mx-auto.text-left
-                    .actions
-                      .action
-                        .action-item {{ 'action-item' }}
-                        .action-item {{ 'action-item' }}
-                        .action-item {{ 'action-item' }}
+                  .mx-auto.text-left.card-action(v-for="action in actions")
+
+                    a(@click.prevent="callAction(action.action, [item.uuid])")
+                      v-icon {{ action.icon }}
+                      span {{ action.text }}
+
+
 
 </template>
 
@@ -96,54 +130,84 @@ export default {
     tasks: {
       type: Array,
       required: true,
-    }
-  },
-  computed: {},
-  watch: {},
-  methods: {
-    /* GETTERS */
-    /* SETTERS */
-    /* HANDLERS */
-    /* HELPERS */
-    actionsList(status){
-      let actions = [];
-
-      if(status == 'open'){
-        actions = [
-          { title: 'Участвовать', action: ''}
-        ];
-      }else if(status == 'accepted'){
-        actions = [
-          { title: 'Отменить', action: ''}
-        ];
-      }else if(status == 'invited'){
-        actions = [
-          { title: 'Принять', action: ''},
-          { title: 'Отказаться', action: ''},
-        ]
-      }else if(status == 'requested'){
-        actions = [
-          { title: 'Отменить', action: ''}
-        ];
+    },
+    actions: {
+      type: Array,
+      default() {
+        return []
       }
-
-      return actions;
     }
   },
 
   data() {
     return {
       headers: [
-        { text: 'Название', align: 'start', value: 'name', },
-        { text: 'status', align: 'start', value: 'status', sortable: false, },
-        { text: 'оплата', value: 'payment' },
-        { text: 'Объект', value: 'object_name' },
-        { text: 'Начало работ', value: 'start_date' },
-        { text: '', value: 'actions', sortable: false, align: 'right' },
+        {text: 'Название', align: 'start', value: 'name',},
+        {text: 'status', align: 'start', value: 'status', sortable: false,},
+        {text: 'оплата', value: 'rate'},
+        {text: 'Профессии', value: 'professions'},
+        {text: 'Объект', value: 'object'},
+        {text: '', value: 'actions', sortable: false, align: 'right'},
       ],
+      optionsFilter: {},
     }
   },
-  created() { },
+
+  computed: {},
+
+  watch: {
+    optionsFilter: {
+      handler() {
+        console.log('Serverside sorted .....');
+        this.$emit('getDataFromApi', this.optionsFilter);
+      },
+      deep: true,
+    },
+  },
+  methods: {
+    actionsList(status) {
+      let actions = [];
+
+      if (status == 'open') {
+        actions = [
+          {title: 'Участвовать', action: ''}
+        ];
+      } else if (status == 'accepted') {
+        actions = [
+          {title: 'Отменить', action: ''}
+        ];
+      } else if (status == 'invited') {
+        actions = [
+          {title: 'Принять', action: ''},
+          {title: 'Отказаться', action: ''},
+        ]
+      } else if (status == 'requested') {
+        actions = [
+          {title: 'Отменить', action: ''}
+        ];
+      }
+
+      return actions;
+    },
+
+    callAction(action, uuid) {
+      console.log(action, uuid);
+      this.$emit('callAction', {action, uuid})
+    },
+
+    parseDate: (payload = {}) => {
+      let date = payload.date.split("-");
+
+      if (payload.type === "date") {
+        return `${date[2]}.${date[1]}.${date[0]}`;
+      }
+    },
+
+  },
+
+
+  created() {
+  },
   mounted() {
     console.debug('mounted TasksList', this.tasks);
   },
@@ -161,33 +225,30 @@ export default {
 
   &__mobile {
     &-title {
-      max-width: 280px;
-      min-width: 150px;
-      white-space: normal;
-      font-family: 'Source Sans Pro';
       font-style: normal;
       font-weight: 600;
       font-size: 16px;
       line-height: 125%;
 
       &-object {
-        max-width: 280px;
-        min-width: 150px;
         font-size: 14px;
-        line-height: 125%;
+        font-weight: 600;
       }
+
       &-payment {
-        max-width: 280px;
-        min-width: 150px;
         font-weight: 700;
         font-size: 16px;
-        line-height: 125%;
-        letter-spacing: 0.01em;
+        color: #263043;
+        margin-right: 16px;
+      }
+
+      &-date {
+        font-weight: 600;
+        font-size: 16px;
         color: #263043;
       }
+
       &-text {
-        max-width: 280px;
-        min-width: 150px;
         font-size: 14px;
         line-height: 125%;
         color: #666666;
@@ -210,8 +271,12 @@ export default {
     flex-direction: row;
     align-content: center;
     justify-content: center;
+    width: calc(100% - 32px);
+    margin: 0 16px 16px 16px;
 
     &__fields {
+      flex: 1;
+
       &-item {
         margin-top: 16px;
 
@@ -220,7 +285,28 @@ export default {
         }
       }
     }
-    &__actions{}
+
+    &__actions {
+    }
   }
+
+  .professions {
+    color: #666;
+  }
+
+  .object-task-info {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+
+    .object-task-info-subscribe {
+      margin-right: 6px;
+    }
+  }
+
+  .actions-btn{
+    background: #fff;
+  }
+
 }
 </style>

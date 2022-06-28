@@ -9,7 +9,7 @@
       :professions="professions"
       :radii="radii"
       :radius="radius"
-      :salary="salary"
+      :salary="rate"
       :medicalBook="medicalBook"
       :driverLicense="driverLicense"
       @showFilter="showMobFilter"
@@ -32,7 +32,7 @@
       :professions="professions"
       :radii="radii"
       :radius="radius"
-      :salary="salary"
+      :salary="rate"
       :medicalBook="medicalBook"
       :driverLicense="driverLicense"
       @selectRegion="selectRegion"
@@ -78,7 +78,7 @@ export default {
   data: () => ({
     region: null,
     radius: null,
-    salary: null,
+    rate: null,
     medicalBook: false,
     driverLicense: false,
     startDate: null,
@@ -88,17 +88,17 @@ export default {
     radii: [
       {
         uuid: '1km',
-        name: '1км',
+        name: '1 км',
         value: '1',
       },
       {
         uuid: '10km',
-        name: '10км',
+        name: '10 км',
         value: '10',
       },
       {
         uuid: '15km',
-        name: '15км',
+        name: '15 км',
         value: '15',
       },
     ],
@@ -117,7 +117,8 @@ export default {
       this.$emit('hideMobFilter', false);
     },
     selectRegion(payload = null) {
-      if (payload) this.region = payload;
+      this.region = payload;
+      console.log('selectRegion ---- ', payload)
     },
     selectProfession(payload = null) {
       if (!payload) return;
@@ -134,10 +135,11 @@ export default {
       this.selectedProfessions = payload;
     },
     selectRadius(payload = null) {
+      console.log('радиус');
       if (payload) this.radius = payload;
     },
     setSalary(payload = null) {
-      this.salary = payload;
+      this.rate = payload;
     },
     setMedicalBook(payload = null) {
       console.debug('setMedicalBook', payload, this.medicalBook); // DELETE
@@ -165,12 +167,37 @@ export default {
           : null,
       };
 
-      this.$emit('apply', FILTER);
+      let postBody = {},
+        list_params = ['rate', 'region', 'medicalBook', 'driverLicense', 'startDate',];
+
+      for (let i = 0; i < list_params.length; i++) {
+        if (this[list_params[i]]) {
+          postBody[list_params[i]] = this[list_params[i]];
+        }
+      }
+
+      if (this.radius && this.radius.value && !this.region) {
+        postBody.radius =  this.radius.value;
+
+      }
+
+      if (this.selectedProfessions.length > 0) {
+        let selectedAll = [];
+
+        for (let i = 0; i < this.selectedProfessions.length; i++) {
+          selectedAll.push(this.selectedProfessions[i].name);
+        }
+        postBody.professions = JSON.stringify(selectedAll);
+      }
+
+      console.log('postBody---', postBody, this.region );
+
+      this.$emit('apply', postBody);
     },
     resetFilter() {
       this.region = null;
       this.radius = null;
-      this.salary = null;
+      this.rate = null;
       this.medicalBook = false;
       this.driverLicense = false;
       this.startDate = null;
