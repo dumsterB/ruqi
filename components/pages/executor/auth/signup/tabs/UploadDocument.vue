@@ -638,10 +638,10 @@ export default {
       passport_term: "",
       files: [],
       passport_1: null,
-      inputRules: [(v) => !!v || "Заполните поля"],
-      seriesRules:[(v) => (!!v && v.length === 4) || 'Некорректный  серию паспорта', (v) => !!v || "Заполните поля"],
-      numberRules:[(v) => (!!v && v.length === 6) || 'Некорректный  номер паспорта', (v) => !!v || "Заполните поля"],
-      codeRules:[(v) => (!!v && v.length === 7) || 'Некорректный  код подразделения', (v) => !!v || "Заполните поля"],
+      inputRules: [(v) => !!v || "Заполните поле"],
+      seriesRules:[(v) => (!!v && v.length === 4) || 'Некорректный  серию паспорта', (v) => !!v || "Заполните поле"],
+      numberRules:[(v) => (!!v && v.length === 6) || 'Некорректный  номер паспорта', (v) => !!v || "Заполните поле"],
+      codeRules:[(v) => (!!v && v.length === 7) || 'Некорректный  код подразделения', (v) => !!v || "Заполните поле"],
       dropzoneOptions: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 200,
@@ -703,6 +703,7 @@ export default {
     },
     back(value) {
       this.$emit("pageHandler", value, "back");
+      this.$router.push({path: this.$route.fullPath, query: {tab: '5'} });
     },
     onChange() {
       this.filelist = [...this.$refs.file.files];

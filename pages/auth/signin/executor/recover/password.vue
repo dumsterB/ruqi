@@ -65,7 +65,7 @@ export default {
       show1:false,
       show:false,
       rules: {
-        required: (value) => !!value || "Заполнития поля",
+        required: (value) => !!value || "Заполнития поле",
         min: (v) => v.length >= 8 || "Минимум 8 симболов",
         password : value => {
           const pattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/

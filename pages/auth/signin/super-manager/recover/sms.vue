@@ -38,7 +38,7 @@ export default {
       sms: "",
       valid: false,
       countDown: "30",
-      inputRules: [(v) => !!v || "Заполните поля", !this.valid || 'поля не правильное'],
+      inputRules: [(v) => !!v || "Заполните поле", !this.valid || 'поля не правильное'],
     };
   },
 

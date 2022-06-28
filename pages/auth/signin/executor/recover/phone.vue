@@ -46,7 +46,7 @@ export default {
       isUser:false,
       valid:false,
       phoneRules: [
-        (v) => !!v || "Заполните поля",
+        (v) => !!v || "Заполните поле",
         (v) => (!!v && v.length == 12) || "Некорректный  номер",
         (value) => {
           const pattern =

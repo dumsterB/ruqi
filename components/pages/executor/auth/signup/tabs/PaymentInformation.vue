@@ -1,6 +1,6 @@
 <template>
 <div>
-  <v-container>
+  <v-container >
    <p class="main_text_executor">Платежная информация</p>
     <p>Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют.</p>
     <v-form v-model="valid" lazy-validation ref="form">
@@ -116,6 +116,7 @@ export default {
     },
     back(val){
       this.$emit('pageHandler',val , 'back')
+      this.$router.push({path: this.$route.fullPath, query: {tab: '7'} });
     }
   },
   mounted(){

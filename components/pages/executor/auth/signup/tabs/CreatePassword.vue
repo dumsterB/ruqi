@@ -75,7 +75,7 @@ export default {
       show1: false,
       password: "",
       rules: {
-        required: (value) => !!value || "Заполнития поля",
+        required: (value) => !!value || "Заполнития поле",
         min: (v) => v.length >= 8 || "Минимум 8 симболов",
         emailMatch: () => `Пароли не совподют`,
         password: (value) => {

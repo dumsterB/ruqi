@@ -46,7 +46,7 @@ export default {
       valid: false,
       isUser: false,
       emailRules: [
-        (v) => !!v || "Заполните поля",
+        (v) => !!v || "Заполните поле",
         (v) => /.+@.+\..+/.test(v) || "",
       ],
     };

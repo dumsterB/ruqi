@@ -85,6 +85,7 @@ export default {
     },
     back(val){
       this.$emit('pageHandler',val , 'back')
+      this.$router.push({path: this.$route.fullPath, query: {tab: '3'} });
     },
     setStatus(work){
       this.checker.push(work)
