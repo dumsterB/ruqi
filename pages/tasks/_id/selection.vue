@@ -5,7 +5,7 @@
     SelectionFilter(@sendFilter="sendFilter('fetchParams', 'options', ...arguments)" :filter_professions="filter_professions" :filter_rank="filter_rank" :filter_active="filter_active"
     v-if="filter_professions.length > 0")
 
-    Responses(:items="contractors" :headers="headers" @callAction="callAction" @setSelected="setSelected"
+    Responses(:items="contractors" :headers="headers" @callAction="callAction" @setSelected="setSelected" :last_page="request_id_search_lastpage"
       @getDataFromApi ="getDataFromApi('fetchParams', 'options', 'fetchRequestIdSearch', ...arguments)")
 
 </template>
@@ -50,6 +50,10 @@ export default {
 
     contractors() {
       return this.$store.getters['request_id_dispatchers/request_id_search'];
+    },
+
+    request_id_search_lastpage() {
+      return this.$store.getters['request_id_dispatchers/request_id_search_lastpage'];
     },
 
     filter_professions() {
@@ -118,13 +122,15 @@ export default {
       })
     },
 
-    getDataFromApi(fetchParams, watcherParams, action, options) {
+    getDataFromApi(fetchParams, watcherParams, action, options, fetchPagesParams, concat) {
 
       this[watcherParams] = options;
 
       let sorting = this[watcherParams].sortBy[0];
 
       let params = {
+        "page": fetchPagesParams.page,
+        "per_page": fetchPagesParams.per_page,
         "settings": {
           "value": this[fetchParams].value,
           "filters": this[fetchParams].filters,
@@ -159,7 +165,7 @@ export default {
       this[action]({
         requestId: this.$route.params.id,
         params: params,
-        concat: false,
+        concat: concat,
         unit: false
       }).then(data => {
         this[fetchParams].page = 1;
