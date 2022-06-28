@@ -20,6 +20,8 @@ export const state = () => ({
   },
   userTasks: [],
   searchTasks: [],
+  searchTasksLastPage: 0,
+  searchTasksTotal: 0,
   userTasksParams: {},
   validation: {},
   userAuthorizationStatus: null,
@@ -37,6 +39,12 @@ export const getters = {
   },
   searchTasks(state) {
     return state.searchTasks;
+  },
+  searchTasksLastPage(state) {
+    return state.searchTasksLastPage;
+  },
+  searchTasksTotal(state) {
+    return state.searchTasksTotal;
   },
   userTasksParams(state) {
     return state.userTasksParams;
@@ -74,29 +82,33 @@ export const actions = {
 
     commit('updateUserTasks', response?.data?.data);
   },
-  async fetchSearchTasks({ commit }, filter) {
-    console.debug('fetchSearchTasks', filter); // DELETE
+  async fetchSearchTasks({ commit }, {params, concat}) {
+    console.debug('fetchSearchTasks', params); // DELETE
 
-    try {
-      const response = await this.$axios.get(
-        'user/tasks/search',
-        {
-          params: {
-            ...filter,
-            mode: 'map',
-          }
-        }
-      );
+    const search_tasks = await this.$axios.get('user/tasks/search', {
+      params: params
+    });
+    commit('updateSearchTasks', {search_tasks: search_tasks, concat: concat});
 
-      console.debug('fetchSearchTasks[response]', response); // DELETE
+  },
 
-      commit('updateSearchTasks', response?.data?.data);
-
-      return response;
-    }
-    catch (e) {
-      return e;
-    }
+  async requestTask({commit, dispatch}, task_uuid) {
+    await this.$axios.post('/user/tasks/'+task_uuid+'/request',
+      { headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        dispatch('fetchSearchTasks', {params: {}, concat: false});
+        commit('response/setSuccess', {type: 'success', text: 'Вы откликнулись на заявку', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 
   /* SETTERS */
@@ -277,8 +289,17 @@ export const mutations = {
   updateUserTasks(state, userTasks) {
     state.userTasks = userTasks;
   },
-  updateSearchTasks(state, searchTasks) {
-    state.searchTasks = searchTasks;
+  updateSearchTasks(state, {search_tasks, concat}) {
+    if (concat) {
+      state.searchTasks = state.searchTasks.concat(search_tasks.data.data);
+    } else {
+      state.searchTasks = search_tasks.data.data;
+    }
+
+    state.searchTasksLastPage = search_tasks.data.meta.last_page;
+    state.searchTasksTotal = search_tasks.data.meta.total;
+
+
   },
   updateUserTasksParams(state, userTasksParams) {
     state.userTasksParams = userTasksParams;

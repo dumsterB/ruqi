@@ -95,7 +95,7 @@
 
             .bar-element-row.d-flex
               .title-row Объект:
-              .color-black.object-name {{task_id.object.name}}
+              .color-black.object-name(v-if="task_id.object") {{task_id.object.name}}
 
             .bar-element-row.d-flex
               .title-row Рейтинг:
@@ -292,7 +292,7 @@ export default {
   async created() {
     await this.fetchRequestId(this.$route.params.id);
 
-    this.$route.meta.title = this.request_id.name;
+    this.$route.meta.title = this.task_id.name;
     this.setBreadcrumbs(this.$route.fullPath);
 
   }

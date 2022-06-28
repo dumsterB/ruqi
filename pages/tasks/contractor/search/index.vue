@@ -25,16 +25,21 @@
 
   .tasks-executor-search--desktop
     ContentDisplayController.tasks-executor-search--desktop__content-display-ctrl(
-      :count_tasks="searchTasks.length"
+      :count_tasks="searchTasksTotal"
       @clickOnTab="setTasksView"
+      @sortTasks="sortTasks"
     )
+
+  .tasks-executor-search--mobile
+    .tasks-filter-header Найдено {{ searchTasksTotal }} {{ countTaskTitle }}
 
   v-tabs-items(v-model="tasksTab")
     v-tab-item
-      TasksList.tasks-executor-search--task-list(:tasks="searchTasks")
+      div(v-infinite-scroll="loadMore")
+        TasksList.tasks-executor-search--task-list(:tasks="searchTasks" :actions="actions" @callAction="callAction" )
 
     v-tab-item
-      Map(
+      Map.tasks-executor-search--map(
         :class="[{ 'tasks-executor-search--map': !isMobile && !isTablet }, { 'tasks-executor-search--map_mobile': isMobile || isTablet },]"
         :center_coords="coords"
         :markers="searchTasks"
@@ -69,17 +74,17 @@ export default {
     radii: [
       {
         uuid: '1km',
-        name: '1км',
+        name: '1 км',
         value: '1',
       },
       {
         uuid: '10km',
-        name: '10км',
+        name: '10 км',
         value: '10',
       },
       {
         uuid: '15km',
-        name: '15км',
+        name: '15 км',
         value: '15',
       },
     ],
@@ -95,11 +100,30 @@ export default {
 
     /* COUNTERS */
     tasksTab: 0,
+
+    actions: [
+      {text: "Участвовать", icon: "mdi-check", action: 'requestTaskAction'},
+      {text: "Подробнее о заявке", icon: "mdi-clipboard-account-outline", action: 'openDetails'},
+    ],
+
+    sortField: 'distance',
+    sortOrder: 'desc',
+    filters: {},
+    fetchTaskParams: {
+      "page": 1,
+      "per_page": 10
+    },
   }),
   computed: {
-    ...mapGetters('user', [
-      'searchTasks',
-    ]),
+    searchTasks(){
+      return this.$store.getters["user/searchTasks"];
+    },
+    searchTasksLastPage(){
+      return this.$store.getters["user/searchTasksLastPage"];
+    },
+    searchTasksTotal(){
+      return this.$store.getters["user/searchTasksTotal"];
+    },
     isMobile() {
       return this.$store.getters["platformDetection/IS_MOBILE"];
     },
@@ -115,40 +139,53 @@ export default {
     isExtraLargeScreen() {
       return this.$store.getters["platformDetection/IS_EXTRA_LARGE_SCREEN"];
     },
+    countTaskTitle(){
+      let title = 'заявка';
+
+      if(this.searchTasksTotal > 1 && this.searchTasksTotal < 5){
+        title =  'заявки';
+      }else{
+        title = 'заявок';
+      }
+
+      return title;
+    }
   },
 
   watch: {},
   methods: {
     ...mapActions('user', [
       'fetchSearchTasks',
+      'requestTask'
     ]),
     ...mapActions('dictionary', [
       'fetchRegions',
       'fetcProfessions',
     ]),
 
-    /* GETTERS */
-    /* SETTERS */
-    /* HANDLERS */
     setTasksView(tab) {
       this.tasksTab = tab;
     },
+
     showMobFilter() {
       console.debug('showMobFilter'); // DELETE
 
       this.mFilterVisibility = true;
     },
+
     hideMobFilter() {
       this.mFilterVisibility = false;
     },
+
     async applyFilter(payload = null) {
       if (!payload) return;
 
+      this.filters = payload;
       this.loaderFilter = true;
 
       console.debug("applyFilter[CMP]", payload); // DELETE
 
-      await this.fetchSearchTasks({ filter: payload })
+      await this.fetchSearchTasks({params:payload, concat: false })
 
       this.loaderFilter = false;
       this.mFilterVisibility = false;
@@ -160,8 +197,60 @@ export default {
       }));
     },
 
+    callAction({action, uuid}) {
+      console.log('callAction ------', action, uuid);
+      this[action](uuid);
+    },
 
-    /* HELPERS */
+    requestTaskAction(uuid){
+      this.requestTask(uuid);
+    },
+
+    openDetails(uuid) {
+      this.$router.push("/tasks/contractor/" + uuid);
+    },
+
+    async sortTasks(sort){
+
+      this.sortField = sort;
+
+      if(sort == 'distance' || sort == 'start_date'){
+        this.sortOrder = 'desc';
+      }else if(sort == 'rate'){
+        this.sortOrder = 'asc';
+      }
+
+      this.filters.sort = this.sortField;
+      this.filters.order = this.sortOrder;
+
+      this.loaderFilter = true;
+
+      await this.fetchSearchTasks({params: this.filters, concat: false});
+
+      this.loaderFilter = false;
+    },
+
+    loadMore() {
+
+      if(this.fetchTaskParams.page < this.searchTasksLastPage){
+        let fetchParams = 'fetchTaskParams',
+          sortOptions = 'headerOptionsTask',
+          action = 'fetchSearchTasks';
+
+        this.fetchTaskParams.page += 1;
+        this.fetchTaskParams.sort = this.filters.sort
+        this.fetchTaskParams.order = this.filters.order
+
+        const params = this[fetchParams];
+
+        this.fetchSearchTasks({params: params, concat: true});
+      }else{
+        console.log('this is all data ....');
+      }
+
+    },
+
+
   },
 
   async created() {
@@ -174,7 +263,14 @@ export default {
         selected: false,
       }));
     });
-    this.fetchSearchTasks();
+
+    await this.fetchSearchTasks({params: this.fetchTaskParams, concat: false});
+
+    if(this.searchTasks.length){
+      this.coords = this.searchTasks[0].geometry.coordinates;
+    }
+
+
   },
   mounted() { },
 }
@@ -252,6 +348,12 @@ export default {
     &--mobile {
       display: block;
     }
+  }
+
+  .tasks-filter-header{
+    font-weight: 700;
+    font-size: 16px;
+    margin: 24px 16px 0 16px;
   }
 }
 </style>

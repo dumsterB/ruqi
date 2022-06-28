@@ -134,6 +134,7 @@ export default {
 
   .v-input {
     z-index: 2;
+    background: #fff;
   }
 
   .search-results {

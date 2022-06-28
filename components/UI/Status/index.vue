@@ -23,22 +23,24 @@ export default {
       type: String,
       required: true,
     },
-    text: {
-      type: String,
-      required: true,
-    },
   },
-  computed: {},
+  computed: {
+    text(){
+      if(this.status == 'open'){
+        return 'открыт набор';
+      }
+    }
+  },
   watch: {},
   methods: {
     /* GETTERS */
     classStatusObj: (status) => {
       return {
-        open: !status,
         requested: status === 'requested',
         rejected: status === 'rejected',
         accepted: status === 'accepted',
         invited: status === 'invited',
+        open: status === 'open',
       }
     },
 

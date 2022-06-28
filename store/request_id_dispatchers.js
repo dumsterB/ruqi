@@ -12,6 +12,7 @@ export const state = () => ({
   request_id_filter_professions: [],
   request_id_filter_rank: [],
   request_id_filter_active: [],
+  request_id_search_lastpage: 1,
 })
 
 export const getters = {
@@ -53,6 +54,9 @@ export const getters = {
   },
   request_id_filter_active(state) {
     return state.request_id_filter_active;
+  },
+  request_id_search_lastpage(state) {
+    return state.request_id_search_lastpage;
   },
 }
 
@@ -265,6 +269,7 @@ export const actions = {
       .then((response) => {
         console.log(response);
         dispatch('fetchRequestIdSearch', {requestId: task_uuid, params: {}, concat: false, unit: false});
+        dispatch('fetchRequestIdAssigned', {requestId: task_uuid, params: {}, concat: false, unit: false});
         commit('response/setSuccess', {type: 'success', text: 'Исполнителю можно приезжать', }, {root: true});
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
@@ -326,6 +331,8 @@ export const mutations = {
       state.request_id_filter_rank = request_id_search.data.meta.filters.filter(obj => obj.field == 'rank')[0].options;
       state.request_id_filter_active = request_id_search.data.meta.filters.filter(obj => obj.field == 'last_active')[0].options;
     }
+
+    state.request_id_search_lastpage = request_id_search.data.meta.last_page;
   },
 
   setRequestIdResponses(state, {request_id_responses, concat, unit}) {

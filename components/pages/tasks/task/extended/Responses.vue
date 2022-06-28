@@ -1,5 +1,5 @@
 <template lang="pug">
-  .table-row.table-executor
+  .table-row.table-executor(v-infinite-scroll="loadMore")
     .table-list-style-minify
       v-data-table.elevation-0(
         :headers="headers",
@@ -116,6 +116,10 @@ export default {
       type: Array,
       default: [],
     },
+    last_page: {
+      type: [String, Number],
+      default: 1,
+    },
     headers: {
       type: Array,
       default: [],
@@ -148,6 +152,10 @@ export default {
     return {
       newModel: [],
       optionsFilter: {},
+      fetchPagesParams: {
+        "page": 1,
+        "per_page": 15
+      },
     }
   },
   watch: {
@@ -160,7 +168,8 @@ export default {
     optionsFilter: {
       handler() {
         console.log('Serverside sorted .....');
-        this.$emit('getDataFromApi', this.optionsFilter);
+        this.fetchPagesParams.page = 1;
+        this.$emit('getDataFromApi', this.optionsFilter, this.fetchPagesParams, false);
       },
       deep: true,
     },
@@ -190,6 +199,17 @@ export default {
 
       return css_class;
     },
+
+    loadMore() {
+      if(this.fetchPagesParams.page < this.last_page){
+        this.fetchPagesParams.page += 1;
+        this.$emit('getDataFromApi', this.optionsFilter, this.fetchPagesParams, true);
+      }else{
+        console.log('Display all data ...',)
+      }
+
+    },
+
   }
 }
 </script>

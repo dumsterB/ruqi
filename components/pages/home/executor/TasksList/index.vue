@@ -12,7 +12,7 @@
         )
           template( v-slot:item.name="{ item }" )
             div.rq-ptestl__desktop-name
-              .rq-ptestl-title {{ item.info.name }}
+              .rq-ptestl-title {{ item.name }}
               .rq-ptestl__desktop-date {{ '01.10.2021 08:00' }}
 
           template( v-slot:item.status="{ item }" )
@@ -55,7 +55,7 @@
         .rq-ptestl-card__fields
           .rq-ptestl-card__fields-item.rq-ptestl__mobile-title {{ 'Нужны кладовщики в Леруа длинное название заявки' }}
           .rq-ptestl-card__fields-item
-            Status(:status="task.my_status" :text="task.my_status_name")
+            Status(:status="task.status")
           .rq-ptestl-card__fields-item.rq-ptestl__mobile-title-payment {{ '20 000 р./смена' }}
           .rq-ptestl-card__fields-item.rq-ptestl__mobile-title-text {{ 'Водитель высотного электроштабелера' }}
           .rq-ptestl-card__fields-item.rq-ptestl__mobile-title-text {{ 'Грузчик' }}
@@ -113,7 +113,7 @@ export default {
         { text: 'Название', align: 'start', value: 'name', },
         { text: 'status', align: 'start', value: 'status', sortable: false, },
         { text: 'оплата', value: 'payment' },
-        { text: 'Объект', value: 'object_name' },
+        { text: 'Объект', value: 'object' },
         { text: 'Начало работ', value: 'start_date' },
         { text: '', value: 'actions', sortable: false, align: 'right' },
       ],
@@ -137,10 +137,6 @@ export default {
 
   &__mobile {
     &-title {
-      max-width: 280px;
-      min-width: 150px;
-      white-space: normal;
-      font-family: 'Source Sans Pro';
       font-style: normal;
       font-weight: 600;
       font-size: 16px;
@@ -148,13 +144,10 @@ export default {
 
       &-object {
         max-width: 280px;
-        min-width: 150px;
         font-size: 14px;
         line-height: 125%;
       }
       &-payment {
-        max-width: 280px;
-        min-width: 150px;
         font-weight: 700;
         font-size: 16px;
         line-height: 125%;
@@ -162,8 +155,6 @@ export default {
         color: #263043;
       }
       &-text {
-        max-width: 280px;
-        min-width: 150px;
         font-size: 14px;
         line-height: 125%;
         color: #666666;
