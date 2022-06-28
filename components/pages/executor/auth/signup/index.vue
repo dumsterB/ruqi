@@ -171,7 +171,7 @@ export default {
           active: false,
           mobile: false,
         },
-        { title: "Адресса", value: "", tab: 5, active: false, mobile: false },
+        { title: "Адреса", value: "", tab: 5, active: false, mobile: false },
         {
           title: "Загрузка документов",
           tab: 6,
@@ -192,7 +192,6 @@ export default {
     };
   },
   methods: {
-    ...mapMutations("executor", ["GET_EXECUTOR_TOKEN"]),
     pageHandler(val, helper) {
       if (helper === "back") {
         this.current_page = val;
@@ -236,9 +235,11 @@ export default {
       let active = this.tabs.find((ell) => ell.tab == tab || 0);
       this.current_page = active.tab;
       if (this.current_page === 3) {
+        this.tabs.map(ell=>ell.value = 0)
         this.tabs[0].value = 100;
         this.tabs[1].value = 100;
         this.tabs[2].value = 100;
+        this.tabs[3].value = 0;
         this.tabs.map((ell) => {
           ell.mobile = false;
         });
@@ -249,6 +250,7 @@ export default {
         this.tabs[2].active = true;
         this.tabs[2].active = true;
       } else if (this.current_page === 4) {
+        this.tabs.map(ell=>ell.value = 0)
         this.tabs.map((ell) => {
           ell.mobile = false;
         });
@@ -263,6 +265,7 @@ export default {
         this.tabs[2].active = true;
         this.tabs[3].active = true;
       } else if (this.current_page === 5) {
+        this.tabs.map(ell=>ell.value = 0)
         this.tabs.map((ell) => {
           ell.mobile = false;
         });
@@ -279,6 +282,7 @@ export default {
         this.tabs[3].active = true;
         this.tabs[4].active = true;
       } else if (this.current_page === 6) {
+        this.tabs.map(ell=>ell.value = 0)
         this.tabs.map((ell) => {
           ell.mobile = false;
         });
@@ -297,26 +301,7 @@ export default {
         this.tabs[4].active = true;
         this.tabs[5].active = true;
       } else if (this.current_page === 7) {
-        this.tabs.map((ell) => {
-          ell.mobile = false;
-        });
-        this.tabs[6].mobile = true;
-        this.tabs[0].value = 100;
-        this.tabs[1].value = 100;
-        this.tabs[2].value = 100;
-        this.tabs[3].value = 100;
-        this.tabs[4].value = 100;
-        this.tabs[5].value = 100;
-        this.tabs[6].value = 100;
-        this.tabs[0].active = true;
-        this.tabs[1].active = true;
-        this.tabs[2].active = true;
-        this.tabs[2].active = true;
-        this.tabs[3].active = true;
-        this.tabs[4].active = true;
-        this.tabs[5].active = true;
-        this.tabs[6].active = true;
-      } else if (this.current_page === 7) {
+        this.tabs.map(ell=>ell.value = 0)
         this.tabs.map((ell) => {
           ell.mobile = false;
         });

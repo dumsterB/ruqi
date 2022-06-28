@@ -45,8 +45,8 @@ export default {
       },
       requestHandler: "",
       valid: false,
-      inputRules: [(v) => !!v || "Заполните поля"],
-      passwordRules: [(v) => !!v || "Заполните поля"],
+      inputRules: [(v) => !!v || "Заполните поле"],
+      passwordRules: [(v) => !!v || "Заполните поле"],
     };
   },
   computed: {

@@ -132,7 +132,7 @@
           <p class="text-danger">
             {{
               requestSuccess.text === "Заполните поля"
-                ? "Email уже существует!"
+                ? " Некорректный номер или Email!"
                 : ""
             }}
           </p>
@@ -144,10 +144,6 @@
               ></v-checkbox>
               <p class="mt-5 input_label">Я не могу получить код по SMS</p>
             </div>
-            <p class="text-grey-checkbox">
-              Выбрав эту опцию вам будет предложено <br />
-              связаться с менеджером для регистрации по телефону
-            </p>
             <v-btn
               elevation="0"
               class="btn-secondary"
@@ -165,7 +161,7 @@
             </v-btn>
             <p class="text-grey text-center mt-3">
               Значимость этих проблем настолько очевидна, что начало
-              повседневной работы по формированию позиции требуют
+              повседневной работы по формированию позиции требует
             </p>
           </div>
         </v-form>
@@ -203,9 +199,9 @@ export default {
       menu: "",
       sex_options: ["мужской", "женский"],
       switcher: false,
-      inputRules: [(v) => !!v || "Заполните поля"],
+      inputRules: [(v) => !!v || "Заполните поле"],
       phoneRules: [
-        (v) => !!v || "Заполните поля",
+        (v) => !!v || "Заполните поле",
         (v) => (!!v && v.length == 12) || "Некорректный  номер",
         (value) => {
           const pattern =

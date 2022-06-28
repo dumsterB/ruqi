@@ -162,6 +162,7 @@ export default {
     },
     back(value) {
       this.$emit("pageHandler", value, "back");
+      this.$router.push({path: this.$route.fullPath, query: {tab: '4'} });
     },
     async next(value) {
       let data = [
