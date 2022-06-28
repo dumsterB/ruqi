@@ -180,7 +180,7 @@ export default {
 
       if (payload) {
         this.radiusReadonly = true;
-      }else{
+      } else {
         this.radiusReadonly = false;
       }
     },
@@ -267,6 +267,7 @@ export default {
     .v-text-field__details {
       display: none;
     }
+
   }
 
   &__select {
@@ -615,5 +616,18 @@ export default {
       width: 100%;
     }
   }
+
+  .v-input {
+    &.v-input--is-readonly {
+      .v-input__control{
+        background: #f5f5f5;
+
+        fieldset{
+          background: transparent;
+        }
+      }
+    }
+  }
+
 }
 </style>

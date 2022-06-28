@@ -256,6 +256,10 @@ export default {
           box-shadow: unset !important;
         }
       }
+
+      .v-text-field__prefix{
+        color: #7A91A9;
+      }
     }
   }
 }
