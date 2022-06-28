@@ -265,6 +265,7 @@ export const actions = {
       .then((response) => {
         console.log(response);
         dispatch('fetchRequestIdSearch', {requestId: task_uuid, params: {}, concat: false, unit: false});
+        dispatch('fetchRequestIdAssigned', {requestId: task_uuid, params: {}, concat: false, unit: false});
         commit('response/setSuccess', {type: 'success', text: 'Исполнителю можно приезжать', }, {root: true});
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
