@@ -131,7 +131,7 @@
           </div>
           <p class="text-danger">
             {{
-              requestSuccess.text === "Заполните поля"
+              requestSuccess.text === "Заполните поле"
                 ? " Некорректный номер или Email!"
                 : ""
             }}

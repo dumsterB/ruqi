@@ -34,7 +34,7 @@
                         v-text-field(
                           v-model="confirm_password"
                           :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                          :rules="[password === confirm_password || 'Пароль не совподает']"
+                          :rules="[password === confirm_password || 'Пароль не совпадает']"
                           :type="show1 ? 'text' : 'password'"
                           name="input-10-1"
                           outlined
@@ -66,7 +66,7 @@ export default {
       show:false,
       rules: {
         required: (value) => !!value || "Заполнития поле",
-        min: (v) => v.length >= 8 || "Минимум 8 симболов",
+        min: (v) => v.length >= 8 || "Минимум 8 символов",
         password : value => {
           const pattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
           return pattern.test(value) || 'Не корректный пароль'

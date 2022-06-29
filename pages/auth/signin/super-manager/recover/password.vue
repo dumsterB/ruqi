@@ -34,7 +34,7 @@
                           v-text-field(
                             v-model="confirm_password"
                             :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                            :rules="[password === confirm_password || 'Пароль не совподает']"
+                            :rules="[password === confirm_password || 'Пароль не совпадает']"
                             :type="show1 ? 'text' : 'password'"
                             name="input-10-1"
                             outlined
