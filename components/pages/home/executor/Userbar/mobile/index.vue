@@ -20,16 +20,16 @@ div
 
         .cpheum-user__info-row
           .cpheum-user__rating Специалист  (ранг 1)
-  .cards( class="mt-5")
-    v-row
+  .cards( class="mt-8")
+    v-row(no-gutters)
       v-col
-        v-card(class="pa-2 pl-3 info-card" elevation="0" dark )
+        v-card(class="pa-2 pl-3 mr-1 info-card" elevation="0" dark )
           v-avatar(style="height: 40px; min-width: 40px; width: 40px; background  :#0082DE ")
             v-icon(dark) mdi-wallet-outline
           p.mt-2 Заработано в мае
           p.price-text 35 000р.
       v-col
-        v-card(class="pa-2 pl-3 info-card" elevation="0" dark )
+        v-card(class="pa-2 pl-3 ml-1 info-card" elevation="0" dark )
           v-avatar(style="height: 40px; min-width: 40px; width: 40px; background  :#0082DE ")
             v-icon(dark) mdi-flag-outline
           p.mt-2 Смен в мае
