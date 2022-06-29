@@ -27,7 +27,7 @@
           <v-text-field
               v-model="confirm_password"
               :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-              :rules="[password === confirm_password || 'Пароли не совподают']"
+              :rules="[password === confirm_password || 'Пароли не совпадают']"
               :type="show1 ? 'text' : 'password'"
               name="input-10-1"
               dense
@@ -76,7 +76,7 @@ export default {
       password: "",
       rules: {
         required: (value) => !!value || "Заполните поле",
-        min: (v) => v.length >= 8 || "Минимум 8 симболов",
+        min: (v) => v.length >= 8 || "Минимум 8 символов",
         emailMatch: () => `Пароли не совподют`,
         password: (value) => {
           const pattern =
