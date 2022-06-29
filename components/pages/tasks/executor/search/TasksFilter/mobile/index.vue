@@ -19,7 +19,7 @@
                     v-checkbox(
                       :label="profession.name"
                       :value="profession"
-                      v-model="professionsSselected"
+                      v-model="professionsSelected"
                       @change="selectProfession(profession)"
                     )
 
@@ -31,7 +31,7 @@
               .m-task-search-filter__filter-content--items.overflow-visible
                 v-expansion-panel-content
                   .m-task-search-filter__filter-content--item
-                    FTypeSearchAutocomplete(name="region" icon="mdi-magnify" :params="regionParams" @input="selectRegion")
+                    FTypeSearchAutocomplete(name="region" icon="mdi-magnify" :params="regionParams" :value="region" @input="selectRegion")
 
             v-expansion-panel
               v-expansion-panel-header Ищу не далее
@@ -50,6 +50,8 @@
                       hide-details="true"
                       @change="selectRadius"
                       :readonly="radiusReadonly"
+                      label="-"
+                      v-model="radiusValue"
                     )
 
             v-expansion-panel
@@ -157,6 +159,10 @@ export default {
       type: Array,
       default: () => ([]),
     },
+    selectedProfessions: {
+      type: Array,
+      default: () => ([]),
+    },
     radii: {
       type: Array,
       default: () => ([]),
@@ -190,13 +196,31 @@ export default {
         dense: true
       },
       panel: [],
-      professionsSselected: [],
+      professionsSelected: [],
+      radiusValue: null,
     }
   },
 
   computed: {},
 
-  watch: {},
+  watch: {
+    selectedProfessions: function () {
+      this.professionsSelected = this.selectedProfessions;
+    },
+    radius: {
+      handler(val) {
+        console.log('radius ---', val)
+        if(val){
+          this.radiusValue = val.uuid;
+          this.radiusReadonly = false;
+        }else{
+          this.radiusValue = val;
+          this.radiusReadonly = true;
+        }
+      },
+      deep: true
+    },
+  },
 
   methods: {
 
@@ -217,17 +241,17 @@ export default {
       }
     },
     selectProfession(payload = null) {
-      if (payload) this.$emit('selectProfession', this.professionsSselected);
+      if (payload) this.$emit('selectProfession', this.professionsSelected);
     },
     toggleProfessions(){
       this.$nextTick(() => {
-        if (this.professionsSselected && (this.professionsSselected.length != this.professions.length)) {
-          this.professionsSselected = this.professions;
+        if (this.professionsSelected && (this.professionsSelected.length != this.professions.length)) {
+          this.professionsSelected = this.professions;
         } else {
-          this.professionsSselected = [];
+          this.professionsSelected = [];
         }
 
-       this.$emit('selectProfession', this.professionsSselected);
+       this.$emit('selectProfession', this.professionsSelected);
       })
 
     },
@@ -237,6 +261,7 @@ export default {
 
       if (payload) {
         this.radiusReadonly = true;
+        this.radiusValue = null;
       } else {
         this.radiusReadonly = false;
       }
@@ -522,6 +547,18 @@ export default {
       }
     }
 
+  }
+
+  .v-input {
+    &.v-input--is-readonly {
+      .v-input__control{
+        background: #f5f5f5;
+
+        fieldset{
+          background: transparent;
+        }
+      }
+    }
   }
 
   @-moz-keyframes loader {
