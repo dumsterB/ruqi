@@ -106,7 +106,7 @@ export default {
       address_extra: "",
       address_extra_2: "",
       valid: false,
-      inputRules: [(v) => !!v || "Заполните поля"],
+      inputRules: [(v) => !!v || "Заполните поле"],
       formValues: {},
       meta: {
         meta_filter_row_1: [
