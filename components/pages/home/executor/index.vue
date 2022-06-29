@@ -16,23 +16,25 @@
 
     v-row(no-gutters)
       v-col(cols="12")
-        .tasks-list-header-wrapper.d-flex.justify-space-between(v-if="tasksTab == 1")
+        .tasks-list-header-wrapper.d-flex.justify-space-between(v-if="tasksTab == 0 && userWorks.length || tasksTab == 1 && userTasks.length")
           .tasks-list-header {{ title[tasksTab] }}
           .tasks-list-view-all
-            nuxt-link(to="/tasks/contractor/search/") Смотреть все
+            nuxt-link(to="/tasks/contractor") Смотреть все
 
     v-row(no-gutters)
       v-col(cols="12")
-        Banner.mt-8
+        Banner(:banners="userBanners")
 
     v-row(no-gutters)
       v-col(cols="12")
         v-window(v-model="tasksTab")
           v-tab-item(eager)
-            TasksEmpty
+            TasksList.tasks-executor-search--task-list(:tasks="userWorks" :actions="actions" @callAction="callAction" v-if="userWorks.length")
+            TasksEmpty(title="Пока нет предстоящих работ" description="Мы сформировали акты выполненных работ, вам нужно подписать их чтобы получить деньги." v-else)
 
           v-tab-item(eager)
-            TasksList.tasks-executor-search--task-list(:tasks="searchTasks" :actions="actions" @callAction="callAction" )
+            TasksList.tasks-executor-search--task-list(:tasks="userTasks" :actions="actions" @callAction="callAction" v-if="userTasks.length")
+            TasksEmpty(title="Пока нет заявок" description="Мы сформировали акты выполненных работ, вам нужно подписать их чтобы получить деньги." v-else)
 
 
 </template>
@@ -72,7 +74,6 @@ export default {
   props: {},
   data: () => ({
     actions: [
-      {text: "Участвовать", icon: "mdi-check", action: 'requestTaskAction'},
       {text: "Подробнее о заявке", icon: "mdi-clipboard-account-outline", action: 'openDetails'},
     ],
     sortField: 'distance',
@@ -93,21 +94,35 @@ export default {
     tasksTab: 0,
   }),
   computed: {
-    searchTasks() {
-      return this.$store.getters["user/searchTasks"];
+    userTasks() {
+      return this.$store.getters["user/userTasks"];
     },
-    searchTasksLastPage() {
-      return this.$store.getters["user/searchTasksLastPage"];
+    tasksLastPage() {
+      return this.$store.getters["user/tasksLastPage"];
     },
-    searchTasksTotal() {
-      return this.$store.getters["user/searchTasksTotal"];
+    tasksTotal() {
+      return this.$store.getters["user/tasksTotal"];
+    },
+    userWorks() {
+      return this.$store.getters["user/userWorks"];
+    },
+    worksLastPage() {
+      return this.$store.getters["user/worksLastPage"];
+    },
+    worksTotal() {
+      return this.$store.getters["user/worksTotal"];
+    },
+    userBanners() {
+      return this.$store.getters["user/userBanners"];
     },
   },
 
   watch: {},
   methods: {
     ...mapActions('user', [
-      'fetchSearchTasks',
+      'fetchUserTasks',
+      'fetchUserWorks',
+      'fetchBanners'
     ]),
 
     callAction({action, uuid}) {
@@ -129,8 +144,11 @@ export default {
 
   },
 
-  created() {
-    this.fetchSearchTasks({params: {"type": "accepted"}, concat: false})
+  async created() {
+    await this.fetchUserTasks({params: {}, concat: false});
+    await this.fetchUserWorks({params: {}, concat: false});
+    await this.fetchBanners();
+
   },
   mounted() {
   },

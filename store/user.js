@@ -19,12 +19,18 @@ export const state = () => ({
     },
   },
   userTasks: [],
+  userWorks: [],
   searchTasks: [],
   searchTasksLastPage: 0,
   searchTasksTotal: 0,
+  tasksLastPage: 0,
+  tasksTotal: 0,
+  workdLastPage: 0,
+  worksTotal: 0,
   userTasksParams: {},
   validation: {},
   userAuthorizationStatus: null,
+  userBanners: [],
 });
 
 export const getters = {
@@ -36,6 +42,15 @@ export const getters = {
   },
   userTasks(state) {
     return state.userTasks;
+  },
+  userWorks(state) {
+    return state.userWorks;
+  },
+  tasksLastPage(state) {
+    return state.tasksLastPage;
+  },
+  tasksTotal(state) {
+    return state.tasksTotal;
   },
   searchTasks(state) {
     return state.searchTasks;
@@ -55,6 +70,9 @@ export const getters = {
   userAuthorizationStatus(state) {
     return state.userAuthorizationStatus;
   },
+  userBanners(state) {
+    return state.userBanners;
+  }
 }
 
 export const actions = {
@@ -64,24 +82,29 @@ export const actions = {
 
     commit('updateUserData', response?.data?.data);
   },
-  async fetchUserTasks({ commit, state }, payload = {}) {
-    const response = await this.$axios.get(
-      'user/my/tasks',
 
-      {
-        params: {
-          ...state.userTasksParams,
-          ...payload.params,
+  async fetchUserTasks({ commit }, {params, concat}) {
+    console.debug('fetchSearchTasks', params); // DELETE
 
-          mode: 'map',
-        }
-      }
-    );
+    const tasks = await this.$axios.get('user/my/tasks', {
+      params: params
+    });
+    commit('updateUserTasks', {tasks: tasks, concat: concat});
 
-    console.log('fetchUserTasks', response); // DELETE
-
-    commit('updateUserTasks', response?.data?.data);
   },
+
+  async fetchUserWorks({ commit }, {params, concat}) {
+
+    const tasks = await this.$axios.get('user/my/tasks', {
+      params: {
+        ...params,
+        "type": "accepted"
+      }
+    });
+    commit('updateUserWorks', {tasks: tasks, concat: concat});
+
+  },
+
   async fetchSearchTasks({ commit }, {params, concat}) {
     console.debug('fetchSearchTasks', params); // DELETE
 
@@ -89,6 +112,13 @@ export const actions = {
       params: params
     });
     commit('updateSearchTasks', {search_tasks: search_tasks, concat: concat});
+
+  },
+
+  async fetchBanners({ commit }, ) {
+    const banners = await this.$axios.get('user/banners');
+
+    commit('updateBanners', banners);
 
   },
 
@@ -286,9 +316,30 @@ export const mutations = {
       ...payload,
     };
   },
-  updateUserTasks(state, userTasks) {
-    state.userTasks = userTasks;
+  updateUserTasks(state, {tasks, concat}) {
+    if (concat) {
+      state.userTasks = state.userTasks.concat(tasks.data.data);
+    } else {
+      state.userTasks = tasks.data.data;
+    }
+
+    state.tasksLastPage = tasks.data.meta.last_page;
+    state.tasksTotal = tasks.data.meta.total;
+
   },
+
+  updateUserWorks(state, {tasks, concat}) {
+    if (concat) {
+      state.userWorks = state.userWorks.concat(tasks.data.data);
+    } else {
+      state.userWorks = tasks.data.data;
+    }
+
+    state.worksLastPage = tasks.data.meta.last_page;
+    state.worksTotal = tasks.data.meta.total;
+
+  },
+
   updateSearchTasks(state, {search_tasks, concat}) {
     if (concat) {
       state.searchTasks = state.searchTasks.concat(search_tasks.data.data);
@@ -299,13 +350,16 @@ export const mutations = {
     state.searchTasksLastPage = search_tasks.data.meta.last_page;
     state.searchTasksTotal = search_tasks.data.meta.total;
 
-
   },
   updateUserTasksParams(state, userTasksParams) {
     state.userTasksParams = userTasksParams;
   },
   updateUserAuthorizationStatus(state, { status, }) {
     state.userAuthorizationStatus = status;
+  },
+
+  updateBanners(state, banners) {
+    state.userBanners = banners.data.data;
   },
 }
 

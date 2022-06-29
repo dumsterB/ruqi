@@ -1,24 +1,26 @@
 <template lang="pug">
-  .rq-ui-banner
-    .rq-ui-banner__logo
-      img(src="/banners/doc.png" alt="")
-    .rq-ui-banner__body
-      .rq-ui-banner__title.mb-4 У вас есть неподписанные акты работ
-      .rq-ui-banner__description Мы сформировали акты выполненных работ, вам нужно подписать их чтобы получить деньги. Мы сформировали акты выполненных работ.
-      .rq-ui-banner__link.mt-4
-        a Перейти в раздел
-    .rq-ui-banner__actions
-      svg.rq-ui-banner__actions-close(
-        width="14"
-        height="14"
-        viewBox="0 0 14 14"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      )
-        path(
-          d="M8.40994 6.99994L12.7099 2.70994C12.8982 2.52164 13.004 2.26624 13.004 1.99994C13.004 1.73364 12.8982 1.47825 12.7099 1.28994C12.5216 1.10164 12.2662 0.99585 11.9999 0.99585C11.7336 0.99585 11.4782 1.10164 11.2899 1.28994L6.99994 5.58994L2.70994 1.28994C2.52164 1.10164 2.26624 0.99585 1.99994 0.99585C1.73364 0.99585 1.47824 1.10164 1.28994 1.28994C1.10164 1.47825 0.995847 1.73364 0.995847 1.99994C0.995847 2.26624 1.10164 2.52164 1.28994 2.70994L5.58994 6.99994L1.28994 11.2899C1.19621 11.3829 1.12182 11.4935 1.07105 11.6154C1.02028 11.7372 0.994141 11.8679 0.994141 11.9999C0.994141 12.132 1.02028 12.2627 1.07105 12.3845C1.12182 12.5064 1.19621 12.617 1.28994 12.7099C1.3829 12.8037 1.4935 12.8781 1.61536 12.9288C1.73722 12.9796 1.86793 13.0057 1.99994 13.0057C2.13195 13.0057 2.26266 12.9796 2.38452 12.9288C2.50638 12.8781 2.61698 12.8037 2.70994 12.7099L6.99994 8.40994L11.2899 12.7099C11.3829 12.8037 11.4935 12.8781 11.6154 12.9288C11.7372 12.9796 11.8679 13.0057 11.9999 13.0057C12.132 13.0057 12.2627 12.9796 12.3845 12.9288C12.5064 12.8781 12.617 12.8037 12.7099 12.7099C12.8037 12.617 12.8781 12.5064 12.9288 12.3845C12.9796 12.2627 13.0057 12.132 13.0057 11.9999C13.0057 11.8679 12.9796 11.7372 12.9288 11.6154C12.8781 11.4935 12.8037 11.3829 12.7099 11.2899L8.40994 6.99994Z"
-          fill="#263043"
-        )
+  .rq-ui-banners
+    .rq-ui-banner-show(v-for="(banner, index) in banners.slice(0,1)" :key="index")
+      .rq-ui-banner(v-if="isShow").mt-8
+        .rq-ui-banner__logo
+          img(:src="banner.image" alt="")
+        a.rq-ui-banner__body
+          .rq-ui-banner__title.mb-4 {{ banner.title }}
+          .rq-ui-banner__description {{ banner.description }}
+          .rq-ui-banner__link.mt-4
+            a Перейти в раздел
+        .rq-ui-banner__actions(@click="isShow = false")
+          svg.rq-ui-banner__actions-close(
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          )
+            path(
+              d="M8.40994 6.99994L12.7099 2.70994C12.8982 2.52164 13.004 2.26624 13.004 1.99994C13.004 1.73364 12.8982 1.47825 12.7099 1.28994C12.5216 1.10164 12.2662 0.99585 11.9999 0.99585C11.7336 0.99585 11.4782 1.10164 11.2899 1.28994L6.99994 5.58994L2.70994 1.28994C2.52164 1.10164 2.26624 0.99585 1.99994 0.99585C1.73364 0.99585 1.47824 1.10164 1.28994 1.28994C1.10164 1.47825 0.995847 1.73364 0.995847 1.99994C0.995847 2.26624 1.10164 2.52164 1.28994 2.70994L5.58994 6.99994L1.28994 11.2899C1.19621 11.3829 1.12182 11.4935 1.07105 11.6154C1.02028 11.7372 0.994141 11.8679 0.994141 11.9999C0.994141 12.132 1.02028 12.2627 1.07105 12.3845C1.12182 12.5064 1.19621 12.617 1.28994 12.7099C1.3829 12.8037 1.4935 12.8781 1.61536 12.9288C1.73722 12.9796 1.86793 13.0057 1.99994 13.0057C2.13195 13.0057 2.26266 12.9796 2.38452 12.9288C2.50638 12.8781 2.61698 12.8037 2.70994 12.7099L6.99994 8.40994L11.2899 12.7099C11.3829 12.8037 11.4935 12.8781 11.6154 12.9288C11.7372 12.9796 11.8679 13.0057 11.9999 13.0057C12.132 13.0057 12.2627 12.9796 12.3845 12.9288C12.5064 12.8781 12.617 12.8037 12.7099 12.7099C12.8037 12.617 12.8781 12.5064 12.9288 12.3845C12.9796 12.2627 13.0057 12.132 13.0057 11.9999C13.0057 11.8679 12.9796 11.7372 12.9288 11.6154C12.8781 11.4935 12.8037 11.3829 12.7099 11.2899L8.40994 6.99994Z"
+              fill="#263043"
+            )
 
 </template>
 
@@ -27,24 +29,16 @@ export default {
   components: {},
 
   props: {
-    title: {
-      type: String,
-      default: "",
-    },
-    logo: {
-      type: String,
-      default: "",
-    },
-    description: {
-      type: String,
-      default: "",
-    },
-    link: {
-      type: String,
-      default: "",
-    },
+    banners: {
+      type: Array,
+      default() {
+        return []
+      }
+    }
   },
-  data: () => ({}),
+  data: () => ({
+    isShow: true,
+  }),
   computed: {},
 
   watch: {},
@@ -63,48 +57,55 @@ export default {
 </script>
 
 <style lang="scss">
-.rq-ui-banner {
-  display: flex;
-  min-height: 154px;
-  background: linear-gradient(98.57deg, rgba(0, 130, 222, 0.28) -61.29%, rgba(157, 255, 30, 0.28) 100%);
-  border-radius: 14px;
-  position: relative;
-  line-height: 1.25;
 
-  .rq-ui-banner__logo{
+.rq-ui-banners {
+
+
+  .rq-ui-banner {
     display: flex;
-    align-items: flex-end;
-  }
+    min-height: 154px;
+    background: linear-gradient(98.57deg, rgba(0, 130, 222, 0.28) -61.29%, rgba(157, 255, 30, 0.28) 100%);
+    border-radius: 14px;
+    line-height: 1.25;
+    position: relative;
 
-  .rq-ui-banner__body{
-    padding: 16px;
-    max-width: 590px;
-
-    .rq-ui-banner__title{
-      font-weight: 700;
-      font-size: 22px;
+    .rq-ui-banner__logo {
+      display: flex;
+      align-items: flex-end;
+      min-width: 180px;
+      justify-content: center;
     }
 
-    .rq-ui-banner__description{
-      font-weight: 400;
-      font-size: 16px;
-      line-height: 1.3;
-    }
+    .rq-ui-banner__body {
+      padding: 16px;
+      max-width: 590px;
+      color: #263043;
 
-    .rq-ui-banner__link{
-      a{
-        text-decoration: none;
+      .rq-ui-banner__title {
+        font-weight: 700;
+        font-size: 22px;
+      }
+
+      .rq-ui-banner__description {
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 1.3;
+      }
+
+      .rq-ui-banner__link {
+        a {
+          text-decoration: none;
+        }
       }
     }
-  }
 
-
-
-  .rq-ui-banner__actions{
-    position: absolute;
-    right: 22px;
-    top: 22px;
-    cursor: pointer;
+    .rq-ui-banner__actions {
+      position: absolute;
+      right: 22px;
+      top: 22px;
+      cursor: pointer;
+    }
   }
 }
+
 </style>

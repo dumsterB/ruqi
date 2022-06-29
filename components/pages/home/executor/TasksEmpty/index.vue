@@ -1,8 +1,8 @@
 <template lang="pug">
   .rq-tasks-empty-wrapper
     .rq-tasks-empty
-      .rq-tasks-empty-header.mb-4  Пока нет предстоящих работ
-      .rq-tasks-empty-content.mb-8 Мы сформировали акты выполненных работ, вам нужно подписать их чтобы получить деньги.
+      .rq-tasks-empty-header.mb-4  {{ title }}
+      .rq-tasks-empty-content.mb-8 {{ description }}
       .rq-tasks-empty-btn
         v-btn.btn-blue(text, height="57", outlined, @click="searchTasks")
           v-icon mdi-magnify
@@ -14,7 +14,16 @@
 <script>
 export default {
 
-  props: {},
+  props: {
+    title: {
+      type: String,
+      default: '',
+    },
+    description: {
+      type: String,
+      default: '',
+    },
+  },
 
   data() {
     return {}
