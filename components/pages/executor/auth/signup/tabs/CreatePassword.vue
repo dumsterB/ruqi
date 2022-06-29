@@ -4,7 +4,7 @@
       <p class="main_text_executor">Придумайте пароль</p>
       <p>
         Значимость этих проблем настолько очевидна, что начало повседневной
-        работы по формированию позиции требуют
+        работы по формированию позиции требует
       </p>
       <v-form ref="form" v-model="valid" lazy-validation>
         <div class="form-part">
@@ -27,7 +27,7 @@
           <v-text-field
               v-model="confirm_password"
               :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-              :rules="[password === confirm_password || 'Пароль не совподает']"
+              :rules="[password === confirm_password || 'Пароли не совподают']"
               :type="show1 ? 'text' : 'password'"
               name="input-10-1"
               dense
@@ -75,7 +75,7 @@ export default {
       show1: false,
       password: "",
       rules: {
-        required: (value) => !!value || "Заполнития поле",
+        required: (value) => !!value || "Заполните поле",
         min: (v) => v.length >= 8 || "Минимум 8 симболов",
         emailMatch: () => `Пароли не совподют`,
         password: (value) => {
