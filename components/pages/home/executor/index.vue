@@ -168,7 +168,7 @@ export default {
 
       &-container {
         @media screen and (min-width: 370px) {
-          width: 344px;
+          width: 370px;
         }
 
         @media screen and (max-width: 370px) {
