@@ -190,11 +190,9 @@ export default {
       this.loaderFilter = false;
       this.mFilterVisibility = false;
     },
-    resetFilter() {
-      this.professions = this.professions.map((profession) => ({
-        ...profession,
-        selected: false,
-      }));
+
+    async resetFilter() {
+      await this.fetchSearchTasks({params:{}, concat: false })
     },
 
     callAction({action, uuid}) {

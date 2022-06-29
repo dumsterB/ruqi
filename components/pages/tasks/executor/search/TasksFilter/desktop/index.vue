@@ -1,10 +1,10 @@
 <template lang="pug">
-  .rqtes-taskfilter
+  v-form.rqtes-taskfilter(ref="form")
     .rqtes-taskfilter__row
       .select-single.rqtes-taskfilter__select-pofession.rqtes-taskfilter__row-item
         .select-single_titel {{ "Профессии" }}
         v-select(
-          v-model="selectedProfessions"
+          v-model="professionsSelected"
           item-text="name"
           item-value="uuid"
           required
@@ -22,12 +22,12 @@
             span(
               v-if="index === 1"
               class="grey--text text-caption"
-            ) (+{{ selectedProfessions.length - 1 }} других)
+            ) (+{{ professionsSelected.length - 1 }} других)
 
       .select-single.rqtes-taskfilter__select--regions.rqtes-taskfilter__row-item
         .select-single_titel {{ "Район поиска" }}
 
-        FTypeSearchAutocomplete(name="region" icon="mdi-magnify" :params="regionParams" @input="selectRegion")
+        FTypeSearchAutocomplete(name="region" icon="mdi-magnify" :params="regionParams" :value="region" @input="selectRegion")
 
       .select-single.rqtes-taskfilter__select-radius.rqtes-taskfilter__row-item
         .select-single_titel {{ "Ищу не далее" }}
@@ -44,6 +44,7 @@
           @change="selectRadius"
           :readonly="radiusReadonly"
           label="-"
+          v-model="radiusValue"
         )
 
       .rqtes-taskfilter__confirm.rqtes-taskfilter__row-item
@@ -89,12 +90,19 @@
           @change="setDriverLicense"
           hide-details
         )
+
+      .rqtes-taskfilter__row-item.rqtes-taskfilter__checkbox
+        a.clear-filter.ml-8(@click.prevent="clearFields")
+          v-icon(size="20") mdi-trash-can-outline
+          span сбросить все
+
 </template>
 
 <script>
 import selectSingle from '@/components/UI/selectSingle';
 import Input from '@/components/UI/input';
 import dateInputWithTitle from '@/components/UI/dateInputWithTitle';
+import Vue from "vue";
 
 export default {
   components: {
@@ -119,6 +127,10 @@ export default {
       type: Array,
       default: () => ([]),
     },
+    selectedProfessions: {
+      type: Array,
+      default: () => ([]),
+    },
     radii: {
       type: Array,
       default: () => ([]),
@@ -140,8 +152,43 @@ export default {
       default: false,
     },
   },
+  data: () => ({
+    textInputDefaultSettings: {
+      type: 'text',
+      value: '',
+      hauptTitel: '',
+      solo: true,
+      hint: '',
+    },
+    regionParams: {
+      placeholder: 'Выберите регион',
+      clearable: true,
+      loading: false,
+      filled: true,
+      dense: true
+    },
+    radiusReadonly: false,
+    radiusValue: null,
+    professionsSelected: [],
+  }),
   computed: {},
-  watch: {},
+  watch: {
+    selectedProfessions: function () {
+      this.professionsSelected = this.selectedProfessions;
+    },
+    radius: {
+      handler(val) {
+        if(val){
+          this.radiusValue = val.uuid;
+          this.radiusReadonly = false;
+        }else{
+          this.radiusValue = val;
+          this.radiusReadonly = true;
+        }
+      },
+      deep: true
+    },
+  },
   methods: {
     /* GETTERS */
     /* SETTERS */
@@ -149,7 +196,7 @@ export default {
       this.$emit(
         'selectProfessionDesktop',
         this.professions.filter((profession) => {
-          if (this.selectedProfessions.includes(profession.uuid)) {
+          if (this.professionsSelected.includes(profession.uuid)) {
             return profession;
           }
         })
@@ -180,6 +227,7 @@ export default {
 
       if (payload) {
         this.radiusReadonly = true;
+        this.radiusValue = null;
       } else {
         this.radiusReadonly = false;
       }
@@ -190,32 +238,15 @@ export default {
     apply() {
       this.$emit('apply');
     },
-    reset() {
+
+    clearFields() {
+      this.$refs.form.reset();
       this.$emit('reset');
     },
 
     /* HANDLERS */
     /* HELPERS */
   },
-
-  data: () => ({
-    selectedProfessions: [],
-    textInputDefaultSettings: {
-      type: 'text',
-      value: '',
-      hauptTitel: '',
-      solo: true,
-      hint: '',
-    },
-    regionParams: {
-      placeholder: 'Выберите регион',
-      clearable: true,
-      loading: false,
-      filled: true,
-      dense: true
-    },
-    radiusReadonly: false
-  }),
   created() {
   },
   mounted() {
@@ -627,6 +658,30 @@ export default {
         }
       }
     }
+  }
+
+  .clear-filter {
+    font-weight: 700;
+    font-size: 14px;
+    color: #7A91A9;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    box-shadow: none;
+    padding: 0;
+    margin-top: 34px;
+
+    .v-icon {
+      margin-right: 9px;
+    }
+
+    &:hover {
+      color: #263043;
+    }
+  }
+
+  .v-text-field--enclosed.v-input--dense:not(.v-text-field--solo).v-text-field--outlined .v-input__append-inner{
+    margin-top: 13px;
   }
 
 }

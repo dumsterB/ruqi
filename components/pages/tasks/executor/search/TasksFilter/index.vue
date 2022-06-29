@@ -7,6 +7,7 @@
       :regions="regions"
       :region="region"
       :professions="professions"
+      :selectedProfessions="selectedProfessions"
       :radii="radii"
       :radius="radius"
       :salary="rate"
@@ -30,6 +31,7 @@
       :regions="regions"
       :region="region"
       :professions="professions"
+      :selectedProfessions="selectedProfessions"
       :radii="radii"
       :radius="radius"
       :salary="rate"
@@ -119,6 +121,10 @@ export default {
     selectRegion(payload = null) {
       this.region = payload;
       console.log('selectRegion ---- ', payload)
+
+      if(payload){
+        this.radius = null;
+      }
     },
     selectProfession(payload = null) {
       if (!payload) return;

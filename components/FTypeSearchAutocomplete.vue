@@ -24,7 +24,7 @@
 <script>
 
 import _ from 'lodash';
-import { loadYmap } from 'vue-yandex-maps';
+import {loadYmap} from 'vue-yandex-maps';
 
 export default {
   props: {
@@ -42,6 +42,10 @@ export default {
       type: String,
       default: '',
     },
+    value: {
+      type: String,
+      default: '',
+    },
   },
 
   data() {
@@ -53,7 +57,7 @@ export default {
     }
   },
 
-  computed:{
+  computed: {
     icon_code() {
       if (this.icon) {
         return this.icon;
@@ -71,11 +75,14 @@ export default {
 
         if (this.items && this.items.length) {
           this.isShowList = true;
-        }else{
+        } else {
           this.isShowList = false;
         }
       },
       deep: true
+    },
+    value: function () {
+      this.newSearchText = this.value;
     },
   },
 
@@ -93,20 +100,22 @@ export default {
       400
     ),
 
-    async setItemsListYandex(){
+    async setItemsListYandex() {
 
       this.$emit('input', this.newSearchText);
 
       let self = this;
 
-      ymaps.suggest(this.newSearchText).then(function (items) {
-        self.items = items;
-        if(items.length){
-          self.isShowList = true;
-        }else{
-          self.isShowList = false;
-        }
-      });
+      if (this.newSearchText) {
+        ymaps.suggest(this.newSearchText).then(function (items) {
+          self.items = items;
+          if (items.length) {
+            self.isShowList = true;
+          } else {
+            self.isShowList = false;
+          }
+        });
+      }
     },
 
     selectItem(item) {
@@ -121,8 +130,12 @@ export default {
     }
   },
 
+  created() {
+    this.newSearchText = this.value;
+  },
+
   async mounted() {
-    await loadYmap({ debug: true });
+    await loadYmap({debug: true});
   }
 }
 </script>
