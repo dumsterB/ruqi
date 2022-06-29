@@ -17,10 +17,14 @@
                     :key="profession.uuid"
                   )
                     v-checkbox(
-                      :label='profession.name'
-                      v-model="profession.selected"
+                      :label="profession.name"
+                      :value="profession"
+                      v-model="professionsSselected"
                       @change="selectProfession(profession)"
                     )
+
+                  .list-actions
+                    v-btn.btn-grey.add.btn-confirm.btn-ok(@click="toggleProfessions")  Выбрать все
 
             v-expansion-panel
               v-expansion-panel-header Район поиска
@@ -59,23 +63,27 @@
                       @input="setSalary"
                     )
 
-          .m-task-search-filter__filter-content--items.m-task-search-filter__checkbox
-            v-checkbox.m-task-search-filter__filter-content--item.m-task-search-filter__checkbox-property(
-              label="Без мед. книжки"
-              color="info"
-              :value="medicalBook"
-              @change="setMedicalBook"
-              hide-details
-            )
+            v-expansion-panel
+              v-expansion-panel-header Дополнительно
+              .m-task-search-filter__filter-content--items
+                v-expansion-panel-content
+                  .m-task-search-filter__filter-content--items.m-task-search-filter__checkbox
+                    v-checkbox.m-task-search-filter__filter-content--item.m-task-search-filter__checkbox-property(
+                      label="Без мед. книжки"
+                      color="info"
+                      :value="medicalBook"
+                      @change="setMedicalBook"
+                      hide-details
+                    )
 
-          .m-task-search-filter__filter-content--items.m-task-search-filter__checkbox
-            v-checkbox.m-task-search-filter__filter-content--item.m-task-search-filter__checkbox-property(
-              label="Без водительских прав"
-              color="info"
-              :value="driverLicense"
-              @change="setDriverLicense"
-              hide-details
-            )
+                  .m-task-search-filter__filter-content--items.m-task-search-filter__checkbox
+                    v-checkbox.m-task-search-filter__filter-content--item.m-task-search-filter__checkbox-property(
+                      label="Без водительских прав"
+                      color="info"
+                      :value="driverLicense"
+                      @change="setDriverLicense"
+                      hide-details
+                    )
 
         .m-task-search-filter--component__actions
           v-btn.m-task-search-filter--component__cancel(
@@ -181,7 +189,8 @@ export default {
         filled: true,
         dense: true
       },
-      panel: []
+      panel: [],
+      professionsSselected: [],
     }
   },
 
@@ -208,7 +217,19 @@ export default {
       }
     },
     selectProfession(payload = null) {
-      if (payload) this.$emit('selectProfession', payload);
+      if (payload) this.$emit('selectProfession', this.professionsSselected);
+    },
+    toggleProfessions(){
+      this.$nextTick(() => {
+        if (this.professionsSselected && (this.professionsSselected.length != this.professions.length)) {
+          this.professionsSselected = this.professions;
+        } else {
+          this.professionsSselected = [];
+        }
+
+       this.$emit('selectProfession', this.professionsSselected);
+      })
+
     },
     selectRegion(payload = null) {
 
@@ -471,6 +492,36 @@ export default {
   .custom-loader {
     animation: loader 1s infinite;
     display: flex;
+  }
+
+  .list-actions {
+    display: flex;
+    padding: 8px;
+
+    .btn-confirm {
+      min-width: 100%;
+      margin: 0 0 8px 0;
+      font-weight: 700;
+      border-radius: 8px;
+      text-transform: uppercase;
+      font-size: 14px;
+      background: #0082DE;
+      color: white;
+      border: none;
+      box-shadow: none;
+      height: 48px;
+
+      &.btn-grey {
+        border: 1px solid #E0E0E0;
+        color: #263043;
+        background: #fff;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
   }
 
   @-moz-keyframes loader {

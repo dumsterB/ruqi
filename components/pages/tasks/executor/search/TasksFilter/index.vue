@@ -123,11 +123,13 @@ export default {
     selectProfession(payload = null) {
       if (!payload) return;
 
-      if (this.selectedProfessions.findIndex(profession => profession.uuid === payload.uuid) !== -1) {
+      /*if (this.selectedProfessions.findIndex(profession => profession.uuid === payload.uuid) !== -1) {
         this.selectedProfessions = this.selectedProfessions.filter(profession => profession.uuid !== payload.uuid);
       } else {
         this.selectedProfessions.push(payload);
-      }
+      }*/
+
+      this.selectedProfessions = payload;
     },
     selectProfessionDesktop(payload = null) {
       if (!payload) return;
