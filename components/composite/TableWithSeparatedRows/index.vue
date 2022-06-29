@@ -33,7 +33,7 @@ export default {
 .rq-ctwsr {
   &__desktop {
     display: block;
-    max-width: 1272px;
+    //max-width: 1272px;
   }
 
   &__mobile {
