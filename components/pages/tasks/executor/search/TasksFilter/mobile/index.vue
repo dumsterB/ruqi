@@ -11,49 +11,53 @@
             v-expansion-panel
               v-expansion-panel-header Профессии
               .m-task-search-filter__filter-content--items
-                v-expansion-panel-content.m-task-search-filter__filter-content--item(
-                  v-for="profession in professions"
-                  :key="profession.uuid"
-                )
-                  v-checkbox(
-                    :label='profession.name'
-                    v-model="profession.selected"
-                    @change="selectProfession(profession)"
+                v-expansion-panel-content.overflow
+                  .m-task-search-filter__filter-content--item(
+                    v-for="profession in professions"
+                    :key="profession.uuid"
                   )
+                    v-checkbox(
+                      :label='profession.name'
+                      v-model="profession.selected"
+                      @change="selectProfession(profession)"
+                    )
 
             v-expansion-panel
               v-expansion-panel-header Район поиска
               .m-task-search-filter__filter-content--items.overflow-visible
-                v-expansion-panel-content.m-task-search-filter__filter-content--item
-                  FTypeSearchAutocomplete(name="region" icon="mdi-magnify" :params="regionParams" @input="selectRegion")
+                v-expansion-panel-content
+                  .m-task-search-filter__filter-content--item
+                    FTypeSearchAutocomplete(name="region" icon="mdi-magnify" :params="regionParams" @input="selectRegion")
 
             v-expansion-panel
               v-expansion-panel-header Ищу не далее
               .m-task-search-filter__filter-content--items
-                v-expansion-panel-content.m-task-search-filter__filter-content--item
-                  v-select.m-task-search-filter__radius(
-                    :items="radii"
-                    :item-color="'#FFFFFF'"
-                    item-text="name"
-                    item-value="uuid"
-                    required
-                    single-line
-                    outlined
-                    filled
-                    hide-details="true"
-                    @change="selectRadius"
-                    :readonly="radiusReadonly"
-                  )
+                v-expansion-panel-content
+                  .m-task-search-filter__filter-content--item
+                    v-select.m-task-search-filter__radius(
+                      :items="radii"
+                      :item-color="'#FFFFFF'"
+                      item-text="name"
+                      item-value="uuid"
+                      required
+                      single-line
+                      outlined
+                      filled
+                      hide-details="true"
+                      @change="selectRadius"
+                      :readonly="radiusReadonly"
+                    )
 
             v-expansion-panel
               v-expansion-panel-header Зарплата
               .m-task-search-filter__filter-content--items
-                v-expansion-panel-content.m-task-search-filter__filter-content--item
-                  v-text-field.m-task-search-filter__salary(
-                    solo
-                    :value="salary"
-                    @input="setSalary"
-                  )
+                v-expansion-panel-content
+                  .m-task-search-filter__filter-content--item
+                    v-text-field.m-task-search-filter__salary(
+                      solo
+                      :value="salary"
+                      @input="setSalary"
+                    )
 
           .m-task-search-filter__filter-content--items.m-task-search-filter__checkbox
             v-checkbox.m-task-search-filter__filter-content--item.m-task-search-filter__checkbox-property(
@@ -392,10 +396,17 @@ export default {
     }
 
     .v-expansion-panel-content {
+
       background: #F7F7F7;
+
+      &.overflow {
+        max-height: 200px;
+        overflow: auto;
+      }
 
       .v-expansion-panel-content__wrap {
         padding: 0 !important;
+
       }
     }
 
@@ -403,14 +414,6 @@ export default {
       box-shadow: none;
     }
 
-    &--items {
-      max-height: 200px;
-      overflow: scroll;
-
-      &.overflow-visible {
-        overflow: visible;
-      }
-    }
 
     &--item {
       padding: 16px 24px 0px;
