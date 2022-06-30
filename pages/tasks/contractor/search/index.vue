@@ -46,6 +46,7 @@
         :entity="'contractor'"
         zoom="8"
         height="546"
+        @action="requestTaskAction"
       )
 </template>
 
