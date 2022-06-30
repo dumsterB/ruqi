@@ -19,4 +19,11 @@ export default new Vuetify({
     locales: { ru },
     current: 'ru',
   },
+  theme: {
+    themes: {
+      light: {
+        'grey-custom': '#7A91A9',
+      },
+    },
+  },
 })

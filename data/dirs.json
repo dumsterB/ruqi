@@ -1,0 +1,159 @@
+[
+  {
+    "id": "1",
+    "name": "professions",
+    "title": "Профессии",
+    "fields": [
+      {
+        "type": "text",
+        "editable": false,
+        "id": "id",
+        "title": "Id"
+      },
+      {
+        "type": "text",
+        "editable": true,
+        "id": "name",
+        "title": "Название"
+      },
+      {
+        "type": "text",
+        "editable": true,
+        "id": "description",
+        "title": "Описание"
+      },
+      {
+        "type": "text",
+        "editable": true,
+        "id": "status",
+        "title": "Статус"
+      }
+    ],
+    "tableView": [
+      {
+        "text": "Название",
+        "value": "name",
+        "width": "40%",
+        "sortable": true
+      },
+      {
+        "text": "Описание",
+        "value": "description",
+        "sortable": false
+      },
+      {
+        "text": "Статус",
+        "value": "status",
+        "width": "100px",
+        "sortable": false
+      }
+    ],
+    "methods": {
+      "getList": {
+        "type": "GET",
+        "url": "professions"
+      },
+      "getInfo": {
+        "type": "GET",
+        "url": "professions/{uuid}"
+      },
+      "update": {
+        "type": "PUT",
+        "url": "profession/{professions_uuid}"
+      }
+    }
+  },
+  {
+    "id": "2",
+    "name": "organizations",
+    "title": "Организации",
+    "fields": [
+      {
+        "type": "text",
+        "editable": false,
+        "id": "id",
+        "title": "Id"
+      },
+      {
+        "type": "text",
+        "editable": true,
+        "id": "name",
+        "title": "Название"
+      },
+      {
+        "type": "text",
+        "editable": true,
+        "id": "description",
+        "title": "Описание"
+      }
+    ],
+    "tableView": [
+      {
+        "text": "Название",
+        "value": "name",
+        "width": "40%",
+        "sortable": true
+      },
+      {
+        "text": "Описание",
+        "value": "description",
+        "sortable": false
+      }
+    ],
+    "methods": {
+      "getList": {
+        "type": "GET",
+        "url": "organizations"
+      },
+      "getInfo": {
+        "type": "GET",
+        "url": "organizations/{uuid}"
+      },
+      "update": {
+        "type": "PUT",
+        "url": "organizations/{id}"
+      }
+    }
+  },
+  {
+    "id": "3",
+    "name": "specializations",
+    "title": "Специализации",
+    "fields": [
+      {
+        "type": "text",
+        "editable": false,
+        "id": "id",
+        "title": "Id"
+      },
+      {
+        "type": "text",
+        "editable": true,
+        "id": "name",
+        "title": "Название"
+      }
+    ],
+    "tableView": [
+      {
+        "text": "Название",
+        "value": "name",
+        "width": "auto",
+        "sortable": true
+      }
+    ],
+    "methods": {
+      "getList": {
+        "type": "GET",
+        "url": "dictionary/specializations"
+      },
+      "getInfo": {
+        "type": "GET",
+        "url": "specializations/{uuid}"
+      },
+      "update": {
+        "type": "PUT",
+        "url": "specializations/{id}"
+      }
+    }
+  }
+]
