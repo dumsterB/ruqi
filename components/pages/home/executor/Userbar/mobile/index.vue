@@ -20,31 +20,23 @@ div
 
         .cpheum-user__info-row
           .cpheum-user__rating Специалист  (ранг 1)
-  .cards( class="mt-8")
-    v-row(no-gutters)
-      v-col
-        v-card(class="pa-2 pl-3 mr-1 info-card" elevation="0" dark )
-          v-avatar(style="height: 40px; min-width: 40px; width: 40px; background  :#0082DE ")
-            v-icon(dark) mdi-wallet-outline
-          p.mt-2 Заработано в мае
-          p.price-text 35 000р.
-      v-col
-        v-card(class="pa-2 pl-3 ml-1 info-card" elevation="0" dark )
-          v-avatar(style="height: 40px; min-width: 40px; width: 40px; background  :#0082DE ")
-            v-icon(dark) mdi-flag-outline
-          p.mt-2 Смен в мае
-          p.price-text 13
+  Widget(:widgets="widgets")
+
 </template>
 
 <script>
 import Avatar from '@/components/UI/Avatar';
-
+import Widget from '@/components/composite/Widgets/mobile'
 export default {
   components: {
-    Avatar,
+    Avatar,Widget
   },
 
-  props: {},
+  props: {
+    widgets:{
+      type:Array
+    }
+  },
   data: () => ({}),
   computed: {},
 
@@ -99,14 +91,5 @@ export default {
     }
   }
 }
-.info-card{
-  background:#349CE4!important;
-  border-radius:14px!important;
-}
-.price-text{
-  font-style: normal;
-  font-weight: 400;
-  font-size: 36px;
-  line-height: 50%;
-}
+
 </style>

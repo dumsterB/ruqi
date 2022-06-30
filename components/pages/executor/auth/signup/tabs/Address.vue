@@ -296,8 +296,8 @@ export default {
   padding: 30px;
 }
 .theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
-  color: lightgrey !important;
-  background: #0082de !important;
+  color: grey !important;
+  background: lightgrey !important;
 }
 .btn-title{
   font-weight: 700;

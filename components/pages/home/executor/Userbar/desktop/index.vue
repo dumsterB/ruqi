@@ -42,48 +42,38 @@ div
 
         v-btn.cpheu-profile-card__item(text)
           v-icon.cpheu-profile-card__item__logo(color="#BBBBBB") mdi-account-circle-outline
-          .cpheu-profile-card__item__title мой профиль
+          .cpheu-profile-card__item__title(@click="$router.push('/profile')") Мой профиль
 
         v-btn.cpheu-profile-card__item(text)
           v-icon.cpheu-profile-card__item__logo(color="#BBBBBB") mdi-exit-to-app
-          .cpheu-profile-card__item__title мой профиль
-  v-row(class="mt-5")
-   v-col
-     v-row(class="mt-5")
-      div
-        v-card(class="card pa-4" width="300" max-width="300"  )
-          img(src="@/assets/img/attention_warning.svg")
-          br
-          strong(class="") У вас не загружены <br /> необходимые документы
-          br
-          br
-          a(style="text-decoration:none") Перейти документам
-      div(class="ml-5")
-        v-card(class="card pa-4" width="300" max-width="300"  )
-           img(src="@/assets/img/attention_danger.svg")
-           br
-           strong(class="") Вам необходимо подписать <br /> договор
-           br
-           br
-           a(style="text-decoration:none") Перейти к актам
-   v-col(cols="5")
+          .cpheu-profile-card__item__title(@click="logout") Выйти
 
+  Widget(:widgets="widgets")
 </template>
 
 <script>
 import Avatar from '@/components/UI/Avatar';
-
+import Widget from '@/components/composite/Widgets/desktop'
 export default {
   components: {
-    Avatar,
+    Avatar,Widget
   },
 
-  props: {},
+  props: {
+    widgets:{
+
+    }
+  },
   data: () => ({}),
   computed: {},
 
   watch: {},
   methods: {
+    logout(){
+      window.localStorage.removeItem("ruqi_auth_data");
+
+      this.$router.push("/signin");
+    }
     /* GETTERS */
     /* SETTERS */
     /* HANDLERS */
@@ -96,22 +86,7 @@ export default {
 </script>
 
 <style lang="scss">
-.icon_card_wrapper{
-  background: #FFC400;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-}
-.card_icon{
-  width: 50px;
-  height: 50px;
-}
-.card{
-  background: #F5FBFF!important;
-  border: 1px solid #D5DEE8!important;
-  box-shadow: 0px 4px 24px rgba(0, 10, 17, 0.04)!important;
-  border-radius: 14px!important;
-}
+
 .cpheu {
   font-family: 'Source Sans Pro';
   font-style: normal;
