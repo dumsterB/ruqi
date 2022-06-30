@@ -208,6 +208,7 @@ export const actions = {
         console.log(response);
         dispatch('fetchRequestIdResponses', {requestId: task_uuid, params: {}, concat: false, unit: false});
         dispatch('fetchRequestIdInvitations', {requestId: task_uuid, params: {}, concat: false, unit: false});
+        dispatch('fetchRequestIdSelection', {requestId: task_uuid, params: {}, concat: false, unit: false});
         commit('response/setSuccess', {type: 'success', text: 'Исполнитель приглашен', }, {root: true});
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
@@ -229,6 +230,7 @@ export const actions = {
         console.log(response);
         dispatch('fetchRequestIdResponses', {requestId: task_uuid, params: {}, concat: false, unit: false});
         dispatch('fetchRequestIdInvitations', {requestId: task_uuid, params: {}, concat: false, unit: false});
+        dispatch('fetchRequestIdSelection', {requestId: task_uuid, params: {}, concat: false, unit: false});
         commit('response/setSuccess', {type: 'success', text: 'Исполнитель отклонен', }, {root: true});
         setTimeout(function() {
           commit('response/removeSuccess', null, { root: true });
