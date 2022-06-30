@@ -13,6 +13,7 @@
       :salary="rate"
       :medicalBook="medicalBook"
       :driverLicense="driverLicense"
+      :isFilterActive="isFilterActive"
       @showFilter="showMobFilter"
       @hideFilter="hideMobFilter"
       @selectRegion="selectRegion"
@@ -37,6 +38,7 @@
       :salary="rate"
       :medicalBook="medicalBook"
       :driverLicense="driverLicense"
+      :isFilterActive="isFilterActive"
       @selectRegion="selectRegion"
       @selectProfessionDesktop="selectProfessionDesktop"
       @selectRadius="selectRadius"
@@ -104,6 +106,7 @@ export default {
         value: '15',
       },
     ],
+    isFilterActive: false,
   }),
   computed: {},
 
@@ -200,6 +203,8 @@ export default {
 
       console.log('postBody---', postBody, this.region );
 
+      this.isFilterActive = true;
+
       this.$emit('apply', postBody);
     },
     resetFilter() {
@@ -210,6 +215,8 @@ export default {
       this.driverLicense = false;
       this.startDate = null;
       this.selectedProfessions = [];
+
+      this.isFilterActive = false;
 
       this.$emit('reset');
     },

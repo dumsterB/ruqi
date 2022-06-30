@@ -126,13 +126,13 @@
           )
 
         v-badge.m-task-search-filter--bbar__container--badge(
-          v-show="isFilterActive()"
+          v-show="isFilterActive"
           dot
           color="#EB4D3D"
         )
           .m-task-search-filter--bbar__container--title Фильтры
 
-        .m-task-search-filter--bbar__container--title(v-show="!isFilterActive()") Фильтры
+        .m-task-search-filter--bbar__container--title(v-show="!isFilterActive") Фильтры
 </template>
 
 <script>
@@ -180,6 +180,10 @@ export default {
       default: false,
     },
     driverLicense: {
+      type: Boolean,
+      default: false,
+    },
+    isFilterActive: {
       type: Boolean,
       default: false,
     },
