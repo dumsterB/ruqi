@@ -163,7 +163,7 @@ export default {
       this.driverLicense = payload;
     },
     setStartDate(payload = null) {
-      this.startDate = payload;
+      this.start_date = payload;
     },
     async applyFilter() {
       const FILTER = {
@@ -172,14 +172,14 @@ export default {
         salary: this.salary,
         medicalBook: this.medicalBook,
         driverLicense: this.driverLicense,
-        startDate: this.startDate,
+        start_date: this.start_date,
         selectedProfessions: this.selectedProfessions.length
           ? this.selectedProfessions.map(profession => profession.name)
           : null,
       };
 
       let postBody = {},
-        list_params = ['rate', 'region', 'medicalBook', 'driverLicense', 'startDate',];
+        list_params = ['rate', 'region', 'medicalBook', 'driverLicense', 'start_date',];
 
       for (let i = 0; i < list_params.length; i++) {
         if (this[list_params[i]]) {
