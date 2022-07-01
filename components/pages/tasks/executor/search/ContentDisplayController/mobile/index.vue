@@ -18,11 +18,19 @@
 <script>
 export default {
   components: {},
-  props: {},
+  props: {
+    tasksTab: {
+      type: [String, Number],
+      default: 0,
+    },
+  },
   computed: {},
   watch: {
     tab(newTab) {
       this.$emit('clickOnTab', newTab);
+    },
+    tasksTab() {
+      this.tab = this.tasksTab;
     },
   },
   methods: {

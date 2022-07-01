@@ -6,6 +6,7 @@
 
       mSearchLine.tasks-executor-search--mobile__header-search
       mContentDisplayController.tasks-executor-search--mobile__header-display-ctrl(
+        :tasksTab="tasksTab"
         @clickOnTab="setTasksView"
       )
 
@@ -26,6 +27,7 @@
   .tasks-executor-search--desktop
     ContentDisplayController.tasks-executor-search--desktop__content-display-ctrl(
       :count_tasks="searchTasksTotal"
+      :tasksTab="tasksTab"
       @clickOnTab="setTasksView"
       @sortTasks="sortTasks"
     )
