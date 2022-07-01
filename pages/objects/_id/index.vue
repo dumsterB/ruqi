@@ -281,6 +281,8 @@
                     v-icon mdi-plus
                     span новая заявка
 
+                  TasksFilter.ml-8(:status_list="status_list" v-if="status_list" @applyFilter="applyFilter('fetchTaskParams', 'headerOptionsTask', ...arguments)")
+
                   TableFilter.ml-8.mr-5(v-if="task_filters.length"
                     :fields="task_filters"
                     :headers="headers_tasks_filter"
@@ -336,6 +338,9 @@
 
                     template(v-slot:item.rate="{ item }")
                       span.request-pay {{ item.rate }} р. / смену
+
+                    template(v-slot:item.status="{ item }")
+                        TaskStatus(:status_alias="item.status")
 
                     template(v-slot:item.date="{ item }")
                       div(v-if="item.end_date") {{ parseDate({ date: item.end_date.substr(0, 10), type: 'date' }) }}
@@ -476,10 +481,12 @@ import {mapState, mapActions, mapGetters, mapMutations} from "vuex";
 import Contact from "@/components/object/Contact";
 import TableFilter from "@/components/composite/TableFilter";
 import TableGroupAction from "@/components/composite/TableGroupAction";
+import TasksFilter from "@/components/pages/tasks/TasksFilter";
+import TaskStatus from "@/components/pages/tasks/TaskStatus";
 
 export default {
   props: [],
-  components: {Contact, TableFilter, TableGroupAction},
+  components: {Contact, TableFilter, TableGroupAction, TasksFilter, TaskStatus},
   data() {
     return {
       coords: [54, 39],
@@ -556,8 +563,8 @@ export default {
         {text: "Наполнение", value: "completion", width: "152px"},
       ],
       headers_tasks_filter: [
-        {field: 'start_date', translit: 'Период'},
-        {field: 'status', translit: 'Статус'},
+        {field: 'rate', translit: 'Ставка', unit: 'р.'},
+        {field: 'percent', translit: 'Наполнение', unit: '%'},
       ],
       headers_services: [
         {
@@ -720,8 +727,24 @@ export default {
     vacancy_filters() {
       return this.$store.getters["object_id/vacancy_filters"];
     },
-    task_filters() {
+    tasks_filters_server() {
       return this.$store.getters["object_id/task_filters"];
+    },
+    task_filters() {
+      const filters = this.tasks_filters_server,
+        new_filters = filters.filter(obj => obj.field != 'status' && obj.field != 'until_date');
+
+      return new_filters;
+    },
+    status_list(){
+      const filters = this.tasks_filters_server,
+        status_list = filters.filter(obj => obj.field == 'status');
+
+      if(status_list.length > 0){
+        return status_list[0].options;
+      }else{
+        return [];
+      }
     },
     activeSelectBtnOption() {
       switch (this.activeSelectBtn) {
@@ -986,11 +1009,12 @@ export default {
       let params = {
         "settings": {
           "value": search,
-          "sort": this[watcherParams].sortBy[0],
+          "sort": this[watcherParams].sortBy[0] ? this[watcherParams].sortBy[0] : 'name',
           "order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": filter
         }
       };
+
 
       console.log('params-----', filter, params);
 

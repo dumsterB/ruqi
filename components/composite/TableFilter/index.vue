@@ -62,7 +62,7 @@
 </template>
 
 <script>
-
+import _ from 'lodash';
 import Fstring from "@/components/composite/TableFilter/fileds/Fstring";
 import Flist from "@/components/composite/TableFilter/fileds/Flist";
 import Frange from "@/components/composite/TableFilter/fileds/Frange";
@@ -274,10 +274,14 @@ export default {
       return defaultValue;
     },
 
-    updateSearchText(value) {
-      this.searchText = value;
-      this.applyFilter(false);
-    },
+    updateSearchText: _.debounce(
+      function (value) {
+        this.searchText = value;
+        this.applyFilter(false);
+      },
+      400
+    ),
+
   },
   async created() {
     for (let i = 0; i < this.fields.length; i++) {

@@ -46,7 +46,9 @@ export const actions = {
   },
   async fetchObjectIdRequest({commit}, {requestId, params, concat, unit}) {
 
-    const object_id_requests = await this.$axios.get('/objects/' + requestId + '/tasks',);
+    const object_id_requests = await this.$axios.get('/objects/' + requestId + '/tasks', {
+      params: params
+    });
     commit('setObjectIdRequests',  {object_id_requests: object_id_requests, concat: concat, unit: unit});
 
   },
