@@ -21,7 +21,7 @@
           .tasks-list-view-all
             nuxt-link(to="/tasks/contractor") Смотреть все
 
-    v-row(no-gutters).rq-home-executor__desktop
+    v-row(no-gutters)
       v-col(cols="12")
         Banner(:banners="userBanners")
 
@@ -29,11 +29,11 @@
       v-col(cols="12")
         v-window(v-model="tasksTab")
           v-tab-item(eager)
-            TasksList.tasks-executor-search--task-list(:tasks="userWorks" :actions="actions" @callAction="callAction" v-if="userWorks.length")
+            TasksList.tasks-executor-search--task-list(:tasks="userWorks" @callAction="callAction" v-if="userWorks.length")
             TasksEmpty(title="Пока нет предстоящих работ" description="Мы сформировали акты выполненных работ, вам нужно подписать их чтобы получить деньги." v-else)
 
           v-tab-item(eager)
-            TasksList.tasks-executor-search--task-list(:tasks="userTasks" :actions="actions" @callAction="callAction" v-if="userTasks.length")
+            TasksList.tasks-executor-search--task-list(:tasks="userTasks" @callAction="callAction" v-if="userTasks.length")
             TasksEmpty(title="Пока нет заявок" description="Мы сформировали акты выполненных работ, вам нужно подписать их чтобы получить деньги." v-else)
 
 
@@ -73,11 +73,6 @@ export default {
 
   props: {},
   data: () => ({
-    actions: [
-      {text: "Принять", icon: "mdi-check", action: '', status: ['invited']},
-      {text: "Отказаться", icon: "mdi-close-box-outline", action: '', status: ['working', 'accepted', 'invited']},
-      {text: "Отменить", icon: "mdi-close-box-outline", action: '', status: ['requested']},
-    ],
     sortField: 'distance',
     sortOrder: 'desc',
     filters: {},
@@ -127,7 +122,8 @@ export default {
       'fetchBanners',
       'acceptInviteTask',
       'requestTask',
-      'cancelTask'
+      'cancelTask',
+      'refuseTask'
     ]),
 
     callAction({action, uuid}) {
@@ -136,7 +132,19 @@ export default {
     },
 
     requestTaskAction(uuid) {
-      this.requestTask(uuid);
+      this.requestTask({task_uuid: uuid, params: this.filters, concat: false});
+    },
+
+    acceptInviteTaskAction(uuid){
+      this.acceptInviteTask({task_uuid: uuid, params: this.filters, concat: false});
+    },
+
+    cancelTaskAction(uuid){
+      this.cancelTask({task_uuid: uuid, params: this.filters, concat: false});
+    },
+
+    refuseTaskAction(uuid){
+      this.refuseTask({task_uuid: uuid, params: this.filters, concat: false});
     },
 
     openDetails(uuid) {

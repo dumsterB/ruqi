@@ -79,7 +79,7 @@
           .rq-ptestl-card__fields(v-if="item.name")
             .rq-ptestl-card__fields-item.rq-ptestl__mobile-title {{ item.name }}
             .rq-ptestl-card__fields-item
-              Status(status="open")
+              Status(:status="item.status")
             .d-flex.rq-ptestl-card__fields-item
               .rq-ptestl__mobile-title-payment {{ item.rate }} р./смена
               .rq-ptestl__mobile-title-date.d-flex
@@ -132,12 +132,6 @@ export default {
       type: Array,
       required: true,
     },
-    actions: {
-      type: Array,
-      default() {
-        return []
-      }
-    }
   },
 
   data() {
@@ -169,7 +163,7 @@ export default {
     actionsList(status) {
       let actions = [];
 
-      if (status == 'isRecruiting') {
+      if (status == 'isRecruiting' || !status) {
         actions = [
           {text: "Участвовать", icon: "mdi-check", action: 'requestTaskAction'},
           {text: "Подробнее о заявке", icon: "mdi-clipboard-account-outline", action: 'openDetails'},
@@ -181,20 +175,20 @@ export default {
         ];
       } else if (status == 'accepted') {
         actions = [
-          {text: "Отказаться", icon: "mdi-close-box-outline", action: '', },
+          {text: "Отказаться", icon: "mdi-close-box-outline", action: 'refuseTaskAction', },
         ];
       } else if (status == 'invited') {
         actions = [
-          {text: "Принять", icon: "mdi-check", action: 'acceptInviteTask', },
-          {text: "Отказаться", icon: "mdi-close-box-outline", action: '', },
+          {text: "Принять", icon: "mdi-check", action: 'acceptInviteTaskAction', },
+          {text: "Отказаться", icon: "mdi-close-box-outline", action: 'refuseTaskAction', },
         ]
       } else if (status == 'requested') {
         actions = [
-          {text: "Отменить", icon: "mdi-close-box-outline", action: '',},
+          {text: "Отменить", icon: "mdi-close-box-outline", action: 'cancelTaskAction',},
         ];
       }else if (status == 'working') {
         actions = [
-          {text: "Отказаться", icon: "mdi-close-box-outline", action: '',},
+          {text: "Отказаться", icon: "mdi-close-box-outline", action: 'refuseTaskAction',},
         ];
       }
 
@@ -220,7 +214,7 @@ export default {
   created() {
   },
   mounted() {
-    console.debug('mounted TasksList', this.tasks);
+
   },
 }
 </script>
@@ -269,7 +263,6 @@ export default {
 
   &-title {
     white-space: normal;
-    font-family: 'Source Sans Pro';
     font-style: normal;
     font-weight: 600;
     font-size: 16px;

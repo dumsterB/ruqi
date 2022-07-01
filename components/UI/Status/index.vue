@@ -26,7 +26,7 @@ export default {
   },
   computed: {
     text(){
-      if(this.status == 'open' || this.status == 'isRecruiting' ){
+      if(!this.status || this.status == 'open' || this.status == 'isRecruiting' ){
         return 'открыт набор';
       }else if(this.status == 'working'){
         return 'работаем';
@@ -36,6 +36,12 @@ export default {
         return 'приглашение';
       }else if(this.status == 'requested'){
         return 'хочу работать';
+      } else if(this.status == 'refused'){
+        return 'набор закрыт';
+      }else if(this.status == 'userRefused'){
+        return 'не поеду';
+      }else if(this.status == 'skipped'){
+        return 'невыход';
       }else{
         return 'статус';
       }
@@ -46,12 +52,14 @@ export default {
     /* GETTERS */
     classStatusObj: (status) => {
       return {
-        requested: status === 'requested',
-        rejected: status === 'rejected',
-        accepted: status === 'accepted',
+        status_yellow: status === 'requested',
+        status_brown: status === 'userRefused',
+        status_green: status === 'accepted',
+        status_violet: status === 'working',
+        status_black: status === 'refused',
+        status_blue: !status || status === 'open' || status === 'isRecruiting',
+        status_red: status === 'rejected' || status === 'skipped',
         invited: status === 'invited',
-        working: status === 'working',
-        open: status === 'open' || status === 'isRecruiting',
       }
     },
 
@@ -113,7 +121,7 @@ export default {
     }
   }
 
-  &.open {
+  &.status_blue {
     background: #E4F4FF;
     border: 1px solid #0082DE;
 
@@ -128,7 +136,7 @@ export default {
     }
   }
 
-  &.requested {
+  &.status_yellow {
     background: #FFFCF0;
     border: 1px solid #F4D150;
 
@@ -143,22 +151,22 @@ export default {
     }
   }
 
-  &.rejected {
-    background: #FAFAFA;
-    border: 1px solid #666666;
+  &.status_red {
+    background: #FFF6F5;
+    border: 1px solid #EB4D3D;
 
     .rq-status__wrapper {
       .rq-status__inner {
         .rq-status__icon {}
 
         .rq-status__title {
-          color: #666666;
+          color: #EB4D3D;
         }
       }
     }
   }
 
-  &.accepted {
+  &.status_green {
     background: #ECFFEC;
     border: 1px solid #71D472;
 
@@ -173,9 +181,7 @@ export default {
     }
   }
 
-
-
-  &.working {
+  &.status_violet {
     background: #F2EFFF;
     border: 1px solid #7B61FF;
 
@@ -185,6 +191,51 @@ export default {
 
         .rq-status__title {
           color: #7B61FF;
+        }
+      }
+    }
+  }
+
+  &.status_brown {
+    background: #FFF5EA;
+    border: 1px solid #CEA574;
+
+    .rq-status__wrapper {
+      .rq-status__inner {
+        .rq-status__icon {}
+
+        .rq-status__title {
+          color: #CEA574;
+        }
+      }
+    }
+  }
+
+  &.status_black {
+    background: #FAFAFA;
+    border: 1px solid #666666;
+
+    .rq-status__wrapper {
+      .rq-status__inner {
+        .rq-status__icon {}
+
+        .rq-status__title {
+          color: #666666;
+        }
+      }
+    }
+  }
+
+  &.invited {
+    background: #0082DE;
+    border: 1px solid #0082DE;
+
+    .rq-status__wrapper {
+      .rq-status__inner {
+        .rq-status__icon {}
+
+        .rq-status__title {
+          color: #fff;
         }
       }
     }

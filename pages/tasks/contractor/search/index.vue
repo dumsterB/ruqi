@@ -36,7 +36,7 @@
   v-tabs-items(v-model="tasksTab")
     v-tab-item
       div(v-infinite-scroll="loadMore")
-        TasksList.tasks-executor-search--task-list(:tasks="searchTasks" :actions="actions" @callAction="callAction" )
+        TasksList.tasks-executor-search--task-list(:tasks="searchTasks"  @callAction="callAction" )
 
     v-tab-item
       Map.tasks-executor-search--map(
@@ -101,12 +101,6 @@ export default {
 
     /* COUNTERS */
     tasksTab: 0,
-
-    actions: [
-      {text: "Участвовать", icon: "mdi-check", action: 'requestTaskAction'},
-      {text: "Подробнее о заявке", icon: "mdi-clipboard-account-outline", action: 'openDetails'},
-    ],
-
     sortField: 'distance',
     sortOrder: 'desc',
     filters: {},
