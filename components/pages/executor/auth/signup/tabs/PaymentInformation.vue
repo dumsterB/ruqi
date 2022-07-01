@@ -55,9 +55,13 @@
           <p class="input_label">Номер карты</p>
           <v-text-field v-model="settings.payment_account" dense outlined></v-text-field>
         </v-col>
-        <v-col col="4">
+        <v-col col="4" v-if="settings.type_payment != 'Банковская карта'">
           <p class="input_label">БИК</p>
-          <v-text-field :rules="[(v) => (!!v && v.length === 9) || 'Некорректный  БИК']"  v-model="settings.bik" placeholder="044521234" dense outlined></v-text-field>
+          <v-text-field  :rules="[(v) => (!!v && v.length === 9) || 'Некорректный  БИК']"  v-model="settings.bik" placeholder="044521234" dense outlined></v-text-field>
+        </v-col>
+        <v-col col="4" v-if="settings.type_payment === 'Банковская карта'">
+          <p class="input_label">БИК</p>
+          <v-text-field :disabled="true"   v-model="settings.bik" placeholder="044521234" dense outlined></v-text-field>
         </v-col>
       </v-row>
       <v-row v-if="settings.type_payment != 'Банковская карта'">

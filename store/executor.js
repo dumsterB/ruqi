@@ -9,6 +9,7 @@ export const state = () => ({
   passport_main_spread: null,
   phone_or_email: "",
   recover_sms_phone: "",
+  widgets:[],
 });
 export const getters = {
   specializations(state) {
@@ -17,9 +18,33 @@ export const getters = {
   recover_sms_phone(state) {
     return state.recover_sms_phone;
   },
+  widgets(state){
+    return state.widgets
+  }
 
 };
 export const actions = {
+  //main
+  async fetchWidgets({commit},params){
+    await this.$axios
+        .get("/user/widgets")
+        .then((response) => {
+          commit("SET_WIDGETS", response.data.data);
+          setTimeout(function () {
+            commit("response/removeSuccess", null, { root: true });
+          }, 2000);
+          return (response && response.data) || {};
+        })
+        .catch((error) => {
+          setTimeout(function () {
+            commit("response/removeSuccess", null, { root: true });
+          }, 3000);
+          console.log(error);
+          return error;
+        });
+  },
+
+  //signup
   async createExecutor({ commit }, params) {
     await this.$axios
       .post("auth/signup", {
@@ -536,5 +561,8 @@ export const mutations = {
   SET_EXECUTOR_TOKEN(state, token) {
     localStorage.setItem("ruqi_auth_data", JSON.stringify(token));
   },
+  SET_WIDGETS(state,payload){
+    state.widgets = payload
+  }
 
 };

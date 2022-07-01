@@ -73,15 +73,16 @@
                     outlined
                     class="mt-2"
                     :rules="inputRules"
-                    v-model="passport_date"
+                    v-model="dateFormatted_date"
                     dense
                     readonly
+                    @blur="helper_date = parseDate(dateFormatted_date)"
                     v-bind="attrs"
                     v-on="on"
                     single-line
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="passport_date" no-title scrollable>
+                <v-date-picker v-model="helper_date" no-title scrollable>
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="menu1 = false">
                     Отмена
@@ -89,7 +90,7 @@
                   <v-btn
                     text
                     color="primary"
-                    @click="$refs.menu1.save(passport_date)"
+                    @click="$refs.menu1.save(helper_date)"
                   >
                     OK
                   </v-btn>
@@ -114,15 +115,16 @@
                     outlined
                     class="mt-2"
                     :rules="inputRules"
-                    v-model="passport_term"
+                    v-model="dateFormatted_given"
                     dense
                     readonly
+                    @blur="helper_given = parseDate(dateFormatted_given)"
                     v-bind="attrs"
                     v-on="on"
                     single-line
                   ></v-text-field>
                 </template>
-                <v-date-picker  v-model="passport_term" no-title scrollable>
+                <v-date-picker v-model="helper_given" no-title scrollable>
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="menu = false">
                     Отмена
@@ -130,7 +132,7 @@
                   <v-btn
                     text
                     color="primary"
-                    @click="$refs.menu.save(passport_term)"
+                    @click="$refs.menu.save(helper_given)"
                   >
                     OK
                   </v-btn>
@@ -198,7 +200,9 @@
                     <div class="d-block">
                       <img src="@/assets/img/uploader.svg" alt="" />
                       <br />
-                      <strong class="desktop-media">Перетащите сюда файл</strong>
+                      <strong class="desktop-media"
+                        >Перетащите сюда файл</strong
+                      >
                     </div>
                   </div>
                 </vue-dropzone>
@@ -271,28 +275,28 @@
               <p class="text-gray desktop-media">или загрузите фото</p>
               <div class="d-flex desktop-media">
                 <v-btn
-                    elevation="0"
-                    @click="selectFile(2)"
-                    dark
-                    class="btn-primary"
-                ><img
+                  elevation="0"
+                  @click="selectFile(2)"
+                  dark
+                  class="btn-primary"
+                  ><img
                     class="mr-2"
                     src="@/assets/img/File_Blank.svg"
                     alt=""
-                />загрузить Из файла</v-btn
+                  />загрузить Из файла</v-btn
                 >
               </div>
               <div class="d-flex mobile-media">
                 <v-btn
-                    elevation="0"
-                    @click="selectFile(2)"
-                    dark
-                    class="btn-primary"
-                ><img
+                  elevation="0"
+                  @click="selectFile(2)"
+                  dark
+                  class="btn-primary"
+                  ><img
                     class="mr-2"
                     src="@/assets/img/Camera.svg"
                     alt=""
-                />Загрузить Фотографию</v-btn
+                  />Загрузить Фотографию</v-btn
                 >
               </div>
             </div>
@@ -334,28 +338,28 @@
               <p class="text-gray desktop-media">или загрузите фото</p>
               <div class="d-flex desktop-media">
                 <v-btn
-                    elevation="0"
-                    @click="selectFile(3)"
-                    dark
-                    class="btn-primary"
-                ><img
+                  elevation="0"
+                  @click="selectFile(3)"
+                  dark
+                  class="btn-primary"
+                  ><img
                     class="mr-2"
                     src="@/assets/img/File_Blank.svg"
                     alt=""
-                />загрузить Из файла</v-btn
+                  />загрузить Из файла</v-btn
                 >
               </div>
               <div class="d-flex mobile-media">
                 <v-btn
-                    elevation="0"
-                    @click="selectFile(3)"
-                    dark
-                    class="btn-primary"
-                ><img
+                  elevation="0"
+                  @click="selectFile(3)"
+                  dark
+                  class="btn-primary"
+                  ><img
                     class="mr-2"
                     src="@/assets/img/Camera.svg"
                     alt=""
-                />Загрузить Фотографию</v-btn
+                  />Загрузить Фотографию</v-btn
                 >
               </div>
             </div>
@@ -427,28 +431,28 @@
               <p class="text-gray desktop-media">или загрузите фото</p>
               <div class="d-flex desktop-media">
                 <v-btn
-                    elevation="0"
-                    @click="selectFile(4)"
-                    dark
-                    class="btn-primary"
-                ><img
+                  elevation="0"
+                  @click="selectFile(4)"
+                  dark
+                  class="btn-primary"
+                  ><img
                     class="mr-2"
                     src="@/assets/img/File_Blank.svg"
                     alt=""
-                />загрузить Из файла</v-btn
+                  />загрузить Из файла</v-btn
                 >
               </div>
               <div class="d-flex mobile-media">
                 <v-btn
-                    elevation="0"
-                    @click="selectFile(4)"
-                    dark
-                    class="btn-primary"
-                ><img
+                  elevation="0"
+                  @click="selectFile(4)"
+                  dark
+                  class="btn-primary"
+                  ><img
                     class="mr-2"
                     src="@/assets/img/Camera.svg"
                     alt=""
-                />Загрузить Фотографию</v-btn
+                  />Загрузить Фотографию</v-btn
                 >
               </div>
             </div>
@@ -490,28 +494,28 @@
               <p class="text-gray desktop-media">или загрузите фото</p>
               <div class="d-flex desktop-media">
                 <v-btn
-                    elevation="0"
-                    @click="selectFile(5)"
-                    dark
-                    class="btn-primary"
-                ><img
+                  elevation="0"
+                  @click="selectFile(5)"
+                  dark
+                  class="btn-primary"
+                  ><img
                     class="mr-2"
                     src="@/assets/img/File_Blank.svg"
                     alt=""
-                />загрузить Из файла</v-btn
+                  />загрузить Из файла</v-btn
                 >
               </div>
               <div class="d-flex mobile-media">
                 <v-btn
-                    elevation="0"
-                    @click="selectFile(5)"
-                    dark
-                    class="btn-primary"
-                ><img
+                  elevation="0"
+                  @click="selectFile(5)"
+                  dark
+                  class="btn-primary"
+                  ><img
                     class="mr-2"
                     src="@/assets/img/Camera.svg"
                     alt=""
-                />Загрузить Фотографию</v-btn
+                  />Загрузить Фотографию</v-btn
                 >
               </div>
             </div>
@@ -553,28 +557,28 @@
               <p class="text-gray desktop-media">или загрузите фото</p>
               <div class="d-flex desktop-media">
                 <v-btn
-                    elevation="0"
-                    @click="selectFile(6)"
-                    dark
-                    class="btn-primary"
-                ><img
+                  elevation="0"
+                  @click="selectFile(6)"
+                  dark
+                  class="btn-primary"
+                  ><img
                     class="mr-2"
                     src="@/assets/img/File_Blank.svg"
                     alt=""
-                />загрузить Из файла</v-btn
+                  />загрузить Из файла</v-btn
                 >
               </div>
               <div class="d-flex mobile-media">
                 <v-btn
-                    elevation="0"
-                    @click="selectFile(6)"
-                    dark
-                    class="btn-primary"
-                ><img
+                  elevation="0"
+                  @click="selectFile(6)"
+                  dark
+                  class="btn-primary"
+                  ><img
                     class="mr-2"
                     src="@/assets/img/Camera.svg"
                     alt=""
-                />Загрузить Фотографию</v-btn
+                  />Загрузить Фотографию</v-btn
                 >
               </div>
             </div>
@@ -610,12 +614,12 @@
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapActions } from "vuex";
-function formatAsCurrency (value, dec) {
-  dec = dec || ''
+function formatAsCurrency(value, dec) {
+  dec = dec || "";
   if (value === null) {
-    return ''
+    return "";
   }
-  return '' + value.toFixed(dec).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1-")
+  return "" + value.toFixed(dec).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1-");
 }
 export default {
   name: "UploadDocument",
@@ -630,6 +634,10 @@ export default {
       currency: "",
       initialBalance: null,
       logo: "",
+      helper_date: "",
+      helper_given: "",
+      dateFormatted_date: "",
+      dateFormatted_given: "",
       passport_number: "",
       passport_info: "",
       passport_series: "",
@@ -639,9 +647,18 @@ export default {
       files: [],
       passport_1: null,
       inputRules: [(v) => !!v || "Заполните поле"],
-      seriesRules:[(v) => (!!v && v.length === 4) || 'Некорректный  серия паспорта', (v) => !!v || "Заполните поле"],
-      numberRules:[(v) => (!!v && v.length === 6) || 'Некорректный  номер паспорта', (v) => !!v || "Заполните поле"],
-      codeRules:[(v) => (!!v && v.length === 7) || 'Некорректный  код подразделения', (v) => !!v || "Заполните поле"],
+      seriesRules: [
+        (v) => (!!v && v.length === 4) || "Некорректный  серия паспорта",
+        (v) => !!v || "Заполните поле",
+      ],
+      numberRules: [
+        (v) => (!!v && v.length === 6) || "Некорректный  номер паспорта",
+        (v) => !!v || "Заполните поле",
+      ],
+      codeRules: [
+        (v) => (!!v && v.length === 7) || "Некорректный  код подразделения",
+        (v) => !!v || "Заполните поле",
+      ],
       dropzoneOptions: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 200,
@@ -659,6 +676,18 @@ export default {
       "uploadPassportMedical",
       "uploadDriverLicense",
     ]),
+    formatDate(date) {
+      if (!date) return null;
+      const [year,month, day] = date.split("-");
+      console.log(year ,new Date().toISOString().slice(0, 10))
+      return `${day}.${month}.${year}`;
+    },
+    parseDate(date) {
+      if (!date) return null;
+
+      const [month, day, year] = date.split(".");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    },
     next(value) {
       this.$emit("pageHandler", value);
       let data = [
@@ -680,7 +709,7 @@ export default {
         },
         {
           field: "date_of_issue",
-          value: this.passport_date,
+          value: this.dateFormatted_date,
         },
         {
           field: "validity",
@@ -688,7 +717,7 @@ export default {
         },
         {
           field: "issued",
-          value: this.passport_given,
+          value: this.dateFormatted_given,
         },
         {
           field: "code",
@@ -699,11 +728,11 @@ export default {
       setTimeout(() => {
         this.setPassport(data);
       }, 1000);
-      this.$router.push({path: this.$route.fullPath, query: {tab: '7'} });
+      this.$router.push({ path: this.$route.fullPath, query: { tab: "7" } });
     },
     back(value) {
       this.$emit("pageHandler", value, "back");
-      this.$router.push({path: this.$route.fullPath, query: {tab: '5'} });
+      this.$router.push({ path: this.$route.fullPath, query: { tab: "5" } });
     },
     onChange() {
       this.filelist = [...this.$refs.file.files];
@@ -800,12 +829,12 @@ export default {
   },
   computed: {
     passport_code: {
-      get: function() {
-        return formatAsCurrency(this.initialBalance, 0)
+      get: function () {
+        return formatAsCurrency(this.initialBalance, 0);
       },
-      set: function(newValue) {
-        this.initialBalance =  Number(newValue.replace(/[^0-9\.]/g, ''));
-      }
+      set: function (newValue) {
+        this.initialBalance = Number(newValue.replace(/[^0-9\.]/g, ""));
+      },
     },
     disableHandler() {
       return (
@@ -818,6 +847,17 @@ export default {
         this.passport_term
       );
     },
+    computedDateFormatted() {
+      return this.formatDate(this.date);
+    },
+  },
+  watch: {
+    helper_date() {
+      this.dateFormatted_date = this.formatDate(this.helper_date);
+    },
+    helper_given(){
+      this.dateFormatted_given = this.formatDate(this.helper_given)
+    }
   },
 };
 </script>
@@ -891,18 +931,18 @@ export default {
 .desktop {
   display: block !important;
 }
-.mobile-media{
-  display: none!important;
+.mobile-media {
+  display: none !important;
 }
 @media (max-width: 1000px) {
   .mobile-media {
-    display: flex!important;
+    display: flex !important;
   }
   .desktop-media {
-    display: none!important;
+    display: none !important;
   }
 }
-.btn-title{
+.btn-title {
   font-weight: 700;
 }
 </style>

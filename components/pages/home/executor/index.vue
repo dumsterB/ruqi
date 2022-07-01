@@ -3,12 +3,12 @@
     .rq-home-executor__mobile.mb-4
       .rq-home-executor__mobile__header
         .rq-home-executor__mobile__header-container
-          mUserbar.rq-home-executor__mobile__header-userbar
+          mUserbar.rq-home-executor__mobile__header-userbar(:widgets="widgets")
           .rq-home-executor__mobile__header-widgetbar
           mContentDisplayController.rq-home-executor__mobile__header-display-ctrl(@clickOnTab="clickOnTab")
 
     .rq-home-executor__desktop
-      Userbar.rq-home-executor__desktop-userbar
+      Userbar.rq-home-executor__desktop-userbar(:widgets="widgets")
 
       v-divider.mt-12.mb-8
 
@@ -112,6 +112,9 @@ export default {
     userBanners() {
       return this.$store.getters["user/userBanners"];
     },
+    widgets(){
+      return this.$store.getters['executor/widgets']
+    }
   },
 
   watch: {},
@@ -125,6 +128,7 @@ export default {
       'cancelTask',
       'refuseTask'
     ]),
+    ...mapActions('executor',['fetchWidgets']),
 
     callAction({action, uuid}) {
       console.log('callAction ------', action, uuid);
@@ -161,6 +165,7 @@ export default {
     await this.fetchUserTasks({params: {}, concat: false});
     await this.fetchUserWorks({params: {}, concat: false});
     await this.fetchBanners();
+    await this.fetchWidgets()
 
   },
   mounted() {
