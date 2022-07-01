@@ -13,6 +13,10 @@ export const state = () => ({
   request_id_filter_rank: [],
   request_id_filter_active: [],
   request_id_search_lastpage: 1,
+  request_id_responses_lastpage: 1,
+  request_id_selection_lastpage: 1,
+  request_id_invitations_lastpage: 1,
+  request_id_assigned_lastpage: 1,
 })
 
 export const getters = {
@@ -57,6 +61,18 @@ export const getters = {
   },
   request_id_search_lastpage(state) {
     return state.request_id_search_lastpage;
+  },
+  request_id_responses_lastpage(state) {
+    return state.request_id_responses_lastpage;
+  },
+  request_id_selection_lastpage(state) {
+    return state.request_id_selection_lastpage;
+  },
+  request_id_invitations_lastpage(state) {
+    return state.request_id_invitations_lastpage;
+  },
+  request_id_assigned_lastpage(state) {
+    return state.request_id_assigned_lastpage;
   },
 }
 
@@ -349,6 +365,8 @@ export const mutations = {
       state.request_id_responses_filters = request_id_responses.data.meta.filters;
     }
 
+    state.request_id_responses_lastpage = request_id_responses.data.meta.last_page;
+
   },
   setRequestIdSelection(state, {request_id_selection, concat, unit}) {
 
@@ -361,6 +379,8 @@ export const mutations = {
     if (unit) {
       state.request_id_selection_filters = request_id_selection.data.meta.filters;
     }
+
+    state.request_id_selection_lastpage = request_id_selection.data.meta.last_page;
 
   },
   setRequestIdInvitations(state, {request_id_invitations, concat, unit}) {
@@ -375,6 +395,8 @@ export const mutations = {
       state.request_id_invitations_filters = request_id_invitations.data.meta.filters;
     }
 
+    state.request_id_invitations_lastpage = request_id_invitations.data.meta.last_page;
+
   },
   setRequestIdAssigned(state, {request_id_assigned, concat, unit}) {
 
@@ -387,6 +409,8 @@ export const mutations = {
     if (unit) {
       state.request_id_assigned_filters = request_id_assigned.data.meta.filters;
     }
+
+    state.request_id_assigned_lastpage = request_id_assigned.data.meta.last_page;
 
   },
 

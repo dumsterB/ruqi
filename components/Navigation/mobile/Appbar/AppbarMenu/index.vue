@@ -23,8 +23,8 @@ v-navigation-drawer.mobile-appbar-menu(
           height="64px"
         )
         .mobile-appbar-menu-user__info
-          .mobile-appbar-menu-user__fullname Станислав Станиславский
-          .mobile-appbar-menu-user__link Мой профиль
+          .mobile-appbar-menu-user__fullname {{ user.firstname }} {{ user.lastname }}
+          nuxt-link.mobile-appbar-menu-user__link(to="/profile") Мой профиль
 
       v-divider
 
@@ -34,7 +34,7 @@ v-navigation-drawer.mobile-appbar-menu(
       v-divider
 
       .mobile-appbar-menu-list
-        .mobile-appbar-menu-list__item
+        nuxt-link.mobile-appbar-menu-list__item(to="/")
           svg.mobile-appbar-menu-list__item-icon(
             width="22"
             height="22"
@@ -50,7 +50,7 @@ v-navigation-drawer.mobile-appbar-menu(
 
           .mobile-appbar-menu-list__item-title Главное
 
-        .mobile-appbar-menu-list__item
+        nuxt-link.m.mobile-appbar-menu-list__item(to="/tasks/contractor")
           svg.mobile-appbar-menu-list__item-icon(
             width="24" height="20" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg"
           )
@@ -61,7 +61,7 @@ v-navigation-drawer.mobile-appbar-menu(
 
           .mobile-appbar-menu-list__item-title Мои заявки
 
-        .mobile-appbar-menu-list__item
+        nuxt-link.mobile-appbar-menu-list__item(to="/finance")
           svg.mobile-appbar-menu-list__item-icon(
             width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg"
           )
@@ -72,9 +72,9 @@ v-navigation-drawer.mobile-appbar-menu(
               fill="#0082DE"
             )
 
-          .mobile-appbar-menu-list__item-title Account
+          .mobile-appbar-menu-list__item-title Мои финансы
 
-        .mobile-appbar-menu-list__item
+        nuxt-link.mobile-appbar-menu-list__item(to="/")
           svg.mobile-appbar-menu-list__item-icon(
             width="22"
             height="22"
@@ -89,9 +89,9 @@ v-navigation-drawer.mobile-appbar-menu(
               fill="#0082DE"
             )
 
-          .mobile-appbar-menu-list__item-title Account
+          .mobile-appbar-menu-list__item-title Мои подписки
 
-        .mobile-appbar-menu-list__item
+        nuxt-link.mobile-appbar-menu-list__item(to="/appeal")
           svg.mobile-appbar-menu-list__item-icon(
             width="22"
             height="22"
@@ -112,9 +112,9 @@ v-navigation-drawer.mobile-appbar-menu(
               fill="#0082DE"
             )
 
-          .mobile-appbar-menu-list__item-title Account
+          .mobile-appbar-menu-list__item-title Поддержка
 
-        .mobile-appbar-menu-list__item
+        nuxt-link.mobile-appbar-menu-list__item(to="/notification")
           svg.mobile-appbar-menu-list__item-icon(
             width="22"
             height="23"
@@ -127,11 +127,11 @@ v-navigation-drawer.mobile-appbar-menu(
               fill="#0082DE"
             )
 
-          .mobile-appbar-menu-list__item-title Account
+          .mobile-appbar-menu-list__item-title Уведомления
 
         v-divider.mobile-appbar-menu-list__item
 
-        .mobile-appbar-menu-list__item
+        .mobile-appbar-menu-list__item(@click="signout")
           svg.mobile-appbar-menu-list__item-icon(
             width="19"
             height="18"
@@ -150,7 +150,7 @@ v-navigation-drawer.mobile-appbar-menu(
               fill="#0082DE"
             )
 
-          .mobile-appbar-menu-list__item-title Account
+          .mobile-appbar-menu-list__item-title Выйти
 </template>
 
 <script>
@@ -170,7 +170,11 @@ export default {
   data: () => ({
     group: null,
   }),
-  computed: {},
+  computed: {
+    user() {
+      return this.$store.getters["user/user"];
+    },
+  },
 
   watch: {},
   methods: {
@@ -179,6 +183,12 @@ export default {
     /* HANDLERS */
     close() {
       this.$emit('close');
+    },
+
+    signout(){
+      window.localStorage.removeItem("ruqi_auth_data");
+
+      this.$router.push("/signin");
     },
 
     /* HELPERS */
@@ -234,6 +244,7 @@ export default {
       font-size: 14px;
       line-height: 125%;
       color: #0082DE;
+      text-decoration: none;
     }
   }
 
@@ -274,6 +285,10 @@ export default {
       justify-content: flex-start;
       align-items: center;
       margin-top: 21px;
+      text-decoration: none;
+      color: #000 !Important;
+      font-weight: 600;
+      font-size: 16px;
 
       &:first-child {
         margin-top: 0;

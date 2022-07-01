@@ -96,10 +96,7 @@ export const actions = {
   async fetchUserWorks({ commit }, {params, concat}) {
 
     const tasks = await this.$axios.get('user/my/tasks', {
-      params: {
-        ...params,
-        "type": "accepted"
-      }
+      params: params
     });
     commit('updateUserWorks', {tasks: tasks, concat: concat});
 
@@ -140,6 +137,40 @@ export const actions = {
         console.log(error);
       });
   },
+
+  async acceptInviteTask({commit, dispatch}, {task_uuid, params, concat}) {
+    await this.$axios.put('/user/tasks/'+task_uuid+'/accept-invite',)
+      .then((response) => {
+        console.log(response);
+        dispatch('fetchUserTasks', {params: {}, concat: false});
+        commit('response/setSuccess', {type: 'success', text: 'Вы приняли приглашение', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+
+  async cancelTask({commit, dispatch}, {task_uuid, params, concat}) {
+    await this.$axios.put('/user/tasks/'+task_uuid+'/cancel',)
+      .then((response) => {
+        console.log(response);
+        dispatch('fetchUserTasks', {params: {}, concat: false});
+        dispatch('fetchUserWorks', {params: {}, concat: false});
+        commit('response/setSuccess', {type: 'success', text: 'Вы приняли приглашение', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+
+
+
 
   /* SETTERS */
   async setUserData({ commit }, payload) {

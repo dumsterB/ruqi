@@ -26,8 +26,18 @@ export default {
   },
   computed: {
     text(){
-      if(this.status == 'open'){
+      if(this.status == 'open' || this.status == 'isRecruiting' ){
         return 'открыт набор';
+      }else if(this.status == 'working'){
+        return 'работаем';
+      }else if(this.status == 'accepted'){
+        return 'можно приезжать';
+      }else if(this.status == 'invited'){
+        return 'приглашение';
+      }else if(this.status == 'requested'){
+        return 'хочу работать';
+      }else{
+        return 'статус';
       }
     }
   },
@@ -40,7 +50,8 @@ export default {
         rejected: status === 'rejected',
         accepted: status === 'accepted',
         invited: status === 'invited',
-        open: status === 'open',
+        working: status === 'working',
+        open: status === 'open' || status === 'isRecruiting',
       }
     },
 
@@ -162,16 +173,18 @@ export default {
     }
   }
 
-  &.invited {
-    background: #0082DE;
-    border: 1px solid #0082DE;
+
+
+  &.working {
+    background: #F2EFFF;
+    border: 1px solid #7B61FF;
 
     .rq-status__wrapper {
       .rq-status__inner {
         .rq-status__icon {}
 
         .rq-status__title {
-          color: #FFFFFF;
+          color: #7B61FF;
         }
       }
     }

@@ -74,7 +74,9 @@ export default {
   props: {},
   data: () => ({
     actions: [
-      {text: "Подробнее о заявке", icon: "mdi-clipboard-account-outline", action: 'openDetails'},
+      {text: "Принять", icon: "mdi-check", action: '', status: ['invited']},
+      {text: "Отказаться", icon: "mdi-close-box-outline", action: '', status: ['working', 'accepted', 'invited']},
+      {text: "Отменить", icon: "mdi-close-box-outline", action: '', status: ['requested']},
     ],
     sortField: 'distance',
     sortOrder: 'desc',
@@ -125,7 +127,10 @@ export default {
     ...mapActions('user', [
       'fetchUserTasks',
       'fetchUserWorks',
-      'fetchBanners'
+      'fetchBanners',
+      'acceptInviteTask',
+      'requestTask',
+      'cancelTask'
     ]),
     ...mapActions('executor',['fetchWidgets']),
 
