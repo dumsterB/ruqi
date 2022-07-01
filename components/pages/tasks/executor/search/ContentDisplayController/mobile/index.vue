@@ -52,10 +52,14 @@ export default {
 
 <style lang="scss">
 .executor-mcdc {
+  width: 100%;
+  padding: 0 16px;
+
   &__tabs {
     width: max-content;
     background: #349BE4;
     border-radius: 40px;
+    width: 100%;
 
     &-item {
       color: #FFFFFF !important;
@@ -91,6 +95,7 @@ export default {
     .v-tab {
       padding: 12px 50px !important;
       text-transform: none !important;
+      width: 50%;
 
       @media screen and (max-width: 425px) {
         padding: 12px 40px !important;

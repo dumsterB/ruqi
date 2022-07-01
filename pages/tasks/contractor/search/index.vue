@@ -4,7 +4,7 @@
     .tasks-executor-search--mobile__header
       .tasks-executor-search--mobile__header-title Поиск работы
 
-      mSearchLine.tasks-executor-search--mobile__header-search
+      mSearchLine.tasks-executor-search--mobile__header-search(@applySearch="applySearch")
       mContentDisplayController.tasks-executor-search--mobile__header-display-ctrl(
         :tasksTab="tasksTab"
         @clickOnTab="setTasksView"
@@ -190,6 +190,13 @@ export default {
 
     async resetFilter() {
       await this.fetchSearchTasks({params:{}, concat: false })
+    },
+
+    async applySearch(value) {
+
+      this.filters.search = value;
+
+      await this.fetchSearchTasks({params: this.filters, concat: false })
     },
 
     callAction({action, uuid}) {
