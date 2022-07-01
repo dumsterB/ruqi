@@ -1,15 +1,14 @@
 <template lang="pug">
   .rq-ui-banners
-    .rq-ui-banner-show(v-for="(banner, index) in banners.slice(0,1)" :key="index")
-      .rq-ui-banner(v-if="isShow").mt-8
+    .rq-ui-banner-show(v-for="(banner, index) in banners" :key="index")
+      .rq-ui-banner(v-show="index == currentBanner").mt-8
         .rq-ui-banner__logo
           img(:src="banner.image" alt="")
-        a.rq-ui-banner__body
+        a(:href="banner.link").rq-ui-banner__body
           .rq-ui-banner__title.mb-4 {{ banner.title }}
           .rq-ui-banner__description {{ banner.description }}
-          .rq-ui-banner__link.mt-4
-            a Перейти в раздел
-        .rq-ui-banner__actions(@click="isShow = false")
+          .rq-ui-banner__link.mt-4 {{ banner.link }}
+        .rq-ui-banner__actions(@click="nextBanner(banner.slug)")
           svg.rq-ui-banner__actions-close(
             width="14"
             height="14"
@@ -36,22 +35,81 @@ export default {
       }
     }
   },
-  data: () => ({
-    isShow: true,
-  }),
-  computed: {},
+  data() {
+    return {
+      isShow: true,
+      currentBanner: 0
+    }
+  },
+  computed: {
+    user() {
+      return this.$store.getters["user/user"];
+    },
+  },
 
-  watch: {},
+  watch: {
+    banners: function () {
+      for (let i = this.currentBanner; i < this.banners.length; i++) {
+
+        //localStorage.removeItem('banner_' + this.banners[i].slug);
+
+        if (this.isShownBanner(this.banners[i].slug)) {
+          this.currentBanner += 1;
+        } else {
+          return;
+        }
+      }
+    },
+  },
+
   methods: {
-    /* GETTERS */
-    /* SETTERS */
-    /* HANDLERS */
-    /* HELPERS */
+    nextBanner(slug) {
+
+      this.setWithExpiry(slug);
+
+      for (let i = this.currentBanner; i < this.banners.length; i++) {
+        if (this.isShownBanner(this.banners[i].slug)) {
+          this.currentBanner += 1;
+          return;
+        }
+      }
+    },
+
+    setWithExpiry(slug) {
+      const date = new Date();
+      date.setDate(date.getDate() + 1);
+
+      const item = {
+        expiry: date,
+      };
+
+      localStorage.setItem('banner_' + slug, JSON.stringify(item))
+    },
+
+    isShownBanner(slug) {
+      let bannerLocal = localStorage.getItem('banner_' + slug),
+        banner = JSON.parse(bannerLocal);
+
+      let current_date = new Date().toISOString();
+
+      if (bannerLocal) {
+        if (current_date > banner.expiry) {
+          localStorage.removeItem('banner_' + slug);
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        return false;
+      }
+    }
   },
 
   created() {
+
   },
   mounted() {
+
   },
 }
 </script>
@@ -59,7 +117,6 @@ export default {
 <style lang="scss">
 
 .rq-ui-banners {
-
 
   .rq-ui-banner {
     display: flex;
@@ -80,6 +137,7 @@ export default {
       padding: 16px;
       max-width: 590px;
       color: #263043;
+      text-decoration: none;
 
       .rq-ui-banner__title {
         font-weight: 700;
@@ -93,9 +151,9 @@ export default {
       }
 
       .rq-ui-banner__link {
-        a {
-          text-decoration: none;
-        }
+        text-decoration: none;
+        color: #0082DE;
+
       }
     }
 

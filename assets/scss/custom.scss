@@ -1,0 +1,33 @@
+.pointer {
+  cursor: pointer !important;
+}
+/*padding*/
+.pl-6-05 { // 20px
+  padding-left: $spacer * 6 + 2 !important;
+}
+
+/*border*/
+.border-all {
+  border: 1px solid $border-color !important;
+}
+.br-14 {
+  border-radius: 14px !important;
+}
+
+/*box-shadow*/
+.box-shadow {
+  box-shadow: 0 4px 25px #edeef1 !important;
+}
+
+.relative {
+  position: relative;
+}
+
+.w-full {
+  width: 100%;
+}
+
+/*fonts*/
+.fz-18 {
+  font-size: 18px !important;
+}

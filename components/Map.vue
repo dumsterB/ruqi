@@ -1,10 +1,10 @@
 <template>
   <div class="map-container" :style="{ height: height + 'px' }">
-    <yandex-map :coords="center_coords" :zoom="zoom">
+    <yandex-map :coords="center_coords" :zoom="zoom" @map-was-initialized="mapCreated">
       <template v-for="(item, index) in markers">
         <ymap-marker v-if="item" :key="item.uuid" :coords="item.geometry.coordinates" :marker-id="item.uuid"
-          :hint-content="item.properties.hintContent" marker-type="placemark"
-          :balloon-template="balloonTemplate(item)"  @balloonopen="requestTask"/>
+                     :hint-content="item.properties.hintContent" marker-type="placemark"
+                     :balloon-template="balloonTemplate(item)" @balloonopen="requestBtn(item.uuid)"/>
       </template>
     </yandex-map>
   </div>
@@ -21,16 +21,31 @@ export default {
     'entity',
   ],
   data() {
-    return {}
+    return {
+      map: null,
+      actionUUId: null,
+    }
+  },
+  watch: {
+    markers: function () {
+      let self = this;
+
+      setTimeout(function () {
+        self.map.setBounds(self.map.geoObjects.getBounds());
+      }, 300);
+    },
   },
   methods: {
     balloonTemplate(info) {
       if (this.entity === 'contractor') {
 
-        let task_date = this.parseDate({ date: info.start_date.substr(0, 10), type: 'date' }) + ' ' + info.start_date.substring(11, 16);
+        let task_date = this.parseDate({
+          date: info.start_date.substr(0, 10),
+          type: 'date'
+        }) + ' ' + info.start_date.substring(11, 16);
         let icon_object = '<i aria-hidden="true" class="v-icon notranslate mdi mdi-star-outline theme--light" style="color: rgb(244, 209, 80); caret-color: rgb(244, 209, 80);"></i>';
 
-        if(info.subscribe){
+        if (info.subscribe) {
           icon_object = '<i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light" style="color: rgb(244, 209, 80); caret-color: rgb(244, 209, 80);"></i>';
         }
 
@@ -40,10 +55,9 @@ export default {
           <div class="wrap-rate-date"><div class="rate">${info.rate} р./смена</div><div class="date">${task_date}</div></div>
           <div class="wrap-professions">${info.professions}</div>
           <div class="wrap-object">${icon_object} ${info.object.name}</div>
-          <div @click="requestTask" id="request_task">Перейти</div>
+          <button id="request_task" type="button" class="elevation-0 add btn-blue v-btn baloon-btn"><span class="v-btn__content">откликнуться</span></button>
         `;
-      }
-      else {
+      } else {
         return `
           <h2 class="balloon-header">${info.name}</h2>
           <p>Описание: ${info.description}</p>
@@ -60,15 +74,32 @@ export default {
       }
     },
 
-    requestTask(){
-      document.getElementById('request_task').addEventListener('click', this.handler);
+    requestBtn(uuid) {
+
+      this.actionUUId = uuid;
+
+      if (this.entity === 'contractor') {
+        document.getElementById('request_task').addEventListener('click', this.handlerTask);
+      }
+
 
     },
 
-    handler() {
-      console.log('requestTask');
+    handlerTask() {
+      this.$emit('action', this.actionUUId);
     },
-  }
+
+    mapCreated($map) {
+      this.map = $map;
+
+      let self = this;
+
+      setTimeout(function () {
+        self.map.setBounds(self.map.geoObjects.getBounds());
+      }, 300);
+    },
+  },
+
 }
 </script>
 
@@ -80,7 +111,7 @@ export default {
     width: 100%;
     height: 100%;
 
-    .ymaps-2-1-79-balloon{
+    .ymaps-2-1-79-balloon {
       border: 1px solid #E0E0E0;
       border-radius: 14px;
       box-shadow: none;
@@ -90,7 +121,7 @@ export default {
       background: #fff;
     }
 
-    .ymaps-2-1-79-balloon__tail{
+    .ymaps-2-1-79-balloon__tail {
       display: none;
     }
   }
@@ -100,7 +131,7 @@ export default {
     font-size: 16px;
   }
 
-  .status{
+  .status {
     padding: 4px 8px;
     height: 24px;
     box-sizing: border-box;
@@ -120,26 +151,26 @@ export default {
     margin: 16px 0
   }
 
-  .wrap-rate-date{
+  .wrap-rate-date {
     display: flex;
     align-items: center;
     line-height: 1;
     margin-bottom: 16px;
 
-    .rate{
+    .rate {
       font-weight: 700;
       font-size: 16px;
       margin-right: 16px;
     }
 
-    .date{
+    .date {
       font-weight: 600;
       font-size: 16px;
     }
 
   }
 
-  .wrap-professions{
+  .wrap-professions {
     font-weight: 600;
     font-size: 14px;
     line-height: 2;
@@ -148,16 +179,24 @@ export default {
     flex-direction: column;
   }
 
-  .wrap-object{
+  .wrap-object {
     font-weight: 600;
     font-size: 14px;
     margin: 24px 0;
     display: flex;
     align-items: center;
 
-    .v-icon{
+    .v-icon {
       margin-right: 6px;
     }
+  }
+
+  .baloon-btn{
+    height: 48px;
+    width: 100%;
+    font-weight: 700;
+    font-size: 14px;
+    border-radius: 8px;
   }
 }
 </style>

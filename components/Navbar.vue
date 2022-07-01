@@ -77,6 +77,12 @@ export default {
         img: '/img/ico_notifications.svg',
         role: ['superManager', 'manager', 'dispatcher', 'contractor']
       },
+      {
+        title: 'Справочники',
+        link: '/dirs',
+        img: '/img/ico_dirs.svg',
+        role: ['superManager', 'manager']
+      },
     ],
   }),
   computed: {

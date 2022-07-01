@@ -73,16 +73,16 @@
                     outlined
                     class="mt-2"
                     :rules="inputRules"
-                    v-model="passport_date"
+                    v-model="dateFormatted_date"
                     dense
                     readonly
-                    @blur="date = parseDate(passport_date)"
+                    @blur="helper_date = parseDate(dateFormatted_date)"
                     v-bind="attrs"
                     v-on="on"
                     single-line
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="passport_date" no-title scrollable>
+                <v-date-picker v-model="helper_date" no-title scrollable>
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="menu1 = false">
                     Отмена
@@ -90,7 +90,7 @@
                   <v-btn
                     text
                     color="primary"
-                    @click="$refs.menu1.save(passport_date)"
+                    @click="$refs.menu1.save(helper_date)"
                   >
                     OK
                   </v-btn>
@@ -115,15 +115,16 @@
                     outlined
                     class="mt-2"
                     :rules="inputRules"
-                    v-model="passport_term"
+                    v-model="dateFormatted_given"
                     dense
                     readonly
+                    @blur="helper_given = parseDate(dateFormatted_given)"
                     v-bind="attrs"
                     v-on="on"
                     single-line
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="passport_term" no-title scrollable>
+                <v-date-picker v-model="helper_given" no-title scrollable>
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="menu = false">
                     Отмена
@@ -131,7 +132,7 @@
                   <v-btn
                     text
                     color="primary"
-                    @click="$refs.menu.save(passport_term)"
+                    @click="$refs.menu.save(helper_given)"
                   >
                     OK
                   </v-btn>
@@ -633,7 +634,10 @@ export default {
       currency: "",
       initialBalance: null,
       logo: "",
-      dateFormatted: "",
+      helper_date: "",
+      helper_given: "",
+      dateFormatted_date: "",
+      dateFormatted_given: "",
       passport_number: "",
       passport_info: "",
       passport_series: "",
@@ -672,6 +676,18 @@ export default {
       "uploadPassportMedical",
       "uploadDriverLicense",
     ]),
+    formatDate(date) {
+      if (!date) return null;
+      const [year,month, day] = date.split("-");
+      console.log(year ,new Date().toISOString().slice(0, 10))
+      return `${day}.${month}.${year}`;
+    },
+    parseDate(date) {
+      if (!date) return null;
+
+      const [month, day, year] = date.split(".");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    },
     next(value) {
       this.$emit("pageHandler", value);
       let data = [
@@ -693,7 +709,7 @@ export default {
         },
         {
           field: "date_of_issue",
-          value: this.passport_date,
+          value: this.dateFormatted_date,
         },
         {
           field: "validity",
@@ -701,7 +717,7 @@ export default {
         },
         {
           field: "issued",
-          value: this.passport_given,
+          value: this.dateFormatted_given,
         },
         {
           field: "code",
@@ -831,23 +847,17 @@ export default {
         this.passport_term
       );
     },
-    formatDate(date) {
-      if (!date) return null;
-      const [year, month, day] = date.split("-");
-      return `${day}.${month}.${year}`;
-    },
-    parseDate(date) {
-      if (!date) return null;
-
-      const [month, day, year] = date.split(".");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    computedDateFormatted() {
+      return this.formatDate(this.date);
     },
   },
   watch: {
-    date() {
-      // this.dateFormatted = this.formatDate(this.passport_given);
-      // this.dateFormatted = this.formatDate(this.);
+    helper_date() {
+      this.dateFormatted_date = this.formatDate(this.helper_date);
     },
+    helper_given(){
+      this.dateFormatted_given = this.formatDate(this.helper_given)
+    }
   },
 };
 </script>

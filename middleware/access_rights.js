@@ -25,6 +25,9 @@ export default function access_rights({ route, store, redirect }) {
       && route.name !== 'auth-signin-super-manager-recover-email'
       && route.name !== 'auth-signin-super-manager-recover-sms'
       && route.name !== 'auth-signin-super-manager-recover-password'
+      && route.name !== 'dirs'
+      && route.name !== 'dirs-id'
+      && route.name !== 'dirs-id-profession'
       && !(user.visibility_sections.includes(route.name) || subroute)
     ) {
       redirect('/');

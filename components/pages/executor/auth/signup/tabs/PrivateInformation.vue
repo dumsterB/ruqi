@@ -89,6 +89,7 @@
               </template>
               <v-date-picker
                 v-model="date"
+                :show-current="true"
                 no-title
                 max="2004-NaN-NaN"
                 scrollable
@@ -190,10 +191,8 @@ export default {
   data() {
     return {
       valid: false,
-      date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
-      dateFormatted: "",
+      date:'2004-01-01',
+      dateFormatted: "01.01.2004",
       phoneNumber: "",
       dateHelper: new Date(),
       menu: "",
@@ -265,7 +264,7 @@ export default {
     },
   },
   watch: {
-    date(val) {
+    date() {
       this.dateFormatted = this.formatDate(this.date);
     },
   },

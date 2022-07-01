@@ -1,11 +1,12 @@
 <template lang="pug">
   .rq-home-executor
-    .rq-home-executor__mobile
+    .rq-home-executor__mobile.mb-4
       .rq-home-executor__mobile__header
         .rq-home-executor__mobile__header-container
           mUserbar.rq-home-executor__mobile__header-userbar(:widgets="widgets")
           .rq-home-executor__mobile__header-widgetbar
-          mContentDisplayController.rq-home-executor__mobile__header-display-ctrl
+          mContentDisplayController.rq-home-executor__mobile__header-display-ctrl(@clickOnTab="clickOnTab")
+
     .rq-home-executor__desktop
       Userbar.rq-home-executor__desktop-userbar(:widgets="widgets")
 
@@ -13,14 +14,14 @@
 
       TasksTabs.rq-home-executor__desktop__content-display-ctrl(:tabs="tabs" @clickOnTab="clickOnTab")
 
-    v-row(no-gutters)
+    v-row(no-gutters).rq-home-executor__desktop
       v-col(cols="12")
         .tasks-list-header-wrapper.d-flex.justify-space-between(v-if="tasksTab == 0 && userWorks.length || tasksTab == 1 && userTasks.length")
           .tasks-list-header {{ title[tasksTab] }}
           .tasks-list-view-all
             nuxt-link(to="/tasks/contractor") Смотреть все
 
-    v-row(no-gutters)
+    v-row(no-gutters).rq-home-executor__desktop
       v-col(cols="12")
         Banner(:banners="userBanners")
 
@@ -41,7 +42,7 @@
 <script>
 import {mapActions, mapGetters,} from 'vuex';
 import ContentDisplayController from '@/components/pages/tasks/executor/search/ContentDisplayController/desktop';
-import mContentDisplayController from '@/components/pages/tasks/executor/search/ContentDisplayController/mobile';
+import mContentDisplayController from '@/components/pages/home/executor/ContentDisplayController/mobile';
 import TasksFilter from '@/components/pages/tasks/executor/search/TasksFilter/desktop';
 import mTasksFilter from '@/components/pages/tasks/executor/search/TasksFilter/mobile';
 import mSearchLine from '@/components/pages/tasks/executor/search/SearchLine';
@@ -115,7 +116,7 @@ export default {
       return this.$store.getters["user/userBanners"];
     },
     widgets(){
-      return this.$store.getters["executor/widgets"]
+      return this.$store.getters['executor/widgets']
     }
   },
 
@@ -124,7 +125,7 @@ export default {
     ...mapActions('user', [
       'fetchUserTasks',
       'fetchUserWorks',
-      'fetchBanners',
+      'fetchBanners'
     ]),
     ...mapActions('executor',['fetchWidgets']),
 
