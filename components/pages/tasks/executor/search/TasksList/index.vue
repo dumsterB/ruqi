@@ -18,7 +18,7 @@
                 .rq-ptestl__desktop-date(v-if="item.start_date") {{ parseDate({ date: item.start_date.substr(0, 10), type: 'date' }) }} {{ item.start_date.substring(11, 16) }}
 
             template( v-slot:item.status="{ item }" )
-              Status(status="open")
+              Status(:status="item.status")
 
             template( v-slot:item.rate="{ item }" )
               .color-black(v-if="item.rate") {{ item.rate }} р./смена
@@ -48,9 +48,10 @@
                     div(v-for="(profession, index) in item.professions.slice(1)", :key="index") {{ profession }}
 
             template(v-slot:item.actions="{ item }")
-              .d-flex.justify-end.card-actions
+              .d-flex.justify-end.card-actions(v-if="actionsList(item.status).length > 0")
                 v-menu(
                   bottom,
+                  left,
                   rounded="10",
                   offset-y,
                   nudge-bottom="10",
@@ -62,7 +63,7 @@
 
                   v-card
                     v-list-item-content.justify-start
-                      .mx-auto.text-left.card-action(v-for="action in actions")
+                      .mx-auto.text-left.card-action(v-for="action in actionsList(item.status)")
 
                         a(@click.prevent="callAction(action.action, [item.uuid])")
                           v-icon {{ action.icon }}
@@ -92,13 +93,13 @@
                   v-icon(v-if="!item.subscribe" color="#F4D150") mdi-star-outline
                 .object-task-info-name {{ item.object.name}}
 
-          .rq-ptestl-card__actions
+          .rq-ptestl-card__actions(v-if="actionsList(item.status).length > 0")
             v-menu(
               bottom
               rounded="10"
               offset-y
               nudge-bottom="10"
-              left
+              right
               content-class="card-actions-menu"
             )
               template(v-slot:activator="{ on }")
@@ -107,7 +108,7 @@
 
               v-card
                 v-list-item-content.justify-start
-                  .mx-auto.text-left.card-action(v-for="action in actions")
+                  .mx-auto.text-left.card-action(v-for="action in actionsList(item.status)")
 
                     a(@click.prevent="callAction(action.action, [item.uuid])")
                       v-icon {{ action.icon }}
@@ -168,22 +169,32 @@ export default {
     actionsList(status) {
       let actions = [];
 
-      if (status == 'open') {
+      if (status == 'isRecruiting') {
         actions = [
-          {title: 'Участвовать', action: ''}
+          {text: "Участвовать", icon: "mdi-check", action: 'requestTaskAction'},
+          {text: "Подробнее о заявке", icon: "mdi-clipboard-account-outline", action: 'openDetails'},
+        ];
+      }
+      else if (status == 'open') {
+        actions = [
+          {text: "Участвовать", icon: "mdi-check", action: 'requestTaskAction'},
         ];
       } else if (status == 'accepted') {
         actions = [
-          {title: 'Отменить', action: ''}
+          {text: "Отказаться", icon: "mdi-close-box-outline", action: '', },
         ];
       } else if (status == 'invited') {
         actions = [
-          {title: 'Принять', action: ''},
-          {title: 'Отказаться', action: ''},
+          {text: "Принять", icon: "mdi-check", action: 'acceptInviteTask', },
+          {text: "Отказаться", icon: "mdi-close-box-outline", action: '', },
         ]
       } else if (status == 'requested') {
         actions = [
-          {title: 'Отменить', action: ''}
+          {text: "Отменить", icon: "mdi-close-box-outline", action: '',},
+        ];
+      }else if (status == 'working') {
+        actions = [
+          {text: "Отказаться", icon: "mdi-close-box-outline", action: '',},
         ];
       }
 
@@ -309,4 +320,5 @@ export default {
   }
 
 }
+
 </style>

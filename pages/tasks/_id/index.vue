@@ -99,12 +99,14 @@
           v-window(v-model="tab")
             v-tab-item(eager)
               Responses(:items="request_id_responses" :headers="headers" :actions="actions_responses" :model="selectedItems"
+                :last_page="request_id_responses_lastpage"
                 @callAction="callAction"
                 @setSelected="setSelected"
                 @getDataFromApi ="getDataFromApi('fetchResponseParams', 'optionsResponse', 'fetchRequestIdResponses', ...arguments)")
 
             v-tab-item(eager)
               Responses(:items="request_id_selection" :headers="headers_selection" :actions="actions_selection" :isAddElement="true" :model="selectedItems"
+                :last_page="request_id_selection_lastpage"
                 @addSelection="addArtist"
                 @callAction="callAction"
                 @setSelected="setSelected"
@@ -112,12 +114,14 @@
 
             v-tab-item(eager)
               Responses(:items="request_id_invitations" :headers="headers_invitations" :actions="actions_invitations" :model="selectedItems"
+                :last_page="request_id_invitations_lastpage"
                 @callAction="callAction"
                 @setSelected="setSelected"
                 @getDataFromApi ="getDataFromApi('fetchInvitationsParams', 'optionsInvitations', 'fetchRequestIdInvitations', ...arguments)")
 
             v-tab-item(eager)
               Responses(:items="request_id_assigned" :headers="headers_assigned" :actions="actions_assigned" :model="selectedItems"
+                :last_page="request_id_assigned_lastpage"
                 @callAction="callAction"
                 @setSelected="setSelected"
                 @getDataFromApi ="getDataFromApi('fetchAssignedParams', 'optionsAssigned', 'fetchRequestIdAssigned', ...arguments)")
@@ -210,12 +214,6 @@ export default {
         {text: "ставка", value: "rate", width: '107px'},
         {text: "Статус выхода", value: "status", width: '184px'},
         {text: "телефон", value: "phone",},
-      ],
-      headers_history: [
-        {text: "Дата", value: "date"},
-        {text: "Автор", value: "author"},
-        {text: "Элемент", value: "element"},
-        {text: "Изменение", value: "change"},
       ],
 
       actions_responses: [
@@ -391,9 +389,19 @@ export default {
     request_id_assigned_filters() {
       return this.$store.getters["request_id_dispatchers/request_id_assigned_filters"];
     },
-    request_id_history() {
-      return this.$store.getters["request_id_dispatchers/request_id_history"];
+    request_id_responses_lastpage() {
+      return this.$store.getters["request_id_dispatchers/request_id_responses_lastpage"];
     },
+    request_id_selection_lastpage() {
+      return this.$store.getters["request_id_dispatchers/request_id_selection_lastpage"];
+    },
+    request_id_invitations_lastpage() {
+      return this.$store.getters["request_id_dispatchers/request_id_invitations_lastpage"];
+    },
+    request_id_assigned_lastpage() {
+      return this.$store.getters["request_id_dispatchers/request_id_assigned_lastpage"];
+    },
+
     tabs_list() {
       return [
         {title: "Отклики", count: this.request_id_responses.length},
@@ -434,7 +442,7 @@ export default {
 
   methods: {
     ...mapActions("request_id", ["fetchRequestId", "putStatus"]),
-    ...mapActions("request_id_dispatchers", ["fetchRequestIdResponses", "fetchRequestIdSelection", "fetchRequestIdInvitations", "fetchRequestIdAssigned", "fetchRequestIdHistory"]),
+    ...mapActions("request_id_dispatchers", ["fetchRequestIdResponses", "fetchRequestIdSelection", "fetchRequestIdInvitations", "fetchRequestIdAssigned",]),
     ...mapActions("request_id_dispatchers", ["acceptRequest", "rejectRequest", "appointExecutor", "rejectExecutor", "inviteExecutor", "deleteExecutor", "refuseExecutor", "acceptedExecutor"]),
     ...mapActions("requests", ["copyRequest", "removeRequest"]),
     ...mapActions("rqTabs", [
@@ -495,12 +503,12 @@ export default {
         }
       };
 
-      if (sorting){
+      if (sorting) {
         params.settings.sort = this[watcherParams].sortBy[0];
         params.settings.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
       }
 
-      if (professions){
+      if (professions) {
         params.professions = professions;
       }
 
@@ -539,7 +547,7 @@ export default {
       this[action](uuids, params);
     },
 
-    callGroupAction(action){
+    callGroupAction(action) {
       let sendUuids = [];
       for (let i = 0; i < this.selectedItems.length; i++) {
         sendUuids.push(this.selectedItems[0].uuid);
@@ -620,22 +628,22 @@ export default {
       this.$router.push("/tasks/" + this.$route.params.id + "/history");
     },
 
-    getDataFromApi(fetchParams, watcherParams, action, options) {
+    getDataFromApi(fetchParams, watcherParams, action, options, fetchPagesParams, concat) {
 
       this[watcherParams] = options;
 
       let sorting = this[watcherParams].sortBy[0];
 
       let params = {
+        "page": fetchPagesParams.page,
+        "per_page": fetchPagesParams.per_page,
         "settings": {
           "value": this[fetchParams].value,
-          //"sort": this[watcherParams].sortBy[0] ? this[watcherParams].sortBy[0]  : 'lastname',
-          //"order": this[watcherParams].sortDesc[0] ? 'asc' : 'desc',
           "filters": this[fetchParams].filters,
         }
       };
 
-      if (sorting){
+      if (sorting) {
         params.settings.sort = this[watcherParams].sortBy[0];
         params.settings.order = this[watcherParams].sortDesc[0] ? 'asc' : 'desc';
       }
@@ -643,7 +651,7 @@ export default {
       this[action]({
         requestId: this.$route.params.id,
         params: params,
-        concat: false,
+        concat: concat,
         unit: false
       }).then(data => {
         this[fetchParams].page = 1;
@@ -660,31 +668,30 @@ export default {
 
   async created() {
     await this.fetchRequestId(this.$route.params.id);
-    await this.fetchRequestIdResponses({
-      requestId: this.$route.params.id,
-      params: {"page": 1},
-      concat: false,
-      unit: true
-    });
-    await this.fetchRequestIdSelection({
-      requestId: this.$route.params.id,
-      params: {"page": 1},
-      concat: false,
-      unit: true
-    });
-    await this.fetchRequestIdInvitations({
-      requestId: this.$route.params.id,
-      params: {"page": 1},
-      concat: false,
-      unit: true
-    });
-    await this.fetchRequestIdAssigned({
-      requestId: this.$route.params.id,
-      params: {"page": 1},
-      concat: false,
-      unit: true
-    });
-    await this.fetchRequestIdHistory({requestId: this.$route.params.id});
+    /*    await this.fetchRequestIdResponses({
+          requestId: this.$route.params.id,
+          params: {"page": 1},
+          concat: false,
+          unit: true
+        });
+        await this.fetchRequestIdSelection({
+          requestId: this.$route.params.id,
+          params: {"page": 1},
+          concat: false,
+          unit: true
+        });
+        await this.fetchRequestIdInvitations({
+          requestId: this.$route.params.id,
+          params: {"page": 1},
+          concat: false,
+          unit: true
+        });
+        await this.fetchRequestIdAssigned({
+          requestId: this.$route.params.id,
+          params: {"page": 1},
+          concat: false,
+          unit: true
+        });*/
 
     this.$route.meta.title = this.request_id.name;
 
@@ -729,7 +736,7 @@ export default {
   }
 
   .card-actions-menu {
-    .card-action-task{
+    .card-action-task {
       margin-bottom: 0;
 
       > div {
