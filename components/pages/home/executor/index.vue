@@ -29,12 +29,12 @@
       v-col(cols="12")
         v-window(v-model="tasksTab")
           v-tab-item(eager)
-            TasksList.tasks-executor-search--task-list(:tasks="userWorks" @callAction="callAction" v-if="userWorks.length")
-            TasksEmpty(title="Пока нет предстоящих работ" description="Мы сформировали акты выполненных работ, вам нужно подписать их чтобы получить деньги." v-else)
+            TasksList.tasks-executor-search--task-list(:tasks="userWorks" @callAction="callAction" v-show="userWorks.length" v-infinite-scroll="loadMoreDetectWorks")
+            TasksEmpty(title="Пока нет предстоящих работ" description="Мы сформировали акты выполненных работ, вам нужно подписать их чтобы получить деньги." v-show="!userWorks.length")
 
           v-tab-item(eager)
-            TasksList.tasks-executor-search--task-list(:tasks="userTasks" @callAction="callAction" v-if="userTasks.length")
-            TasksEmpty(title="Пока нет заявок" description="Мы сформировали акты выполненных работ, вам нужно подписать их чтобы получить деньги." v-else)
+            TasksList.tasks-executor-search--task-list(:tasks="userTasks" @callAction="callAction" v-show="userTasks.length" v-infinite-scroll="loadMoreDetectTasks")
+            TasksEmpty(title="Пока нет заявок" description="Мы сформировали акты выполненных работ, вам нужно подписать их чтобы получить деньги." v-show="!userWorks.length")
 
 
 </template>
@@ -76,6 +76,10 @@ export default {
     sortField: 'distance',
     sortOrder: 'desc',
     filters: {},
+    fetchWorksParams: {
+      "page": 1,
+      "per_page": 10
+    },
     fetchTaskParams: {
       "page": 1,
       "per_page": 10
@@ -159,11 +163,51 @@ export default {
       this.tasksTab = tab;
     },
 
+    loadMoreDetectWorks(){
+      if( this.tasksTab == 0 ){
+        this.loadMore();
+      }
+    },
+
+    loadMoreDetectTasks(){
+      if( this.tasksTab == 1 ){
+        this.loadMore();
+      }
+    },
+
+    loadMore() {
+
+      let last_page = this.worksLastPage,
+          total = this.worksTotal,
+          action = 'fetchUserWorks',
+          fetchParams = 'fetchWorksParams';
+
+      if( this.tasksTab == 1 ){
+          last_page = this.tasksLastPage;
+          total = this.tasksTotal;
+          action = 'fetchUserTasks';
+          fetchParams = 'fetchTaskParams';
+      }
+
+      if(this[fetchParams].page < last_page){
+        let fetchParams = 'fetchTaskParams';
+
+        this[fetchParams].page += 1;
+
+        const params = this[fetchParams];
+
+        this[action]({params: params, concat: true});
+      }else{
+        console.log('this is all data ....');
+      }
+
+    },
+
   },
 
   async created() {
-    await this.fetchUserTasks({params: {}, concat: false});
-    await this.fetchUserWorks({params: {}, concat: false});
+    await this.fetchUserWorks({params: this.fetchWorksParams, concat: false});
+    await this.fetchUserTasks({params: this.fetchTaskParams, concat: false});
     await this.fetchBanners();
     await this.fetchWidgets()
 
