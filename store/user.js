@@ -95,7 +95,7 @@ export const actions = {
 
   async fetchUserWorks({ commit }, {params, concat}) {
 
-    const tasks = await this.$axios.get('user/my/tasks/accepted', {
+    const tasks = await this.$axios.get('user/my/tasks', {
       params: params
     });
     commit('updateUserWorks', {tasks: tasks, concat: concat});
