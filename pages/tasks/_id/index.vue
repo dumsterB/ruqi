@@ -291,7 +291,13 @@ export default {
           text: "Изменить статус", icon: "mdi-email-outline", action: 'editStatus', display: true,
           sub_actions: [
             {text: "Ведется набор", icon: "mdi-circle", params: 'isRecruiting', color: '#F4D150', display: true},
-            {text: "Набор завершен", icon: "mdi-circle", params: 'recruitmentCompleted', color: '#71D472', display: true},
+            {
+              text: "Набор завершен",
+              icon: "mdi-circle",
+              params: 'recruitmentCompleted',
+              color: '#71D472',
+              display: true
+            },
             {text: "Потверждение выхода", icon: "mdi-circle", params: 'working', color: '#D7D7D7', display: true},
             {text: "Работы завершены", icon: "mdi-circle", params: 'workingCompleted', color: '#7B61FF', display: true},
             {text: "Согласование", icon: "mdi-circle", params: 'agreement', color: '#EB4D3D', display: true},
@@ -662,30 +668,30 @@ export default {
 
   async created() {
     await this.fetchRequestId(this.$route.params.id);
-    /*    await this.fetchRequestIdResponses({
-          requestId: this.$route.params.id,
-          params: {"page": 1},
-          concat: false,
-          unit: true
-        });
-        await this.fetchRequestIdSelection({
-          requestId: this.$route.params.id,
-          params: {"page": 1},
-          concat: false,
-          unit: true
-        });
-        await this.fetchRequestIdInvitations({
-          requestId: this.$route.params.id,
-          params: {"page": 1},
-          concat: false,
-          unit: true
-        });
-        await this.fetchRequestIdAssigned({
-          requestId: this.$route.params.id,
-          params: {"page": 1},
-          concat: false,
-          unit: true
-        });*/
+    await this.fetchRequestIdResponses({
+      requestId: this.$route.params.id,
+      params: {"page": 1},
+      concat: false,
+      unit: true
+    });
+    await this.fetchRequestIdSelection({
+      requestId: this.$route.params.id,
+      params: {"page": 1},
+      concat: false,
+      unit: true
+    });
+    await this.fetchRequestIdInvitations({
+      requestId: this.$route.params.id,
+      params: {"page": 1},
+      concat: false,
+      unit: true
+    });
+    await this.fetchRequestIdAssigned({
+      requestId: this.$route.params.id,
+      params: {"page": 1},
+      concat: false,
+      unit: true
+    });
 
     this.$route.meta.title = this.request_id.name;
 
