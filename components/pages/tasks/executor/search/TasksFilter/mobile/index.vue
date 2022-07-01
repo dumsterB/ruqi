@@ -580,7 +580,4 @@ export default {
   }
 }
 
-.v-menu__content {
-  z-index: 100 !important;
-}
 </style>

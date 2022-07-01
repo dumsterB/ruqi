@@ -342,6 +342,7 @@ export default {
 .filters-menu {
   width: 100%;
   max-width: 392px;
+  z-index: 1000 !Important;
 
   .v-card {
     border-radius: 10px;
