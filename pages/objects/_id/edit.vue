@@ -149,12 +149,6 @@
 
                   </template>
 
-                  <template v-slot:item.pay="{ item }">
-                    <span class="request-pay">{{ item.payment.value }} {{ item.payment.current }} / {{
-                        item.payment.period
-                      }}</span>
-                  </template>
-
                   <template v-slot:item.object="{ item }">
                     {{ item.object.name }}
                   </template>
@@ -215,7 +209,7 @@ export default {
   async fetch({store}) {
 
     if (store.getters['specializations/specializations'].length === 0) {
-      await store.dispatch('specializations/fetch')
+      await store.dispatch('specializations/fetchSpecializations')
     }
     if (store.getters['dictionary/dispatchers'].length === 0) {
       await store.dispatch('dictionary/fetchDispatchers')
@@ -835,7 +829,7 @@ export default {
 
   async created() {
     await this.fetchObjectId(this.$route.params.id);
-    await this.fetchObjectIdRequest(this.$route.params.id);
+    await this.fetchObjectIdRequest({requestId: this.$route.params.id, params: {pare_page: 1000}, concat:false, unit:true});
 
     this.$route.meta.pre_title = this.object_id.name;
     this.setBreadcrumbs(this.$route.fullPath);
