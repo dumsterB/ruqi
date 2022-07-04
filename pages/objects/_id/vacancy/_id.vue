@@ -41,7 +41,7 @@
                     .form-part-single.form-rate
                       v-row.flex-column.new-rate.px-5(no-gutters v-if="isAddingRate")
                         .form-rate-title Введите новое значение
-                        Rate( prefix_name="new" :isNew="true" @updateFiled="updateFiled" @setRate="setRate")
+                        Rate( prefix_name="new" :isNew="true" @updateFiled="updateFiledRate" @setRate="setRate")
 
                   v-row.flex-column.px-5.current-rate(no-gutters v-show="vacancy_id.rates && vacancy_id.rates.length")
                     .form-rate-title.mb-6 Текущее значение
@@ -50,7 +50,7 @@
                       div(v-for="(rate, index) in vacancy_id.rates")
                         Rate( :prefix_name="index" :isNew="false"
                           v-if="rate.difference == '='"
-                          @updateFiled="updateFiled"
+                          @updateFiled="updateFiledRate"
                           :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
                           @deleteRate="isConfirmModalRate= 1, removedUUID = rate.uuid" @putRate="putRate(index, rate.uuid)")
 
@@ -61,7 +61,7 @@
                       div(v-for="(rate, index) in vacancy_id.rates")
                         Rate( :prefix_name="index" :isNew="false"
                           v-if="rate.difference != '='"
-                          @updateFiled="updateFiled"
+                          @updateFiled="updateFiledRate"
                           :rate_value="rate.rate" :date_value="rate.start_date"  :key="rate.rate + '_' +index"
                           @deleteRate="isConfirmModalRate= 1, removedUUID = rate.uuid" @putRate="putRate(index, rate.uuid)")
 
@@ -383,6 +383,11 @@ export default {
       console.log(field, value);
       this.disabled = false;
     },
+
+    updateFiledRate(field, value) {
+      this.formValues[field] = value;
+    },
+
     updateFiledinArray(index_block, field, value, index, parent_array) {
       this.formValues[field] = value;
       this.meta[parent_array][index_block][index].value = value;
