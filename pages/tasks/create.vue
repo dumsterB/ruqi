@@ -164,7 +164,7 @@ export default {
               col: 12,
               id: 'object_contact_fio',
               name: 'object_contact_fio_0',
-              validation: ['required'],
+              validation: [],
               parent_array: 'meta_object_contact',
               value: ''
             },
@@ -174,7 +174,7 @@ export default {
               col: 12,
               id: 'object_contact_post',
               name: 'object_contact_post_0',
-              validation: ['required'],
+              validation: [],
               parent_array: 'meta_object_contact',
               value: ''
             },
@@ -184,7 +184,7 @@ export default {
               col: 12,
               id: 'object_contact_phone',
               name: 'object_contact_phone_0',
-              validation: ['required', 'phone'],
+              validation: ['phone'],
               parent_array: 'meta_object_contact',
               value: ''
             },
@@ -194,7 +194,7 @@ export default {
               col: 12,
               id: 'object_contact_email',
               name: 'object_contact_email_0',
-              validation: ['required', 'email'],
+              validation: ['email'],
               parent_array: 'meta_object_contact',
               value: ''
             },
@@ -261,6 +261,9 @@ export default {
     objects() {
       return this.$store.getters['objects/objects']
     },
+    object_id() {
+      return this.$store.getters['object_id/object_id']
+    },
     specializations() {
       return this.$store.getters['specializations/specializations']
     },
@@ -284,6 +287,7 @@ export default {
     ...mapActions('requests', ['createRequest',]),
     ...mapActions('specializations', ['fetchSpecializations',]),
     ...mapActions('breadcrumbs', ["setBreadcrumbs",]),
+    ...mapActions('object_id', ['fetchObjectId',]),
 
     nextFromButton() {
 
@@ -323,14 +327,15 @@ export default {
     await this.fetchObjects();
     await this.fetchSpecializations();
 
-    console.log('this.specializations ----- ', this.specializations);
-
     this.meta.meta_object_name[0].params.options = this.objects;
     this.meta.meta_object_info[1].params.options = this.specializations;
 
     if (this.$route.params.objectId) {
       this.meta.meta_object_name[0].value = this.$route.params.objectId;
       this.clearMetaObjectPay(this.$route.params.objectId);
+      await this.fetchObjectId(this.$route.params.objectId);
+
+      this.meta.meta_object_info[1].value = this.object_id.specialization.uuid;
     }
 
     this.meta.meta_object_name.map(f => {

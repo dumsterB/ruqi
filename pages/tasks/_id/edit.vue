@@ -234,7 +234,7 @@ export default {
               col: 9,
               id: 'object_contact_fio',
               name: 'object_contact_fio_0',
-              validation: ['required'],
+              validation: [],
               parent_array: 'meta_object_contact',
               value: ''
             },
@@ -244,7 +244,7 @@ export default {
               col: 9,
               id: 'object_contact_post',
               name: 'object_contact_post_0',
-              validation: ['required'],
+              validation: [],
               parent_array: 'meta_object_contact',
               value: ''
             },
@@ -254,7 +254,7 @@ export default {
               col: 9,
               id: 'object_contact_phone',
               name: 'object_contact_phone_0',
-              validation: ['required', 'phone'],
+              validation: ['phone'],
               parent_array: 'meta_object_contact',
               value: ''
             },
@@ -264,7 +264,7 @@ export default {
               col: 9,
               id: 'object_contact_email',
               name: 'object_contact_email_0',
-              validation: ['required', 'email'],
+              validation: ['email'],
               parent_array: 'meta_object_contact',
               value: ''
             },
