@@ -235,6 +235,80 @@ export const actions = {
       });
   },
 
+  async inviteExecutorEmail({commit, dispatch}, {task_uuid, user_uuids}) {
+    await this.$axios.put('/tasks/'+task_uuid+'/contractors/invite/email',
+      user_uuids,
+      { headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        dispatch('fetchRequestIdResponses', {requestId: task_uuid, params: {}, concat: false, unit: false});
+        dispatch('fetchRequestIdInvitations', {requestId: task_uuid, params: {}, concat: false, unit: false});
+        dispatch('fetchRequestIdSelection', {requestId: task_uuid, params: {}, concat: false, unit: false});
+        commit('response/setSuccess', {type: 'success', text: 'Исполнитель приглашен', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+        commit('response/setSuccess', {type: 'error', text: 'Email не найден', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+      });
+  },
+
+  async inviteExecutorSms({commit, dispatch}, {task_uuid, user_uuids}) {
+    await this.$axios.put('/tasks/'+task_uuid+'/contractors/invite/sms',
+      user_uuids,
+      { headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        dispatch('fetchRequestIdResponses', {requestId: task_uuid, params: {}, concat: false, unit: false});
+        dispatch('fetchRequestIdInvitations', {requestId: task_uuid, params: {}, concat: false, unit: false});
+        dispatch('fetchRequestIdSelection', {requestId: task_uuid, params: {}, concat: false, unit: false});
+        commit('response/setSuccess', {type: 'success', text: 'Исполнитель приглашен', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+
+  async inviteExecutorTelegram({commit, dispatch}, {task_uuid, user_uuids}) {
+    await this.$axios.put('/tasks/'+task_uuid+'/contractors/invite/telegram',
+      user_uuids,
+      { headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        dispatch('fetchRequestIdResponses', {requestId: task_uuid, params: {}, concat: false, unit: false});
+        dispatch('fetchRequestIdInvitations', {requestId: task_uuid, params: {}, concat: false, unit: false});
+        dispatch('fetchRequestIdSelection', {requestId: task_uuid, params: {}, concat: false, unit: false});
+        commit('response/setSuccess', {type: 'success', text: 'Исполнитель приглашен', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+        commit('response/setSuccess', {type: 'error', text: 'Telegram не найден', }, {root: true});
+        setTimeout(function() {
+          commit('response/removeSuccess', null, { root: true });
+        }, 2000);
+      });
+  },
+
   async deleteExecutor({commit, dispatch}, {task_uuid, user_uuids}) {
     await this.$axios.put('/tasks/'+task_uuid+'/contractors/cancel',
       user_uuids,

@@ -175,9 +175,9 @@ export default {
     },
   },
   methods: {
-    callAction(action, uuids) {
+    callAction(action, uuids, params) {
       console.log(action, uuids);
-      this.$emit('callAction', {action, uuids})
+      this.$emit('callAction', {action, uuids, params})
     },
 
     previewText(value) {
