@@ -64,6 +64,10 @@ export default {
       type: [String, Number],
       default: 0,
     },
+    tasksTab: {
+      type: [String, Number],
+      default: 0,
+    },
   },
 
   data() {
@@ -105,6 +109,9 @@ export default {
   watch: {
     tab(newTab) {
       this.$emit('clickOnTab', newTab);
+    },
+    tasksTab() {
+      this.tab = this.tasksTab;
     },
   },
 

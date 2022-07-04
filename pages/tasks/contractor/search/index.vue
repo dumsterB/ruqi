@@ -4,8 +4,9 @@
     .tasks-executor-search--mobile__header
       .tasks-executor-search--mobile__header-title Поиск работы
 
-      mSearchLine.tasks-executor-search--mobile__header-search
+      mSearchLine.tasks-executor-search--mobile__header-search(@applySearch="applySearch")
       mContentDisplayController.tasks-executor-search--mobile__header-display-ctrl(
+        :tasksTab="tasksTab"
         @clickOnTab="setTasksView"
       )
 
@@ -26,6 +27,7 @@
   .tasks-executor-search--desktop
     ContentDisplayController.tasks-executor-search--desktop__content-display-ctrl(
       :count_tasks="searchTasksTotal"
+      :tasksTab="tasksTab"
       @clickOnTab="setTasksView"
       @sortTasks="sortTasks"
     )
@@ -36,7 +38,7 @@
   v-tabs-items(v-model="tasksTab")
     v-tab-item
       div(v-infinite-scroll="loadMore")
-        TasksList.tasks-executor-search--task-list(:tasks="searchTasks" :actions="actions" @callAction="callAction" )
+        TasksList.tasks-executor-search--task-list(:tasks="searchTasks"  @callAction="callAction" )
 
     v-tab-item
       Map.tasks-executor-search--map(
@@ -101,12 +103,6 @@ export default {
 
     /* COUNTERS */
     tasksTab: 0,
-
-    actions: [
-      {text: "Участвовать", icon: "mdi-check", action: 'requestTaskAction'},
-      {text: "Подробнее о заявке", icon: "mdi-clipboard-account-outline", action: 'openDetails'},
-    ],
-
     sortField: 'distance',
     sortOrder: 'desc',
     filters: {},
@@ -194,6 +190,13 @@ export default {
 
     async resetFilter() {
       await this.fetchSearchTasks({params:{}, concat: false })
+    },
+
+    async applySearch(value) {
+
+      this.filters.search = value;
+
+      await this.fetchSearchTasks({params: this.filters, concat: false })
     },
 
     callAction({action, uuid}) {

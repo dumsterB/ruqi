@@ -38,19 +38,19 @@ export default {
           css_class = 'green';
           break;
         case 'working':
-          translit = 'В работе';
+          translit = 'Потверждение выхода';
           css_class = 'grey';
           break;
-        case 'confirmation':
-          translit = 'Подтверждение';
+        case 'workingCompleted':
+          translit = 'Работы завершены';
           css_class = 'violet';
           break;
-        case 'notConfirmed':
-          translit = 'Не подтверждена';
+        case 'agreement':
+          translit = 'Согласование';
           css_class = 'red';
           break;
-        case 'confirmed':
-          translit = 'Подтверждена';
+        case 'completed':
+          translit = 'Завершена';
           css_class = 'green';
           break;
 

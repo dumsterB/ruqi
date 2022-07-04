@@ -24,7 +24,7 @@
                     )
 
                   .list-actions
-                    v-btn.btn-grey.add.btn-confirm.btn-ok(@click="toggleProfessions")  Выбрать все
+                    a(@click.prevent="toggleProfessions")  Выбрать все
 
             v-expansion-panel
               v-expansion-panel-header Район поиска
@@ -287,15 +287,6 @@ export default {
       this.$emit('reset');
     },
 
-    /* HELPERS */
-    isFilterActive() {
-      return this.region ||
-        this.radius ||
-        this.salary ||
-        this.medicalBook ||
-        this.driverLicense ||
-        this.professions.filter(profession => profession.selected).length;
-    }
   },
   created() {
   },
@@ -525,32 +516,15 @@ export default {
 
   .list-actions {
     display: flex;
-    padding: 8px;
-
-    .btn-confirm {
-      min-width: 100%;
-      margin: 0 0 8px 0;
-      font-weight: 700;
-      border-radius: 8px;
-      text-transform: uppercase;
-      font-size: 14px;
-      background: #0082DE;
-      color: white;
-      border: none;
-      box-shadow: none;
-      height: 48px;
-
-      &.btn-grey {
-        border: 1px solid #E0E0E0;
-        color: #263043;
-        background: #fff;
-      }
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-
+    padding: 4px 16px 8px 24px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #0082DE;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: #f7f7f7;
+    width: 100%;
   }
 
   .v-input {
@@ -606,7 +580,4 @@ export default {
   }
 }
 
-.v-menu__content {
-  z-index: 100 !important;
-}
 </style>
