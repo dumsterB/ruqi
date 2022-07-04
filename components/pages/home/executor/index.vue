@@ -3,12 +3,12 @@
     .rq-home-executor__mobile.mb-4
       .rq-home-executor__mobile__header
         .rq-home-executor__mobile__header-container
-          mUserbar.rq-home-executor__mobile__header-userbar(:widgets="widgets")
+          mUserbar.rq-home-executor__mobile__header-userbar(:widgets="widgets" :profile="profile")
           .rq-home-executor__mobile__header-widgetbar
           mContentDisplayController.rq-home-executor__mobile__header-display-ctrl(@clickOnTab="clickOnTab")
 
     .rq-home-executor__desktop
-      Userbar.rq-home-executor__desktop-userbar(:widgets="widgets")
+      Userbar.rq-home-executor__desktop-userbar(:widgets="widgets" :profile="profile")
 
       v-divider.mt-12.mb-8
 
@@ -119,6 +119,9 @@ export default {
     },
     widgets(){
       return this.$store.getters['executor/widgets']
+    },
+    profile(){
+      return this.$store.getters['executor/profile']
     }
   },
 
@@ -132,7 +135,7 @@ export default {
       'requestTask',
       'cancelTask'
     ]),
-    ...mapActions('executor',['fetchWidgets']),
+    ...mapActions('executor',['fetchWidgets','fetchProfile','fetchAvaibility']),
 
     callAction({action, uuid}) {
       console.log('callAction ------', action, uuid);
@@ -157,7 +160,9 @@ export default {
     await this.fetchUserTasks({params: {}, concat: false});
     await this.fetchUserWorks({params: {}, concat: false});
     await this.fetchBanners();
-    await this.fetchWidgets()
+    await this.fetchWidgets();
+    await this.fetchProfile();
+    await this.fetchAvaibility()
 
   },
   mounted() {

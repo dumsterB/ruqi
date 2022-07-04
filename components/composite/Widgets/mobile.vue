@@ -5,8 +5,8 @@
       v-card(class="pa-2 pl-3 mr-1 ml-1 info-card" elevation="0" dark v-if="widget.slug == 'tasks' || widget.slug == 'finance' " )
         v-avatar.avatar
           v-icon(dark) mdi-wallet-outline
-        p.mt-2 Заработано в мае
-        p.price-text 35 000р.
+        p.desc.mt-2 {{widget.title}}
+        p.price-text {{widget.description}}
       v-card(class="card pa-2 pl-3 mr-1 ml-1"  v-if="widget.slug !== 'tasks' && widget.slug !== 'finance'")
         v-avatar.avatar
           v-icon(style="background:#FFC400" dark v-if="widget.slug === 'docs'") mdi-alert-octagon-outline
@@ -29,6 +29,7 @@ export default {
 .info-card{
   background:#349CE4!important;
   border-radius:14px!important;
+  height: 175px;
 }
 .price-text{
   font-style: normal;

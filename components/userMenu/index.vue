@@ -18,12 +18,22 @@
         v-col(class="px-0")
           p(class="user_name") {{ user.firstname }} {{ user.lastname }}
 
-    v-card
-      v-list-item-content(class="justify-start")
-        div(class="mx-auto text-left")
-          v-btn(text link to="/profile/") Профиль
-          v-divider(class="my-3")
-          v-btn(text @click="handlers().signout()") Выход
+    v-card.cpheu-profile-card
+      .cpheu-profile-card__item
+        v-switch(
+          inset
+          label="Доступен для работ"
+        )
+
+      v-divider
+
+      v-btn.cpheu-profile-card__item(text)
+        v-icon.cpheu-profile-card__item__logo(color="#BBBBBB") mdi-account-circle-outline
+        .cpheu-profile-card__item__title(@click="$router.push('/profile')") Мой профиль
+
+      v-btn.cpheu-profile-card__item(text)
+        v-icon.cpheu-profile-card__item__logo(color="#BBBBBB") mdi-exit-to-app
+        .cpheu-profile-card__item__title(@click="logout") Выйти
 
   v-badge(bordered color="error" content="25" overlap)
     v-btn(text style="padding: 0 !important;margin: 0 !important;width: auto;height: auto;min-width: unset;")
@@ -49,16 +59,11 @@ export default {
   },
   methods: {
     ...mapActions("notifications", ["fetchNotificationsCount"]),
+    logout(){
+      window.localStorage.removeItem("ruqi_auth_data");
 
-    handlers() {
-      return {
-        signout: () => {
-          window.localStorage.removeItem("ruqi_auth_data");
-
-          this.$router.push("/signin");
-        },
-      };
-    },
+      this.$router.push("/signin");
+    }
   },
 
   data() {
@@ -74,7 +79,6 @@ export default {
 
 .v-btn {
   border-radius: 14px;
-  margin-left: 12px;
   text-transform: none;
   text-align: left;
 

@@ -9,7 +9,9 @@ export const state = () => ({
   passport_main_spread: null,
   phone_or_email: "",
   recover_sms_phone: "",
-  widgets:[],
+  widgets: [],
+  profile: [],
+  avaibility:'',
 });
 export const getters = {
   specializations(state) {
@@ -18,18 +20,20 @@ export const getters = {
   recover_sms_phone(state) {
     return state.recover_sms_phone;
   },
-  widgets(state){
-    return state.widgets
-  }
-
+  widgets(state) {
+    return state.widgets;
+  },
+  profile(state) {
+    return state.profile;
+  },
 };
 export const actions = {
   //main
-  async fetchWidgets({commit},params){
+  async fetchAvaibility({ commit }, params) {
     await this.$axios
-        .get("/user/widgets")
+        .put("user/available")
         .then((response) => {
-          commit("SET_WIDGETS", response.data.data);
+          commit("SET_AVAIBILITY", response.data.data);
           setTimeout(function () {
             commit("response/removeSuccess", null, { root: true });
           }, 2000);
@@ -42,6 +46,42 @@ export const actions = {
           console.log(error);
           return error;
         });
+  },
+  async fetchWidgets({ commit }, params) {
+    await this.$axios
+      .get("/user/widgets")
+      .then((response) => {
+        commit("SET_WIDGETS", response.data.data);
+        setTimeout(function () {
+          commit("response/removeSuccess", null, { root: true });
+        }, 2000);
+        return (response && response.data) || {};
+      })
+      .catch((error) => {
+        setTimeout(function () {
+          commit("response/removeSuccess", null, { root: true });
+        }, 3000);
+        console.log(error);
+        return error;
+      });
+  },
+  async fetchProfile({ commit }, params) {
+    await this.$axios
+      .get("user/my")
+      .then((response) => {
+        commit("SET_PROFILE", response.data.data);
+        setTimeout(function () {
+          commit("response/removeSuccess", null, { root: true });
+        }, 2000);
+        return (response && response.data) || {};
+      })
+      .catch((error) => {
+        setTimeout(function () {
+          commit("response/removeSuccess", null, { root: true });
+        }, 3000);
+        console.log(error);
+        return error;
+      });
   },
 
   //signup
@@ -270,7 +310,6 @@ export const actions = {
     await this.$axios
       .put("user/settings", {
         professions: { ...params },
-
       })
       .then((response) => {
         commit(
@@ -561,8 +600,10 @@ export const mutations = {
   SET_EXECUTOR_TOKEN(state, token) {
     localStorage.setItem("ruqi_auth_data", JSON.stringify(token));
   },
-  SET_WIDGETS(state,payload){
-    state.widgets = payload
-  }
-
+  SET_WIDGETS(state, payload) {
+    state.widgets = payload;
+  },
+  SET_PROFILE(state, payload) {
+      state.profile = payload
+  },
 };

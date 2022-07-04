@@ -6,9 +6,28 @@
            div()
              v-card(class="pa-3 pl-3 mr-1 info-card" elevation="0" dark  v-if="widget.slug == 'tasks' || widget.slug == 'finance' ")
                v-avatar.avatar
-                v-icon(color="#0082DE") mdi-wallet-outline
+                v-icon(color="#0082DE" v-if="widget.slug === 'finance'") mdi-wallet-outline
+                v-icon(color="#0082DE" v-else) mdi-flag-outline
                p.desc {{widget.title}}
                p.price-text {{widget.description}}
+               .rq-ptestl-card__actions
+                v-menu(
+                  bottom
+                  rounded="10"
+                  offset-y
+                  nudge-bottom="10"
+                  left
+                )
+                  template(v-slot:activator="{ on }")
+                    v-btn(icon v-on="on")
+                      v-icon mdi-dots-horizontal
+
+                  v-card
+                    v-list-item-content.justify-start
+                      .mx-auto.text-left
+                        .actions
+                          .action
+                            .action-item  fewfew
              v-card(class="card pa-3 pl-3 mr-1" width="280" v-if="widget.slug !== 'tasks' && widget.slug !== 'finance' "    max-width="280"  )
                v-avatar.avatar
                  v-icon(style="background:#FFC400" dark v-if="widget.slug === 'docs'") mdi-alert-octagon-outline

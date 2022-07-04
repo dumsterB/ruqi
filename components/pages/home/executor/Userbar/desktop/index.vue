@@ -5,7 +5,7 @@ div
       Avatar
       .cpheu-user__info
         .cpheu-user__info-row
-          .cpheu-user__fullname Станислав Станиславский
+          .cpheu-user__fullname(v-if="profile") {{profile.fullname}}
           v-icon(color="#263043" style="margin-top: 8px;") mdi-chevron-right
 
         .cpheu-user__info-row
@@ -15,38 +15,7 @@ div
 
           .cpheu-user__rating
             v-icon.cpheu-user__rating__logo mdi-star-outline
-            .cpheu-user__rating__title Специалист  (ранг 1)
-
-    v-menu(
-      bottom
-      offset-y
-      left
-      min-width="343px"
-      rounded="10"
-      nudge-bottom="33"
-      :close-on-content-click="false"
-    )
-      template(v-slot:activator="{ on }")
-        v-btn.cpheu-profile(text v-on="on")
-          v-icon.cpheu-profile__logo(color="#263043") mdi-account-circle-outline
-          .cpheu-profile__title мой профиль
-
-      v-card.cpheu-profile-card
-        .cpheu-profile-card__item
-          v-switch(
-            inset
-            label="Доступен для работ"
-          )
-
-        v-divider
-
-        v-btn.cpheu-profile-card__item(text)
-          v-icon.cpheu-profile-card__item__logo(color="#BBBBBB") mdi-account-circle-outline
-          .cpheu-profile-card__item__title(@click="$router.push('/profile')") Мой профиль
-
-        v-btn.cpheu-profile-card__item(text)
-          v-icon.cpheu-profile-card__item__logo(color="#BBBBBB") mdi-exit-to-app
-          .cpheu-profile-card__item__title(@click="logout") Выйти
+            .cpheu-user__rating__title(v-if="profile.rank") {{profile.rank.name}}   ( {{profile.rank.title}} )
 
   Widget(:widgets="widgets")
 </template>
@@ -54,15 +23,15 @@ div
 <script>
 import Avatar from '@/components/UI/Avatar';
 import Widget from '@/components/composite/Widgets/desktop'
+import {mapMutations} from "vuex";
 export default {
   components: {
     Avatar,Widget
   },
 
   props: {
-    widgets:{
-
-    }
+    widgets:{},
+    profile:{},
   },
   data: () => ({}),
   computed: {},

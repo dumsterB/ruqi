@@ -29,7 +29,7 @@ v-navigation-drawer.mobile-appbar-menu(
       v-divider
 
       .mobile-appbar-menu-status
-        v-switch(inset label="Доступен для работ")
+        v-switch(inset @click="avaibilityHandler" label="Доступен для работ")
 
       v-divider
 
@@ -181,6 +181,9 @@ export default {
     /* GETTERS */
     /* SETTERS */
     /* HANDLERS */
+    avaibilityHandler(){
+
+    },
     close() {
       this.$emit('close');
     },

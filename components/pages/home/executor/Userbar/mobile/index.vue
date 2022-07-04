@@ -15,11 +15,11 @@ div
         Avatar(theme="blue")
       .cpheum-user__info
         .cpheum-user__info-row
-          .cpheum-user__fullname Станислав
+          .cpheum-user__fullname(v-if="profile") {{profile.fullname}}
           v-icon(color="#FFFFFF") mdi-chevron-right
 
         .cpheum-user__info-row
-          .cpheum-user__rating Специалист  (ранг 1)
+          .cpheum-user__rating(v-if="profile.rank") {{profile.rank.name}}   ( {{profile.rank.title}} )
   Widget(:widgets="widgets")
 
 </template>
@@ -35,7 +35,8 @@ export default {
   props: {
     widgets:{
       type:Array
-    }
+    },
+    profile:{}
   },
   data: () => ({}),
   computed: {},

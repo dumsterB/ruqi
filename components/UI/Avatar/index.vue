@@ -6,7 +6,11 @@ v-avatar.ui-avatar(
 )
   v-icon.ui-avatar__stub(
     :color="avatarLogoBackground"
-  ) mdi-camera
+    v-if="!preview"
+    @change="previewImage"
+) mdi-camera
+  img(:src="preview" height="100" v-if="preview" accept="image/*" )
+  input(type="file" accept="image/*" hidden  class="form-control-file" id="my-file" )
 </template>
 
 <script>
@@ -31,7 +35,10 @@ export default {
       default: '48px',
     },
   },
-  data: () => ({}),
+  data: () => ({
+    preview: null,
+    image: null,
+  }),
   computed: {
     avatarBackground() {
       switch (this.theme) {
@@ -55,6 +62,17 @@ export default {
 
   watch: {},
   methods: {
+    previewImage: function(event) {
+      var input = event.target;
+      if (input.files) {
+        var reader = new FileReader();
+        reader.onload = (e) => {
+          this.preview = e.target.result;
+        }
+        this.image=input.files[0];
+        reader.readAsDataURL(input.files[0]);
+      }
+    },
     /* GETTERS */
     /* SETTERS */
     /* HANDLERS */
