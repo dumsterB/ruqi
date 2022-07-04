@@ -2,7 +2,7 @@
   v-row(class="mt-5" no-gutters)
     v-col
       v-row(class="mt-5" no-gutters)
-        v-col(v-for="widget of widgets" v-if="widget.visibility === true" class="mt-2 mb-2"  cols="3" :key="widget.id")
+        v-col(v-for="widget of widgets" v-if="widget.closable === true || widget.visibility === false" class="mt-2 mb-2"  cols="3" :key="widget.id")
            div()
              v-card(class="pa-3 pl-3 mr-1 info-card" elevation="0" dark  v-if="widget.slug == 'tasks' || widget.slug == 'finance' ")
                v-avatar.avatar
@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     closeHandler(widget) {
-      widget.visibility = false;
+      widget.closable = false;
       this.$forceUpdate();
     },
   },

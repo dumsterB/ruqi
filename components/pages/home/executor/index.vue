@@ -217,6 +217,9 @@ export default {
     await this.fetchProfile();
     await this.fetchAvaibility()
     this.widgetsCopy = JSON.parse(JSON.stringify(this.widgets))
+    let filteredArr =  this.widgetsCopy.filter(ell=>ell.visibility=== true)
+    filteredArr.map(ell=> ell.closable= true)
+
 
   },
   mounted() {

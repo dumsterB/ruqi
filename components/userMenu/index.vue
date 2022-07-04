@@ -23,6 +23,8 @@
         v-switch(
           inset
           label="Доступен для работ"
+          v-model="value"
+          @click="avaibilityHandler"
         )
 
       v-divider
@@ -45,10 +47,13 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import {mapActions, mapMutations} from "vuex";
 
 export default {
   components: {},
+  data() {
+    return {};
+  },
   computed: {
     notifications_count() {
       return this.$store.getters["notifications/notifications_count"];
@@ -56,19 +61,31 @@ export default {
     user() {
       return this.$store.getters["user/user"];
     },
+    available() {
+      return this.$store.getters["executor/available"];
+    },
   },
   methods: {
+    ...mapActions("executor", ["putAvaibility"]),
+    ...mapMutations("executor", ["SET_AVAIBILITY"]),
     ...mapActions("notifications", ["fetchNotificationsCount"]),
     logout(){
       window.localStorage.removeItem("ruqi_auth_data");
 
       this.$router.push("/signin");
-    }
-  },
-
-  data() {
-    return {};
-  },
+    },
+    avaibilityHandler() {
+      if (this.value === false) {
+        this.SET_AVAIBILITY(true);
+        this.putAvaibility(true);
+      } else {
+        this.SET_AVAIBILITY(false);
+        this.putAvaibility(false);
+      }
+  }},
+  mounted() {
+    this.value = this.available
+  }
 };
 </script>
 
