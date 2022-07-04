@@ -336,6 +336,7 @@ export default {
       await this.fetchObjectId(this.$route.params.objectId);
 
       this.meta.meta_object_info[1].value = this.object_id.specialization.uuid;
+
     }
 
     this.meta.meta_object_name.map(f => {

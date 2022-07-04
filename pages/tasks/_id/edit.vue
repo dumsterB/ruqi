@@ -534,6 +534,7 @@ export default {
     removeItem(index, array) {
       if (index != 0 || this.meta[array].length > 1) {
         this.meta[array].splice(index, 1);
+        this.disabled = false;
       }
     },
 
@@ -678,7 +679,7 @@ export default {
     }
 
     let end_date = '';
-    if (this.request_id.start_date != null) {
+    if (this.request_id.end_date != null) {
       end_date = this.request_id.end_date.substring(0, 10) + ' ' + this.request_id.end_date.substring(11, 16);
     }
 
