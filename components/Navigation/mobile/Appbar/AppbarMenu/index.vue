@@ -29,8 +29,7 @@ v-navigation-drawer.mobile-appbar-menu(
       v-divider
 
       .mobile-appbar-menu-status
-        v-switch(inset @click="avaibilityHandler" label="Доступен для работ")
-
+        v-switch(inset v-model="value" @click="avaibilityHandler" label="Доступен для работ")
       v-divider
 
       .mobile-appbar-menu-list
@@ -154,7 +153,8 @@ v-navigation-drawer.mobile-appbar-menu(
 </template>
 
 <script>
-import Avatar from '@/components/UI/Avatar';
+import Avatar from "@/components/UI/Avatar";
+import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 
 export default {
   components: {
@@ -165,30 +165,43 @@ export default {
     isOpen: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   data: () => ({
     group: null,
+    value:null,
   }),
   computed: {
+    ...mapGetters('executor',['available']),
     user() {
       return this.$store.getters["user/user"];
+    },
+    available() {
+      return this.$store.getters["executor/available"];
     },
   },
 
   watch: {},
   methods: {
+    ...mapActions("executor", ["putAvaibility"]),
+    ...mapMutations("executor", ["SET_AVAIBILITY"]),
     /* GETTERS */
     /* SETTERS */
     /* HANDLERS */
-    avaibilityHandler(){
-
+    avaibilityHandler() {
+      if (this.value === false) {
+        this.SET_AVAIBILITY(true);
+        this.putAvaibility(true);
+      } else {
+        this.SET_AVAIBILITY(false);
+        this.putAvaibility(false);
+      }
     },
     close() {
-      this.$emit('close');
+      this.$emit("close");
     },
 
-    signout(){
+    signout() {
       window.localStorage.removeItem("ruqi_auth_data");
 
       this.$router.push("/signin");
@@ -197,14 +210,16 @@ export default {
     /* HELPERS */
   },
 
-  created() { },
-  mounted() { },
-}
+  created() {},
+  mounted() {
+   this.value = this.available
+  },
+};
 </script>
 
 <style lang="scss">
 .mobile-appbar-menu {
-  font-family: 'Source Sans Pro';
+  font-family: "Source Sans Pro";
   font-style: normal;
 
   &-close {
@@ -246,7 +261,7 @@ export default {
       font-weight: 600;
       font-size: 14px;
       line-height: 125%;
-      color: #0082DE;
+      color: #0082de;
       text-decoration: none;
     }
   }
@@ -289,7 +304,7 @@ export default {
       align-items: center;
       margin-top: 21px;
       text-decoration: none;
-      color: #000 !Important;
+      color: #000 !important;
       font-weight: 600;
       font-size: 16px;
 
@@ -301,7 +316,8 @@ export default {
         margin-left: 11px;
       }
 
-      &-icon {}
+      &-icon {
+      }
     }
 
     .v-divider {

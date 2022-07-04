@@ -8,7 +8,7 @@
           mContentDisplayController.rq-home-executor__mobile__header-display-ctrl(@clickOnTab="clickOnTab")
 
     .rq-home-executor__desktop
-      Userbar.rq-home-executor__desktop-userbar(:widgets="widgets" :profile="profile")
+      Userbar.rq-home-executor__desktop-userbar(:widgets="widgetsCopy" :profile="profile")
 
       v-divider.mt-12.mb-8
 
@@ -76,6 +76,7 @@ export default {
     sortField: 'distance',
     sortOrder: 'desc',
     filters: {},
+    widgetsCopy:[],
     fetchWorksParams: {
       "page": 1,
       "per_page": 10
@@ -215,6 +216,10 @@ export default {
     await this.fetchWidgets();
     await this.fetchProfile();
     await this.fetchAvaibility()
+    this.widgetsCopy = JSON.parse(JSON.stringify(this.widgets))
+    let filteredArr =  this.widgetsCopy.filter(ell=>ell.visibility=== true)
+    filteredArr.map(ell=> ell.closable= true)
+
 
   },
   mounted() {

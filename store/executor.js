@@ -11,7 +11,7 @@ export const state = () => ({
   recover_sms_phone: "",
   widgets: [],
   profile: [],
-  avaibility:'',
+  available: null,
 });
 export const getters = {
   specializations(state) {
@@ -26,26 +26,47 @@ export const getters = {
   profile(state) {
     return state.profile;
   },
+  available(state) {
+    return state.available;
+  },
 };
 export const actions = {
   //main
   async fetchAvaibility({ commit }, params) {
     await this.$axios
-        .put("user/available")
-        .then((response) => {
-          commit("SET_AVAIBILITY", response.data.data);
-          setTimeout(function () {
-            commit("response/removeSuccess", null, { root: true });
-          }, 2000);
-          return (response && response.data) || {};
-        })
-        .catch((error) => {
-          setTimeout(function () {
-            commit("response/removeSuccess", null, { root: true });
-          }, 3000);
-          console.log(error);
-          return error;
-        });
+      .put("user/available")
+      .then((response) => {
+        commit("SET_AVAIBILITY", response.data.data);
+        setTimeout(function () {
+          commit("response/removeSuccess", null, { root: true });
+        }, 2000);
+        return (response && response.data) || {};
+      })
+      .catch((error) => {
+        setTimeout(function () {
+          commit("response/removeSuccess", null, { root: true });
+        }, 3000);
+        console.log(error);
+        return error;
+      });
+  },
+  async putAvaibility({ commit }, params) {
+    await this.$axios
+      .put("user/available", { available: params })
+      .then((response) => {
+        commit("SET_AVAIBILITY", response.data.data);
+        setTimeout(function () {
+          commit("response/removeSuccess", null, { root: true });
+        }, 2000);
+        return (response && response.data) || {};
+      })
+      .catch((error) => {
+        setTimeout(function () {
+          commit("response/removeSuccess", null, { root: true });
+        }, 3000);
+        console.log(error);
+        return error;
+      });
   },
   async fetchWidgets({ commit }, params) {
     await this.$axios
@@ -604,6 +625,10 @@ export const mutations = {
     state.widgets = payload;
   },
   SET_PROFILE(state, payload) {
-      state.profile = payload
+    state.profile = payload;
+  },
+  SET_AVAIBILITY(state, payload) {
+    state.available = payload;
+    console.log(state.available, payload, "store");
   },
 };
