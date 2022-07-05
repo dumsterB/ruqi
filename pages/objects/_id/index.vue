@@ -886,9 +886,9 @@ export default {
     confirmRemoveAny(confirm) {
 
       let actionName = this.confirmModalContentAny.actionName,
-          uuids = [this.removedUUID];
+          uuids = this.removedUUID;
 
-      if(this.selectedItemsUUID.length > 0){
+      if(this.selectedItems.length > 0){
         uuids = this.selectedItemsUUID;
       }
 
