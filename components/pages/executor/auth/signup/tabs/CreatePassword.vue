@@ -80,7 +80,7 @@ export default {
         emailMatch: () => `Пароли не совподют`,
         password: (value) => {
           const pattern =
-            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+              /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
           return pattern.test(value) || "Некорректный пароль";
         },
       },

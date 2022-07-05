@@ -209,7 +209,7 @@ export default {
         },
       ],
       emailRules: [
-        (v) => !!v || "Заполните поля",
+        (v) => !!v || "Заполните поле",
         (v) => /.+@.+/.test(v) || "",
       ],
       nowDate: new Date().toISOString().slice(0, 10),

@@ -39,7 +39,7 @@
             <FTypeSearchAutocomplete
                 :name="filed.name"
                 :icon="filed.icon"
-                :params="filed.params"
+                :params="filed.params2"
                 @input="input2"
                 :validation="filed.validation"
                 :value="filed.value"
@@ -57,7 +57,7 @@
             <FTypeSearchAutocomplete
                 :name="filed.name"
                 :icon="filed.icon"
-                :params="filed.params"
+                :params="filed.params2"
                 @input="input3"
                 :validation="filed.validation"
                 :value="filed.value"
@@ -108,6 +108,7 @@ export default {
       valid: false,
       inputRules: [(v) => !!v || "Заполните поле"],
       formValues: {},
+
       meta: {
         meta_filter_row_1: [
           {
@@ -119,7 +120,16 @@ export default {
             value: "",
             icon: "mdi-magnify",
             params: {
-              placeholder: "Выберите регион",
+              placeholder: "Введите адрес",
+              clearable: true,
+              dense: true,
+              filled: false,
+              states: [],
+              loading: false,
+              label: "",
+            },
+            params2: {
+              placeholder: "Например: Зеленоград, Ленинский район",
               clearable: true,
               dense: true,
               filled: false,

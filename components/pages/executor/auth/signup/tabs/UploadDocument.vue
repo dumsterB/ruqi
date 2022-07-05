@@ -631,6 +631,9 @@ export default {
       filelist: [],
       menu: false,
       menu1: false,
+      passport_image1:'',
+      passport_image2:'',
+      passport_image3:'',
       currency: "",
       initialBalance: null,
       logo: "",
@@ -648,7 +651,7 @@ export default {
       passport_1: null,
       inputRules: [(v) => !!v || "Заполните поле"],
       seriesRules: [
-        (v) => (!!v && v.length === 4) || "Некорректный  серия паспорта",
+        (v) => (!!v && v.length === 4) || "Некорректная  серия паспорта",
         (v) => !!v || "Заполните поле",
       ],
       numberRules: [
@@ -752,6 +755,7 @@ export default {
       let formData = new FormData();
       formData.append("file", file);
       this.uploadPassportMainSpread({ data, formData });
+      this.passport_image1='1'
     },
     async afterAdded2(file, xhr, formDataArg) {
       let data = {
@@ -762,6 +766,7 @@ export default {
       let formData = new FormData();
       formData.append("file", file);
       this.uploadPassportMainSpread({ data, formData });
+      this.passport_image2='2'
     },
     async afterAdded3(file, xhr, formDataArg) {
       let data = {
@@ -772,6 +777,7 @@ export default {
       let formData = new FormData();
       formData.append("file", file);
       this.uploadPassportMainSpread({ data, formData });
+      this.passport_image3='3'
     },
     async afterAdded4(file, xhr, formDataArg) {
       let data = {
@@ -844,7 +850,10 @@ export default {
         this.passport_series &&
         this.passport_given &&
         this.passport_date &&
-        this.passport_term
+        this.passport_term &&
+        this.passport_image1 &&
+        this.passport_image2 &&
+        this.passport_image3
       );
     },
     computedDateFormatted() {
