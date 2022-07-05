@@ -52,7 +52,9 @@ import {mapActions, mapMutations} from "vuex";
 export default {
   components: {},
   data() {
-    return {};
+    return {
+      value: null,
+    };
   },
   computed: {
     notifications_count() {
