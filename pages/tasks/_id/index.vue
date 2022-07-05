@@ -218,7 +218,7 @@ export default {
 
       actions_responses: [
         {text: "В назначенные", icon: "mdi-check", action: 'appoint'},
-        {text: "Отклонить", icon: "mdi-close-box-outline", action: 'refused'},
+        {text: "Отклонить", icon: "mdi-close-box-outline", action: 'reject'},
         {text: "В карточку исполнителя", icon: "mdi-clipboard-account-outline", action: 'openDetails'},
       ],
 
