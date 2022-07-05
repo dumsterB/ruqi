@@ -1,6 +1,6 @@
 <template lang="pug">
   .add-task
-    PageHeader(header_text="Создание новой заявки" :disabled="disabled" button_text="сохранить изменения" @createAction = "nextFromButton" @closeAction="$router.push('/tasks/')")
+    PageHeader(header_text="Создание новой заявки" :disabled="disabled" button_text="сохранить изменения" @createAction = "nextFromButton" @closeAction="$router.go(-1)")
 
     v-container.object-info-container
       v-row
