@@ -444,9 +444,9 @@
                     :headers="headers_history",
                     :items="object_id_history",
                     item-key="uuid",
-                    :page.sync="page",
-                    :items-per-page="itemsPerPageTable",
                     hide-default-footer
+                    disable-pagination
+                    :options.sync="headerOptionsHistory"
                   )
                     template(v-slot:item.created_at="{ item }")
                       .table-history-date
@@ -618,7 +618,7 @@ export default {
         {text: "Дата", value: "created_at", width: "120px"},
         {text: "Автор", value: "author", width: "200px"},
         {text: "Объект", value: "object",},
-        {text: "Изменение", value: "description"},
+        {text: "Изменение", value: "description", sortable: false},
       ],
       isConfirmModal: false,
       isConfirmModalGroup: false,
@@ -964,9 +964,14 @@ export default {
         action = 'fetchObjectIdHistory';
       }
 
+      let sorting = this[sortOptions].sortBy[0];
+
+      if (sorting){
+        params.settings.sort = this[sortOptions].sortBy[0];
+        params.settings.order = this[sortOptions].sortDesc[0] ? 'asc' : 'desc';
+      }
+
       this[fetchParams].page += 1;
-      this[fetchParams].sort = this[sortOptions].sortBy[0];
-      this[fetchParams].order = this[sortOptions].sortDesc[0] ? 'asc' : 'desc';
 
       const params = this[fetchParams];
 
