@@ -631,9 +631,9 @@ export default {
       filelist: [],
       menu: false,
       menu1: false,
-      passport_image1:'',
-      passport_image2:'',
-      passport_image3:'',
+      passport_image1: "",
+      passport_image2: "",
+      passport_image3: "",
       currency: "",
       initialBalance: null,
       logo: "",
@@ -681,8 +681,8 @@ export default {
     ]),
     formatDate(date) {
       if (!date) return null;
-      const [year,month, day] = date.split("-");
-      console.log(year ,new Date().toISOString().slice(0, 10))
+      const [year, month, day] = date.split("-");
+      console.log(year, new Date().toISOString().slice(0, 10));
       return `${day}.${month}.${year}`;
     },
     parseDate(date) {
@@ -755,7 +755,7 @@ export default {
       let formData = new FormData();
       formData.append("file", file);
       this.uploadPassportMainSpread({ data, formData });
-      this.passport_image1='1'
+      this.passport_image1 = "1";
     },
     async afterAdded2(file, xhr, formDataArg) {
       let data = {
@@ -766,7 +766,7 @@ export default {
       let formData = new FormData();
       formData.append("file", file);
       this.uploadPassportMainSpread({ data, formData });
-      this.passport_image2='2'
+      this.passport_image2 = "2";
     },
     async afterAdded3(file, xhr, formDataArg) {
       let data = {
@@ -777,7 +777,7 @@ export default {
       let formData = new FormData();
       formData.append("file", file);
       this.uploadPassportMainSpread({ data, formData });
-      this.passport_image3='3'
+      this.passport_image3 = "3";
     },
     async afterAdded4(file, xhr, formDataArg) {
       let data = {
@@ -864,9 +864,9 @@ export default {
     helper_date() {
       this.dateFormatted_date = this.formatDate(this.helper_date);
     },
-    helper_given(){
-      this.dateFormatted_given = this.formatDate(this.helper_given)
-    }
+    helper_given() {
+      this.dateFormatted_given = this.formatDate(this.helper_given);
+    },
   },
 };
 </script>

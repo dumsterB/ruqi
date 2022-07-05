@@ -192,7 +192,7 @@ export default {
     return {
       valid: false,
       date:'2004-01-01',
-      dateFormatted: "01.01.2004",
+      dateFormatted: "",
       phoneNumber: "",
       dateHelper: new Date(),
       menu: "",
