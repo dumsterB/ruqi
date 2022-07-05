@@ -308,21 +308,20 @@ export default {
       this.isConfirmModal = false;
     },
 
-    createServiceHandler(isClose) {
+    async createServiceHandler(isClose) {
       let formPart = 'form_part_0';
 
-      this.$refs[formPart].validate();
+      await this.$refs[formPart].validate();
 
-      this.$nextTick(() => {
-        if (this.valid) {
-          const newRequest = JSON.stringify(this.postBody);
-          console.log(newRequest);
-          this.putService({body: newRequest, object_uuid: this.object_uuid, service_uuid: this.service_uuid, isClose: isClose});
-        } else {
-          let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
-          this.$vuetify.goTo(el);
-        }
-      });
+      if (this.valid) {
+        const newRequest = JSON.stringify(this.postBody);
+        console.log(newRequest);
+        await this.putService({body: newRequest, object_uuid: this.object_uuid, service_uuid: this.service_uuid, isClose: isClose});
+        this.disabled = true;
+      } else {
+        let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
+        this.$vuetify.goTo(el);
+      }
     },
 
     setRate() {
