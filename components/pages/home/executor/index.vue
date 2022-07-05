@@ -34,7 +34,7 @@
 
           v-tab-item(eager)
             TasksList.tasks-executor-search--task-list(:tasks="userTasks" @callAction="callAction" v-show="userTasks.length" v-infinite-scroll="loadMoreDetectTasks")
-            TasksEmpty(title="Пока нет заявок" description="Мы сформировали акты выполненных работ, вам нужно подписать их чтобы получить деньги." v-show="!userWorks.length")
+            TasksEmpty(title="Пока нет заявок" description="Мы сформировали акты выполненных работ, вам нужно подписать их чтобы получить деньги." v-show="!userTasks.length")
 
 
 </template>

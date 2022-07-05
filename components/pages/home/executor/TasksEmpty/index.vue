@@ -92,6 +92,8 @@ export default {
 @media screen and (max-width: 768px) {
   .rq-tasks-empty-wrapper {
 
+    padding-bottom: 160px;
+
     .rq-tasks-empty {
 
       .rq-tasks-empty-header {

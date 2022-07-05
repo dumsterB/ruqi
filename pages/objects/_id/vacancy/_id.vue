@@ -412,23 +412,22 @@ export default {
       this.isConfirmModal = false;
     },
 
-    createVacancyHandler(isClose) {
+    async createVacancyHandler(isClose) {
       let formPart = 'form_part_0';
 
-      this.$refs[formPart].validate();
+      await this.$refs[formPart].validate();
 
-      this.$nextTick(() => {
-        if (this.valid) {
-          const newRequest = JSON.stringify(this.postBody);
-          console.log(newRequest);
+      if (this.valid) {
+        const newRequest = JSON.stringify(this.postBody);
+        console.log(newRequest);
 
-          this.putVacancy({body: newRequest, object_uuid: this.object_uuid, vacancy_uuid: this.vacancy_uuid,  isClose: isClose});
+        await this.putVacancy({body: newRequest, object_uuid: this.object_uuid, vacancy_uuid: this.vacancy_uuid,  isClose: isClose});
+        this.disabled = true;
 
-        } else {
-          let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
-          this.$vuetify.goTo(el);
-        }
-      });
+      } else {
+        let el = this.$el.querySelector(".v-messages.error--text:first-of-type");
+        this.$vuetify.goTo(el);
+      }
     },
     setRate() {
       let formPart = 'form_part_1';

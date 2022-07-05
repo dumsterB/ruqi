@@ -84,7 +84,7 @@
               .rq-ptestl__mobile-title-payment {{ item.rate }} р./смена
               .rq-ptestl__mobile-title-date.d-flex
                 v-icon(size="18" color="#263043").mr-2 mdi-calendar-blank-outline
-                .date {{ parseDate({ date: item.start_date.substr(0, 10), type: 'date' }) }} {{ item.start_date.substring(11, 16) }}
+                .date(v-if="item.start_date") {{ parseDate({ date: item.start_date.substr(0, 10), type: 'date' }) }} {{ item.start_date.substring(11, 16) }}
             .rq-ptestl-card__fields-item.rq-ptestl__mobile-title-text(v-for="profession in item.professions") {{ profession }}
             .rq-ptestl-card__fields-item.rq-ptestl__mobile-title-object
               .object-task-info

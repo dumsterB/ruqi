@@ -226,9 +226,9 @@ export default {
         {
           text: "Отправить приглашение", icon: "mdi-email-outline", action: 'invite',
           sub_actions: [
-            {text: "SMS", icon: "sms", params: 'sms', custom_icon: true},
-            {text: "Telegram", icon: "telegram", params: 'telegram', custom_icon: true},
-            {text: "Email", icon: "email", params: 'email', custom_icon: true}
+            {text: "SMS", icon: "sms", params: 'sms', custom_icon: true, action: 'inviteSms'},
+            {text: "Telegram", icon: "telegram", params: 'telegram', custom_icon: true, action: 'inviteEmail'},
+            {text: "Email", icon: "email", params: 'email', custom_icon: true, action: 'inviteTelegram'}
           ],
         },
         {text: "В карточку исполнителя", icon: "mdi-clipboard-account-outline", action: 'openDetails'},
@@ -241,9 +241,9 @@ export default {
         {
           text: "Отправить приглашение", icon: "mdi-email-outline", action: 'invite',
           sub_actions: [
-            {text: "SMS", icon: "sms", params: 'sms', custom_icon: true},
-            {text: "Telegram", icon: "telegram", params: 'telegram', custom_icon: true},
-            {text: "Email", icon: "email", params: 'email', custom_icon: true}
+            {text: "SMS", icon: "sms", params: 'sms', custom_icon: true, action: 'inviteSms'},
+            {text: "Telegram", icon: "telegram", params: 'telegram', custom_icon: true, action: 'inviteEmail'},
+            {text: "Email", icon: "email", params: 'email', custom_icon: true, action: 'inviteTelegram'}
           ],
         },
       ],
@@ -443,7 +443,9 @@ export default {
   methods: {
     ...mapActions("request_id", ["fetchRequestId", "putStatus"]),
     ...mapActions("request_id_dispatchers", ["fetchRequestIdResponses", "fetchRequestIdSelection", "fetchRequestIdInvitations", "fetchRequestIdAssigned",]),
-    ...mapActions("request_id_dispatchers", ["acceptRequest", "rejectRequest", "appointExecutor", "rejectExecutor", "inviteExecutor", "deleteExecutor", "refuseExecutor", "acceptedExecutor"]),
+    ...mapActions("request_id_dispatchers", ["acceptRequest", "rejectRequest", "appointExecutor", "rejectExecutor", "inviteExecutor",
+      "inviteExecutorEmail", "inviteExecutorSms", "inviteExecutorTelegram",
+      "deleteExecutor", "refuseExecutor", "acceptedExecutor"]),
     ...mapActions("requests", ["copyRequest", "removeRequest"]),
     ...mapActions("rqTabs", [
       'addRqTabsTaskNew',
@@ -538,7 +540,7 @@ export default {
     },
 
     callAction({action, uuids, params}) {
-      console.log('callAction ------', action, uuids);
+      console.log('callAction ------', action, uuids, params);
       this[action](uuids, params);
     },
 
@@ -550,7 +552,7 @@ export default {
     callGroupAction(action) {
       let sendUuids = [];
       for (let i = 0; i < this.selectedItems.length; i++) {
-        sendUuids.push(this.selectedItems[0].uuid);
+        sendUuids.push(this.selectedItems[i].uuid);
       }
 
       console.log(action, sendUuids)
@@ -577,7 +579,33 @@ export default {
     },
 
     invite(uuids, params) {
-      this.inviteExecutor({task_uuid: this.$route.params.id, user_uuids: uuids, params: {variant: params}});
+
+      if (params) {
+        if (params == 'email') {
+          this.inviteExecutorEmail({task_uuid: this.$route.params.id, user_uuids: uuids, params: {variant: params}});
+        } else if (params === 'sms') {
+          this.inviteExecutorSms({task_uuid: this.$route.params.id, user_uuids: uuids, params: {variant: params}});
+        } else if (params === 'telegram') {
+          this.inviteExecutorTelegram({task_uuid: this.$route.params.id, user_uuids: uuids, params: {variant: params}});
+        }
+      } else {
+        this.inviteExecutor({task_uuid: this.$route.params.id, user_uuids: uuids, params: {variant: params}});
+      }
+
+      console.log('params-----', params);
+
+    },
+
+    inviteEmail(uuids, params) {
+      this.inviteExecutorEmail({task_uuid: this.$route.params.id, user_uuids: uuids, params: {variant: params}});
+    },
+
+    inviteSms(uuids, params) {
+      this.inviteExecutorSms({task_uuid: this.$route.params.id, user_uuids: uuids, params: {variant: params}});
+    },
+
+    inviteTelegram(uuids, params) {
+      this.inviteExecutorTelegram({task_uuid: this.$route.params.id, user_uuids: uuids, params: {variant: params}});
     },
 
     delete(uuids) {

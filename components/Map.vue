@@ -39,10 +39,15 @@ export default {
     balloonTemplate(info) {
       if (this.entity === 'contractor') {
 
-        let task_date = this.parseDate({
-          date: info.start_date.substr(0, 10),
-          type: 'date'
-        }) + ' ' + info.start_date.substring(11, 16);
+        let task_date;
+
+        if(info.start_date){
+          task_date = this.parseDate({
+            date: info.start_date.substr(0, 10),
+            type: 'date'
+          }) + ' ' + info.start_date.substring(11, 16);
+        }
+
         let icon_object = '<i aria-hidden="true" class="v-icon notranslate mdi mdi-star-outline theme--light" style="color: rgb(244, 209, 80); caret-color: rgb(244, 209, 80);"></i>';
 
         if (info.subscribe) {

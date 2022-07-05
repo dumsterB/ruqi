@@ -36,7 +36,7 @@ export default {
         return 'приглашение';
       }else if(this.status == 'requested'){
         return 'хочу работать';
-      } else if(this.status == 'refused'){
+      } else if(this.status == 'refused' || this.status == 'rejected' ){
         return 'набор закрыт';
       }else if(this.status == 'userRefused'){
         return 'не поеду';

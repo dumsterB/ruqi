@@ -146,7 +146,7 @@ export default {
       // await store.dispatch('objects/fetchObjects')
     }
     if (store.getters['specializations/specializations'].length === 0) {
-      await store.dispatch('specializations/fetch')
+      await store.dispatch('specializations/fetchSpecializations')
     }
     if (store.getters['dictionary/dispatchers'].length === 0) {
       await store.dispatch('dictionary/fetchDispatchers')
