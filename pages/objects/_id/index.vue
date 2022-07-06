@@ -343,7 +343,7 @@
                         TaskStatus(:status_alias="item.status")
 
                     template(v-slot:item.date="{ item }")
-                      div(v-if="item.end_date") {{ parseDate({ date: item.end_date.substr(0, 10), type: 'date' }) }}
+                      div(v-if="item.until_date") {{ parseDate({ date: item.until_date.substr(0, 10), type: 'date' }) }}
 
                     template(v-slot:item.completion="{ item }")
                       Occupationbar(
