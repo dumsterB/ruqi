@@ -27,18 +27,18 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-    '@/assets/scss/style.scss',
+    '@/assets/scss/style.scss'
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    { src: '~/plugins/ymapPlugin.js',  mode: 'client' },
-    { src: '~/plugins/auth.js',  mode: 'client' },
-    { src: '~/plugins/validation.js',  mode: 'client' },
-    { src: '~/plugins/vuetify.js',  mode: 'client' },
-    { src: '~/plugins/vue-infinite-scroll.js',  mode: 'client', ssr: false },
-    { src: '~/plugins/socket', ssr: false, },
-    { src: '~/plugins/platformDetection', ssr: false, },
+    { src: '~/plugins/ymapPlugin.js', mode: 'client' },
+    { src: '~/plugins/auth.js', mode: 'client' },
+    { src: '~/plugins/validation.js', mode: 'client' },
+    { src: '~/plugins/vuetify.js', mode: 'client' },
+    { src: '~/plugins/vue-infinite-scroll.js', mode: 'client', ssr: false },
+    { src: '~/plugins/socket', ssr: false },
+    { src: '~/plugins/platformDetection', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -46,6 +46,7 @@ export default {
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
+    '@nuxtjs/eslint-module'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -53,7 +54,7 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/vuetify',
-    'nuxt-route-meta',
+    'nuxt-route-meta'
   ],
 
   vuetify: {
@@ -63,17 +64,17 @@ export default {
 
   auth: {
     redirect: {
-      home: '/',
-    },
+      home: '/'
+    }
   },
 
   router: {
-    middleware: ['check_auth', 'access_rights'],
+    middleware: ['check_auth', 'access_rights']
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL: process.env.API_URL,
+    baseURL: process.env.API_URL
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
@@ -81,11 +82,11 @@ export default {
 
   env: {
     WSS_URL: process.env.WSS_URL,
-    WSS_PATH: process.env.WSS_PATH,
+    WSS_PATH: process.env.WSS_PATH
   },
 
   server: {
     port: 3000, // default: 3000
-    host: '0.0.0.0', // default: localhost
-  },
+    host: '0.0.0.0' // default: localhost
+  }
 }
