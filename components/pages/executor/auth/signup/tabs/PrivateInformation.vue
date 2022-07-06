@@ -192,7 +192,7 @@ export default {
     return {
       valid: false,
       date:'2004-01-01',
-      dateFormatted: "01.01.2004",
+      dateFormatted: "",
       phoneNumber: "",
       dateHelper: new Date(),
       menu: "",
@@ -209,7 +209,7 @@ export default {
         },
       ],
       emailRules: [
-        (v) => !!v || "Заполните поля",
+        (v) => !!v || "Заполните поле",
         (v) => /.+@.+/.test(v) || "",
       ],
       nowDate: new Date().toISOString().slice(0, 10),

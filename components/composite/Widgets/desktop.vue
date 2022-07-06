@@ -2,7 +2,7 @@
   v-row(class="mt-5" no-gutters)
     v-col
       v-row(class="mt-5" no-gutters)
-        v-col(v-for="widget of widgets" v-if="widget.closable === true || widget.visibility === false" class="mt-2 mb-2"  cols="3" :key="widget.id")
+        v-col(v-for="widget of widgets" v-if="widget.closable === false" class="mt-2 mb-2" md="3" lg="3" xl="2" sm="6"  cols="12" :key="widget.id")
            div()
              v-card(class="pa-3 pl-3 mr-1 info-card" elevation="0" dark  v-if="widget.slug == 'tasks' || widget.slug == 'finance' ")
                v-avatar.avatar
@@ -35,7 +35,8 @@
                              .action
                                .action-item.pl-3.pr-3(style="cursor:pointer" @click="closeHandler(widget)")  Закрыть
                p.desc {{widget.title}}
-               a(style="text-decoration:none") {{widget.link}}
+               a(style="text-decoration:none" v-if="widget.link !== 'Закрыть'") {{widget.link}}
+               a(style="text-decoration:none" v-else @click="closeHandler(widget)") {{widget.link}}
 </template>
 
 <script>
@@ -49,15 +50,15 @@ export default {
   },
   methods: {
     closeHandler(widget) {
-      widget.closable = false;
+      widget.closable = true;
       this.$forceUpdate();
+      let arr = this.widgets.filter((ell) => ell.visibility === false);
+      let filterClosable= arr.filter((ell)=>ell.closable=== true)
+      filterClosable[0].closable = false
     },
   },
-  mounted() {
-  },
-  computed: {
-
-  },
+  mounted() {},
+  computed: {},
 };
 </script>
 

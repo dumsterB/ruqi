@@ -10,7 +10,7 @@
       <div v-else>
         <h2 class="main_text_executor">Введите код из email</h2>
         <p>
-          Мы выслали SMS с кодом на почту <strong>{{ email }}</strong>
+          Мы отправили вам код на  почту <strong>{{ email }}</strong>
         </p>
       </div>
       <div class="code mt-10">

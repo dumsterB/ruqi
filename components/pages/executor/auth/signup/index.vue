@@ -305,7 +305,7 @@ export default {
         this.tabs.map((ell) => {
           ell.mobile = false;
         });
-        this.tabs[7].mobile = true;
+        this.tabs[6].mobile = true;
         this.tabs[0].value = 100;
         this.tabs[1].value = 100;
         this.tabs[2].value = 100;
@@ -313,7 +313,6 @@ export default {
         this.tabs[4].value = 100;
         this.tabs[5].value = 100;
         this.tabs[6].value = 100;
-        this.tabs[7].value = 100;
         this.tabs[0].active = true;
         this.tabs[1].active = true;
         this.tabs[2].active = true;
@@ -322,7 +321,6 @@ export default {
         this.tabs[4].active = true;
         this.tabs[5].active = true;
         this.tabs[6].active = true;
-        this.tabs[7].active = true;
       }
     },
   },
