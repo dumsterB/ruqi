@@ -235,13 +235,13 @@
                                   v-icon mdi-close-box-outline
                                   span Удалить
 
-                    template(v-slot:item.service="{ item }")
+                    template(v-slot:item.sName="{ item }")
                       span {{ previewText(item.service.name) }}
 
                     template(v-slot:item.gender="{ item }")
                       span {{ item.gender == 'male' ? 'м' : item.gender == 'female' ? 'ж' : 'все' }}
 
-                    template(v-slot:item.age="{ item }")
+                    template(v-slot:item.age_from="{ item }")
                       span {{ item.age_from }} - {{ item.age_to }}
 
                     template(v-slot:item.next_rate="{ item }")
@@ -343,7 +343,7 @@
                         TaskStatus(:status_alias="item.status")
 
                     template(v-slot:item.date="{ item }")
-                      div(v-if="item.end_date") {{ parseDate({ date: item.end_date.substr(0, 10), type: 'date' }) }}
+                      div(v-if="item.until_date") {{ parseDate({ date: item.until_date.substr(0, 10), type: 'date' }) }}
 
                     template(v-slot:item.completion="{ item }")
                       Occupationbar(
@@ -598,11 +598,11 @@ export default {
           align: "center",
         },
         {text: "Вакансия", value: "name", width: "200px"},
-        {text: "Услуга", value: "service", width: "200px"},
+        {text: "Услуга", value: "sName", width: "200px"},
         {text: "пол", value: "gender", width: "120px"},
-        {text: "возраст", value: "age", width: "120px"},
+        {text: "возраст", value: "age_from", width: "120px"},
         {text: "ставка текущая", value: "rate", width: "140px"},
-        {text: "ставка плановая", value: "next_rate", width: "140px"},
+        {text: "ставка плановая", value: "next_rate", width: "140px", sortable: false},
       ],
       headers_vacancies_filter: [
         {field: 'driver_license', translit: 'Права'},

@@ -8,25 +8,29 @@
             .login-logo
               img.auth-logo( src="@/assets/img/auth-logo.png" )
             .auth-form
-              .wrapper
-                .haupt-titel
-                  .txt Войти в систему
-                .inputs-group
-                  .input-line.email-num
-                    .titel
-                      .txt Email или номер телефона
-                    .input
-                      input.item( type="text" v-model="login.phone_or_email" :class="{ 'error-by-signin' : error }" )
-                  .input-line.password
-                    .titel
-                      .txt Пароль
-                    .input
-                      input.item( type="password" v-model="login.password" :class="{ 'error-by-signin' : error }" )
-                .actions
-                  .action
-                    .signin-btn( @click="handlers().signin()" )
-                      .titel Войти в систему
-
+              .title-auth.text-center.mb-6 Войти в систему
+              v-form(ref="form" @submit.prevent="signin")
+                .mb-4
+                  .mb-4.font-weight-medium Email или номер телефона
+                  v-text-field.br-8(
+                    v-model="login.phone_or_email"
+                    :error="!!error"
+                    outlined hide-details="auto")
+                .mb-4
+                  .mb-4.font-weight-medium Пароль
+                  v-text-field.br-8(
+                    v-model.trim="login.password"
+                    :type="showPassword ? 'text' : 'password'"
+                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append="showPassword = !showPassword"
+                    outlined
+                    hide-details="auto"
+                    :error="!!error"
+                    )
+                .mb-2.error--text(v-if="error") {{ error }}
+                button.signin-btn.d-flex.w-full( @click="signin" :disabled="loading")
+                  .titel(v-show="!loading") Войти в систему
+                  v-progress-circular(v-show="loading" indeterminate color="white" :size="30" )
             .password-forgot Забыли пароль?  Восстановить
 </template>
 
@@ -37,65 +41,50 @@
     layout: 'empty',
     components : {},
 
-    data ()
-    {
+    data () {
       return {
         login: {
           phone_or_email: '',
           password: ''
         },
-
-        error : false,
+        loading: false,
+        error: null,
+        showPassword: false,
       }
     },
 
     methods : {
-      getters ()
-      {
-        return {}
-      },
-
-      setters ()
-      {
-        return {}
-      },
-
-      handlers ()
-      {
-        return {
-          signin : async () => {
-            this.$auth.signin( this.login )
-              .then(
-                ( response ) => {
-                  localStorage.setItem( 'ruqi_auth_data', JSON.stringify( response.data.data ));
-
-                  this.$router.push( '/' );
-                }
-              )
-              .catch(
-                () => {
-                  this.error = true;
-                }
-              );
-          },
+      async signin () {
+        this.loading = true
+        try {
+          const response = await this.$auth.signin( this.login )
+          localStorage.setItem( 'ruqi_auth_data', JSON.stringify( response.data.data ));
+          this.$router.push( '/' );
+        } catch (e) {
+          this.error = e.response && e.response.data ? e.response.data.result.message : e.response
         }
+        this.loading = false
       },
-
-      helpers ()
-      {
-        return {}
-      },
-
-      init (){},
-
-      bindActions (){},
     }
-
   }
-
 </script>
 
 <style lang="scss" scoped>
+.title-auth {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 32px;
+  line-height: 125%;
+  color: #263043;
+}
+.password-forgot {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 125%;
+  color: #FFFFFF;
+  text-align: center;
+}
 
 /* OBJECTS STYLES START */
 
@@ -156,15 +145,6 @@
   {
     text-align: center;
     margin-bottom: 24px;
-
-    .txt
-    {
-      font-style: normal;
-      font-weight: bold;
-      font-size: 32px;
-      line-height: 125%;
-      color: #263043;
-    }
   }
 
   .auth-form
@@ -175,43 +155,6 @@
     border-radius: 16px;
     margin-bottom: 40px;
     padding: 24px 24px 40px 24px;
-  }
-
-  .password-forgot
-  {
-    font-style: normal;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 125%;
-    color: #FFFFFF;
-    text-align: center;
-  }
-
-  .input-line
-  {
-    margin-bottom: 16px;
-
-    .titel
-    {
-      font-style: normal;
-      font-weight: 600;
-      font-size: 16px;
-      line-height: 125%;
-      margin-bottom: 16px;
-    }
-
-    .input
-    {
-      .item
-      {
-        width: 100%;
-        height: 50px;
-        border: 1px solid rgba(86, 103, 137, 0.26);
-        box-sizing: border-box;
-        border-radius: 8px;
-        padding-left: 16px;
-      }
-    }
   }
 
   .signin-btn
@@ -239,13 +182,16 @@
     }
   }
 
-/* OBJECTS STYLES END */
-
-/* MIXINS STYLES START */
-  .error-by-signin
-  {
-    border-color  : red !important;
+</style>
+<style lang="scss">
+.login-page {
+  .v-text-field {
+    .v-input__slot {
+      min-height: 50px !important;
+      .v-input__append-inner {
+        margin-top: 13px !important;
+      }
+    }
   }
-/* MIXINS STYLES END */
-
+}
 </style>

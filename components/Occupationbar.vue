@@ -43,6 +43,13 @@ export default {
         return 0;
       }
     },
+    completedView(){
+      if(this.completed){
+        return this.completed
+      }else{
+        return 0;
+      }
+    }
   },
 }
 </script>
