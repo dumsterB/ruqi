@@ -130,7 +130,7 @@ export const actions = {
     await this.$axios.delete('/objects/' + object_uuid + '/vacancies/'  + vacancy_uuid + '/rates/' + rate_uuid)
       .then((response) => {
         console.log(response);
-        dispatch('service_id/fetchVacancyId', {objectId: object_uuid, ServiceId: vacancy_uuid}, {root: true});
+        dispatch('vacancy_id/fetchVacancyId', {objectId: object_uuid, ServiceId: vacancy_uuid}, {root: true});
       })
       .catch((error) => {
         console.log(error);
