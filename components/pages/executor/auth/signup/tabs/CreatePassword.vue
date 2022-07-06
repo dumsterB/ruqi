@@ -122,7 +122,7 @@ export default {
   computed: {
     ...mapGetters("response", ["requestSuccess"]),
     disableHandler() {
-      return this.password === this.confirm_password;
+      return this.password === this.confirm_password && this.valid;
     },
   },
 };
