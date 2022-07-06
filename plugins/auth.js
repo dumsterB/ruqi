@@ -14,7 +14,7 @@ export default ({ app, store, }, inject) => {
           );
         }
         catch (err) {
-          console.error(err);
+          throw err
         }
       },
 
